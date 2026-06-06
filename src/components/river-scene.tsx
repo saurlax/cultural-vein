@@ -458,24 +458,64 @@ function CitationArcs({
           sceneFocus?.active === true &&
           (source.title === sceneFocus.currentTitle || target.title === sceneFocus.currentTitle);
         const isFocusedArc = sourceSelected || targetSelected || traceLinked || sceneLinked;
-        const color =
+        const style =
           citation.layer === "metadata"
-            ? "#f8fafc"
+            ? {
+                color: "#f8fafc",
+                dashed: false,
+                dashSize: 0,
+                gapSize: 0,
+                lineWidth: isFocusedArc ? 1.85 : 1.1,
+              }
             : citation.layer === "explicit"
-              ? "#f59e0b"
+              ? {
+                  color: "#34d399",
+                  dashed: false,
+                  dashSize: 0,
+                  gapSize: 0,
+                  lineWidth: isFocusedArc ? 2 : 1.2,
+                }
               : citation.layer === "semantic"
-                ? "#fcd34d"
-                : "#d6d3d1";
+                ? {
+                    color: "#fcd34d",
+                    dashed: true,
+                    dashSize: 0.28,
+                    gapSize: 0.16,
+                    lineWidth: isFocusedArc ? 2.05 : 1.35,
+                  }
+                : {
+                    color: "#94a3b8",
+                    dashed: true,
+                    dashSize: 0.06,
+                    gapSize: 0.14,
+                    lineWidth: isFocusedArc ? 1.8 : 1.1,
+                  };
 
         return (
-          <Line
-            key={citation.id}
-            points={points}
-            color={color}
-            transparent
-            opacity={isFocusedArc ? 0.92 : selectedBookSlug ? 0.18 : 0.65}
-            lineWidth={isFocusedArc ? 1.8 : 1.1}
-          />
+          <group key={citation.id}>
+            <Line
+              points={points}
+              color={style.color}
+              transparent
+              opacity={isFocusedArc ? 0.94 : selectedBookSlug ? 0.2 : 0.68}
+              lineWidth={style.lineWidth}
+              dashed={style.dashed}
+              dashSize={style.dashSize}
+              gapSize={style.gapSize}
+            />
+            {citation.layer !== "metadata" ? (
+              <Line
+                points={points}
+                color={style.color}
+                transparent
+                opacity={isFocusedArc ? 0.16 : selectedBookSlug ? 0.04 : 0.08}
+                lineWidth={style.lineWidth + 3.2}
+                dashed={style.dashed}
+                dashSize={style.dashSize}
+                gapSize={style.gapSize}
+              />
+            ) : null}
+          </group>
         );
       })}
     </>
