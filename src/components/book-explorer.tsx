@@ -2031,7 +2031,7 @@ export function BookExplorer({
           </div>
           {visiblePeople.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6">
-              <div className="text-sm text-stone-200">这一时代河段还没有展开关联人物。</div>
+              <div className="text-sm text-stone-200">这一时代河段暂时没有展开关联人物时，先回查纪传证据或转看传播航段，把人物线索从别的层重新带回当前典籍。</div>
               <div className="mt-3 flex flex-wrap gap-2">
                 <button
                   type="button"
@@ -2160,9 +2160,13 @@ export function BookExplorer({
                               </button>
                             ))
                           ) : (
-                            <div className="rounded-2xl border border-dashed border-white/10 px-3 py-3 text-sm leading-6 text-stone-400">
+                            <button
+                              type="button"
+                              onClick={() => setShowSecondaryPeople(true)}
+                              className="rounded-2xl border border-dashed border-white/10 px-3 py-3 text-left text-sm leading-6 text-stone-400 transition hover:bg-white/5"
+                            >
                               先查看作者、注者、编者等核心人物，再按需展开引用者、评论者、校勘者等支流角色。
-                            </div>
+                            </button>
                           )}
                         </div>
                       </div>
@@ -2408,7 +2412,7 @@ export function BookExplorer({
           </div>
           {visibleVersions.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6">
-              <div className="text-sm text-stone-200">这一时代河段还没有展开版本链路。</div>
+              <div className="text-sm text-stone-200">这一时代河段暂时没有展开版本链路时，先回机构总表或原文证据，把版本与馆藏线索从别的层重新挂回当前典籍。</div>
               <div className="mt-3 flex flex-wrap gap-2">
                 <button
                   type="button"
@@ -3381,7 +3385,7 @@ export function BookExplorer({
           </div>
           {visiblePassages.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6">
-              <div className="text-sm text-stone-200">这一时代河段还没有展开逐字对读片段。</div>
+              <div className="text-sm text-stone-200">这一时代河段暂时没有展开逐字对读片段时，先回版本流变或时间回声，把文本证据从年代和版本两条线重新带回当前典籍。</div>
               <div className="mt-3 flex flex-wrap gap-2">
                 <button
                   type="button"
@@ -3396,6 +3400,13 @@ export function BookExplorer({
                   className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                 >
                   转看时间回声
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleOpenSourceEvidence("institution-samples")}
+                  className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
+                >
+                  打开机构总表
                 </button>
               </div>
             </div>
