@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Line, OrbitControls, PerspectiveCamera, Text } from "@react-three/drei";
-import { type ElementRef, useEffect, useMemo, useRef } from "react";
+import { type ElementRef, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 import type { SceneFocusState, TraceFocusState } from "@/components/book-explorer";
@@ -43,6 +43,11 @@ interface RiverSceneProps {
   sceneFocus?: SceneFocusState | null;
   visibleNodeCount?: number;
   totalNodeCount?: number;
+}
+
+interface CruiseSnapshot {
+  point: THREE.Vector3;
+  tangent: THREE.Vector3;
 }
 
 interface RiverRibbonProps {
@@ -791,7 +796,10 @@ function RiverWorld({
   onHoverBranch,
   traceFocus,
   sceneFocus,
-}: RiverSceneProps) {
+  cruiseProgress,
+}: RiverSceneProps & {
+  cruiseProgress: number;
+}) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
   const controlsRef = useRef<OrbitControlsInstance>(null);
   const userInteractingRef = useRef(false);
@@ -807,6 +815,21 @@ function RiverWorld({
         .map((book) => new THREE.Vector3(...book.coordinates)),
     [books],
   );
+  const mainStreamCurve = useMemo(
+    () => (mainStream.length >= 2 ? new THREE.CatmullRomCurve3(mainStream) : null),
+    [mainStream],
+  );
+  const cruiseSnapshot = useMemo<CruiseSnapshot | null>(() => {
+    if (!mainStreamCurve) {
+      return null;
+    }
+
+    const clampedProgress = THREE.MathUtils.clamp(cruiseProgress, 0, 0.999);
+    return {
+      point: mainStreamCurve.getPointAt(clampedProgress),
+      tangent: mainStreamCurve.getTangentAt(clampedProgress).normalize(),
+    };
+  }, [cruiseProgress, mainStreamCurve]);
   const traceBooks = useMemo(() => {
     const traceTitles = traceFocus?.titles ?? [];
 
@@ -906,11 +929,32 @@ function RiverWorld({
     } else if (cinematicState === "returning") {
       nextTarget = new THREE.Vector3(3.5, 0.15, 0);
       nextPosition = new THREE.Vector3(4.5, 5.3, 13.4);
+    } else if (viewMode === "river" && cruiseSnapshot) {
+      const up = new THREE.Vector3(0, 1, 0);
+      const side = new THREE.Vector3()
+        .crossVectors(up, cruiseSnapshot.tangent)
+        .normalize()
+        .multiplyScalar(2.4);
+      const back = cruiseSnapshot.tangent.clone().multiplyScalar(-4.8);
+      const lift = new THREE.Vector3(0, 2.3, 0);
+
+      nextTarget = cruiseSnapshot.point
+        .clone()
+        .add(cruiseSnapshot.tangent.clone().multiplyScalar(1.85));
+      nextPosition = cruiseSnapshot.point.clone().add(side).add(back).add(lift);
     }
 
     desiredCameraPosition.current.copy(nextPosition);
     desiredCameraTarget.current.copy(nextTarget);
-  }, [cameraTarget, cinematicState, sceneFocus, selectedBookPosition, traceFocus, viewMode]);
+  }, [
+    cameraTarget,
+    cinematicState,
+    cruiseSnapshot,
+    sceneFocus,
+    selectedBookPosition,
+    traceFocus,
+    viewMode,
+  ]);
 
   useFrame((_, delta) => {
     if (!cameraRef.current) {
@@ -1136,6 +1180,8 @@ function RiverWorld({
 }
 
 export function RiverScene(props: RiverSceneProps) {
+  const [cruiseProgress, setCruiseProgress] = useState(0.18);
+  const [autoCruise, setAutoCruise] = useState(false);
   const eraProgress = props.activeEra
     ? ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"].indexOf(props.activeEra) / 6
     : 0;
@@ -1143,6 +1189,28 @@ export function RiverScene(props: RiverSceneProps) {
     props.totalNodeCount && props.totalNodeCount > 0
       ? (props.visibleNodeCount ?? 0) / props.totalNodeCount
       : 0;
+  const canCruise =
+    props.viewMode === "river" && !props.traceFocus?.active && !props.sceneFocus?.active;
+  const cruiseRunning = canCruise && autoCruise;
+
+  useEffect(() => {
+    if (!cruiseRunning) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setCruiseProgress((current) => {
+        const next = current + 0.012;
+        return next >= 0.99 ? 0.04 : next;
+      });
+    }, 110);
+
+    return () => window.clearInterval(timer);
+  }, [cruiseRunning]);
+
+  const nudgeCruise = (delta: number) => {
+    setCruiseProgress((current) => THREE.MathUtils.clamp(current + delta, 0.02, 0.98));
+  };
 
   return (
     <div className="relative h-full min-h-screen overflow-hidden rounded-[32px] border border-[#e4c98a]/18 bg-[#1f1408] shadow-[0_0_80px_rgba(0,0,0,0.42)] touch-none">
@@ -1209,8 +1277,57 @@ export function RiverScene(props: RiverSceneProps) {
           </div>
         </div>
       </div>
+      {canCruise ? (
+        <div className="absolute right-5 bottom-5 z-20 w-[min(320px,calc(100vw-2.5rem))]">
+          <div className="pointer-events-auto rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(54,36,12,0.78)] px-4 py-4 text-[#eadfbc] shadow-xl shadow-black/20 backdrop-blur-md">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-[10px] tracking-[0.24em] text-[#d8c9a3]">
+                  沿河巡航
+                </div>
+                <div className="mt-1 text-sm text-[#fbf3da]">
+                  顺着主河道前后飞看文脉起伏
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAutoCruise((current) => !current)}
+                className={`rounded-full px-3 py-2 text-xs transition ${
+                  cruiseRunning
+                    ? "bg-[#f3dfab] text-[#42290a]"
+                    : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                }`}
+              >
+                {cruiseRunning ? "暂停巡航" : "自动巡航"}
+              </button>
+            </div>
+            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div
+                className="h-full rounded-full bg-[linear-gradient(90deg,#b45309,#fcd34d)]"
+                style={{ width: `${Math.max(6, cruiseProgress * 100)}%` }}
+              />
+            </div>
+            <div className="mt-3 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => nudgeCruise(-0.08)}
+                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+              >
+                回溯上游
+              </button>
+              <button
+                type="button"
+                onClick={() => nudgeCruise(0.08)}
+                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+              >
+                顺流下看
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
       <Canvas dpr={[1, 1.8]}>
-        <RiverWorld {...props} />
+        <RiverWorld {...props} cruiseProgress={cruiseProgress} />
       </Canvas>
     </div>
   );
