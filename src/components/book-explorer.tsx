@@ -608,6 +608,46 @@ export function BookExplorer({
   const handleFocusEventEvidence = () => {
     setSelectedSourceEvidenceId("event-samples");
   };
+  const handleOpenSourceEvidence = (evidenceId: string) => {
+    setSelectedSourceEvidenceId(evidenceId);
+
+    if (evidenceId === "cbdb-people") {
+      if (visiblePeople[0]?.id) {
+        setSelectedPersonId(visiblePeople[0].id);
+      }
+      setTab("people");
+      return;
+    }
+
+    if (evidenceId === "venue-samples") {
+      if (visibleSpread[0]?.id) {
+        setSelectedSpreadId(visibleSpread[0].id);
+      }
+      setTab("spread");
+      return;
+    }
+
+    if (evidenceId === "event-samples") {
+      if (visibleTimeline[0]?.id) {
+        setSelectedTimelineId(visibleTimeline[0].id);
+      }
+      setTab("timeline");
+      return;
+    }
+
+    if (evidenceId === "institution-samples") {
+      const firstInstitutionRecord = institutionRecords[0];
+
+      if (firstInstitutionRecord) {
+        handleSelectInstitutionRecord(firstInstitutionRecord);
+      }
+
+      if (visibleVersions[0]?.id) {
+        setSelectedVersionId(visibleVersions[0].id);
+      }
+      setTab("versions");
+    }
+  };
   const handleSelectSpreadIndex = (index: number) => {
     const nextSpread = visibleSpread[index];
 
@@ -1065,6 +1105,26 @@ export function BookExplorer({
                     <div className="mt-2 text-xs leading-6 text-amber-100/75">
                       {item.traceNote}
                     </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleOpenSourceEvidence(item.id);
+                        }}
+                        className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                      >
+                        {item.id === "cbdb-people"
+                          ? "查看人物关系"
+                          : item.id === "venue-samples"
+                            ? "查看地理传播"
+                            : item.id === "event-samples"
+                              ? "查看关联时间线"
+                              : item.id === "institution-samples"
+                                ? "查看版本与资源"
+                                : "查看相关分栏"}
+                      </button>
+                    </div>
                     <div className="mt-3 grid gap-2">
                       {item.samples.map((sample) => (
                         <div
@@ -1110,6 +1170,23 @@ export function BookExplorer({
                       <div className="mt-2 text-sm leading-6 text-stone-300">
                         {activeSourceEvidence.traceNote}
                       </div>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenSourceEvidence(activeSourceEvidence.id)}
+                        className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                      >
+                        {activeSourceEvidence.id === "cbdb-people"
+                          ? "前往人物关系视图"
+                          : activeSourceEvidence.id === "venue-samples"
+                            ? "前往地理传播视图"
+                            : activeSourceEvidence.id === "event-samples"
+                              ? "前往关联时间线"
+                              : activeSourceEvidence.id === "institution-samples"
+                                ? "前往版本与资源线索"
+                                : "前往相关视图"}
+                      </button>
                     </div>
                     <div className="mt-3 grid gap-2">
                       {activeSourceEvidence.samples.map((sample) => (
