@@ -671,6 +671,21 @@ export function BookExplorer({
         })
         .slice(0, 4)
     : [];
+  const activeTimelineEventEchoes = activeTimelineItem
+    ? eventPreview.filter((event) => event.startTime?.includes(String(activeTimelineItem.year))).slice(0, 2)
+    : [];
+  const activeTimelineInstitutionEchoes = activeTimelineItem
+    ? institutionRecords
+        .filter((item) => {
+          if (!item.year) {
+            return false;
+          }
+
+          return item.year.includes(String(activeTimelineItem.year));
+        })
+        .slice(0, 2)
+    : [];
+  const fallbackTimelineInstitutionEchoes = institutionPreview.slice(0, 2);
   const secondaryPeopleExpanded =
     showSecondaryPeople || (activePerson?.relationTier ?? 2) === 2;
   const visibleSecondaryPeople = secondaryPeopleExpanded ? secondaryPeople : [];
@@ -2100,6 +2115,86 @@ export function BookExplorer({
                             <span className="text-sm text-stone-300">
                               {activeTimelineMeta.detail}
                             </span>
+                          </div>
+                        </div>
+                      ) : null}
+                      {activeTimelineEventEchoes.length || activeTimelineInstitutionEchoes.length ? (
+                        <div className="mt-4 rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="text-xs tracking-[0.2em] text-amber-100/75">
+                              现实回声
+                            </div>
+                            <div className="text-[10px] text-amber-100/70">
+                              与当前年份直接贴近
+                            </div>
+                          </div>
+                          <div className="mt-3 grid gap-3">
+                            {activeTimelineEventEchoes.map((event) => (
+                              <div
+                                key={`timeline-event-echo-${event.venue}-${event.title}-${event.startTime}`}
+                                className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4"
+                              >
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="text-sm font-medium text-stone-50">{event.title}</div>
+                                  <div className="rounded-full bg-amber-300/10 px-2 py-1 text-[10px] text-amber-100">
+                                    活动资料
+                                  </div>
+                                </div>
+                                <div className="mt-2 text-xs text-stone-400">
+                                  {event.venue} · {event.startTime}
+                                </div>
+                                <div className="mt-2 text-sm text-stone-300">
+                                  状态：{event.status}
+                                </div>
+                              </div>
+                            ))}
+                            {activeTimelineInstitutionEchoes.map((item) => (
+                              <div
+                                key={`timeline-institution-echo-${item.institution}-${item.title}-${item.year ?? "unknown"}`}
+                                className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4"
+                              >
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="text-sm font-medium text-stone-50">{item.title}</div>
+                                  <div className="rounded-full bg-white/10 px-2 py-1 text-[10px] text-stone-300">
+                                    馆藏线索
+                                  </div>
+                                </div>
+                                <div className="mt-2 text-xs text-stone-400">
+                                  {item.institution}
+                                  {item.category ? ` · ${item.category}` : ""}
+                                  {item.year ? ` · ${item.year}` : ""}
+                                </div>
+                                {item.sourceText ? (
+                                  <div className="mt-2 text-sm leading-6 text-stone-300">
+                                    {item.sourceText}
+                                  </div>
+                                ) : null}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : fallbackTimelineInstitutionEchoes.length ? (
+                        <div className="mt-4 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="text-xs tracking-[0.2em] text-stone-400">
+                              现实回声
+                            </div>
+                            <div className="text-[10px] text-stone-500">当前典籍资料预览</div>
+                          </div>
+                          <div className="mt-3 grid gap-3">
+                            {fallbackTimelineInstitutionEchoes.map((item) => (
+                              <div
+                                key={`timeline-fallback-echo-${item.institution}-${item.title}-${item.year ?? "unknown"}`}
+                                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                              >
+                                <div className="text-sm font-medium text-stone-50">{item.title}</div>
+                                <div className="mt-2 text-xs text-stone-400">
+                                  {item.institution}
+                                  {item.category ? ` · ${item.category}` : ""}
+                                  {item.year ? ` · ${item.year}` : ""}
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       ) : null}
