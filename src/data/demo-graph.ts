@@ -1,4 +1,11 @@
-import type { BookDetail, BookNode, CitationEdge, RiverDataset } from "@/types/domain";
+import realSupplements from "@/data/generated/real-supplements.json";
+import type {
+  BookDetail,
+  BookNode,
+  CitationEdge,
+  PersonNode,
+  RiverDataset,
+} from "@/types/domain";
 
 const books: BookNode[] = [
   {
@@ -231,35 +238,7 @@ const details: Record<string, BookDetail> = {
         volume: 88,
       },
     ],
-    people: [
-      {
-        id: "person-kongyingda",
-        name: "孔颖达",
-        role: "注者",
-        birthYear: 574,
-        deathYear: 648,
-        era: "唐",
-        bio: "奉诏撰《毛诗正义》，奠定经学义疏传统。",
-      },
-      {
-        id: "person-zhuxi",
-        name: "朱熹",
-        role: "引用者",
-        birthYear: 1130,
-        deathYear: 1200,
-        era: "宋",
-        bio: "以理学视角重新解释诗教，强化修身与教化内核。",
-      },
-      {
-        id: "person-wangguowei",
-        name: "王国维",
-        role: "影响者",
-        birthYear: 1877,
-        deathYear: 1927,
-        era: "清末民初",
-        bio: "近代诗学家，以境界论回接《诗经》传统。",
-      },
-    ],
+    people: [],
     places: [
       { id: "place-changan", name: "长安", lat: 34.3416, lng: 108.9398, note: "汉唐经学传播中心" },
       { id: "place-luoyang", name: "洛阳", lat: 34.6197, lng: 112.454, note: "东汉学术与典籍汇聚地" },
@@ -336,26 +315,7 @@ const details: Record<string, BookDetail> = {
         volume: 96,
       },
     ],
-    people: [
-      {
-        id: "person-zhuxi-main",
-        name: "朱熹",
-        role: "作者",
-        birthYear: 1130,
-        deathYear: 1200,
-        era: "南宋",
-        bio: "以四书为核心重新组织儒学经典秩序。",
-      },
-      {
-        id: "person-huxian",
-        name: "胡炫",
-        role: "校者",
-        birthYear: 1230,
-        deathYear: 1295,
-        era: "元",
-        bio: "参与元代学宫刻本的校勘整理。",
-      },
-    ],
+    people: [],
     places: [
       { id: "place-wuyuan", name: "婺源", lat: 29.247, lng: 117.8622, note: "朱熹学脉活动地" },
       { id: "place-kaifeng", name: "开封", lat: 34.7972, lng: 114.3076, note: "北方学宫转译节点" },
@@ -429,6 +389,74 @@ const placeholderDetail = (book: BookNode): BookDetail => ({
   ],
   passages: [],
 });
+
+const cbdbPeople = (realSupplements.cbdbPeople ?? []) as Array<
+  PersonNode & { foundInCbdb?: boolean }
+>;
+
+const personByName = new Map(cbdbPeople.map((person) => [person.name, person]));
+
+function mergePeople(
+  names: string[],
+  fallback: PersonNode[],
+): PersonNode[] {
+  const resolved = names
+    .map((name) => personByName.get(name))
+    .filter((person): person is PersonNode => Boolean(person && person.name));
+
+  return resolved.length > 0 ? resolved : fallback;
+}
+
+details.shijing.people = mergePeople(["孔颖达", "朱熹", "王国维"], [
+  {
+    id: "person-kongyingda",
+    name: "孔颖达",
+    role: "注者",
+    birthYear: 574,
+    deathYear: 648,
+    era: "唐",
+    bio: "奉诏撰《毛诗正义》，奠定经学义疏传统。",
+  },
+  {
+    id: "person-zhuxi",
+    name: "朱熹",
+    role: "引用者",
+    birthYear: 1130,
+    deathYear: 1200,
+    era: "宋",
+    bio: "以理学视角重新解释诗教，强化修身与教化内核。",
+  },
+  {
+    id: "person-wangguowei",
+    name: "王国维",
+    role: "影响者",
+    birthYear: 1877,
+    deathYear: 1927,
+    era: "清末民初",
+    bio: "近代诗学家，以境界论回接《诗经》传统。",
+  },
+]);
+
+details["sishu-zhangju"].people = mergePeople(["朱熹"], [
+  {
+    id: "person-zhuxi-main",
+    name: "朱熹",
+    role: "作者",
+    birthYear: 1130,
+    deathYear: 1200,
+    era: "南宋",
+    bio: "以四书为核心重新组织儒学经典秩序。",
+  },
+  {
+    id: "person-huxian",
+    name: "胡炫",
+    role: "校者",
+    birthYear: 1230,
+    deathYear: 1295,
+    era: "元",
+    bio: "参与元代学宫刻本的校勘整理。",
+  },
+]);
 
 const booksBySlug = Object.fromEntries(
   books.map((book) => [book.slug, details[book.slug] ?? placeholderDetail(book)]),
