@@ -29,7 +29,7 @@ export interface TraceFocusState {
 
 export interface SceneFocusState {
   active: boolean;
-  mode: "spread" | "people" | "versions" | "timeline";
+  mode: "spread" | "people" | "versions" | "timeline" | "source";
   currentTitle: string | null;
   contextLabel: string;
   detail: string;

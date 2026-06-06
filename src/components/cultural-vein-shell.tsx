@@ -373,6 +373,7 @@ export function CulturalVeinShell() {
       return;
     }
 
+    setSceneFocus(null);
     setTransitionState("diving");
     window.setTimeout(() => {
       setShowDesktopDossier(true);
@@ -528,6 +529,8 @@ export function CulturalVeinShell() {
     (insights?.nanhuArchiveSample?.imageCount ?? 0);
   const handleSourceAtlasSelect = (entryId: string) => {
     setActiveSourceAtlasId(entryId);
+    setShowDesktopDossier(false);
+    setShowMobileDossier(false);
 
     const selectedEntry = sourceAtlasEntries.find((entry) => entry.id === entryId);
     if (!selectedBook && selectedEntry) {
@@ -535,6 +538,45 @@ export function CulturalVeinShell() {
       if (inferredEra && inferredEra !== activeEra) {
         setActiveEra(inferredEra);
       }
+
+      const focusBook =
+        filteredBooks
+          .filter((book) => {
+            if (inferredEra && book.dynasty !== inferredEra) {
+              return false;
+            }
+
+            if (selectedEntry.name.includes("搜韵")) {
+              return book.category === "集" || book.school.includes("诗");
+            }
+
+            if (selectedEntry.name.includes("报刊")) {
+              return book.dynasty === "近现代";
+            }
+
+            if (selectedEntry.name.includes("专题片")) {
+              return book.dynasty === "近现代" || book.dynasty === "明清";
+            }
+
+            if (selectedEntry.name.includes("CBDB")) {
+              return book.category === "史" || book.category === "经";
+            }
+
+            return true;
+          })
+          .sort((left, right) => right.influence - left.influence)[0] ?? null;
+
+      setSceneFocus(
+        focusBook
+          ? {
+              active: true,
+              mode: "source",
+              currentTitle: focusBook.title,
+              contextLabel: `来源联动：${selectedEntry.name}`,
+              detail: `${selectedEntry.name} 的样本资料正在驱动主河道镜头聚焦 ${focusBook.shortTitle} 所在河段。`,
+            }
+          : null,
+      );
     }
   };
   const focusModeLabel = traceFocus?.active
