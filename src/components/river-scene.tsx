@@ -107,15 +107,15 @@ function AtmosphereField() {
     <group ref={fieldRef}>
       <mesh position={[2.8, 3.6, -7]} scale={[9.5, 4.2, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color="#164e63" transparent opacity={0.08} />
+        <meshBasicMaterial color="#a16207" transparent opacity={0.09} />
       </mesh>
       <mesh position={[8.7, 2.5, -6.5]} scale={[7.4, 3.4, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color="#f59e0b" transparent opacity={0.05} />
+        <meshBasicMaterial color="#facc15" transparent opacity={0.07} />
       </mesh>
       <mesh position={[-1.8, 2.4, -5.8]} scale={[5.8, 2.6, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color="#34d399" transparent opacity={0.06} />
+        <meshBasicMaterial color="#d97706" transparent opacity={0.05} />
       </mesh>
     </group>
   );
@@ -147,8 +147,8 @@ function RiverBed({
       <mesh ref={bedRef} rotation={[-Math.PI / 2, 0, 0]} position={[3.4, depth, 0]}>
         <planeGeometry args={[span * 1.6, span * 1.2, 48, 48]} />
         <meshStandardMaterial
-          color="#0b2320"
-          emissive={new THREE.Color("#0f3c38")}
+          color="#352313"
+          emissive={new THREE.Color("#6b4b1d")}
           emissiveIntensity={0.22}
           metalness={0.08}
           roughness={0.72}
@@ -158,7 +158,7 @@ function RiverBed({
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.4, depth + 0.01, 0]}>
         <planeGeometry args={[span * 1.55, span * 1.16, 1, 1]} />
-        <meshBasicMaterial color="#67e8f9" transparent opacity={0.03} />
+        <meshBasicMaterial color="#fbbf24" transparent opacity={0.04} />
       </mesh>
     </group>
   );
@@ -251,7 +251,7 @@ function FlowBeacons({
           position={[book.coordinates[0], book.coordinates[1] - 0.03, book.coordinates[2]]}
         >
           <ringGeometry args={[0.26, 0.4, 40]} />
-          <meshBasicMaterial color="#a7f3d0" transparent opacity={0.24} />
+          <meshBasicMaterial color="#fde68a" transparent opacity={0.24} />
         </mesh>
       ))}
     </group>
@@ -306,21 +306,21 @@ function BookMarkers({
           !isTraceLinked &&
           !isNewestVisible;
         const markerColor = isTraceCurrent
-          ? "#67e8f9"
+          ? "#fbbf24"
           : isSelected
             ? "#fcd34d"
             : isTraceLinked
-              ? "#bbf7d0"
-              : "#d6fff6";
+              ? "#fde68a"
+              : "#f8e7b2";
         const emissive = isTraceCurrent
-          ? "#22d3ee"
+          ? "#f59e0b"
           : isSelected
             ? "#f59e0b"
             : isTraceLinked
-              ? "#34d399"
+              ? "#d97706"
               : isNewestVisible
-                ? "#a7f3d0"
-                : "#6ee7b7";
+                ? "#facc15"
+                : "#eab308";
         const markerSize = isTraceCurrent
           ? 0.25
           : isSelected
@@ -351,7 +351,7 @@ function BookMarkers({
                   args={[markerSize + 0.08, markerSize + (isTraceCurrent ? 0.2 : 0.15), 32]}
                 />
                 <meshBasicMaterial
-                  color={isTraceCurrent ? "#67e8f9" : "#34d399"}
+                  color={isTraceCurrent ? "#fbbf24" : "#f59e0b"}
                   transparent
                   opacity={isTraceCurrent ? 0.65 : 0.28}
                 />
@@ -362,14 +362,14 @@ function BookMarkers({
               fontSize={isTraceCurrent ? 0.19 : 0.17}
               color={
                 isTraceCurrent
-                  ? "#cffafe"
+                  ? "#fef3c7"
                   : isSelected
                     ? "#fde68a"
                     : isTraceLinked
-                      ? "#dcfce7"
+                      ? "#fef3c7"
                       : shouldDim
                         ? "#78716c"
-                      : "#e7e5e4"
+                        : "#e7e5e4"
               }
               anchorX="center"
               anchorY="middle"
@@ -435,10 +435,10 @@ function CitationArcs({
           citation.layer === "metadata"
             ? "#f8fafc"
             : citation.layer === "explicit"
-              ? "#86efac"
+              ? "#f59e0b"
               : citation.layer === "semantic"
-                ? "#fde047"
-                : "#cbd5e1";
+                ? "#fcd34d"
+                : "#d6d3d1";
 
         return (
           <Line
@@ -488,7 +488,7 @@ function FocusHalo({
       position={[selectedBookPosition.x, selectedBookPosition.y - 0.05, selectedBookPosition.z]}
     >
       <ringGeometry args={[0.36, 0.62, 48]} />
-      <meshBasicMaterial color={traceFocus?.active ? "#67e8f9" : "#fcd34d"} transparent opacity={0.16} />
+      <meshBasicMaterial color={traceFocus?.active ? "#f59e0b" : "#fcd34d"} transparent opacity={0.16} />
     </mesh>
   );
 }
@@ -551,7 +551,7 @@ function BranchMarkers({
               position={[0, 0.3, 0]}
               fontSize={0.12}
               maxWidth={1.6}
-              color={isHovered || isSelected ? "#fef3c7" : "#cbd5e1"}
+              color={isHovered || isSelected ? "#fef3c7" : "#e7e5e4"}
               anchorX="center"
               anchorY="middle"
             >
@@ -579,6 +579,8 @@ function RiverWorld({
 }: RiverSceneProps) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
   const controlsRef = useRef<OrbitControlsInstance>(null);
+  const userInteractingRef = useRef(false);
+  const resumeAutoFrameRef = useRef<number | null>(null);
   const desiredCameraPosition = useRef(new THREE.Vector3(3.5, 3.8, 11));
   const desiredCameraTarget = useRef(new THREE.Vector3(3.5, 0, 0));
   const initialControlsTarget = useMemo(() => new THREE.Vector3(3.5, 0, 0), []);
@@ -667,31 +669,68 @@ function RiverWorld({
     const positionAlpha = 1 - Math.exp(-positionEase * delta);
     const targetAlpha = 1 - Math.exp(-targetEase * delta);
 
-    cameraRef.current.position.lerp(desiredCameraPosition.current, positionAlpha);
+    if (!userInteractingRef.current) {
+      cameraRef.current.position.lerp(desiredCameraPosition.current, positionAlpha);
+    }
 
-    if (controlsRef.current) {
+    if (controlsRef.current && !userInteractingRef.current) {
       controlsRef.current.target.lerp(desiredCameraTarget.current, targetAlpha);
       controlsRef.current.update();
-    } else {
+    } else if (!controlsRef.current) {
       cameraRef.current.lookAt(desiredCameraTarget.current);
     }
   });
 
+  useEffect(() => {
+    const controls = controlsRef.current;
+
+    if (!controls) {
+      return;
+    }
+
+    const pauseAuto = () => {
+      userInteractingRef.current = true;
+      if (resumeAutoFrameRef.current !== null) {
+        window.clearTimeout(resumeAutoFrameRef.current);
+      }
+    };
+
+    const resumeAuto = () => {
+      if (resumeAutoFrameRef.current !== null) {
+        window.clearTimeout(resumeAutoFrameRef.current);
+      }
+      resumeAutoFrameRef.current = window.setTimeout(() => {
+        userInteractingRef.current = false;
+      }, 900);
+    };
+
+    controls.addEventListener("start", pauseAuto);
+    controls.addEventListener("end", resumeAuto);
+
+    return () => {
+      controls.removeEventListener("start", pauseAuto);
+      controls.removeEventListener("end", resumeAuto);
+      if (resumeAutoFrameRef.current !== null) {
+        window.clearTimeout(resumeAutoFrameRef.current);
+      }
+    };
+  }, []);
+
   return (
     <>
-      <color attach="background" args={["#091110"]} />
-      <fog attach="fog" args={["#091110", 8, 22]} />
+      <color attach="background" args={["#1b1209"]} />
+      <fog attach="fog" args={["#1b1209", 8, 22]} />
       <PerspectiveCamera ref={cameraRef} makeDefault position={[3.5, 3.8, 11]} fov={42} />
       <ambientLight intensity={1.25} />
       <directionalLight position={[4, 8, 6]} intensity={1.8} color="#fff7d6" />
-      <pointLight position={[-6, 4, -2]} intensity={1.5} color="#7dd3fc" />
-      <pointLight position={[9, 3, -4]} intensity={1.2} color="#f59e0b" />
+      <pointLight position={[-6, 4, -2]} intensity={1.3} color="#fcd34d" />
+      <pointLight position={[9, 3, -4]} intensity={1.3} color="#d97706" />
       <spotLight
         position={[2.5, 8, 8]}
         angle={0.38}
         penumbra={0.7}
         intensity={2.4}
-        color="#d9f99d"
+        color="#fde68a"
       />
 
       <AtmosphereField />
@@ -702,11 +741,11 @@ function RiverWorld({
           <RiverRibbon
             points={mainStream}
             width={0.21}
-            color="#14b8a6"
-            glow="#67e8f9"
+            color="#b45309"
+            glow="#fbbf24"
             animated
           />
-          <RiverParticleStream points={mainStream} color="#cffafe" density={220} />
+          <RiverParticleStream points={mainStream} color="#fde68a" density={220} />
         </>
       ) : null}
 
@@ -716,12 +755,12 @@ function RiverWorld({
             <RiverRibbon
               points={stream}
               width={0.12 - index * 0.02}
-              color={index === 0 ? "#10b981" : "#f59e0b"}
-              glow={index === 0 ? "#bbf7d0" : "#fde68a"}
+              color={index === 0 ? "#d97706" : "#92400e"}
+              glow={index === 0 ? "#fcd34d" : "#fef3c7"}
             />
             <RiverParticleStream
               points={stream}
-              color={index === 0 ? "#dcfce7" : "#fef3c7"}
+              color={index === 0 ? "#fde68a" : "#fef3c7"}
               density={index === 0 ? 150 : 120}
             />
           </group>
@@ -733,7 +772,7 @@ function RiverWorld({
         <group>
           <Line
             points={tracePathPoints}
-            color="#67e8f9"
+            color="#f59e0b"
             transparent
             opacity={0.95}
             lineWidth={2.8}
@@ -776,8 +815,8 @@ function RiverWorld({
         maxDistance={16}
         minDistance={6}
         maxPolarAngle={Math.PI / 2.1}
-        enableRotate={cinematicState === "idle"}
-        enableZoom={cinematicState === "idle" || Boolean(traceFocus?.active)}
+        enableRotate={cinematicState !== "diving"}
+        enableZoom
         target={initialControlsTarget}
       />
     </>
@@ -794,13 +833,13 @@ export function RiverScene(props: RiverSceneProps) {
       : 0;
 
   return (
-    <div className="relative h-full min-h-screen overflow-hidden rounded-[32px] border border-white/10 bg-[#091110] shadow-[0_0_80px_rgba(0,0,0,0.42)]">
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(3,8,8,0.72),rgba(3,8,8,0))]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(3,8,8,0.88),rgba(3,8,8,0))]" />
-      <div className="pointer-events-none absolute left-5 top-5 z-10 rounded-full border border-white/10 bg-black/20 px-4 py-2 text-[11px] uppercase tracking-[0.32em] text-stone-300">
-        Fly Over The Vein
+    <div className="relative h-full min-h-screen overflow-hidden rounded-[32px] border border-amber-200/12 bg-[#1b1209] shadow-[0_0_80px_rgba(0,0,0,0.42)]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(17,10,4,0.72),rgba(17,10,4,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(17,10,4,0.9),rgba(17,10,4,0))]" />
+      <div className="pointer-events-none absolute left-5 top-5 z-10 rounded-full border border-amber-200/15 bg-[#2d1d0c]/70 px-4 py-2 text-[11px] tracking-[0.32em] text-stone-200">
+        黄河文脉长卷
       </div>
-      <div className="pointer-events-none absolute right-5 top-5 z-10 rounded-full border border-white/10 bg-black/20 px-4 py-2 text-[11px] text-stone-300">
+      <div className="pointer-events-none absolute right-5 top-5 z-10 rounded-full border border-amber-200/15 bg-[#2d1d0c]/70 px-4 py-2 text-[11px] text-stone-300">
         {props.traceFocus?.active
           ? `溯源联动 ${props.traceFocus.progress}/${props.traceFocus.total}`
           : props.cinematicState === "diving"
@@ -809,9 +848,9 @@ export function RiverScene(props: RiverSceneProps) {
               ? "镜头拉回中"
               : `${props.activeEra} 水位`}
       </div>
-      <div className="pointer-events-none absolute left-5 top-20 z-10 max-w-[320px] rounded-[24px] border border-white/10 bg-black/18 px-4 py-3 text-sm text-stone-300 backdrop-blur-md">
-        <div className="text-[11px] uppercase tracking-[0.24em] text-stone-500">
-          River State
+      <div className="pointer-events-none absolute left-5 top-20 z-10 hidden max-w-[320px] rounded-[24px] border border-amber-200/12 bg-[#2b1b0b]/72 px-4 py-3 text-sm text-stone-300 backdrop-blur-md lg:block">
+        <div className="text-[11px] tracking-[0.24em] text-stone-500">
+          河流状态
         </div>
         <div className="mt-2 leading-6">
           {props.traceFocus?.active
@@ -825,33 +864,33 @@ export function RiverScene(props: RiverSceneProps) {
         <div className="mt-3 space-y-2">
           <div>
             <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-stone-500">
-              <span>Era Fill</span>
+              <span>时代显现</span>
               <span>{Math.round(eraProgress * 100)}%</span>
             </div>
             <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
               <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,#f59e0b,#67e8f9)]"
+                className="h-full rounded-full bg-[linear-gradient(90deg,#b45309,#fcd34d)]"
                 style={{ width: `${Math.max(10, eraProgress * 100)}%` }}
               />
             </div>
           </div>
           <div>
             <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-stone-500">
-              <span>Visible Basin</span>
+              <span>河段显现</span>
               <span>{Math.round(visibilityRatio * 100)}%</span>
             </div>
             <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
               <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,#34d399,#bbf7d0)]"
+                className="h-full rounded-full bg-[linear-gradient(90deg,#d97706,#fde68a)]"
                 style={{ width: `${Math.max(8, visibilityRatio * 100)}%` }}
               />
             </div>
           </div>
         </div>
       </div>
-      <div className="pointer-events-none absolute left-5 bottom-5 z-10 rounded-[24px] border border-white/10 bg-black/18 px-4 py-3 text-[11px] text-stone-300 backdrop-blur-md">
-        <div className="text-[10px] uppercase tracking-[0.24em] text-stone-500">
-          Basin Scan
+      <div className="pointer-events-none absolute left-5 bottom-5 z-10 hidden rounded-[24px] border border-amber-200/12 bg-[#2b1b0b]/72 px-4 py-3 text-[11px] text-stone-300 backdrop-blur-md lg:block">
+        <div className="text-[10px] tracking-[0.24em] text-stone-500">
+          河面扫描
         </div>
         <div className="mt-2 grid grid-cols-3 gap-3">
           <div>
@@ -870,15 +909,15 @@ export function RiverScene(props: RiverSceneProps) {
           </div>
         </div>
       </div>
-      <div className="pointer-events-none absolute right-5 bottom-5 z-10 flex max-w-[520px] flex-wrap justify-end gap-2 text-[11px] text-stone-300">
-        <span className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-cyan-100">
+      <div className="pointer-events-none absolute right-5 bottom-5 z-10 hidden max-w-[520px] flex-wrap justify-end gap-2 text-[11px] text-stone-300 lg:flex">
+        <span className="rounded-full border border-amber-300/15 bg-amber-300/10 px-3 py-1 text-amber-100">
           支流标注可直接跳转
         </span>
         <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
           白色 元数据
         </span>
-        <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-emerald-100">
-          绿色 显式引用
+        <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-amber-100">
+          琥珀 显式引用
         </span>
         <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-amber-100">
           黄色 语义关联

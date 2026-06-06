@@ -104,16 +104,16 @@ function sourceBadgeClass(source: "real" | "demo" | "hybrid") {
 function spreadSourceMeta(hasVenueSignals: boolean) {
   if (hasVenueSignals) {
     return {
-      label: "示范路径 + 上图场馆信号",
+      label: "传播建模 + 上图场馆信号",
       tone: "hybrid" as const,
-      detail: "传播航段为示范域建模，场馆样本与活动信号来自上海图书馆开放数据。",
+      detail: "传播航段结合当前关系建模组织，场馆样本与活动信号来自上海图书馆开放数据。",
     };
   }
 
   return {
-    label: "示范传播建模",
+    label: "传播关系建模",
     tone: "demo" as const,
-    detail: "当前传播路径仍以示范域地理叙事建模为主，后续可继续替换为更完整的馆藏传播证据。",
+    detail: "当前传播路径以现有地理叙事和关系建模组织，后续可继续补入更完整的馆藏传播证据。",
   };
 }
 
@@ -122,12 +122,12 @@ function versionSourceMeta(library: string) {
     return {
       label: "馆藏/书目来源",
       tone: "hybrid" as const,
-      detail: "版本链以示范域组织，当前节点的馆藏与版本说明已尽量锚定到具体馆藏/系统名称。",
+      detail: "版本链以当前典籍流变结构组织，节点的馆藏与版本说明已尽量锚定到具体馆藏/系统名称。",
     };
   }
 
   return {
-    label: "示范版本建模",
+    label: "版本流变建模",
     tone: "demo" as const,
     detail: "当前版本节点用于说明流变结构，后续可继续接入更多真实馆藏或 IIIF 资源。",
   };
@@ -143,9 +143,9 @@ function timelineSourceMeta(source?: "demo" | "cbdb") {
   }
 
   return {
-    label: "示范时间节点",
+    label: "叙事时间节点",
     tone: "demo" as const,
-    detail: "该事件用于补齐典籍叙事主线，目前仍以示范域时间节点组织为主。",
+    detail: "该事件用于补齐典籍叙事主线，目前仍以现有时间节点组织为主。",
   };
 }
 
@@ -401,8 +401,8 @@ export function BookExplorer({
       <section className="rounded-2xl border border-amber-300/15 bg-amber-300/6 px-4 py-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <div className="text-xs uppercase tracking-[0.2em] text-amber-100/75">
-              Era Linkage
+            <div className="text-xs tracking-[0.2em] text-amber-100/75">
+              时代联动
             </div>
             <div className="mt-1 text-sm font-medium text-amber-50">
               当前可见内容已联动到 {activeEra}
@@ -452,15 +452,15 @@ export function BookExplorer({
         <section className="rounded-2xl border border-cyan-300/15 bg-cyan-300/5 px-4 py-4">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/80">
-                Source Signals
+              <div className="text-xs tracking-[0.2em] text-cyan-100/80">
+                真实来源信号
               </div>
               <div className="mt-1 text-sm font-medium text-cyan-50">
                 {detail.realWorldSignals.sourceLabel}
               </div>
             </div>
-            <div className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
-              Live Sample
+              <div className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+              实时样本
             </div>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -487,7 +487,7 @@ export function BookExplorer({
                 CBDB 命中 {detail.realWorldSignals.cbdbMatchedPeople ?? 0} 人
               </div>
               <div className="mt-1 text-xs text-stone-400">
-                示范补全 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
+                扩展补全 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
               </div>
             </div>
             <div className="rounded-2xl border border-cyan-300/10 bg-black/15 px-3 py-3">
@@ -874,7 +874,7 @@ export function BookExplorer({
             当前传播视图已经具备“航线聚焦 + 地点投影 + 阶段切换”的中观交互骨架，后续再把这套坐标映射接入真正的 3D 地球即可。
           </div>
           <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4 text-sm leading-7 text-cyan-50/90">
-            传播层当前采用“示范路径建模 + 上图活动场馆信号补强”的混合口径，既保持叙事连续，也明确区分真实接入与演示性结构。
+            传播层当前采用“传播关系建模 + 上图活动场馆信号补强”的混合组织，既保持叙事连续，也明确区分真实接入与结构性补足。
           </div>
           {detail.realWorldSignals?.venueSamples?.length ? (
             <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
@@ -1072,7 +1072,7 @@ export function BookExplorer({
                                             : "bg-white/10 text-stone-300"
                                         }`}
                                       >
-                                        {person.source === "cbdb" ? "CBDB 已命中" : "示范补全"}
+                                        {person.source === "cbdb" ? "CBDB 已命中" : "扩展补全"}
                                       </div>
                                     </div>
                                   </div>
@@ -1134,12 +1134,12 @@ export function BookExplorer({
                               数据来源
                             </div>
                             <div className="mt-2 text-base font-semibold text-stone-50">
-                              {activePerson.source === "cbdb" ? "CBDB 已命中" : "示范补全"}
+                              {activePerson.source === "cbdb" ? "CBDB 已命中" : "扩展补全"}
                             </div>
                             <div className="mt-2 text-sm text-stone-300">
                               {activePerson.source === "cbdb"
                                 ? `当前人物已接入真实人物传记数据${activePerson.matchedAlias ? `，匹配别名为 ${activePerson.matchedAlias}` : ""}。`
-                                : "当前仍使用示范域补全，后续可继续替换为真实人物图谱记录。"}
+                                : "当前仍使用扩展人物补全，后续可继续替换为更完整的真实人物图谱记录。"}
                             </div>
                           </div>
                         </div>
@@ -1200,7 +1200,7 @@ export function BookExplorer({
                   二级关联承载引用者、评论者、校勘者等辅助角色，帮助用户理解文脉在后世如何扩散和再解释。
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
-                  绿色来源标记说明人物已从 CBDB 命中，灰色说明当前仍由示范域补全，便于后续逐步替换成真实图谱。
+                  绿色来源标记说明人物已从 CBDB 命中，灰色说明当前仍由扩展人物补全，便于后续逐步替换成真实图谱。
                 </div>
               </div>
             </>
@@ -1724,11 +1724,11 @@ export function BookExplorer({
                       <div className="mt-3 space-y-4">
                         <div className="overflow-hidden rounded-[24px] border border-cyan-300/10 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.16),rgba(3,9,8,0.96))] px-4 py-4">
                           <div className="flex items-center justify-between gap-3">
-                            <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/70">
-                              Trace Field
+                            <div className="text-xs tracking-[0.2em] text-cyan-100/70">
+                              溯源场
                             </div>
                             <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-[10px] text-cyan-100">
-                              Reverse Flow
+                              逆流回溯
                             </div>
                           </div>
                           <div className="relative mt-4 h-[180px] rounded-[20px] border border-white/10 bg-[linear-gradient(180deg,rgba(5,12,12,0.92),rgba(3,8,8,0.98))]">

@@ -10,8 +10,6 @@ import type { CitationEdge, DatasetInsight } from "@/types/domain";
 
 const eras = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"] as const;
 const categories = ["全部", "经", "史", "子", "集"] as const;
-const hudPanelClass =
-  "rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,15,0.82),rgba(5,10,10,0.72))] shadow-2xl shadow-black/35 backdrop-blur-xl";
 
 const relationLayerMeta: Record<
   CitationEdge["layer"],
@@ -93,6 +91,8 @@ export function CulturalVeinShell() {
   const [insights, setInsights] = useState<DatasetInsight | null>(null);
   const [hoveredBranchId, setHoveredBranchId] = useState<string | null>(null);
   const [traceFocus, setTraceFocus] = useState<TraceFocusState | null>(null);
+  const [showMobileControls, setShowMobileControls] = useState(false);
+  const [showMobileDossier, setShowMobileDossier] = useState(false);
   const [transitionState, setTransitionState] = useState<
     "idle" | "diving" | "settling" | "returning"
   >("idle");
@@ -243,16 +243,18 @@ export function CulturalVeinShell() {
       ? "典籍钻入"
       : "河流巡航";
   const dossierToneClass = traceFocus?.active
-    ? "border-cyan-300/18 bg-[linear-gradient(135deg,rgba(8,54,58,0.5),rgba(10,16,16,0.78))]"
+    ? "border-amber-200/24 bg-[linear-gradient(135deg,rgba(125,82,18,0.4),rgba(37,24,8,0.9))]"
     : transitionState === "diving" || transitionState === "settling"
-      ? "border-amber-300/18 bg-[linear-gradient(135deg,rgba(62,42,12,0.46),rgba(10,16,16,0.78))]"
-      : "border-amber-300/16 bg-[linear-gradient(135deg,rgba(54,34,12,0.38),rgba(10,16,16,0.78))]";
+      ? "border-amber-300/20 bg-[linear-gradient(135deg,rgba(121,75,14,0.48),rgba(42,26,9,0.9))]"
+      : "border-amber-200/18 bg-[linear-gradient(135deg,rgba(97,63,14,0.42),rgba(34,22,8,0.9))]";
   const visibleNodePreview = filteredBooks.slice(0, 5);
+  const panelBaseClass =
+    "rounded-[28px] border border-amber-200/18 bg-[linear-gradient(180deg,rgba(56,39,17,0.88),rgba(23,15,8,0.84))] shadow-2xl shadow-black/30 backdrop-blur-xl";
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#050a09] text-stone-100">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_18%,rgba(45,212,191,0.18),transparent_28%),radial-gradient(circle_at_78%_24%,rgba(251,191,36,0.16),transparent_26%),radial-gradient(circle_at_50%_100%,rgba(34,197,94,0.12),transparent_38%),linear-gradient(180deg,#0a1614_0%,#07100f_42%,#030606_100%)]" />
-      <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:72px_72px]" />
+    <div className="relative min-h-screen overflow-hidden bg-[#1a1108] text-stone-100">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(250,204,21,0.14),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(217,119,6,0.12),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(146,98,35,0.14),transparent_38%),linear-gradient(180deg,#3d2a12_0%,#221609_44%,#120c05_100%)]" />
+      <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,244,214,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,244,214,0.04)_1px,transparent_1px)] [background-size:72px_72px]" />
 
       {showDiveOverlay ? (
         <div className="pointer-events-none absolute inset-0 z-40 overflow-hidden">
@@ -269,47 +271,63 @@ export function CulturalVeinShell() {
       ) : null}
 
       <div className="relative z-10 min-h-screen">
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-          <div className={`pointer-events-auto max-w-[320px] px-5 py-4 ${hudPanelClass}`}>
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+          <div className={`pointer-events-auto max-w-[320px] px-5 py-4 ${panelBaseClass}`}>
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-[11px] uppercase tracking-[0.32em] text-cyan-100/75">
-                  Cultural Vein
+                <div className="text-[11px] tracking-[0.32em] text-amber-100/70">
+                  中华文脉可视长卷
                 </div>
                 <h1 className="mt-2 text-[clamp(1.45rem,2.5vw,2rem)] font-semibold text-stone-50">
                   文脉溯源
                 </h1>
               </div>
-              <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] text-stone-300">
+              <div className="rounded-full border border-amber-200/15 bg-white/5 px-3 py-1 text-[11px] text-stone-300">
                 {viewMode === "river" ? "总览" : "钻入"}
               </div>
             </div>
             <p className="mt-3 text-sm leading-6 text-stone-300">
-              整页河流作为唯一主场景，用少量浮窗承载筛选、状态和典籍细部。
+              以整页黄河文脉为唯一主场景，界面只保留必要操作与典籍细节。
             </p>
           </div>
 
-          <div className="pointer-events-auto flex flex-wrap gap-2">
-            <div className="rounded-full border border-white/10 bg-[linear-gradient(180deg,rgba(11,18,18,0.85),rgba(5,10,10,0.72))] px-4 py-2 text-xs text-stone-300 backdrop-blur-xl">
-              可见典籍 {filteredBooks.length}
+          <div className="pointer-events-auto flex items-center gap-2">
+            <div className="hidden rounded-full border border-amber-200/15 bg-[linear-gradient(180deg,rgba(72,50,20,0.86),rgba(34,23,10,0.78))] px-4 py-2 text-xs text-stone-200 backdrop-blur-xl sm:block">
+              典籍 {filteredBooks.length} · 关系 {visibleCitations.length} · 来源 {connectedSourceCount || "--"}
             </div>
-            <div className="rounded-full border border-white/10 bg-[linear-gradient(180deg,rgba(11,18,18,0.85),rgba(5,10,10,0.72))] px-4 py-2 text-xs text-stone-300 backdrop-blur-xl">
-              可见关系 {visibleCitations.length}
-            </div>
-            <div className="rounded-full border border-cyan-300/15 bg-[linear-gradient(180deg,rgba(8,35,35,0.88),rgba(4,12,12,0.72))] px-4 py-2 text-xs text-cyan-100 backdrop-blur-xl">
-              真实来源 {connectedSourceCount || "--"}
-            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setShowMobileDossier(false);
+                setShowMobileControls((current) => !current);
+              }}
+              className="rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl xl:hidden"
+            >
+              筛选
+            </button>
+            {selectedBook ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMobileControls(false);
+                  setShowMobileDossier((current) => !current);
+                }}
+                className="rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl xl:hidden"
+              >
+                文卷
+              </button>
+            ) : null}
           </div>
         </div>
 
-        <div className="absolute inset-x-0 top-[108px] z-20 px-4 sm:px-6 lg:px-8">
+        <div className="absolute inset-x-0 top-[108px] z-20 hidden px-4 sm:px-6 lg:px-8 xl:block">
           <div className="grid gap-4 xl:grid-cols-[280px_minmax(0,1fr)_420px]">
             <aside className="pointer-events-auto xl:pt-2">
-              <div className={`p-4 ${hudPanelClass}`}>
+              <div className={`p-4 ${panelBaseClass}`}>
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <div className="text-[11px] uppercase tracking-[0.28em] text-stone-400">
-                      River Console
+                    <div className="text-[11px] tracking-[0.28em] text-stone-400">
+                      河道控制
                     </div>
                     <div className="mt-1 text-base font-medium text-stone-50">
                       河流仪表盘
@@ -319,7 +337,7 @@ export function CulturalVeinShell() {
                     <button
                       type="button"
                       onClick={handleReturnToRiver}
-                      className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-2 text-xs text-cyan-100 transition hover:bg-cyan-300/15"
+                      className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-2 text-xs text-amber-100 transition hover:bg-amber-300/15"
                     >
                       返回总览
                     </button>
@@ -339,9 +357,9 @@ export function CulturalVeinShell() {
                       {visibleCitations.length}
                     </div>
                   </div>
-                  <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-3 py-3">
-                    <div className="text-cyan-100/70">来源</div>
-                    <div className="mt-1 text-sm font-medium text-cyan-50">
+                  <div className="rounded-2xl border border-amber-300/10 bg-amber-300/5 px-3 py-3">
+                    <div className="text-amber-100/70">来源</div>
+                    <div className="mt-1 text-sm font-medium text-amber-50">
                       {connectedSourceCount || "--"}
                     </div>
                   </div>
@@ -355,12 +373,12 @@ export function CulturalVeinShell() {
                     value={searchTerm}
                     onChange={(event) => setSearchTerm(event.target.value)}
                     placeholder="例如 朱熹、礼、诗教"
-                    className="mt-2 w-full rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-cyan-300/30"
+                    className="mt-2 w-full rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-amber-300/30"
                   />
                 </label>
 
                 <div className="mt-4 rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
-                  <div className="flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-stone-400">
+                  <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-stone-400">
                     <span>时代水位</span>
                     <span className="text-amber-100">{activeEra}</span>
                   </div>
@@ -430,7 +448,7 @@ export function CulturalVeinShell() {
                 {viewMode === "river" && visibleNodePreview.length ? (
                   <div className="mt-4 rounded-[24px] border border-white/10 bg-black/18 px-4 py-4">
                     <div className="flex items-center justify-between gap-3">
-                      <div className="text-[11px] uppercase tracking-[0.24em] text-stone-400">
+                      <div className="text-[11px] tracking-[0.24em] text-stone-400">
                         当前河段
                       </div>
                       <div className="text-[11px] text-stone-500">
@@ -457,14 +475,14 @@ export function CulturalVeinShell() {
                 ) : null}
 
                 {activeBranchAnnotation ? (
-                  <div className="mt-4 rounded-[26px] border border-cyan-300/14 bg-cyan-300/6 px-4 py-4">
-                    <div className="text-[11px] uppercase tracking-[0.24em] text-cyan-100/75">
-                      Active Branch
+                  <div className="mt-4 rounded-[26px] border border-amber-300/14 bg-amber-300/8 px-4 py-4">
+                    <div className="text-[11px] tracking-[0.24em] text-amber-100/75">
+                      当前支流
                     </div>
-                    <div className="mt-2 text-sm font-medium text-cyan-50">
+                    <div className="mt-2 text-sm font-medium text-amber-50">
                       {activeBranchAnnotation.label}
                     </div>
-                    <p className="mt-2 text-sm leading-6 text-cyan-50/85">
+                    <p className="mt-2 text-sm leading-6 text-amber-50/85">
                       {activeBranchAnnotation.description}
                     </p>
                   </div>
@@ -481,7 +499,7 @@ export function CulturalVeinShell() {
                   : "xl:translate-x-6 xl:opacity-70"
               }`}
             >
-              <div className={`max-h-[calc(100vh-170px)] overflow-hidden p-4 ${hudPanelClass}`}>
+              <div className={`max-h-[calc(100vh-170px)] overflow-hidden p-4 ${panelBaseClass}`}>
                 {selectedBook && selectedDetail ? (
                   <>
                     <div
@@ -496,11 +514,11 @@ export function CulturalVeinShell() {
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
                           <div
-                            className={`text-[11px] uppercase tracking-[0.24em] ${
-                              traceFocus?.active ? "text-cyan-100/75" : "text-amber-100/75"
+                            className={`text-[11px] tracking-[0.24em] ${
+                              traceFocus?.active ? "text-amber-100/75" : "text-amber-100/75"
                             }`}
                           >
-                            Focus Dossier
+                            焦点文卷
                           </div>
                           <div className="mt-1 text-lg font-medium text-stone-50">
                             {selectedBook.title}
@@ -516,14 +534,14 @@ export function CulturalVeinShell() {
                           <div
                             className={`rounded-full px-3 py-1 ${
                               traceFocus?.active
-                                ? "border border-cyan-300/20 bg-cyan-300/10 text-cyan-100"
+                                ? "border border-amber-300/20 bg-amber-300/10 text-amber-100"
                                 : "border border-amber-300/20 bg-amber-300/10 text-amber-100"
                             }`}
                           >
                             {focusModeLabel}
                           </div>
                           {selectedSources.length ? (
-                            <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-cyan-100">
+                            <div className="rounded-full border border-amber-300/15 bg-amber-300/10 px-3 py-1 text-amber-100">
                               {selectedSources.length} 类来源
                             </div>
                           ) : null}
@@ -587,8 +605,8 @@ export function CulturalVeinShell() {
           />
         </main>
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 px-4 pb-4 sm:px-6 lg:px-8">
-          <div className={`pointer-events-auto px-4 py-4 ${hudPanelClass}`}>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 hidden px-4 pb-4 sm:px-6 lg:px-8 xl:block">
+          <div className={`pointer-events-auto px-4 py-4 ${panelBaseClass}`}>
             <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex flex-wrap gap-2">
                 {layerSummary.map(({ layer, count }) => (
@@ -603,7 +621,7 @@ export function CulturalVeinShell() {
 
               <div className="flex flex-wrap items-center gap-2 text-xs text-stone-300">
                 {traceFocus?.active ? (
-                  <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-2 text-cyan-100">
+                  <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-2 text-amber-100">
                     溯源推进 {traceFocus.progress}/{traceFocus.total} · {traceFocus.currentTitle}
                   </span>
                 ) : null}
@@ -619,6 +637,124 @@ export function CulturalVeinShell() {
             </div>
           </div>
         </div>
+
+        <div className="pointer-events-none absolute inset-x-4 bottom-4 z-40 xl:hidden">
+          <div className="pointer-events-auto flex items-center justify-between rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(79,54,19,0.92),rgba(34,23,10,0.86))] px-4 py-3 text-xs text-stone-200 shadow-2xl shadow-black/30 backdrop-blur-xl">
+            <span>{selectedBook ? `当前焦点 ${selectedBook.shortTitle}` : "拖拽旋转河流，点击节点钻入"}</span>
+            <span className="rounded-full border border-amber-200/15 bg-white/5 px-3 py-1 text-amber-100">
+              {traceFocus?.active ? `溯源 ${traceFocus.progress}/${traceFocus.total}` : activeEra}
+            </span>
+          </div>
+        </div>
+
+        {showMobileControls ? (
+          <div className="absolute inset-x-4 top-[96px] z-40 xl:hidden">
+            <div className={`pointer-events-auto p-4 ${panelBaseClass}`}>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-[11px] tracking-[0.28em] text-stone-400">河道控制</div>
+                  <div className="mt-1 text-base font-medium text-stone-50">筛选与状态</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowMobileControls(false)}
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200"
+                >
+                  收起
+                </button>
+              </div>
+              <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-stone-300">
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">典籍 {filteredBooks.length}</div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">关系 {visibleCitations.length}</div>
+                <div className="rounded-2xl border border-amber-300/10 bg-amber-300/5 px-3 py-3 text-amber-50">来源 {connectedSourceCount || "--"}</div>
+              </div>
+              <label className="mt-4 block">
+                <span className="text-xs tracking-[0.22em] text-stone-400">检索关键词</span>
+                <input
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  placeholder="例如 朱熹、礼、诗教"
+                  className="mt-2 w-full rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-amber-300/30"
+                />
+              </label>
+              <div className="mt-4 rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
+                <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-stone-400">
+                  <span>时代水位</span>
+                  <span className="text-amber-100">{activeEra}</span>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={eras.length - 1}
+                  step={1}
+                  value={activeEraIndex}
+                  onChange={(event) => setActiveEra(eras[Number(event.target.value)] ?? eras[0])}
+                  className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
+                />
+                <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-stone-500">
+                  {eras.map((era) => (
+                    <button
+                      key={era}
+                      type="button"
+                      onClick={() => setActiveEra(era)}
+                      className={`rounded-full px-2 py-1 transition ${
+                        activeEra === era
+                          ? "bg-amber-300/14 text-amber-100"
+                          : "bg-white/0 text-stone-500 hover:bg-white/5 hover:text-stone-300"
+                      }`}
+                    >
+                      {era}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={() => setCategoryFilter(category)}
+                    className={`rounded-full px-3 py-2 text-xs transition ${
+                      categoryFilter === category
+                        ? "bg-stone-100 text-stone-950"
+                        : "border border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {showMobileDossier && selectedBook && selectedDetail ? (
+          <div className="absolute inset-x-4 bottom-20 z-40 xl:hidden">
+            <div className={`pointer-events-auto max-h-[62vh] overflow-hidden p-4 ${panelBaseClass}`}>
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-[11px] tracking-[0.24em] text-amber-100/75">焦点文卷</div>
+                  <div className="mt-1 text-lg font-medium text-stone-50">{selectedBook.title}</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowMobileDossier(false)}
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200"
+                >
+                  收起
+                </button>
+              </div>
+              <div className="max-h-[calc(62vh-72px)] overflow-auto pr-1">
+                <BookExplorer
+                  book={selectedBook}
+                  detail={selectedDetail}
+                  activeEra={activeEra}
+                  onTraceFocusChange={setTraceFocus}
+                />
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
