@@ -358,43 +358,23 @@ export function BookExplorer({
   return (
     <div className="space-y-4">
       <section>
-        <p className="text-xs uppercase tracking-[0.25em] text-stone-400">
-          典籍钻入
-        </p>
-        <h2 className="mt-2 text-3xl font-semibold">{book.title}</h2>
-        <p className="mt-3 text-sm leading-7 text-stone-300">{book.summary}</p>
-        {detail.realWorldSignals ? (
-          <div className="mt-4 rounded-2xl border border-cyan-300/12 bg-cyan-300/6 px-4 py-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
-                  Data Provenance
-                </div>
-                <div className="mt-1 text-sm font-medium text-cyan-50">
-                  当前典籍已挂接真实来源信号
-                </div>
-              </div>
-              <div className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
-                {sourceBadges.length || 1} 类来源
-              </div>
-            </div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {sourceBadges.map((item) => (
-                <span
-                  key={item}
-                  className="rounded-full border border-cyan-300/15 bg-black/15 px-3 py-1 text-xs text-cyan-100"
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
-            {detail.realWorldSignals.venueSummary ? (
-              <p className="mt-3 text-sm leading-7 text-cyan-50/90">
-                {detail.realWorldSignals.venueSummary}
-              </p>
-            ) : null}
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs uppercase tracking-[0.25em] text-stone-400">
+              典籍焦点
+            </p>
+            <h2 className="mt-2 text-3xl font-semibold">{book.title}</h2>
+            <p className="mt-3 text-sm leading-7 text-stone-300">{book.summary}</p>
           </div>
-        ) : null}
+          <div className="grid gap-2 text-xs text-stone-300">
+            <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+              {book.dynasty} · {book.category}
+            </div>
+            <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+              {book.school}
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="grid grid-cols-3 gap-3 text-center text-sm">
@@ -425,7 +405,7 @@ export function BookExplorer({
               Era Linkage
             </div>
             <div className="mt-1 text-sm font-medium text-amber-50">
-              当前中观内容已跟随首页时间轴联动到 {activeEra}
+              当前可见内容已联动到 {activeEra}
             </div>
           </div>
           <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
@@ -446,9 +426,7 @@ export function BookExplorer({
             事件 {eraLinkedSummary.timeline} 条
           </div>
         </div>
-        <div className="mt-2 text-xs text-amber-100/75">
-          微观文本当前显现 {eraLinkedSummary.passages} 个片段。
-        </div>
+        <div className="mt-2 text-xs text-amber-100/75">微观文本当前显现 {eraLinkedSummary.passages} 个片段。</div>
       </section>
 
       <section>
@@ -475,7 +453,7 @@ export function BookExplorer({
           <div className="flex items-center justify-between gap-3">
             <div>
               <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/80">
-                真实数据接入
+                Source Signals
               </div>
               <div className="mt-1 text-sm font-medium text-cyan-50">
                 {detail.realWorldSignals.sourceLabel}
@@ -484,6 +462,16 @@ export function BookExplorer({
             <div className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
               Live Sample
             </div>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {sourceBadges.map((item) => (
+              <span
+                key={item}
+                className="rounded-full border border-cyan-300/15 bg-black/15 px-3 py-1 text-xs text-cyan-100"
+              >
+                {item}
+              </span>
+            ))}
           </div>
           {detail.realWorldSignals.venueSummary ? (
             <p className="mt-3 text-sm leading-7 text-cyan-50/90">
@@ -610,9 +598,6 @@ export function BookExplorer({
                 )}
               </div>
             </div>
-          </div>
-          <div className="mt-4 rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4 text-sm leading-7 text-amber-50/90">
-            这块证据板把“人物命中、场馆传播、活动事件、机构资源”放在同一层展示，答辩时可以直接说明哪些是已接入真实来源，哪些仍是示范域建模。
           </div>
           {detail.realWorldSignals.institutionSamples?.length ? (
             <div className="mt-4 rounded-2xl border border-cyan-300/10 bg-black/15 px-4 py-4">
@@ -1924,9 +1909,6 @@ export function BookExplorer({
               </div>
             </>
           ) : null}
-          <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4 text-sm leading-7 text-cyan-50">
-            微观层现在已经支持横排/竖排切换、证据焦点切换、自动推进式溯源链路、下游影响追踪，并跟随当前时代层逐步显现证据，更接近方案里的“逐字探源”交互。
-          </div>
         </section>
       ) : null}
     </div>
