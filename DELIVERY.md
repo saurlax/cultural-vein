@@ -148,4 +148,6 @@
 - 项目说明文档
 - 5 分钟左右演示视频
 - 答辩讲稿或提词卡
-- 若时间允许，可补一页架构图或数据流图作为 PDF 附件
+- 架构与数据流说明文档，见 [ARCHITECTURE.md](./ARCHITECTURE.md)
+
+如果需要补一页 PDF 架构附图，可以直接基于 [ARCHITECTURE.md](./ARCHITECTURE.md) 的 ASCII 结构图整理成提交附件。
