@@ -199,6 +199,13 @@ export interface DatasetInsight {
     institution?: string;
     collectionTitle?: string;
   };
+  nanhuArchiveSample?: {
+    available?: boolean;
+    institution?: string;
+    collectionTitle?: string;
+    documentCount?: number;
+    imageCount?: number;
+  };
 }
 
 export interface RiverDataset {

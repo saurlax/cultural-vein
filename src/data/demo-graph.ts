@@ -97,6 +97,23 @@ interface RealSupplementArchiveSample {
   }>;
 }
 
+interface RealSupplementNanhuSample {
+  available?: boolean;
+  institution?: string;
+  collectionTitle?: string;
+  documentCount?: number;
+  imageCount?: number;
+  summary?: string;
+  sampleRecords?: Array<{
+    institution: string;
+    title: string;
+    category?: string;
+    year?: string;
+    imageRef?: string;
+    sourceText?: string;
+  }>;
+}
+
 interface RealSupplementCbdbSummary {
   available?: boolean;
   personCount?: number;
@@ -173,6 +190,8 @@ const nanjingLibrarySample = (realSupplements.nanjingLibrarySample ??
   {}) as RealSupplementInstitutionSample;
 const fudanArchiveSample = (realSupplements.fudanArchiveSample ??
   {}) as RealSupplementArchiveSample;
+const nanhuArchiveSample = (realSupplements.nanhuArchiveSample ??
+  {}) as RealSupplementNanhuSample;
 
 const personByName = new Map(cbdbPeople.map((person) => [person.name, person]));
 
@@ -282,6 +301,25 @@ if (fudanArchiveSample.available) {
       detail.realWorldSignals?.venueSummary ??
       fudanArchiveSample.summary ??
       "已接入复旦大学图书馆馆藏样例。",
+  };
+}
+
+if (nanhuArchiveSample.available) {
+  const institutionSamples = (nanhuArchiveSample.sampleRecords ?? []).slice(0, 3);
+  const detail = details["zi-zhi-tong-jian"];
+  detail.realWorldSignals = {
+    ...detail.realWorldSignals,
+    sourceLabel: detail.realWorldSignals?.sourceLabel
+      ? `${detail.realWorldSignals.sourceLabel} + 南湖专题文献样本`
+      : "南湖专题文献样本",
+    institutionSamples: [
+      ...(detail.realWorldSignals?.institutionSamples ?? []),
+      ...institutionSamples,
+    ],
+    venueSummary:
+      detail.realWorldSignals?.venueSummary ??
+      nanhuArchiveSample.summary ??
+      "已接入南湖文献数据库专题样本。",
   };
 }
 

@@ -29,6 +29,7 @@ CBDB_DB = TMP_DIR / "CBDB_20240208.db"
 SL_ZIP = DATA_DIR / "上海图书馆开放数据2026.zip"
 NJ_ZIP = DATA_DIR / "南京图书馆2024.zip"
 FUDAN_ZIP = DATA_DIR / "复旦大学图书馆.zip"
+NANHU_RAR = DATA_DIR / "南湖文献数据.rar"
 
 DEMO_BOOKS = [
     {
@@ -1219,6 +1220,95 @@ def fetch_fudan_archive_sample() -> dict[str, object]:
     }
 
 
+def fetch_nanhu_archive_sample() -> dict[str, object]:
+    if not NANHU_RAR.exists():
+        return {"available": False, "reason": "rar missing"}
+
+    import subprocess
+
+    list_result = subprocess.run(
+        ["7z", "l", "-ba", str(NANHU_RAR)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="ignore",
+        check=False,
+    )
+    if list_result.returncode != 0:
+        return {"available": False, "reason": "7z list failed"}
+
+    lines = [line.strip() for line in list_result.stdout.splitlines() if line.strip()]
+    file_paths: list[str] = []
+    image_count = 0
+    doc_count = 0
+    docx_candidate = None
+
+    for line in lines:
+        parts = line.split()
+        if len(parts) < 6:
+            continue
+        path = " ".join(parts[5:])
+        if path.lower().endswith((".doc", ".docx", ".txt")):
+            doc_count += 1
+            file_paths.append(path)
+        if path.lower().endswith((".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp")):
+            image_count += 1
+            file_paths.append(path)
+        if docx_candidate is None and path.lower().endswith(".docx"):
+            docx_candidate = path
+
+    summary = ""
+    if docx_candidate:
+        extract_dir = WORK_DIR / "nanhu_extract"
+        extract_dir.mkdir(parents=True, exist_ok=True)
+        extract_result = subprocess.run(
+            ["7z", "e", "-y", f"-o{extract_dir}", str(NANHU_RAR), docx_candidate],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="ignore",
+            check=False,
+        )
+        if extract_result.returncode == 0:
+            extracted_docx = extract_dir / Path(docx_candidate).name
+            if extracted_docx.exists():
+                from xml.etree import ElementTree
+                import io
+
+                with zipfile.ZipFile(io.BytesIO(extracted_docx.read_bytes())) as docx_archive:
+                    xml = docx_archive.read("word/document.xml")
+
+                root = ElementTree.fromstring(xml)
+                texts = []
+                for elem in root.iter():
+                    if elem.tag.endswith("}t") and elem.text:
+                        texts.append(elem.text)
+                summary = "".join(texts)[:240]
+
+    sample_paths = sorted(set(file_paths))[:6]
+    sample_records = [
+        {
+            "institution": "南湖文献数据库",
+            "title": Path(path).stem[:80],
+            "category": "专题文献 / 图像资源" if Path(path).suffix.lower() in {".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp"} else "专题文献",
+            "year": "",
+            "imageRef": Path(path).name if Path(path).suffix.lower() in {".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp"} else "",
+            "sourceText": path[:180],
+        }
+        for path in sample_paths
+    ]
+
+    return {
+        "available": True,
+        "institution": "南湖文献数据库",
+        "collectionTitle": "专题文献与图像资源样本",
+        "documentCount": doc_count,
+        "imageCount": image_count,
+        "summary": summary or "已发现可稳定列举的专题文献与图片资源，可作为专题分支样本接入。",
+        "sampleRecords": sample_records,
+    }
+
+
 def main() -> None:
     ensure_out_dir()
     cbdb_people = fetch_cbdb_people()
@@ -1252,6 +1342,7 @@ def main() -> None:
         "shanghaiLibraryActivity": fetch_shanghai_activity_sample(),
         "nanjingLibrarySample": fetch_nanjing_library_sample(),
         "fudanArchiveSample": fetch_fudan_archive_sample(),
+        "nanhuArchiveSample": fetch_nanhu_archive_sample(),
     }
     OUT_FILE.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2),

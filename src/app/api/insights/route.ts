@@ -19,6 +19,30 @@ export function GET() {
           topVenues: realSupplements.shanghaiLibraryActivity.topVenues,
         }
       : undefined,
+    nanjingLibrarySample: realSupplements.nanjingLibrarySample
+      ? {
+          available: realSupplements.nanjingLibrarySample.available,
+          institution: realSupplements.nanjingLibrarySample.institution,
+          recordCount: realSupplements.nanjingLibrarySample.recordCount,
+          sampleTitles: realSupplements.nanjingLibrarySample.sampleTitles,
+        }
+      : undefined,
+    fudanArchiveSample: realSupplements.fudanArchiveSample
+      ? {
+          available: realSupplements.fudanArchiveSample.available,
+          institution: realSupplements.fudanArchiveSample.institution,
+          collectionTitle: realSupplements.fudanArchiveSample.collectionTitle,
+        }
+      : undefined,
+    nanhuArchiveSample: realSupplements.nanhuArchiveSample
+      ? {
+          available: realSupplements.nanhuArchiveSample.available,
+          institution: realSupplements.nanhuArchiveSample.institution,
+          collectionTitle: realSupplements.nanhuArchiveSample.collectionTitle,
+          documentCount: realSupplements.nanhuArchiveSample.documentCount,
+          imageCount: realSupplements.nanhuArchiveSample.imageCount,
+        }
+      : undefined,
   };
 
   return NextResponse.json(payload);

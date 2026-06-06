@@ -286,6 +286,14 @@ export function CulturalVeinShell() {
       scale: insights?.fudanArchiveSample?.collectionTitle ?? "馆藏样例",
       detail: "馆藏介绍摘要、手稿诗笺与机构馆藏说明。",
     },
+    {
+      name: "南湖文献数据库",
+      status: insights?.nanhuArchiveSample?.available ? "已接入" : "待补充",
+      scale: insights?.nanhuArchiveSample?.documentCount
+        ? `${insights.nanhuArchiveSample.documentCount} 篇文献 / ${insights.nanhuArchiveSample.imageCount ?? 0} 张图像`
+        : insights?.nanhuArchiveSample?.collectionTitle ?? "专题资源样本",
+      detail: "专题文献、图像资源与专题型历史知识分支样本。",
+    },
   ];
 
   useEffect(() => {
