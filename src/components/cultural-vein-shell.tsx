@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 
+import { RiverScene } from "@/components/river-scene";
 import { riverDataset } from "@/data/demo-graph";
 import { useCulturalVeinStore } from "@/store/app-store";
 
@@ -159,7 +160,62 @@ export function CulturalVeinShell() {
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <RiverScene
+            books={filteredBooks}
+            citations={riverDataset.citations.filter((citation) => {
+              return filteredBooks.some((book) => book.id === citation.source) &&
+                filteredBooks.some((book) => book.id === citation.target);
+            })}
+            selectedBookSlug={selectedBookSlug}
+            onSelectBook={setSelectedBookSlug}
+          />
+
+          <div className="mt-4 grid gap-3 md:grid-cols-4">
+            <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+              <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                主河段
+              </div>
+              <div className="mt-2 text-lg font-semibold text-stone-50">
+                先秦至宋元
+              </div>
+              <p className="mt-2 text-sm leading-6 text-stone-300">
+                以《诗经》《礼记》与《四书章句集注》构成知识主河道。
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+              <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                支流
+              </div>
+              <div className="mt-2 text-lg font-semibold text-stone-50">
+                史学 / 考据 / 近代诗学
+              </div>
+              <p className="mt-2 text-sm leading-6 text-stone-300">
+                支流通过关系弧线与主河汇接，表达注疏、史法和影响扩散。
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+              <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                关系编码
+              </div>
+              <div className="mt-2 text-lg font-semibold text-stone-50">
+                4 层置信度
+              </div>
+              <p className="mt-2 text-sm leading-6 text-stone-300">
+                白色元数据、绿色显式引用、黄色语义关联、灰色影响链。
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+              <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                当前时间轴
+              </div>
+              <div className="mt-2 text-lg font-semibold text-stone-50">{activeEra}</div>
+              <p className="mt-2 text-sm leading-6 text-stone-300">
+                仅显示不晚于当前时代的河段与分支，模拟文脉逐步生长。
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredBooks.map((book) => (
               <button
                 key={book.id}
