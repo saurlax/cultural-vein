@@ -255,6 +255,15 @@ export function CulturalVeinShell() {
     })
     .filter((citation): citation is NonNullable<typeof citation> => Boolean(citation))
     .sort((left, right) => right.confidence - left.confidence);
+  const bookSourceBadges = Object.fromEntries(
+    Object.entries(riverDataset.booksBySlug).map(([slug, detail]) => [
+      slug,
+      detail.realWorldSignals?.sourceLabel
+        ?.split("+")
+        .map((item) => item.trim())
+        .filter(Boolean) ?? [],
+    ]),
+  ) as Record<string, string[]>;
   const connectedDatasetCards = [
     {
       name: "CBDB",
@@ -1131,6 +1140,18 @@ export function CulturalVeinShell() {
                     </span>
                   ))}
                 </div>
+                {bookSourceBadges[book.slug]?.length ? (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {bookSourceBadges[book.slug].slice(0, 3).map((source) => (
+                      <span
+                        key={`${book.slug}-${source}`}
+                        className="rounded-full border border-cyan-300/15 bg-cyan-300/8 px-3 py-1 text-[11px] text-cyan-100"
+                      >
+                        {source}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
                 <div className="mt-5 grid grid-cols-2 gap-2 text-xs text-stone-400">
                   <div className="rounded-2xl bg-white/5 px-3 py-2">
                     影响力 <span className="ml-2 text-stone-100">{book.influence}</span>

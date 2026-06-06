@@ -128,6 +128,9 @@ export function BookExplorer({
   }, [activePassage?.id, activePassage?.tracePath]);
 
   const activeTab = forcedTab ?? tab;
+  const sourceBadges = detail.realWorldSignals?.sourceLabel
+    ? detail.realWorldSignals.sourceLabel.split("+").map((item) => item.trim()).filter(Boolean)
+    : [];
 
   const handleSelectPassage = (passageId: string) => {
     setSelectedPassageId(passageId);
@@ -147,6 +150,38 @@ export function BookExplorer({
         </p>
         <h2 className="mt-2 text-3xl font-semibold">{book.title}</h2>
         <p className="mt-3 text-sm leading-7 text-stone-300">{book.summary}</p>
+        {detail.realWorldSignals ? (
+          <div className="mt-4 rounded-2xl border border-cyan-300/12 bg-cyan-300/6 px-4 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                  Data Provenance
+                </div>
+                <div className="mt-1 text-sm font-medium text-cyan-50">
+                  当前典籍已挂接真实来源信号
+                </div>
+              </div>
+              <div className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                {sourceBadges.length || 1} 类来源
+              </div>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {sourceBadges.map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full border border-cyan-300/15 bg-black/15 px-3 py-1 text-xs text-cyan-100"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+            {detail.realWorldSignals.venueSummary ? (
+              <p className="mt-3 text-sm leading-7 text-cyan-50/90">
+                {detail.realWorldSignals.venueSummary}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
       </section>
 
       <section className="grid grid-cols-3 gap-3 text-center text-sm">
