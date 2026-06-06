@@ -256,47 +256,43 @@ export function CulturalVeinShell() {
       ) : null}
 
       <div className="relative z-10 min-h-screen">
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-          <div className="pointer-events-auto max-w-[380px] rounded-[28px] border border-white/10 bg-black/28 px-5 py-4 shadow-2xl shadow-black/35 backdrop-blur-xl">
-            <div className="text-[11px] uppercase tracking-[0.32em] text-cyan-100/75">
-              Cultural Vein
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+          <div className="pointer-events-auto max-w-[320px] rounded-[28px] border border-white/10 bg-black/24 px-5 py-4 shadow-2xl shadow-black/35 backdrop-blur-xl">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-[11px] uppercase tracking-[0.32em] text-cyan-100/75">
+                  Cultural Vein
+                </div>
+                <h1 className="mt-2 text-[clamp(1.45rem,2.5vw,2rem)] font-semibold text-stone-50">
+                  文脉溯源
+                </h1>
+              </div>
+              <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] text-stone-300">
+                {viewMode === "river" ? "总览" : "钻入"}
+              </div>
             </div>
-            <h1 className="mt-2 text-[clamp(1.6rem,2.8vw,2.4rem)] font-semibold text-stone-50">
-              文脉溯源
-            </h1>
-            <p className="mt-2 text-sm leading-6 text-stone-300">
-              以整页河流展示典籍主干、支流、引文回流与后续影响，点击节点即可直接钻入。
+            <p className="mt-3 text-sm leading-6 text-stone-300">
+              整页河流作为唯一主场景，用少量浮窗承载筛选、状态和典籍细部。
             </p>
           </div>
 
-          <div className="pointer-events-auto hidden rounded-[28px] border border-white/10 bg-black/24 px-4 py-3 shadow-xl shadow-black/30 backdrop-blur-xl lg:block">
-            <div className="grid grid-cols-3 gap-3 text-xs text-stone-300">
-              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                <div className="text-stone-400">可见典籍</div>
-                <div className="mt-1 text-lg font-semibold text-stone-50">
-                  {filteredBooks.length}
-                </div>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                <div className="text-stone-400">可见关系</div>
-                <div className="mt-1 text-lg font-semibold text-stone-50">
-                  {visibleCitations.length}
-                </div>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                <div className="text-stone-400">真实来源</div>
-                <div className="mt-1 text-lg font-semibold text-stone-50">
-                  {connectedSourceCount || "--"}
-                </div>
-              </div>
+          <div className="pointer-events-auto flex flex-wrap gap-2">
+            <div className="rounded-full border border-white/10 bg-black/24 px-4 py-2 text-xs text-stone-300 backdrop-blur-xl">
+              可见典籍 {filteredBooks.length}
+            </div>
+            <div className="rounded-full border border-white/10 bg-black/24 px-4 py-2 text-xs text-stone-300 backdrop-blur-xl">
+              可见关系 {visibleCitations.length}
+            </div>
+            <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-4 py-2 text-xs text-cyan-100 backdrop-blur-xl">
+              真实来源 {connectedSourceCount || "--"}
             </div>
           </div>
         </div>
 
-        <div className="absolute inset-x-0 top-[116px] z-20 px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-4 xl:grid-cols-[320px_minmax(0,1fr)_420px]">
+        <div className="absolute inset-x-0 top-[108px] z-20 px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-4 xl:grid-cols-[280px_minmax(0,1fr)_420px]">
             <aside className="pointer-events-auto xl:pt-2">
-              <div className="rounded-[30px] border border-white/10 bg-black/26 p-5 shadow-2xl shadow-black/35 backdrop-blur-xl">
+              <div className="rounded-[30px] border border-white/10 bg-black/24 p-5 shadow-2xl shadow-black/35 backdrop-blur-xl">
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-[11px] uppercase tracking-[0.28em] text-stone-400">
@@ -317,7 +313,7 @@ export function CulturalVeinShell() {
                   ) : null}
                 </div>
 
-                <label className="mt-5 block">
+                <label className="mt-4 block">
                   <span className="text-xs uppercase tracking-[0.22em] text-stone-400">
                     检索典籍 / 观念 / 学派
                   </span>
@@ -329,7 +325,7 @@ export function CulturalVeinShell() {
                   />
                 </label>
 
-                <div className="mt-5">
+                <div className="mt-4">
                   <div className="flex items-center justify-between gap-3 text-xs uppercase tracking-[0.22em] text-stone-400">
                     <span>时代推进</span>
                     <span className="text-amber-100">{activeEra}</span>
@@ -363,7 +359,7 @@ export function CulturalVeinShell() {
                   </div>
                 </div>
 
-                <div className="mt-5">
+                <div className="mt-4">
                   <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
                     四部分类
                   </div>
@@ -385,7 +381,7 @@ export function CulturalVeinShell() {
                   </div>
                 </div>
 
-                <div className="mt-5 grid grid-cols-2 gap-3 text-sm">
+                <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
                   <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
                     <div className="text-stone-400">主河段上限</div>
                     <div className="mt-1 font-medium text-stone-50">
@@ -401,7 +397,7 @@ export function CulturalVeinShell() {
                 </div>
 
                 {activeBranchAnnotation ? (
-                  <div className="mt-5 rounded-[26px] border border-cyan-300/14 bg-cyan-300/6 px-4 py-4">
+                  <div className="mt-4 rounded-[26px] border border-cyan-300/14 bg-cyan-300/6 px-4 py-4">
                     <div className="text-[11px] uppercase tracking-[0.24em] text-cyan-100/75">
                       Active Branch
                     </div>
@@ -422,10 +418,10 @@ export function CulturalVeinShell() {
               className={`pointer-events-auto transition-all duration-500 xl:pt-2 ${
                 viewMode === "book"
                   ? "translate-y-0 opacity-100"
-                  : "xl:translate-x-10 xl:opacity-75"
+                  : "xl:translate-x-6 xl:opacity-70"
               }`}
             >
-              <div className="rounded-[30px] border border-white/10 bg-black/28 p-4 shadow-2xl shadow-black/35 backdrop-blur-xl">
+              <div className="max-h-[calc(100vh-170px)] overflow-hidden rounded-[30px] border border-white/10 bg-black/26 p-4 shadow-2xl shadow-black/35 backdrop-blur-xl">
                 {selectedBook && selectedDetail ? (
                   <>
                     <div className="mb-4 flex flex-wrap items-start justify-between gap-3 rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
@@ -451,12 +447,14 @@ export function CulturalVeinShell() {
                         ) : null}
                       </div>
                     </div>
-                    <BookExplorer
-                      book={selectedBook}
-                      detail={selectedDetail}
-                      activeEra={activeEra}
-                      onTraceFocusChange={setTraceFocus}
-                    />
+                    <div className="max-h-[calc(100vh-300px)] overflow-auto pr-1">
+                      <BookExplorer
+                        book={selectedBook}
+                        detail={selectedDetail}
+                        activeEra={activeEra}
+                        onTraceFocusChange={setTraceFocus}
+                      />
+                    </div>
                   </>
                 ) : (
                   <div className="rounded-[24px] border border-dashed border-white/10 bg-white/5 px-5 py-10 text-center text-sm leading-7 text-stone-400">
@@ -485,7 +483,7 @@ export function CulturalVeinShell() {
         </main>
 
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 px-4 pb-4 sm:px-6 lg:px-8">
-          <div className="pointer-events-auto rounded-[28px] border border-white/10 bg-black/24 px-4 py-4 shadow-2xl shadow-black/35 backdrop-blur-xl">
+          <div className="pointer-events-auto rounded-[28px] border border-white/10 bg-black/20 px-4 py-4 shadow-2xl shadow-black/35 backdrop-blur-xl">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex flex-wrap gap-2">
                 {layerSummary.map(({ layer, count }) => (
@@ -518,8 +516,8 @@ export function CulturalVeinShell() {
         </div>
 
         {filteredBooks.length > 0 ? (
-          <div className="absolute left-4 top-[calc(116px+440px)] z-20 hidden w-[320px] xl:block">
-            <div className="max-h-[280px] overflow-auto rounded-[28px] border border-white/10 bg-black/22 p-4 shadow-xl shadow-black/30 backdrop-blur-xl">
+          <div className="absolute bottom-[94px] left-4 z-20 hidden w-[280px] xl:block sm:left-6 lg:left-8">
+            <div className="max-h-[300px] overflow-auto rounded-[28px] border border-white/10 bg-black/20 p-4 shadow-xl shadow-black/30 backdrop-blur-xl">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-[11px] uppercase tracking-[0.24em] text-stone-400">
                   Visible Nodes

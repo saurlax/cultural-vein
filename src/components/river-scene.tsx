@@ -89,6 +89,79 @@ function RiverRibbon({
   );
 }
 
+function AtmosphereField() {
+  const fieldRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (!fieldRef.current) {
+      return;
+    }
+
+    fieldRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.04) * 0.08;
+    fieldRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.04;
+  });
+
+  return (
+    <group ref={fieldRef}>
+      <mesh position={[2.8, 3.6, -7]} scale={[9.5, 4.2, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#164e63" transparent opacity={0.08} />
+      </mesh>
+      <mesh position={[8.7, 2.5, -6.5]} scale={[7.4, 3.4, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#f59e0b" transparent opacity={0.05} />
+      </mesh>
+      <mesh position={[-1.8, 2.4, -5.8]} scale={[5.8, 2.6, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#34d399" transparent opacity={0.06} />
+      </mesh>
+    </group>
+  );
+}
+
+function RiverBed({
+  span = 24,
+  depth = -1.14,
+}: {
+  span?: number;
+  depth?: number;
+}) {
+  const bedRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state) => {
+    if (!bedRef.current) {
+      return;
+    }
+
+    bedRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.03) * 0.01;
+  });
+
+  return (
+    <group>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.4, depth - 0.12, 0]}>
+        <circleGeometry args={[span, 80]} />
+        <meshBasicMaterial color="#040908" transparent opacity={0.96} />
+      </mesh>
+      <mesh ref={bedRef} rotation={[-Math.PI / 2, 0, 0]} position={[3.4, depth, 0]}>
+        <planeGeometry args={[span * 1.6, span * 1.2, 48, 48]} />
+        <meshStandardMaterial
+          color="#0b2320"
+          emissive={new THREE.Color("#0f3c38")}
+          emissiveIntensity={0.22}
+          metalness={0.08}
+          roughness={0.72}
+          transparent
+          opacity={0.94}
+        />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.4, depth + 0.01, 0]}>
+        <planeGeometry args={[span * 1.55, span * 1.16, 1, 1]} />
+        <meshBasicMaterial color="#67e8f9" transparent opacity={0.03} />
+      </mesh>
+    </group>
+  );
+}
+
 function RiverParticleStream({
   points,
   color,
@@ -474,14 +547,20 @@ function RiverWorld({
       <color attach="background" args={["#091110"]} />
       <fog attach="fog" args={["#091110", 8, 22]} />
       <PerspectiveCamera ref={cameraRef} makeDefault position={[3.5, 3.8, 11]} fov={42} />
-      <ambientLight intensity={1.1} />
+      <ambientLight intensity={1.25} />
       <directionalLight position={[4, 8, 6]} intensity={1.8} color="#fff7d6" />
       <pointLight position={[-6, 4, -2]} intensity={1.5} color="#7dd3fc" />
+      <pointLight position={[9, 3, -4]} intensity={1.2} color="#f59e0b" />
+      <spotLight
+        position={[2.5, 8, 8]}
+        angle={0.38}
+        penumbra={0.7}
+        intensity={2.4}
+        color="#d9f99d"
+      />
 
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.15, 0]}>
-        <circleGeometry args={[18, 80]} />
-        <meshBasicMaterial color="#07100f" transparent opacity={0.9} />
-      </mesh>
+      <AtmosphereField />
+      <RiverBed />
 
       {mainStream.length >= 2 ? (
         <>
@@ -564,37 +643,50 @@ function RiverWorld({
 
 export function RiverScene(props: RiverSceneProps) {
   return (
-    <div className="relative h-[480px] overflow-hidden rounded-[28px] border border-white/10 bg-[#091110]">
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5 py-4 text-xs tracking-[0.24em] text-stone-300">
-        <span>Fly Over The Vein</span>
-        <span>
-          {props.traceFocus?.active
-            ? `溯源联动 ${props.traceFocus.progress}/${props.traceFocus.total} · ${props.traceFocus.currentTitle ?? "当前节点"}`
-            : props.cinematicState === "diving"
-              ? "镜头俯冲中 · 正在进入典籍脉络"
-              : props.cinematicState === "returning"
-                ? "镜头拉回中 · 回到文脉总览"
-                : `${props.activeEra} · 拖拽旋转 · 点击节点钻入`}
-        </span>
+    <div className="relative h-full min-h-screen overflow-hidden rounded-[32px] border border-white/10 bg-[#091110] shadow-[0_0_80px_rgba(0,0,0,0.42)]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(3,8,8,0.72),rgba(3,8,8,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(3,8,8,0.88),rgba(3,8,8,0))]" />
+      <div className="pointer-events-none absolute left-5 top-5 z-10 rounded-full border border-white/10 bg-black/20 px-4 py-2 text-[11px] uppercase tracking-[0.32em] text-stone-300">
+        Fly Over The Vein
       </div>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-wrap items-center gap-2 px-5 py-4 text-[11px] text-stone-300">
-        <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1">
-          关系图例
-        </span>
+      <div className="pointer-events-none absolute right-5 top-5 z-10 rounded-full border border-white/10 bg-black/20 px-4 py-2 text-[11px] text-stone-300">
+        {props.traceFocus?.active
+          ? `溯源联动 ${props.traceFocus.progress}/${props.traceFocus.total}`
+          : props.cinematicState === "diving"
+            ? "镜头俯冲中"
+            : props.cinematicState === "returning"
+              ? "镜头拉回中"
+              : `${props.activeEra} 水位`}
+      </div>
+      <div className="pointer-events-none absolute left-5 top-20 z-10 max-w-[320px] rounded-[24px] border border-white/10 bg-black/18 px-4 py-3 text-sm text-stone-300 backdrop-blur-md">
+        <div className="text-[11px] uppercase tracking-[0.24em] text-stone-500">
+          River State
+        </div>
+        <div className="mt-2 leading-6">
+          {props.traceFocus?.active
+            ? `镜头正沿着 ${props.traceFocus.currentTitle ?? "当前节点"} 的溯源链逆流而上。`
+            : props.cinematicState === "diving"
+              ? "镜头正在切入典籍局部脉络。"
+              : props.cinematicState === "returning"
+                ? "镜头正在回到整条河流的总览。"
+                : "拖拽旋转河流，点击节点或支流标注即可进入细部。"}
+        </div>
+      </div>
+      <div className="pointer-events-none absolute right-5 bottom-5 z-10 flex max-w-[520px] flex-wrap justify-end gap-2 text-[11px] text-stone-300">
         <span className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-cyan-100">
-          分支标注 = 悬停查看说明 / 点击直达典籍
+          支流标注可直接跳转
         </span>
         <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-          白色 = 元数据
+          白色 元数据
         </span>
         <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-emerald-100">
-          绿色 = 显式引用
+          绿色 显式引用
         </span>
         <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-amber-100">
-          黄色 = 语义关联
+          黄色 语义关联
         </span>
         <span className="rounded-full border border-slate-300/20 bg-slate-300/10 px-3 py-1 text-slate-100">
-          灰色 = 间接影响
+          灰色 间接影响
         </span>
       </div>
       <Canvas dpr={[1, 1.8]}>
