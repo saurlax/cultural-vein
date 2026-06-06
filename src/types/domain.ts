@@ -86,6 +86,7 @@ export interface TimelineEvent {
   year: number;
   title: string;
   detail: string;
+  source?: "demo" | "cbdb";
 }
 
 export interface PassageLink {

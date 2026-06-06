@@ -878,6 +878,15 @@ TARGET_PEOPLE = {
     "王国维": {"role": "评论者", "aliases": ["王国维", "王國維"]},
 }
 
+BOOK_PERSON_LINKS = {
+    "shijing": ["孔穎達", "朱熹", "王國維"],
+    "sishu-zhangju": ["朱熹"],
+    "shiji": ["司馬遷"],
+    "zi-zhi-tong-jian": ["司馬光", "劉恕"],
+    "ri-zhi-lu": ["顧炎武"],
+    "ren-jian-ci-hua": ["王國維"],
+}
+
 
 def fetch_person_activity_places(cur: sqlite3.Cursor, person_id: int) -> list[dict[str, object]]:
     cur.execute(
@@ -921,6 +930,33 @@ def fetch_person_activity_places(cur: sqlite3.Cursor, person_id: int) -> list[di
         )
 
     return results
+
+
+def build_cbdb_timeline_events(person: dict[str, object]) -> list[dict[str, object]]:
+    events: list[dict[str, object]] = []
+    person_name = str(person.get("name") or "")
+
+    for index, place in enumerate(person.get("activityPlaces") or []):
+        year = place.get("firstYear") or place.get("lastYear")
+        if not year or int(year) == 0:
+            continue
+
+        note = str(place.get("note") or "").strip()
+        detail = f"{person_name}在{place['name']}留下活动地点记录。"
+        if note:
+            detail = f"{detail}{note}"
+
+        events.append(
+            {
+                "id": f"cbdb-{person_name}-{index}",
+                "year": int(year),
+                "title": f"{person_name}活动于{place['name']}",
+                "detail": detail[:140],
+                "source": "cbdb",
+            }
+        )
+
+    return events[:3]
 
 
 def ensure_out_dir() -> None:
@@ -1075,11 +1111,33 @@ def fetch_shanghai_activity_sample() -> dict[str, object]:
 
 def main() -> None:
     ensure_out_dir()
+    cbdb_people = fetch_cbdb_people()
+    cbdb_timeline_map = {
+        person["name"]: build_cbdb_timeline_events(person)
+        for person in cbdb_people
+        if person.get("foundInCbdb")
+    }
+
+    demo_book_details = json.loads(json.dumps(DEMO_BOOK_DETAILS, ensure_ascii=False))
+    for slug, linked_people in BOOK_PERSON_LINKS.items():
+        detail = demo_book_details.get(slug)
+        if not detail:
+            continue
+
+        cbdb_events: list[dict[str, object]] = []
+        for person_name in linked_people:
+            cbdb_events.extend(cbdb_timeline_map.get(person_name, []))
+
+        if cbdb_events:
+            merged = detail.get("timeline", []) + cbdb_events
+            merged.sort(key=lambda item: item.get("year", 999999))
+            detail["timeline"] = merged[:6]
+
     payload = {
         "demoBooks": DEMO_BOOKS,
         "demoCitations": DEMO_CITATIONS,
-        "demoBookDetails": DEMO_BOOK_DETAILS,
-        "cbdbPeople": fetch_cbdb_people(),
+        "demoBookDetails": demo_book_details,
+        "cbdbPeople": cbdb_people,
         "cbdbSummary": fetch_cbdb_summary(),
         "shanghaiLibraryActivity": fetch_shanghai_activity_sample(),
     }

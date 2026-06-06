@@ -981,7 +981,14 @@ export function BookExplorer({
                             ) : null}
                           </div>
                           <div className="flex-1">
-                            <div className="text-sm text-amber-100">{item.year}</div>
+                            <div className="flex items-center gap-2">
+                              <div className="text-sm text-amber-100">{item.year}</div>
+                              {item.source === "cbdb" ? (
+                                <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-[10px] text-cyan-100">
+                                  CBDB
+                                </span>
+                              ) : null}
+                            </div>
                             <div className="mt-1 font-medium text-stone-50">{item.title}</div>
                           </div>
                         </button>
@@ -1000,8 +1007,15 @@ export function BookExplorer({
                         <div className="text-2xl font-semibold text-stone-50">
                           {activeTimelineItem.title}
                         </div>
-                        <div className="rounded-full bg-amber-300/10 px-3 py-1 text-sm text-amber-100">
-                          {activeTimelineItem.year}
+                        <div className="flex items-center gap-2">
+                          <div className="rounded-full bg-amber-300/10 px-3 py-1 text-sm text-amber-100">
+                            {activeTimelineItem.year}
+                          </div>
+                          {activeTimelineItem.source === "cbdb" ? (
+                            <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                              真实活动信号
+                            </div>
+                          ) : null}
                         </div>
                       </div>
                       <p className="mt-4 text-sm leading-7 text-stone-300">
