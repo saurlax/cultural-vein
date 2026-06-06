@@ -167,6 +167,7 @@ export function CulturalVeinShell() {
   const [hoveredBranchId, setHoveredBranchId] = useState<string | null>(null);
   const [hoveredBookSlug, setHoveredBookSlug] = useState<string | null>(null);
   const [hoveredDockId, setHoveredDockId] = useState<string | null>(null);
+  const [selectedDockId, setSelectedDockId] = useState<string | null>(null);
   const [traceFocus, setTraceFocus] = useState<TraceFocusState | null>(null);
   const [sceneFocus, setSceneFocus] = useState<SceneFocusState | null>(null);
   const [showMobileControls, setShowMobileControls] = useState(false);
@@ -484,6 +485,10 @@ export function CulturalVeinShell() {
   const sourceAtlasPathPoints = sourceAtlasDockMarkers.map(
     (dock) => [dock.position[0], dock.position[1] + 0.06, dock.position[2]] as [number, number, number],
   );
+  const activeSourceDock =
+    sourceAtlasDockMarkers.find((dock) => dock.id === selectedDockId) ??
+    sourceAtlasDockMarkers.find((dock) => dock.id === hoveredDockId) ??
+    null;
   const mergedDockMarkers = selectedBook ? riverDockMarkers : sourceAtlasDockMarkers;
   const sourceAtlasHighlightedBookSlugs = (() => {
     if (!activeSourceAtlasEntry || selectedBook) {
@@ -530,6 +535,7 @@ export function CulturalVeinShell() {
     (insights?.nanhuArchiveSample?.imageCount ?? 0);
   const handleSourceAtlasSelect = (entryId: string) => {
     setActiveSourceAtlasId(entryId);
+    setSelectedDockId(null);
     setShowDesktopDossier(false);
     setShowMobileDossier(false);
 
@@ -825,6 +831,15 @@ export function CulturalVeinShell() {
                               ) : null}
                             </div>
                           ))}
+                        </div>
+                      ) : null}
+                      {activeSourceDock ? (
+                        <div className="mt-3 rounded-[18px] border border-amber-300/18 bg-[rgba(89,60,19,0.42)] px-3 py-3">
+                          <div className="text-[11px] tracking-[0.24em] text-[#f2dfab]">河面锁定样本</div>
+                          <div className="mt-2 text-sm font-medium text-[#fbf3da]">{activeSourceDock.label}</div>
+                          {activeSourceDock.note ? (
+                            <div className="mt-2 text-[11px] leading-5 text-[#e6d7ae]">{activeSourceDock.note}</div>
+                          ) : null}
                         </div>
                       ) : null}
                     </div>
@@ -1178,6 +1193,8 @@ export function CulturalVeinShell() {
             onHoverBook={setHoveredBookSlug}
             hoveredDockId={hoveredDockId}
             onHoverDock={setHoveredDockId}
+            selectedDockId={selectedDockId}
+            onSelectDock={setSelectedDockId}
             traceFocus={traceFocus}
             sceneFocus={sceneFocus}
             dockMarkers={mergedDockMarkers}
@@ -1261,6 +1278,14 @@ export function CulturalVeinShell() {
                             <div className="mt-1 text-[11px] leading-5 text-[#dccb9c] line-clamp-3">
                               {activeSourceAtlasEntry.sampleRecords[0].note}
                             </div>
+                          ) : null}
+                        </div>
+                      ) : null}
+                      {activeSourceDock ? (
+                        <div className="mt-2 rounded-[16px] border border-amber-300/18 bg-[rgba(89,60,19,0.34)] px-3 py-2.5">
+                          <div className="text-[11px] font-medium leading-5 text-[#fbf3da]">{activeSourceDock.label}</div>
+                          {activeSourceDock.note ? (
+                            <div className="mt-1 text-[11px] leading-5 text-[#dccb9c] line-clamp-3">{activeSourceDock.note}</div>
                           ) : null}
                         </div>
                       ) : null}

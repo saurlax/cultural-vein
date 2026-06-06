@@ -50,6 +50,8 @@ interface RiverSceneProps {
   onHoverBook?: (slug: string | null) => void;
   hoveredDockId?: string | null;
   onHoverDock?: (dockId: string | null) => void;
+  selectedDockId?: string | null;
+  onSelectDock?: (dockId: string | null) => void;
   sourceAtlasLabel?: string | null;
   sourceAtlasSummary?: string | null;
   sourceAtlasPathPoints?: Array<[number, number, number]>;
@@ -1190,11 +1192,15 @@ function DockMarkers({
   activeColor,
   hoveredDockId,
   onHoverDock,
+  selectedDockId,
+  onSelectDock,
 }: {
   dockMarkers: RiverDockMarker[];
   activeColor: string;
   hoveredDockId?: string | null;
   onHoverDock?: (dockId: string | null) => void;
+  selectedDockId?: string | null;
+  onSelectDock?: (dockId: string | null) => void;
 }) {
   const dockRef = useRef<THREE.Group>(null);
 
@@ -1217,39 +1223,62 @@ function DockMarkers({
     <group ref={dockRef}>
       {dockMarkers.map((dock, index) => (
         <group key={dock.id} position={dock.position}>
+          {/** Selected or hovered data docks should feel anchored and readable. */}
           <mesh
             position={[0, 0.12, 0]}
             onPointerOver={() => onHoverDock?.(dock.id)}
             onPointerOut={() => onHoverDock?.(null)}
+            onClick={() => onSelectDock?.(selectedDockId === dock.id ? null : dock.id)}
           >
             <cylinderGeometry args={[0.02, 0.02, 0.28, 12]} />
             <meshStandardMaterial
               color="#e7c97c"
               emissive={new THREE.Color(dock.accentColor ?? "#d97706")}
-              emissiveIntensity={hoveredDockId === dock.id ? 0.92 : 0.55}
+              emissiveIntensity={
+                hoveredDockId === dock.id || selectedDockId === dock.id ? 0.92 : 0.55
+              }
             />
           </mesh>
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.025, 0]}>
-            <ringGeometry args={[0.08, hoveredDockId === dock.id ? 0.19 : 0.15, 28]} />
+            <ringGeometry
+              args={[
+                0.08,
+                hoveredDockId === dock.id || selectedDockId === dock.id ? 0.19 : 0.15,
+                28,
+              ]}
+            />
             <meshBasicMaterial
               color={dock.accentColor ?? activeColor}
               transparent
-              opacity={(hoveredDockId === dock.id ? 0.62 : 0.34) + index * 0.03}
+              opacity={
+                (hoveredDockId === dock.id || selectedDockId === dock.id ? 0.62 : 0.34) +
+                index * 0.03
+              }
             />
           </mesh>
           <mesh position={[0, 0.31, 0]}>
-            <sphereGeometry args={[hoveredDockId === dock.id ? 0.06 : 0.045, 16, 16]} />
+            <sphereGeometry
+              args={[
+                hoveredDockId === dock.id || selectedDockId === dock.id ? 0.06 : 0.045,
+                16,
+                16,
+              ]}
+            />
             <meshStandardMaterial
               color="#fde68a"
               emissive={new THREE.Color(dock.accentColor ?? activeColor)}
-              emissiveIntensity={hoveredDockId === dock.id ? 1.8 : 1.25}
+              emissiveIntensity={
+                hoveredDockId === dock.id || selectedDockId === dock.id ? 1.8 : 1.25
+              }
             />
           </mesh>
           <Text
             position={[0, 0.48, 0]}
             fontSize={0.1}
             maxWidth={1.3}
-            color={hoveredDockId === dock.id ? "#fff7dc" : "#fef3c7"}
+            color={
+              hoveredDockId === dock.id || selectedDockId === dock.id ? "#fff7dc" : "#fef3c7"
+            }
             anchorX="center"
             anchorY="middle"
           >
@@ -1281,6 +1310,8 @@ function RiverWorld({
   onHoverBook,
   hoveredDockId,
   onHoverDock,
+  selectedDockId,
+  onSelectDock,
   sourceAtlasLabel,
   sourceAtlasPathPoints = [],
 }: RiverSceneProps & {
@@ -1732,6 +1763,8 @@ function RiverWorld({
         activeColor={focusAuraColor}
         hoveredDockId={hoveredDockId}
         onHoverDock={onHoverDock}
+        selectedDockId={selectedDockId}
+        onSelectDock={onSelectDock}
       />
       <BranchMarkers
         annotations={branchAnnotations}
