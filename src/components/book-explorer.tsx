@@ -1152,7 +1152,7 @@ export function BookExplorer({
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">地理传播图</h3>
-            <span className="text-xs text-stone-400">中观视图</span>
+            <span className="text-xs text-[#d8c9a3]">中观视图</span>
           </div>
           {visibleSpread.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
@@ -1160,15 +1160,15 @@ export function BookExplorer({
             </div>
           ) : (
             <>
-              <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.14),rgba(255,255,255,0.03))] p-4">
+              <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(79,53,18,0.82),rgba(33,21,8,0.92))] p-4">
                 <div className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
-                  <div className="rounded-[24px] border border-white/10 bg-[#1a1208] px-4 py-4">
+                  <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(37,24,8,0.52)] px-4 py-4">
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                        <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
                           传播航线总览
                         </div>
-                        <div className="mt-1 text-sm text-stone-300">
+                        <div className="mt-1 text-sm text-[#eadfbc]">
                           点击任意航段可聚焦当前传播阶段
                         </div>
                       </div>
@@ -1283,13 +1283,13 @@ export function BookExplorer({
                     ) : null}
                   </div>
 
-                  <div className="rounded-[24px] border border-white/10 bg-black/20 px-4 py-4">
+                  <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4">
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                        <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
                           当前焦点
                         </div>
-                        <div className="mt-1 text-lg font-semibold text-stone-50">
+                        <div className="mt-1 text-lg font-semibold text-[#fbf3da]">
                           {activeSpreadPlaces?.from?.name ?? "未知"} → {activeSpreadPlaces?.to?.name ?? "未知"}
                         </div>
                       </div>
@@ -1359,13 +1359,13 @@ export function BookExplorer({
                 </div>
               </div>
 
-              <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,17,16,0.92),rgba(3,9,8,0.96))] px-4 py-4">
+              <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(55,35,12,0.9),rgba(22,14,6,0.96))] px-4 py-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                    <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
                       传播地球
                     </div>
-                    <div className="mt-1 text-sm text-stone-300">
+                    <div className="mt-1 text-sm text-[#eadfbc]">
                       在 3D 地球上查看典籍传播落点、航线抬升与方向
                     </div>
                   </div>
@@ -1389,14 +1389,14 @@ export function BookExplorer({
               </div>
             </>
           )}
-          <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+          <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-sm leading-7 text-[#eadfbc]">
             传播视图当前以 3D 地球、抬升航线与传播落点来呈现典籍在不同历史节点之间的空间流动，可直接对应方案中的地理传播层。
           </div>
-          <div className="rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4 text-sm leading-7 text-amber-50/90">
+          <div className="rounded-[24px] border border-amber-300/14 bg-[linear-gradient(180deg,rgba(191,140,40,0.16),rgba(56,35,11,0.24))] px-4 py-4 text-sm leading-7 text-amber-50/90">
             传播层当前采用“传播关系建模 + 上图活动场馆信号补强”的混合组织，既保持叙事连续，也明确区分真实接入与结构性补足。
           </div>
           {detail.realWorldSignals?.venueSamples?.length ? (
-            <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+            <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4">
               <div className="flex items-center justify-between">
                 <h4 className="text-sm font-medium text-stone-50">上图活动场馆资料</h4>
                 <span className="text-xs text-stone-400">真实数据辅助</span>
@@ -1423,7 +1423,7 @@ export function BookExplorer({
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">人物关系网</h3>
-            <span className="text-xs text-stone-400">中观视图</span>
+            <span className="text-xs text-[#d8c9a3]">中观视图</span>
           </div>
           {visiblePeople.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
@@ -1431,15 +1431,15 @@ export function BookExplorer({
             </div>
           ) : (
             <>
-              <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-4">
+              <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(79,53,18,0.82),rgba(33,21,8,0.92))] p-4">
                 <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
-                  <div className="rounded-[24px] border border-white/10 bg-[#1a1208] px-4 py-4">
+                  <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(37,24,8,0.52)] px-4 py-4">
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                        <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
                           人物关系场
                         </div>
-                        <div className="mt-1 text-sm text-stone-300">
+                        <div className="mt-1 text-sm text-[#eadfbc]">
                           默认先显现核心人物，按需展开二级支流，避免关系场一次性过载。
                         </div>
                       </div>
@@ -1531,15 +1531,15 @@ export function BookExplorer({
                     </div>
                   </div>
 
-                  <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
+                  <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4">
                     {activePerson ? (
                       <>
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div>
-                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                            <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
                               当前焦点人物
                             </div>
-                            <div className="mt-2 text-2xl font-semibold text-stone-50">
+                            <div className="mt-2 text-2xl font-semibold text-[#fbf3da]">
                               {activePerson.name}
                             </div>
                             <div className="mt-2 text-sm text-stone-300">
@@ -1639,13 +1639,13 @@ export function BookExplorer({
               </div>
 
               <div className="grid gap-3 md:grid-cols-3">
-                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-sm leading-7 text-[#eadfbc]">
                   一级关联优先表示作者、注者、核心编纂者，对应方案中的“中心为典籍，一级关联为作者/注者/编者”。
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-sm leading-7 text-[#eadfbc]">
                   二级关联改为按需展开，先守住核心结构，再逐步放出引用者、评论者、校勘者等支流角色，更贴近“渐进式展开”的方案要求。
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-sm leading-7 text-[#eadfbc]">
                   亮色来源标记说明人物已与纪传资料对照，灰色说明当前仍为整理节点，便于后续继续充实真实人物图谱。
                 </div>
               </div>
@@ -1658,7 +1658,7 @@ export function BookExplorer({
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">版本流变树</h3>
-            <span className="text-xs text-stone-400">中观视图</span>
+            <span className="text-xs text-[#d8c9a3]">中观视图</span>
           </div>
           {visibleVersions.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
@@ -1666,7 +1666,7 @@ export function BookExplorer({
             </div>
           ) : (
             <>
-              <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-4">
+              <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(79,53,18,0.82),rgba(33,21,8,0.92))] p-4">
                 <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
                   <VersionTree
                     versions={visibleVersions}
@@ -1674,15 +1674,15 @@ export function BookExplorer({
                     onSelectVersion={setSelectedVersionId}
                   />
 
-                  <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
+                  <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4">
                     {activeVersion ? (
                       <>
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div>
-                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                            <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
                               当前版本焦点
                             </div>
-                            <div className="mt-2 text-xl font-semibold text-stone-50">
+                            <div className="mt-2 text-xl font-semibold text-[#fbf3da]">
                               {activeVersion.label}
                             </div>
                             <div className="mt-2 text-sm text-stone-300">
@@ -1925,13 +1925,13 @@ export function BookExplorer({
               </div>
 
               <div className="grid gap-3 md:grid-cols-3">
-                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-sm leading-7 text-[#eadfbc]">
                   版本链按“祖本 → 抄本/刻本 → 重刊/整理本”的方式组织，更接近方案中的版本流变树表达。
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-sm leading-7 text-[#eadfbc]">
                   存世状态与版本类型同时编码，既能看传播链，也能看哪些层次已经失传或仅能间接复原。
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-sm leading-7 text-[#eadfbc]">
                   当前版本卡已补入传承链和影像馆藏线索，现场既能讲版本演化，也能顺手展示可追溯的资料落点。
                 </div>
               </div>
@@ -1944,18 +1944,18 @@ export function BookExplorer({
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">关联时间线</h3>
-            <span className="text-xs text-stone-400">中观视图</span>
+            <span className="text-xs text-[#d8c9a3]">中观视图</span>
           </div>
           {visibleTimeline.length > 0 ? (
-            <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.12),rgba(255,255,255,0.03))] p-4">
+            <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(79,53,18,0.82),rgba(33,21,8,0.92))] p-4">
               <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
-                <div className="rounded-[24px] border border-white/10 bg-black/15 px-4 py-4">
+                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(37,24,8,0.52)] px-4 py-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                      <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
                         时间轨道
                       </div>
-                      <div className="mt-1 text-sm text-stone-300">
+                      <div className="mt-1 text-sm text-[#eadfbc]">
                         按时间顺序浏览该典籍的关键事件
                       </div>
                     </div>
@@ -2007,14 +2007,14 @@ export function BookExplorer({
                   </div>
                 </div>
 
-                <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
+                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4">
                   {activeTimelineItem ? (
                     <>
-                      <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                      <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
                         当前事件焦点
                       </div>
                       <div className="mt-2 flex items-center justify-between gap-3">
-                        <div className="text-2xl font-semibold text-stone-50">
+                        <div className="text-2xl font-semibold text-[#fbf3da]">
                           {activeTimelineItem.title}
                         </div>
                         <div className="flex items-center gap-2">
@@ -2079,7 +2079,7 @@ export function BookExplorer({
             </div>
           ) : null}
           {detail.realWorldSignals?.eventSamples?.length ? (
-            <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+            <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4">
               <div className="flex items-center justify-between">
                 <h4 className="text-sm font-medium text-stone-50">上图活动时间资料</h4>
                 <span className="text-xs text-stone-400">真实传播现场</span>
