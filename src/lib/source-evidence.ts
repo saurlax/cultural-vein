@@ -6,7 +6,11 @@ export interface SourceEvidenceItem {
   category: string;
   countLabel: string;
   summary: string;
-  samples: string[];
+  traceNote: string;
+  samples: Array<{
+    label: string;
+    detail?: string;
+  }>;
 }
 
 export function buildSourceEvidence(detail: BookDetail): SourceEvidenceItem[] {
@@ -28,9 +32,16 @@ export function buildSourceEvidence(detail: BookDetail): SourceEvidenceItem[] {
       category: "人物纪传",
       countLabel: `命中 ${signals.cbdbMatchedPeople ?? 0} 人 / 整理 ${signals.cbdbFallbackPeople ?? 0} 人`,
       summary: "用于支撑人物身份、活动地点和人物传播线索的真实纪传来源。",
+      traceNote: "可回查到人物纪传命中数量与整理人数两类线索。",
       samples: [
-        `纪传命中 ${signals.cbdbMatchedPeople ?? 0} 人`,
-        `整理人物 ${signals.cbdbFallbackPeople ?? 0} 人`,
+        {
+          label: `纪传命中 ${signals.cbdbMatchedPeople ?? 0} 人`,
+          detail: "对应已匹配到 CBDB 的人物节点。",
+        },
+        {
+          label: `整理人物 ${signals.cbdbFallbackPeople ?? 0} 人`,
+          detail: "对应当前仍以人工整理方式保留的人物节点。",
+        },
       ],
     });
   }
@@ -42,7 +53,11 @@ export function buildSourceEvidence(detail: BookDetail): SourceEvidenceItem[] {
       category: "场馆传播",
       countLabel: `${signals.venueSamples.length} 组场馆`,
       summary: "以活动场馆分布补强典籍在近现代公共文化空间中的传播现场。",
-      samples: signals.venueSamples.slice(0, 3).map((item) => `${item.name} · 记录 ${item.sampleCount}`),
+      traceNote: "样本可回查到场馆名称与对应活动记录数。",
+      samples: signals.venueSamples.slice(0, 3).map((item) => ({
+        label: item.name,
+        detail: `活动记录 ${item.sampleCount}`,
+      })),
     });
   }
 
@@ -53,9 +68,13 @@ export function buildSourceEvidence(detail: BookDetail): SourceEvidenceItem[] {
       category: "活动事件",
       countLabel: `${signals.eventSamples.length} 条事件`,
       summary: "把活动名称、场馆与时间信号整理成可回查的传播事件样本。",
+      traceNote: "样本包含活动标题、场馆与时间，可直接用于现场说明传播落点。",
       samples: signals.eventSamples
         .slice(0, 3)
-        .map((item) => `${item.title} · ${item.venue} · ${item.startTime}`),
+        .map((item) => ({
+          label: item.title,
+          detail: `${item.venue} · ${item.startTime}`,
+        })),
     });
   }
 
@@ -70,9 +89,19 @@ export function buildSourceEvidence(detail: BookDetail): SourceEvidenceItem[] {
       category: "机构资源",
       countLabel: `${signals.institutionSamples.length} 条机构记录`,
       summary: "将图像、馆藏、专题接口与资源出处归并成可核验的机构级证据。",
+      traceNote: "样本会同时保留机构名、年份与图像出处/字段说明中的至少一项。",
       samples: signals.institutionSamples
         .slice(0, 4)
-        .map((item) => `${item.title} · ${item.institution}${item.year ? ` · ${item.year}` : ""}`),
+        .map((item) => ({
+          label: item.title,
+          detail: [
+            item.institution,
+            item.year,
+            item.imageRef || item.sourceText,
+          ]
+            .filter(Boolean)
+            .join(" · "),
+        })),
     });
   }
 

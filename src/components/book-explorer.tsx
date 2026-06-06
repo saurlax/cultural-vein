@@ -737,14 +737,20 @@ export function BookExplorer({
                     <p className="mt-3 text-sm leading-6 text-stone-300">
                       {item.summary}
                     </p>
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="mt-2 text-xs leading-6 text-amber-100/75">
+                      {item.traceNote}
+                    </div>
+                    <div className="mt-3 grid gap-2">
                       {item.samples.map((sample) => (
-                        <span
-                          key={`${item.id}-${sample}`}
-                          className="rounded-full border border-white/10 bg-black/15 px-3 py-1 text-[11px] text-stone-300"
+                        <div
+                          key={`${item.id}-${sample.label}-${sample.detail ?? "detail"}`}
+                          className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3"
                         >
-                          {sample}
-                        </span>
+                          <div className="text-sm text-stone-100">{sample.label}</div>
+                          {sample.detail ? (
+                            <div className="mt-1 text-xs text-stone-400">{sample.detail}</div>
+                          ) : null}
+                        </div>
                       ))}
                     </div>
                   </div>
