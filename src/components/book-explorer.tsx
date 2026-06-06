@@ -617,6 +617,27 @@ export function BookExplorer({
   const handleFocusEventEvidence = () => {
     setSelectedSourceEvidenceId("event-samples");
   };
+  const handleSelectEventSample = (event: {
+    venue: string;
+    title: string;
+    status: string;
+    startTime: string;
+  }) => {
+    const matchedTimeline =
+      visibleTimeline.find((item) => {
+        return (
+          event.startTime.includes(String(item.year)) ||
+          item.title.includes(event.title) ||
+          event.title.includes(item.title)
+        );
+      }) ?? null;
+
+    if (matchedTimeline?.id) {
+      setSelectedTimelineId(matchedTimeline.id);
+    }
+
+    setSelectedSourceEvidenceId("event-samples");
+  };
   const handleFocusCbdbEvidence = (personId?: string | null) => {
     setSelectedSourceEvidenceId("cbdb-people");
 
@@ -2567,7 +2588,7 @@ export function BookExplorer({
                 {detail.realWorldSignals.eventSamples.map((event) => (
                   <div
                     key={`${event.venue}-${event.title}-${event.startTime}`}
-                    className="rounded-2xl bg-white/5 px-3 py-3"
+                    className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <span className="text-sm font-medium text-stone-100">
@@ -2579,6 +2600,39 @@ export function BookExplorer({
                     </div>
                     <div className="mt-2 text-xs text-stone-400">
                       {event.venue} · {event.startTime}
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleSelectEventSample(event)}
+                        className="rounded-full border border-amber-300/25 bg-amber-300/12 px-3 py-1.5 text-xs text-amber-100 transition hover:bg-amber-300/18"
+                      >
+                        定位当前时间线
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleFocusEventEvidence}
+                        className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
+                      >
+                        打开事件证据
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const matchedSpread =
+                            linkedVenueSpreadMap.get(event.venue) ?? activeSpread ?? visibleSpread[0] ?? null;
+
+                          if (matchedSpread?.id) {
+                            setSelectedSpreadId(matchedSpread.id);
+                          }
+
+                          setSelectedSourceEvidenceId("venue-samples");
+                          setTab("spread");
+                        }}
+                        className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-stone-300 transition hover:bg-white/10"
+                      >
+                        对应场馆传播
+                      </button>
                     </div>
                   </div>
                 ))}
