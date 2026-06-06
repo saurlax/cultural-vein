@@ -99,7 +99,9 @@ export function VersionTree({
                 className={`flex-1 rounded-[22px] border px-4 py-4 text-left transition ${
                   isActive
                     ? "border-amber-300/35 bg-amber-300/10 shadow-lg shadow-amber-500/10"
-                    : "border-white/10 bg-white/5 hover:bg-white/10"
+                    : version.status === "佚失"
+                      ? "border-slate-300/12 bg-[rgba(148,163,184,0.08)] hover:bg-[rgba(148,163,184,0.12)]"
+                      : "border-white/10 bg-white/5 hover:bg-white/10"
                 }`}
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -117,7 +119,7 @@ export function VersionTree({
                       className={`rounded-full px-2 py-1 text-[10px] ${
                         version.status === "存世"
                           ? "bg-emerald-300/10 text-emerald-100"
-                          : "bg-white/10 text-stone-300"
+                          : "border border-slate-300/15 bg-slate-300/10 text-slate-200"
                       }`}
                     >
                       {version.status}

@@ -7,7 +7,7 @@ import { SpreadGlobe } from "@/components/spread-globe";
 import { TraceLightField } from "@/components/trace-light-field";
 import { VersionTree } from "@/components/version-tree";
 import { buildSourceEvidence } from "@/lib/source-evidence";
-import type { BookDetail, BookNode, RiverEra } from "@/types/domain";
+import type { BookDetail, BookNode, RiverEra, VersionNode } from "@/types/domain";
 
 const tabs = [
   { id: "spread", label: "地理传播" },
@@ -143,6 +143,22 @@ function versionSourceMeta(library: string) {
     label: "版本流变建模",
       tone: "curated" as const,
     detail: "当前版本节点用于说明流变结构，后续可继续接入更多真实馆藏或 IIIF 资源。",
+  };
+}
+
+function versionStatusMeta(status: VersionNode["status"]) {
+  if (status === "存世") {
+    return {
+      badge: "今有存本",
+      badgeClass: "border-emerald-300/25 bg-emerald-300/10 text-emerald-100",
+      detail: "当前版本仍有明确流传记录，可作为版本链中的可见落点。",
+    };
+  }
+
+  return {
+    badge: "仅见佚痕",
+    badgeClass: "border-slate-300/18 bg-slate-300/10 text-slate-100",
+    detail: "当前版本主要通过前后版本关系或文献说明被间接复原，用于标记失传层。",
   };
 }
 
@@ -464,6 +480,9 @@ export function BookExplorer({
   };
   const spreadMeta = spreadSourceMeta(Boolean(detail.realWorldSignals?.venueSamples?.length));
   const activeVersionMeta = activeVersion ? versionSourceMeta(activeVersion.library) : null;
+  const activeVersionStatusMeta = activeVersion
+    ? versionStatusMeta(activeVersion.status)
+    : null;
   const activeTimelineMeta = activeTimelineItem
     ? timelineSourceMeta(activeTimelineItem.source)
     : null;
@@ -1281,11 +1300,18 @@ export function BookExplorer({
                               className={`rounded-full px-3 py-1 text-xs ${
                                 activeVersion.status === "存世"
                                   ? "bg-emerald-300/10 text-emerald-100"
-                                  : "bg-white/10 text-stone-300"
+                                  : "border border-slate-300/15 bg-slate-300/10 text-slate-100"
                               }`}
                             >
                               {activeVersion.status}
                             </span>
+                            {activeVersionStatusMeta ? (
+                              <span
+                                className={`rounded-full border px-3 py-1 text-xs ${activeVersionStatusMeta.badgeClass}`}
+                              >
+                                {activeVersionStatusMeta.badge}
+                              </span>
+                            ) : null}
                           </div>
                         </div>
 
@@ -1293,6 +1319,16 @@ export function BookExplorer({
                           <p className="mt-4 text-sm leading-7 text-stone-300">
                             {activeVersion.note}
                           </p>
+                        ) : null}
+                        {activeVersionStatusMeta ? (
+                          <div className="mt-4 rounded-2xl border border-slate-300/10 bg-slate-300/5 px-4 py-4">
+                            <div className="text-xs tracking-[0.2em] text-slate-200/80">
+                              存佚判断
+                            </div>
+                            <p className="mt-2 text-sm leading-7 text-stone-300">
+                              {activeVersionStatusMeta.detail}
+                            </p>
+                          </div>
                         ) : null}
                         {activeVersionMeta ? (
                           <div className="mt-4 rounded-2xl border border-amber-300/12 bg-amber-300/6 px-4 py-4">
@@ -1335,6 +1371,28 @@ export function BookExplorer({
                             </div>
                           </div>
                         </div>
+
+                        <div className="mt-4 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                              版本证据卡
+                            </div>
+                            <div className="rounded-full bg-white/10 px-3 py-1 text-[10px] text-stone-300">
+                              {activeVersion.editionType ?? "版本节点"}
+                            </div>
+                          </div>
+                          <div className="mt-3 grid gap-2 text-sm text-stone-300">
+                            <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+                              馆藏 / 系统：{activeVersion.library}
+                            </div>
+                            <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+                              存佚状态：{activeVersion.status}
+                            </div>
+                            <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+                              版本说明：{activeVersion.note ?? "当前节点用于说明版本流变位置。"}
+                            </div>
+                          </div>
+                        </div>
                       </>
                     ) : null}
                   </div>
@@ -1349,7 +1407,7 @@ export function BookExplorer({
                   存世状态与版本类型同时编码，既能看传播链，也能看哪些层次已经失传或仅能间接复原。
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
-                  下一步可以把这组节点进一步接到真正的树图或 IIIF 页面浏览入口上。
+                  当前版本卡已经把馆藏/系统、存佚判断和版本说明集中到一处，便于现场直接说明版本证据。
                 </div>
               </div>
             </>
