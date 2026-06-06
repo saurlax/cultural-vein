@@ -5,7 +5,7 @@ import { Line, OrbitControls, PerspectiveCamera, Text } from "@react-three/drei"
 import { type ElementRef, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
-import type { TraceFocusState } from "@/components/book-explorer";
+import type { SceneFocusState, TraceFocusState } from "@/components/book-explorer";
 import type { BookNode, CitationEdge } from "@/types/domain";
 import type { RiverEra, ViewMode } from "@/types/domain";
 
@@ -32,6 +32,7 @@ interface RiverSceneProps {
   hoveredBranchId?: string | null;
   onHoverBranch?: (branchId: string | null) => void;
   traceFocus?: TraceFocusState | null;
+  sceneFocus?: SceneFocusState | null;
   visibleNodeCount?: number;
   totalNodeCount?: number;
 }
@@ -265,6 +266,7 @@ function BookMarkers({
   activeEra,
   viewMode,
   traceFocus,
+  sceneFocus,
 }: {
   books: BookNode[];
   selectedBookSlug: string;
@@ -272,6 +274,7 @@ function BookMarkers({
   activeEra: RiverEra;
   viewMode: ViewMode;
   traceFocus?: TraceFocusState | null;
+  sceneFocus?: SceneFocusState | null;
 }) {
   const eraOrder: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
   const activeIndex = eraOrder.indexOf(activeEra);
@@ -300,13 +303,18 @@ function BookMarkers({
         const isNewestVisible = bookEraIndex === activeIndex;
         const isTraceLinked = traceTitleSet.has(book.title);
         const isTraceCurrent = traceFocus?.currentTitle === book.title;
+        const isSceneFocused =
+          sceneFocus?.active === true && sceneFocus.currentTitle === book.title;
         const shouldDim =
-          (viewMode === "book" || Boolean(traceFocus?.active)) &&
+          (viewMode === "book" || Boolean(traceFocus?.active) || Boolean(sceneFocus?.active)) &&
           !isSelected &&
           !isTraceLinked &&
+          !isSceneFocused &&
           !isNewestVisible;
         const markerColor = isTraceCurrent
           ? "#fbbf24"
+          : isSceneFocused
+            ? "#fde68a"
           : isSelected
             ? "#fcd34d"
             : isTraceLinked
@@ -314,6 +322,8 @@ function BookMarkers({
               : "#f8e7b2";
         const emissive = isTraceCurrent
           ? "#f59e0b"
+          : isSceneFocused
+            ? "#f59e0b"
           : isSelected
             ? "#f59e0b"
             : isTraceLinked
@@ -323,6 +333,8 @@ function BookMarkers({
                 : "#eab308";
         const markerSize = isTraceCurrent
           ? 0.25
+          : isSceneFocused
+            ? 0.22
           : isSelected
             ? 0.22
             : isTraceLinked
@@ -376,6 +388,8 @@ function BookMarkers({
             >
               {isTraceCurrent
                 ? `${book.shortTitle} · 当前溯源`
+                : isSceneFocused
+                  ? `${book.shortTitle} · 场景联动`
                 : isTraceLinked
                   ? `${book.shortTitle} · 溯源链`
                   : isNewestVisible
@@ -394,11 +408,13 @@ function CitationArcs({
   citations,
   selectedBookSlug,
   traceFocus,
+  sceneFocus,
 }: {
   books: BookNode[];
   citations: CitationEdge[];
   selectedBookSlug: string;
   traceFocus?: TraceFocusState | null;
+  sceneFocus?: SceneFocusState | null;
 }) {
   const bookMap = useMemo(
     () => new Map(books.map((book) => [book.id, book])),
@@ -430,7 +446,10 @@ function CitationArcs({
         const sourceSelected = source.slug === selectedBookSlug;
         const targetSelected = target.slug === selectedBookSlug;
         const traceLinked = traceTitleSet.has(source.title) || traceTitleSet.has(target.title);
-        const isFocusedArc = sourceSelected || targetSelected || traceLinked;
+        const sceneLinked =
+          sceneFocus?.active === true &&
+          (source.title === sceneFocus.currentTitle || target.title === sceneFocus.currentTitle);
+        const isFocusedArc = sourceSelected || targetSelected || traceLinked || sceneLinked;
         const color =
           citation.layer === "metadata"
             ? "#f8fafc"
@@ -458,9 +477,11 @@ function CitationArcs({
 function FocusHalo({
   selectedBookPosition,
   traceFocus,
+  sceneFocus,
 }: {
   selectedBookPosition: THREE.Vector3 | null;
   traceFocus?: TraceFocusState | null;
+  sceneFocus?: SceneFocusState | null;
 }) {
   const haloRef = useRef<THREE.Mesh>(null);
 
@@ -473,7 +494,7 @@ function FocusHalo({
     haloRef.current.scale.set(pulse, pulse, pulse);
     const material = haloRef.current.material;
     if (material instanceof THREE.MeshBasicMaterial) {
-      material.opacity = traceFocus?.active ? 0.24 : 0.16;
+      material.opacity = traceFocus?.active ? 0.24 : sceneFocus?.active ? 0.22 : 0.16;
     }
   });
 
@@ -488,7 +509,11 @@ function FocusHalo({
       position={[selectedBookPosition.x, selectedBookPosition.y - 0.05, selectedBookPosition.z]}
     >
       <ringGeometry args={[0.36, 0.62, 48]} />
-      <meshBasicMaterial color={traceFocus?.active ? "#f59e0b" : "#fcd34d"} transparent opacity={0.16} />
+      <meshBasicMaterial
+        color={traceFocus?.active ? "#f59e0b" : sceneFocus?.active ? "#fde68a" : "#fcd34d"}
+        transparent
+        opacity={0.16}
+      />
     </mesh>
   );
 }
@@ -576,6 +601,7 @@ function RiverWorld({
   hoveredBranchId,
   onHoverBranch,
   traceFocus,
+  sceneFocus,
 }: RiverSceneProps) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
   const controlsRef = useRef<OrbitControlsInstance>(null);
@@ -632,7 +658,7 @@ function RiverWorld({
     );
   }, [books]);
   useEffect(() => {
-    const focusPoint = traceFocus?.active
+    const focusPoint = traceFocus?.active || sceneFocus?.active
       ? cameraTarget.clone()
       : selectedBookPosition ?? new THREE.Vector3(3.5, 0, 0);
 
@@ -642,6 +668,9 @@ function RiverWorld({
     if (traceFocus?.active) {
       nextTarget = focusPoint;
       nextPosition = focusPoint.clone().add(new THREE.Vector3(1.65, 1.25, 3.2));
+    } else if (sceneFocus?.active) {
+      nextTarget = focusPoint.clone().add(new THREE.Vector3(0, 0.08, 0));
+      nextPosition = focusPoint.clone().add(new THREE.Vector3(1.75, 1.9, 4.75));
     } else if (cinematicState === "diving" && selectedBookPosition) {
       nextTarget = focusPoint.clone().add(new THREE.Vector3(0.18, 0.12, 0));
       nextPosition = focusPoint.clone().add(new THREE.Vector3(0.45, 3.2, 6.4));
@@ -655,7 +684,7 @@ function RiverWorld({
 
     desiredCameraPosition.current.copy(nextPosition);
     desiredCameraTarget.current.copy(nextTarget);
-  }, [cameraTarget, cinematicState, selectedBookPosition, traceFocus, viewMode]);
+  }, [cameraTarget, cinematicState, sceneFocus, selectedBookPosition, traceFocus, viewMode]);
 
   useFrame((_, delta) => {
     if (!cameraRef.current) {
@@ -663,9 +692,25 @@ function RiverWorld({
     }
 
     const positionEase =
-      traceFocus?.active ? 5.6 : cinematicState === "diving" ? 6.8 : cinematicState === "returning" ? 4.8 : 3.8;
+      traceFocus?.active
+        ? 5.6
+        : sceneFocus?.active
+          ? 5
+          : cinematicState === "diving"
+            ? 6.8
+            : cinematicState === "returning"
+              ? 4.8
+              : 3.8;
     const targetEase =
-      traceFocus?.active ? 6.2 : cinematicState === "diving" ? 7.4 : cinematicState === "returning" ? 5 : 4.2;
+      traceFocus?.active
+        ? 6.2
+        : sceneFocus?.active
+          ? 5.4
+          : cinematicState === "diving"
+            ? 7.4
+            : cinematicState === "returning"
+              ? 5
+              : 4.2;
     const positionAlpha = 1 - Math.exp(-positionEase * delta);
     const targetAlpha = 1 - Math.exp(-targetEase * delta);
 
@@ -792,8 +837,13 @@ function RiverWorld({
         citations={citations}
         selectedBookSlug={selectedBookSlug}
         traceFocus={traceFocus}
+        sceneFocus={sceneFocus}
       />
-      <FocusHalo selectedBookPosition={selectedBookPosition} traceFocus={traceFocus} />
+      <FocusHalo
+        selectedBookPosition={selectedBookPosition}
+        traceFocus={traceFocus}
+        sceneFocus={sceneFocus}
+      />
       <BranchMarkers
         annotations={branchAnnotations}
         selectedBookSlug={selectedBookSlug}
@@ -808,6 +858,7 @@ function RiverWorld({
         activeEra={activeEra}
         viewMode={viewMode}
         traceFocus={traceFocus}
+        sceneFocus={sceneFocus}
       />
       <OrbitControls
         ref={controlsRef}
@@ -842,6 +893,8 @@ export function RiverScene(props: RiverSceneProps) {
       <div className="pointer-events-none absolute right-5 top-5 z-10 rounded-full border border-amber-200/15 bg-[#2d1d0c]/70 px-4 py-2 text-[11px] text-stone-300">
         {props.traceFocus?.active
           ? `溯源联动 ${props.traceFocus.progress}/${props.traceFocus.total}`
+          : props.sceneFocus?.active
+            ? props.sceneFocus.contextLabel
           : props.cinematicState === "diving"
             ? "镜头俯冲中"
             : props.cinematicState === "returning"

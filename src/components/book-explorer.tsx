@@ -25,6 +25,14 @@ export interface TraceFocusState {
   total: number;
 }
 
+export interface SceneFocusState {
+  active: boolean;
+  mode: "spread" | "people" | "versions" | "timeline";
+  currentTitle: string | null;
+  contextLabel: string;
+  detail: string;
+}
+
 const eraOrder: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
 const eraYearRange: Record<RiverEra, { start: number; end: number }> = {
   "先秦": { start: -2000, end: -221 },
@@ -158,12 +166,14 @@ export function BookExplorer({
   forcedTab,
   activeEra,
   onTraceFocusChange,
+  onSceneFocusChange,
 }: {
   book: BookNode;
   detail: BookDetail;
   forcedTab?: ExplorerTab | null;
   activeEra: RiverEra;
   onTraceFocusChange?: (focus: TraceFocusState | null) => void;
+  onSceneFocusChange?: (focus: SceneFocusState | null) => void;
 }) {
   const [tab, setTab] = useState<ExplorerTab>("spread");
   const [passageLayout, setPassageLayout] = useState<"horizontal" | "vertical">("horizontal");
@@ -276,12 +286,16 @@ export function BookExplorer({
     visibleVersions.find((item) => item.id === resolvedVersionId) ?? visibleVersions[0];
   const activeTimelineItem =
     visibleTimeline.find((item) => item.id === resolvedTimelineId) ?? visibleTimeline[0];
-  const activeSpreadPlaces = activeSpread
-    ? {
-        from: detail.places.find((place) => place.id === activeSpread.fromPlaceId),
-        to: detail.places.find((place) => place.id === activeSpread.toPlaceId),
-      }
-    : null;
+  const activeSpreadPlaces = useMemo(() => {
+    if (!activeSpread) {
+      return null;
+    }
+
+    return {
+      from: detail.places.find((place) => place.id === activeSpread.fromPlaceId),
+      to: detail.places.find((place) => place.id === activeSpread.toPlaceId),
+    };
+  }, [activeSpread, detail.places]);
   const activePassage = useMemo(() => {
     return visiblePassages.find((passage) => passage.id === selectedPassageId) ?? visiblePassages[0];
   }, [selectedPassageId, visiblePassages]);
@@ -308,6 +322,62 @@ export function BookExplorer({
       total: activePassage.tracePath.length,
     };
   }, [activePassage, activeTab, book.title, tracePlaying, traceStep]);
+  const activeSceneFocus = useMemo<SceneFocusState | null>(() => {
+    if (activeTraceFocus?.active) {
+      return null;
+    }
+
+    if (activeTab === "spread" && activeSpread && activeSpreadPlaces?.from && activeSpreadPlaces.to) {
+      return {
+        active: true,
+        mode: "spread",
+        currentTitle: book.title,
+        contextLabel: `传播联动：${activeSpreadPlaces.from.name} 至 ${activeSpreadPlaces.to.name}`,
+        detail: `${activeSpread.startYear} 至 ${activeSpread.endYear} 的传播航段已回灌到主河道焦点。`,
+      };
+    }
+
+    if (activeTab === "people" && activePerson) {
+      return {
+        active: true,
+        mode: "people",
+        currentTitle: book.title,
+        contextLabel: `人物联动：${activePerson.name}`,
+        detail: `${activePerson.name} 的关系层级与人物角色正在驱动主河道聚焦当前典籍及其直接关系。`,
+      };
+    }
+
+    if (activeTab === "versions" && activeVersion) {
+      return {
+        active: true,
+        mode: "versions",
+        currentTitle: book.title,
+        contextLabel: `版本联动：${activeVersion.label}`,
+        detail: `${activeVersion.year} 年的版本节点已映射回主河道，强化典籍在流变链中的位置。`,
+      };
+    }
+
+    if (activeTab === "timeline" && activeTimelineItem) {
+      return {
+        active: true,
+        mode: "timeline",
+        currentTitle: book.title,
+        contextLabel: `时间联动：${activeTimelineItem.title}`,
+        detail: `${activeTimelineItem.year} 年事件正驱动主河道对当前典籍的镜头聚焦。`,
+      };
+    }
+
+    return null;
+  }, [
+    activePerson,
+    activeSpread,
+    activeSpreadPlaces,
+    activeTab,
+    activeTimelineItem,
+    activeTraceFocus?.active,
+    activeVersion,
+    book.title,
+  ]);
 
   useEffect(() => {
     if (!activePassage?.tracePath?.length || !tracePlaying) {
@@ -337,6 +407,14 @@ export function BookExplorer({
       onTraceFocusChange?.(null);
     };
   }, [activeTraceFocus, onTraceFocusChange]);
+
+  useEffect(() => {
+    onSceneFocusChange?.(activeSceneFocus);
+
+    return () => {
+      onSceneFocusChange?.(null);
+    };
+  }, [activeSceneFocus, onSceneFocusChange]);
   const sourceBadges = detail.realWorldSignals?.sourceLabel
     ? detail.realWorldSignals.sourceLabel.split("+").map((item) => item.trim()).filter(Boolean)
     : [];

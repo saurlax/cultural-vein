@@ -2,7 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import { BookExplorer, type TraceFocusState } from "@/components/book-explorer";
+import {
+  BookExplorer,
+  type SceneFocusState,
+  type TraceFocusState,
+} from "@/components/book-explorer";
 import { RiverScene, type RiverBranchAnnotation } from "@/components/river-scene";
 import { riverDataset } from "@/data/river-dataset";
 import { useCulturalVeinStore } from "@/store/app-store";
@@ -91,6 +95,7 @@ export function CulturalVeinShell() {
   const [insights, setInsights] = useState<DatasetInsight | null>(null);
   const [hoveredBranchId, setHoveredBranchId] = useState<string | null>(null);
   const [traceFocus, setTraceFocus] = useState<TraceFocusState | null>(null);
+  const [sceneFocus, setSceneFocus] = useState<SceneFocusState | null>(null);
   const [showMobileControls, setShowMobileControls] = useState(false);
   const [showMobileDossier, setShowMobileDossier] = useState(false);
   const [showDesktopDossier, setShowDesktopDossier] = useState(false);
@@ -219,6 +224,7 @@ export function CulturalVeinShell() {
     setTransitionState("returning");
     window.setTimeout(() => {
       setTraceFocus(null);
+      setSceneFocus(null);
       setShowDesktopDossier(false);
       setShowMobileDossier(false);
       resetSelection();
@@ -244,6 +250,8 @@ export function CulturalVeinShell() {
   ].filter(Boolean).length;
   const focusModeLabel = traceFocus?.active
     ? "逆流溯源"
+    : sceneFocus?.active
+      ? "场景联动"
     : viewMode === "book"
       ? "典籍钻入"
       : "河流巡航";
@@ -587,7 +595,11 @@ export function CulturalVeinShell() {
                         <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
                           <div className="text-stone-500">河流联动</div>
                           <div className="mt-1 text-sm font-medium text-stone-100">
-                            {traceFocus?.active ? `${traceFocus.progress}/${traceFocus.total}` : "就绪"}
+                            {traceFocus?.active
+                              ? `${traceFocus.progress}/${traceFocus.total}`
+                              : sceneFocus?.active
+                                ? sceneFocus.contextLabel
+                                : "就绪"}
                           </div>
                         </div>
                       </div>
@@ -598,6 +610,7 @@ export function CulturalVeinShell() {
                         detail={selectedDetail}
                         activeEra={activeEra}
                         onTraceFocusChange={setTraceFocus}
+                        onSceneFocusChange={setSceneFocus}
                       />
                     </div>
                 </div>
@@ -619,6 +632,7 @@ export function CulturalVeinShell() {
             hoveredBranchId={hoveredBranchId}
             onHoverBranch={setHoveredBranchId}
             traceFocus={traceFocus}
+            sceneFocus={sceneFocus}
             visibleNodeCount={filteredBooks.length}
             totalNodeCount={riverDataset.books.length}
           />
@@ -642,6 +656,10 @@ export function CulturalVeinShell() {
                 {traceFocus?.active ? (
                   <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-2 text-amber-100">
                     溯源推进 {traceFocus.progress}/{traceFocus.total} · {traceFocus.currentTitle}
+                  </span>
+                ) : sceneFocus?.active ? (
+                  <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-2 text-amber-100">
+                    {sceneFocus.contextLabel}
                   </span>
                 ) : null}
                 {selectedBook ? (
