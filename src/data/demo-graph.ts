@@ -252,8 +252,10 @@ function mergePeople(names: string[], fallback: PersonNode[]): PersonNode[] {
 
 const peopleMergePlan: Partial<Record<string, string[]>> = {
   shijing: ["孔颖达", "朱熹", "王国维"],
+  shangshu: ["孔颖达", "蔡沈"],
   "sishu-zhangju": ["朱熹"],
   shiji: ["司马迁"],
+  mengzi: ["孟子", "朱熹"],
   "zi-zhi-tong-jian": ["司马光", "刘恕"],
   "ri-zhi-lu": ["顾炎武"],
   "ren-jian-ci-hua": ["王国维"],
@@ -276,7 +278,7 @@ if (shanghaiLibraryActivity.available) {
     startTime: record["预约开始时间"] ?? "",
   }));
 
-  for (const slug of ["shijing", "sishu-zhangju"] as const) {
+  for (const slug of ["shijing", "shangshu", "mengzi", "sishu-zhangju"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       sourceLabel: "CBDB 人物 + 上海图书馆活动样本",
@@ -367,7 +369,14 @@ if (cbdbSummary.available) {
     .map((item) => `${item.name} ${item.count.toLocaleString()}`)
     .join(" / ");
 
-  for (const slug of ["shijing", "sishu-zhangju", "shiji", "zi-zhi-tong-jian"] as const) {
+  for (const slug of [
+    "shijing",
+    "shangshu",
+    "mengzi",
+    "sishu-zhangju",
+    "shiji",
+    "zi-zhi-tong-jian",
+  ] as const) {
     const detail = details[slug];
     const matchedCount = detail.people.filter((person) => person.source === "cbdb").length;
     const fallbackCount = detail.people.filter((person) => person.source !== "cbdb").length;

@@ -26,6 +26,31 @@
       ]
     },
     {
+      "id": "book-shangshu",
+      "slug": "shangshu",
+      "title": "尚书",
+      "shortTitle": "尚书",
+      "dynasty": "先秦",
+      "year": -500,
+      "category": "经",
+      "school": "儒家经典",
+      "influence": 91,
+      "velocity": 0.24,
+      "branchLevel": 0,
+      "summary": "汇集上古政治文告与历史记忆，是治道叙事、经世修辞与正统观念的重要源头。",
+      "concepts": [
+        "治道",
+        "政教",
+        "天命",
+        "典章"
+      ],
+      "coordinates": [
+        -8.2,
+        0.6,
+        -0.25
+      ]
+    },
+    {
       "id": "book-liji",
       "slug": "liji",
       "title": "礼记",
@@ -73,6 +98,31 @@
         -4,
         -0.6,
         -0.8
+      ]
+    },
+    {
+      "id": "book-zuozhuan",
+      "slug": "zuozhuan",
+      "title": "春秋左传",
+      "shortTitle": "左传",
+      "dynasty": "先秦",
+      "year": -350,
+      "category": "史",
+      "school": "春秋史学",
+      "influence": 86,
+      "velocity": 0.27,
+      "branchLevel": 1,
+      "summary": "以叙事化方式展开《春秋》经义，是经史互证与政治事件书写的重要枢纽。",
+      "concepts": [
+        "春秋",
+        "史法",
+        "叙事",
+        "礼乐政治"
+      ],
+      "coordinates": [
+        -2.6,
+        -0.2,
+        -1.1
       ]
     },
     {
@@ -124,6 +174,31 @@
         4,
         0.6,
         0.1
+      ]
+    },
+    {
+      "id": "book-mengzi",
+      "slug": "mengzi",
+      "title": "孟子",
+      "shortTitle": "孟子",
+      "dynasty": "先秦",
+      "year": -300,
+      "category": "经",
+      "school": "儒家经典",
+      "influence": 89,
+      "velocity": 0.33,
+      "branchLevel": 1,
+      "summary": "以性善、王道与民本论述扩展孔门思想，是宋明理学与经世议论反复回流的关键节点。",
+      "concepts": [
+        "仁政",
+        "性善",
+        "王道",
+        "民本"
+      ],
+      "coordinates": [
+        0.8,
+        0.85,
+        0.55
       ]
     },
     {
@@ -213,6 +288,15 @@
       "evidence": "《礼记》多篇引《诗》以明礼乐教化。"
     },
     {
+      "id": "edge-1a",
+      "source": "book-liji",
+      "target": "book-shangshu",
+      "layer": "metadata",
+      "confidence": 1,
+      "label": "礼政互证",
+      "evidence": "《礼记》中的礼制与政教论述常与《尚书》典章、王命传统相互印证。"
+    },
+    {
       "id": "edge-2",
       "source": "book-lunyu-jizhu",
       "target": "book-liji",
@@ -229,6 +313,15 @@
       "confidence": 1,
       "label": "注疏汇流",
       "evidence": "四书系统化整合《论语集注》核心解释。"
+    },
+    {
+      "id": "edge-3a",
+      "source": "book-sishu-zhangju",
+      "target": "book-mengzi",
+      "layer": "metadata",
+      "confidence": 1,
+      "label": "四书纳入",
+      "evidence": "《孟子》作为四书之一，被纳入统一章句体系并成为主流教材。"
     },
     {
       "id": "edge-4",
@@ -249,6 +342,24 @@
       "evidence": "纪传与叙事判断延续《史记》史学传统。"
     },
     {
+      "id": "edge-5a",
+      "source": "book-shiji",
+      "target": "book-zuozhuan",
+      "layer": "metadata",
+      "confidence": 1,
+      "label": "叙事史源",
+      "evidence": "《史记》在人物塑造与事件铺陈上吸收《左传》叙事传统。"
+    },
+    {
+      "id": "edge-5b",
+      "source": "book-zi-zhi-tong-jian",
+      "target": "book-shangshu",
+      "layer": "semantic",
+      "confidence": 0.78,
+      "label": "治道回响",
+      "evidence": "《资治通鉴》对君臣政教的编年书写与《尚书》的治道话语形成持续呼应。"
+    },
+    {
       "id": "edge-6",
       "source": "book-ri-zhi-lu",
       "target": "book-sishu-zhangju",
@@ -265,6 +376,15 @@
       "confidence": 0.56,
       "label": "诗学影响",
       "evidence": "境界说吸收诗教与比兴传统。"
+    },
+    {
+      "id": "edge-7a",
+      "source": "book-ri-zhi-lu",
+      "target": "book-mengzi",
+      "layer": "influence",
+      "confidence": 0.61,
+      "label": "经世对话",
+      "evidence": "顾炎武关于天下国家与民生治理的论述，与《孟子》王道民本传统持续对话。"
     }
   ],
   "demoBookDetails": {
@@ -522,6 +642,193 @@
       "realWorldSignals": {
         "sourceLabel": "CBDB 人物 + 上图活动样本"
       }
+    },
+    "shangshu": {
+      "bookId": "book-shangshu",
+      "heroMetric": {
+        "directCitations": 88,
+        "downstreamInfluence": 268,
+        "coveredRegions": 7
+      },
+      "spread": [
+        {
+          "id": "spread-sshu-1",
+          "fromPlaceId": "place-haojing",
+          "toPlaceId": "place-luoyang",
+          "startYear": -400,
+          "endYear": 50,
+          "volume": 79
+        },
+        {
+          "id": "spread-sshu-2",
+          "fromPlaceId": "place-luoyang",
+          "toPlaceId": "place-kaifeng",
+          "startYear": 960,
+          "endYear": 1127,
+          "volume": 76
+        },
+        {
+          "id": "spread-sshu-3",
+          "fromPlaceId": "place-kaifeng",
+          "toPlaceId": "place-beijing",
+          "startYear": 1271,
+          "endYear": 1644,
+          "volume": 81
+        }
+      ],
+      "people": [
+        {
+          "id": "person-kongyingda-shangshu",
+          "name": "孔颖达",
+          "role": "注者",
+          "birthYear": 574,
+          "deathYear": 648,
+          "era": "唐",
+          "bio": "主持《尚书正义》编纂，使经义与政教解释体系化。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 1,
+          "relationType": "注"
+        },
+        {
+          "id": "person-cai-shen",
+          "name": "蔡沈",
+          "role": "注者",
+          "birthYear": 1167,
+          "deathYear": 1230,
+          "era": "南宋",
+          "bio": "撰《书集传》，推动《尚书》进入理学化、治道化的新解释阶段。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 2,
+          "relationType": "注"
+        }
+      ],
+      "places": [
+        {
+          "id": "place-haojing",
+          "name": "镐京",
+          "lat": 34.2667,
+          "lng": 108.8667,
+          "note": "周代政治记忆与典章叙事的象征起点"
+        },
+        {
+          "id": "place-luoyang",
+          "name": "洛阳",
+          "lat": 34.6197,
+          "lng": 112.454,
+          "note": "汉唐经学传播重镇"
+        },
+        {
+          "id": "place-kaifeng",
+          "name": "开封",
+          "lat": 34.7972,
+          "lng": 114.3076,
+          "note": "北宋经学重刊与学校传播节点"
+        },
+        {
+          "id": "place-beijing",
+          "name": "北京",
+          "lat": 39.9042,
+          "lng": 116.4074,
+          "note": "元明清官方经典教育的核心集散地"
+        }
+      ],
+      "versions": [
+        {
+          "id": "version-sshu-1",
+          "label": "伏生今文本系统",
+          "year": -150,
+          "place": "洛阳",
+          "library": "经师传授",
+          "status": "佚失",
+          "editionType": "祖本",
+          "note": "汉代今文《尚书》口授与写录系统，是后世传本的重要源头之一。"
+        },
+        {
+          "id": "version-sshu-2",
+          "label": "唐《尚书正义》本",
+          "year": 653,
+          "place": "长安",
+          "library": "国子监",
+          "status": "存世",
+          "parentId": "version-sshu-1",
+          "editionType": "刻本",
+          "note": "经义与疏解结合后，成为经学教育的标准形态。"
+        },
+        {
+          "id": "version-sshu-3",
+          "label": "南宋《书集传》系统",
+          "year": 1209,
+          "place": "建阳",
+          "library": "书坊",
+          "status": "存世",
+          "parentId": "version-sshu-2",
+          "editionType": "重刊本",
+          "note": "理学视角重释治道经典，使《尚书》重新汇入宋学主流。"
+        }
+      ],
+      "timeline": [
+        {
+          "id": "tl-sshu-1",
+          "year": -150,
+          "title": "今文本传授成形",
+          "detail": "汉代经师系统使《尚书》进入稳定的传授链条。"
+        },
+        {
+          "id": "tl-sshu-2",
+          "year": 653,
+          "title": "《尚书正义》成立",
+          "detail": "唐代义疏体系完成，经义解释趋于标准化。"
+        },
+        {
+          "id": "tl-sshu-3",
+          "year": 1209,
+          "title": "《书集传》流布",
+          "detail": "南宋理学将《尚书》重新接入治道与修身讨论。"
+        }
+      ],
+      "passages": [
+        {
+          "id": "passage-sshu-1",
+          "section": "尧典",
+          "original": "克明俊德，以亲九族；九族既睦，平章百姓。",
+          "links": [
+            {
+              "id": "passage-sshu-1-link-1",
+              "quote": "《礼记》礼治教化",
+              "sourceBookId": "book-liji",
+              "sourceTitle": "礼记",
+              "layer": "semantic",
+              "confidenceLabel": "中",
+              "evidence": "德教与秩序的展开方式与《礼记》礼治逻辑形成互证。"
+            }
+          ],
+          "tracePath": [
+            {
+              "id": "trace-sshu-1",
+              "title": "尚书",
+              "relation": "治道源典",
+              "note": "提供关于德治、王命与政教秩序的核心话语资源。"
+            },
+            {
+              "id": "trace-sshu-2",
+              "title": "礼记",
+              "relation": "礼制转译",
+              "note": "将政治教化资源转写为更具体的礼制与修身语境。"
+            }
+          ],
+          "downstreamInfluence": [
+            {
+              "id": "down-sshu-1",
+              "targetTitle": "资治通鉴",
+              "relation": "治道再编年化",
+              "note": "后世史书将《尚书》的治道命题嵌入具体历史事件判断。",
+              "confidenceLabel": "中"
+            }
+          ]
+        }
+      ]
     },
     "sishu-zhangju": {
       "bookId": "book-sishu-zhangju",
@@ -794,6 +1101,380 @@
       ],
       "passages": []
     },
+    "zuozhuan": {
+      "bookId": "book-zuozhuan",
+      "heroMetric": {
+        "directCitations": 79,
+        "downstreamInfluence": 218,
+        "coveredRegions": 5
+      },
+      "spread": [
+        {
+          "id": "spread-zzh-1",
+          "fromPlaceId": "place-lu-state",
+          "toPlaceId": "place-luoyang",
+          "startYear": -300,
+          "endYear": 200,
+          "volume": 68
+        },
+        {
+          "id": "spread-zzh-2",
+          "fromPlaceId": "place-luoyang",
+          "toPlaceId": "place-changan",
+          "startYear": 600,
+          "endYear": 750,
+          "volume": 73
+        }
+      ],
+      "people": [
+        {
+          "id": "person-zuoqiuming",
+          "name": "左丘明",
+          "role": "作者",
+          "birthYear": -556,
+          "deathYear": -451,
+          "era": "春秋",
+          "bio": "传统上被视为《左传》作者，象征春秋史事叙述的源头。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 1,
+          "relationType": "著"
+        },
+        {
+          "id": "person-duyu",
+          "name": "杜预",
+          "role": "注者",
+          "birthYear": 222,
+          "deathYear": 285,
+          "era": "西晋",
+          "bio": "《春秋左氏经传集解》奠定后世阅读《左传》的重要注释底本。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 2,
+          "relationType": "注"
+        }
+      ],
+      "places": [
+        {
+          "id": "place-lu-state",
+          "name": "鲁地",
+          "lat": 35.6,
+          "lng": 117.0,
+          "note": "春秋史事叙述的文化原场"
+        },
+        {
+          "id": "place-luoyang",
+          "name": "洛阳",
+          "lat": 34.6197,
+          "lng": 112.454,
+          "note": "两汉经史文献聚合地"
+        },
+        {
+          "id": "place-changan",
+          "name": "长安",
+          "lat": 34.3416,
+          "lng": 108.9398,
+          "note": "唐代义疏与经典教育中心"
+        }
+      ],
+      "versions": [
+        {
+          "id": "version-zzh-1",
+          "label": "古写本系统",
+          "year": -100,
+          "place": "洛阳",
+          "library": "传抄系统",
+          "status": "佚失",
+          "editionType": "祖本",
+          "note": "秦汉之际形成的写本流传系统，今多赖后出注本追索。"
+        },
+        {
+          "id": "version-zzh-2",
+          "label": "杜预集解本",
+          "year": 285,
+          "place": "洛阳",
+          "library": "私家注本",
+          "status": "存世",
+          "parentId": "version-zzh-1",
+          "editionType": "刻本",
+          "note": "以注文统摄史事，是后世《左传》学习的核心入口。"
+        },
+        {
+          "id": "version-zzh-3",
+          "label": "唐石经系统",
+          "year": 837,
+          "place": "长安",
+          "library": "太学",
+          "status": "存世",
+          "parentId": "version-zzh-2",
+          "editionType": "重刊本",
+          "note": "进入官方经典系统后，促进经史合流的长期传播。"
+        }
+      ],
+      "timeline": [
+        {
+          "id": "tl-zzh-1",
+          "year": -300,
+          "title": "叙事传统成型",
+          "detail": "《左传》以历史事件铺陈《春秋》经义，形成经史互证典范。"
+        },
+        {
+          "id": "tl-zzh-2",
+          "year": 285,
+          "title": "杜预集解",
+          "detail": "西晋注释系统让《左传》获得更稳定的阅读框架。"
+        },
+        {
+          "id": "tl-zzh-3",
+          "year": 837,
+          "title": "纳入石经体系",
+          "detail": "唐代官方经典化推动其进入更广阔的教育网络。"
+        }
+      ],
+      "passages": [
+        {
+          "id": "passage-zzh-1",
+          "section": "僖公叙事",
+          "original": "国之大事，在祀与戎。",
+          "links": [
+            {
+              "id": "passage-zzh-1-link-1",
+              "quote": "《史记》事件与制度叙事",
+              "sourceBookId": "book-shiji",
+              "sourceTitle": "史记",
+              "layer": "influence",
+              "confidenceLabel": "低",
+              "evidence": "后世史学在叙事节奏与政治判断上延续《左传》传统。"
+            }
+          ],
+          "tracePath": [
+            {
+              "id": "trace-zzh-1",
+              "title": "春秋左传",
+              "relation": "事件叙事原型",
+              "note": "把礼乐政治与战争、外交事件编织成连续叙事。"
+            },
+            {
+              "id": "trace-zzh-2",
+              "title": "史记",
+              "relation": "史家扩写",
+              "note": "司马迁将事件判断扩充为人物与时代并进的宏大叙述。"
+            }
+          ],
+          "downstreamInfluence": [
+            {
+              "id": "down-zzh-1",
+              "targetTitle": "资治通鉴",
+              "relation": "编年史学回流",
+              "note": "经史互证传统继续影响后世编年体的政治判断。",
+              "confidenceLabel": "中"
+            }
+          ]
+        }
+      ]
+    },
+    "mengzi": {
+      "bookId": "book-mengzi",
+      "heroMetric": {
+        "directCitations": 92,
+        "downstreamInfluence": 276,
+        "coveredRegions": 8
+      },
+      "spread": [
+        {
+          "id": "spread-mz-1",
+          "fromPlaceId": "place-zou",
+          "toPlaceId": "place-luoyang",
+          "startYear": -200,
+          "endYear": 100,
+          "volume": 74
+        },
+        {
+          "id": "spread-mz-2",
+          "fromPlaceId": "place-luoyang",
+          "toPlaceId": "place-jianyang",
+          "startYear": 1100,
+          "endYear": 1250,
+          "volume": 88
+        },
+        {
+          "id": "spread-mz-3",
+          "fromPlaceId": "place-jianyang",
+          "toPlaceId": "place-beijing",
+          "startYear": 1315,
+          "endYear": 1644,
+          "volume": 93
+        }
+      ],
+      "people": [
+        {
+          "id": "person-mengke",
+          "name": "孟子",
+          "role": "作者",
+          "birthYear": -372,
+          "deathYear": -289,
+          "era": "战国",
+          "bio": "以仁政、王道与性善学说扩展儒家政治伦理话语。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 1,
+          "relationType": "著"
+        },
+        {
+          "id": "person-zhuxi-mengzi",
+          "name": "朱熹",
+          "role": "注者",
+          "birthYear": 1130,
+          "deathYear": 1200,
+          "era": "南宋",
+          "bio": "通过章句系统将《孟子》推入四书核心结构，强化其理学入口地位。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 2,
+          "relationType": "注"
+        }
+      ],
+      "places": [
+        {
+          "id": "place-zou",
+          "name": "邹鲁",
+          "lat": 35.4006,
+          "lng": 116.9656,
+          "note": "孟子思想的文化原点"
+        },
+        {
+          "id": "place-luoyang",
+          "name": "洛阳",
+          "lat": 34.6197,
+          "lng": 112.454,
+          "note": "汉唐经学传播的重要枢纽"
+        },
+        {
+          "id": "place-jianyang",
+          "name": "建阳",
+          "lat": 27.3327,
+          "lng": 118.1227,
+          "note": "宋元书坊与理学文献的关键刊刻地"
+        },
+        {
+          "id": "place-beijing",
+          "name": "北京",
+          "lat": 39.9042,
+          "lng": 116.4074,
+          "note": "明清官方教育与科举体系终端"
+        }
+      ],
+      "versions": [
+        {
+          "id": "version-mz-1",
+          "label": "汉传写本系统",
+          "year": -50,
+          "place": "洛阳",
+          "library": "经师传钞",
+          "status": "佚失",
+          "editionType": "祖本",
+          "note": "汉代形成的早期传写链，是后出注本的重要基础。"
+        },
+        {
+          "id": "version-mz-2",
+          "label": "宋刊章句本",
+          "year": 1190,
+          "place": "建阳",
+          "library": "书坊",
+          "status": "存世",
+          "parentId": "version-mz-1",
+          "editionType": "刻本",
+          "note": "朱熹章句使《孟子》转化为标准化教学文本。"
+        },
+        {
+          "id": "version-mz-3",
+          "label": "明学宫重刊本",
+          "year": 1437,
+          "place": "北京",
+          "library": "国子监",
+          "status": "存世",
+          "parentId": "version-mz-2",
+          "editionType": "重刊本",
+          "note": "科举教育中的重刊推动《孟子》影响进一步下沉扩散。"
+        }
+      ],
+      "timeline": [
+        {
+          "id": "tl-mz-1",
+          "year": -300,
+          "title": "《孟子》成书",
+          "detail": "仁政、性善与王道论述被整理为稳定经典文本。"
+        },
+        {
+          "id": "tl-mz-2",
+          "year": 1190,
+          "title": "章句体系传播",
+          "detail": "朱熹章句让《孟子》进入更强的标准化解释框架。"
+        },
+        {
+          "id": "tl-mz-3",
+          "year": 1315,
+          "title": "纳入官方考试核心",
+          "detail": "四书体系确立后，《孟子》成为长期教育主干。"
+        }
+      ],
+      "passages": [
+        {
+          "id": "passage-mz-1",
+          "section": "梁惠王上",
+          "original": "王何必曰利？亦有仁义而已矣。",
+          "links": [
+            {
+              "id": "passage-mz-1-link-1",
+              "quote": "《四书章句集注》义理重释",
+              "sourceBookId": "book-sishu-zhangju",
+              "sourceTitle": "四书章句集注",
+              "layer": "explicit",
+              "confidenceLabel": "高",
+              "evidence": "朱熹章句直接将《孟子》纳入四书义理体系。"
+            },
+            {
+              "id": "passage-mz-1-link-2",
+              "quote": "《日知录》经世关怀",
+              "sourceBookId": "book-ri-zhi-lu",
+              "sourceTitle": "日知录",
+              "layer": "semantic",
+              "confidenceLabel": "中",
+              "evidence": "后世经世思想持续回到仁义与利害之辨。"
+            }
+          ],
+          "tracePath": [
+            {
+              "id": "trace-mz-1",
+              "title": "孟子",
+              "relation": "民本源语",
+              "note": "提出王道、仁政与利义之辨的经典表达。"
+            },
+            {
+              "id": "trace-mz-2",
+              "title": "四书章句集注",
+              "relation": "章句经典化",
+              "note": "通过章句体系将其转换为可广泛教学的主干文本。"
+            },
+            {
+              "id": "trace-mz-3",
+              "title": "日知录",
+              "relation": "经世反思",
+              "note": "清代学术把孟子义理重新拉回现实政治与制度问题。"
+            }
+          ],
+          "downstreamInfluence": [
+            {
+              "id": "down-mz-1",
+              "targetTitle": "四书章句集注",
+              "relation": "教材核心",
+              "note": "作为四书之一持续影响后世学习路径与价值秩序。",
+              "confidenceLabel": "高"
+            }
+          ]
+        }
+      ]
+    },
     "zi-zhi-tong-jian": {
       "bookId": "book-zi-zhi-tong-jian",
       "heroMetric": {
@@ -1054,6 +1735,25 @@
       ]
     },
     {
+      "id": "cbdb-10058",
+      "name": "蔡沈",
+      "role": "注者",
+      "birthYear": 1167,
+      "deathYear": 1230,
+      "era": "宋",
+      "bio": "Cai(1) Chen [10058] At first a private scholar and teacher, he became a recluse when his father, Yuanding [10049], died. Zhen Dexiu, WJ, 42.6a-9a. CBD, 5,  3783",
+      "foundInCbdb": true,
+      "matchedAlias": "蔡沈",
+      "activityPlaces": [
+        {
+          "name": "建陽",
+          "firstYear": null,
+          "lastYear": null,
+          "note": "建陽人(宋人傳記資料索引(電子版))。"
+        }
+      ]
+    },
+    {
       "id": "cbdb-148844",
       "name": "司馬遷",
       "role": "作者",
@@ -1114,6 +1814,18 @@
           "note": ""
         }
       ]
+    },
+    {
+      "id": "cbdb-134984",
+      "name": "孟軻",
+      "role": "作者",
+      "birthYear": null,
+      "deathYear": null,
+      "era": "漢前",
+      "bio": "",
+      "foundInCbdb": true,
+      "matchedAlias": "孟軻",
+      "activityPlaces": []
     },
     {
       "id": "cbdb-34252",
