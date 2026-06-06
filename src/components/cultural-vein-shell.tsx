@@ -365,6 +365,14 @@ export function CulturalVeinShell() {
         : insights?.taofenMuseumSample?.collectionTitle ?? "出版文化接口样本",
       detail: "机构年表、人物年表、图书列表与人物关系接口样本，适合补强近现代出版文化与人物网络叙事。",
     },
+    {
+      name: "宋庆龄文献 API",
+      status: insights?.soongLiteratureSample?.available ? "已接入" : "待补充",
+      scale: insights?.soongLiteratureSample?.sampleTitles?.length
+        ? `${insights.soongLiteratureSample.sampleTitles.length} 组人物事件字段样本`
+        : insights?.soongLiteratureSample?.collectionTitle ?? "人物事件字段样本",
+      detail: "覆盖文中人名、事件组织、写作地点与题词对象等字段，适合补强人物、事件与空间传播叙事。",
+    },
   ];
   const visibleBranchAnnotations = branchAnnotations.filter((annotation) => {
     const targetBook = riverDataset.books.find((book) => book.slug === annotation.targetSlug);

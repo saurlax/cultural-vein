@@ -224,6 +224,12 @@ export interface DatasetInsight {
     collectionTitle?: string;
     sampleTitles?: string[];
   };
+  soongLiteratureSample?: {
+    available?: boolean;
+    institution?: string;
+    collectionTitle?: string;
+    sampleTitles?: string[];
+  };
 }
 
 export interface RiverDataset {

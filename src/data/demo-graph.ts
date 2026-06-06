@@ -163,6 +163,22 @@ interface RealSupplementTaofenMuseumSample {
   }>;
 }
 
+interface RealSupplementSoongLiteratureSample {
+  available?: boolean;
+  institution?: string;
+  collectionTitle?: string;
+  summary?: string;
+  sampleTitles?: string[];
+  sampleRecords?: Array<{
+    institution: string;
+    title: string;
+    category?: string;
+    year?: string;
+    imageRef?: string;
+    sourceText?: string;
+  }>;
+}
+
 interface RealSupplementCbdbSummary {
   available?: boolean;
   personCount?: number;
@@ -247,6 +263,8 @@ const shenzhenLibrarySample = (realSupplements.shenzhenLibrarySample ??
   {}) as RealSupplementShenzhenLibrarySample;
 const taofenMuseumSample = (realSupplements.taofenMuseumSample ??
   {}) as RealSupplementTaofenMuseumSample;
+const soongLiteratureSample = (realSupplements.soongLiteratureSample ??
+  {}) as RealSupplementSoongLiteratureSample;
 
 const personByName = new Map(cbdbPeople.map((person) => [person.name, person]));
 
@@ -437,6 +455,27 @@ if (taofenMuseumSample.available) {
         detail.realWorldSignals?.venueSummary ??
         taofenMuseumSample.summary ??
         "已接入韬奋纪念馆近现代出版文化 API 样本。",
+    };
+  }
+}
+
+if (soongLiteratureSample.available) {
+  const institutionSamples = (soongLiteratureSample.sampleRecords ?? []).slice(0, 3);
+  for (const slug of ["ren-jian-ci-hua", "shiji"] as const) {
+    const detail = details[slug];
+    detail.realWorldSignals = {
+      ...detail.realWorldSignals,
+      sourceLabel: detail.realWorldSignals?.sourceLabel
+        ? `${detail.realWorldSignals.sourceLabel} + 宋庆龄文献 API 样本`
+        : "宋庆龄文献 API 样本",
+      institutionSamples: [
+        ...(detail.realWorldSignals?.institutionSamples ?? []),
+        ...institutionSamples,
+      ],
+      venueSummary:
+        detail.realWorldSignals?.venueSummary ??
+        soongLiteratureSample.summary ??
+        "已接入宋庆龄文献人物与事件字段 API 样本。",
     };
   }
 }

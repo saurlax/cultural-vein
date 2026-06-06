@@ -35,6 +35,7 @@ NANHU_RAR = DATA_DIR / "南湖文献数据.rar"
 VIDEO_TOPIC_RAR = DATA_DIR / "专题片数据.rar"
 SZ_ZIP = DATA_DIR / "深圳图书馆2024.zip"
 TAOFEN_PDF = DATA_DIR / "API_韬奋纪念馆.pdf"
+SOONG_PDF = DATA_DIR / "API_宋庆龄文献.pdf"
 
 DEMO_BOOKS = [
     {
@@ -2084,6 +2085,58 @@ def fetch_taofen_museum_sample() -> dict[str, object]:
     }
 
 
+def fetch_soong_literature_sample() -> dict[str, object]:
+    if not SOONG_PDF.exists():
+        return {"available": False, "reason": "pdf missing"}
+
+    text = extract_pdf_text(SOONG_PDF, page_to=4)
+    if not text:
+        return {"available": False, "reason": "pdftotext unavailable"}
+
+    sample_records = [
+        {
+            "institution": "宋庆龄文献数据中心",
+            "title": "文献检索接口",
+            "category": "题名 / 作者 / 摘要 / 关键词",
+            "year": "2024",
+            "imageRef": "",
+            "sourceText": "支持题名、作者、摘要、关键词等文献检索字段，适合补充文献主题与作者关联。",
+        },
+        {
+            "institution": "宋庆龄文献数据中心",
+            "title": "文中人名与事件字段",
+            "category": "人物 / 事件 / 组织",
+            "year": "2024",
+            "imageRef": "",
+            "sourceText": "字段代码包含文中人名、事件组织，可用于扩展人物网络与事件时间线叙事。",
+        },
+        {
+            "institution": "宋庆龄文献数据中心",
+            "title": "写作地点与题词对象字段",
+            "category": "地点 / 题词对象",
+            "year": "2024",
+            "imageRef": "",
+            "sourceText": "字段代码包含写作地点、题词对象，适合补足空间传播与人际指向信息。",
+        },
+    ]
+
+    summary = (
+        "宋庆龄文献数据中心开放接口覆盖题名、作者、摘要、关键词，并显式提供文中人名、"
+        "事件组织、写作地点与题词对象等字段，可补强人物、事件与空间传播叙事。"
+    )
+    if "文中人名" in text and "文中事件" in text:
+        summary += " 当前文档已明确列出相关字段代码表。"
+
+    return {
+        "available": True,
+        "institution": "宋庆龄文献数据中心",
+        "collectionTitle": "人物与事件字段 API 样本",
+        "summary": summary[:280],
+        "sampleTitles": [record["title"] for record in sample_records],
+        "sampleRecords": sample_records,
+    }
+
+
 def main() -> None:
     ensure_out_dir()
     cbdb_people = fetch_cbdb_people()
@@ -2121,6 +2174,7 @@ def main() -> None:
         "videoTopicSample": fetch_video_topic_sample(),
         "shenzhenLibrarySample": fetch_shenzhen_library_sample(),
         "taofenMuseumSample": fetch_taofen_museum_sample(),
+        "soongLiteratureSample": fetch_soong_literature_sample(),
     }
     OUT_FILE.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2),
