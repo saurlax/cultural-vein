@@ -518,6 +518,90 @@ function FocusHalo({
   );
 }
 
+function FocusCurrentAura({
+  focusPosition,
+  color,
+}: {
+  focusPosition: THREE.Vector3 | null;
+  color: string;
+}) {
+  const outerRingRef = useRef<THREE.Mesh>(null);
+  const innerRingRef = useRef<THREE.Mesh>(null);
+  const beamGroupRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (!focusPosition) {
+      return;
+    }
+
+    const pulse = 1 + Math.sin(state.clock.elapsedTime * 1.8) * 0.12;
+    const outerPulse = 1 + Math.sin(state.clock.elapsedTime * 1.15 + 0.4) * 0.18;
+
+    if (outerRingRef.current) {
+      outerRingRef.current.scale.set(outerPulse, outerPulse, outerPulse);
+      const material = outerRingRef.current.material;
+      if (material instanceof THREE.MeshBasicMaterial) {
+        material.opacity = 0.18 + Math.max(0, Math.sin(state.clock.elapsedTime * 1.15)) * 0.12;
+      }
+    }
+
+    if (innerRingRef.current) {
+      innerRingRef.current.scale.set(pulse, pulse, pulse);
+      const material = innerRingRef.current.material;
+      if (material instanceof THREE.MeshBasicMaterial) {
+        material.opacity = 0.24 + Math.max(0, Math.sin(state.clock.elapsedTime * 1.8 + 0.6)) * 0.16;
+      }
+    }
+
+    if (beamGroupRef.current) {
+      beamGroupRef.current.position.y = focusPosition.y + 0.58 + Math.sin(state.clock.elapsedTime * 1.3) * 0.06;
+      beamGroupRef.current.children.forEach((child, index) => {
+        const mesh = child as THREE.Mesh;
+        mesh.rotation.y = state.clock.elapsedTime * (0.12 + index * 0.04);
+      });
+    }
+  });
+
+  if (!focusPosition) {
+    return null;
+  }
+
+  return (
+    <group position={[focusPosition.x, focusPosition.y, focusPosition.z]}>
+      <mesh
+        ref={outerRingRef}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.06, 0]}
+      >
+        <ringGeometry args={[0.72, 1.12, 64]} />
+        <meshBasicMaterial color={color} transparent opacity={0.22} />
+      </mesh>
+      <mesh
+        ref={innerRingRef}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.04, 0]}
+      >
+        <ringGeometry args={[0.38, 0.68, 48]} />
+        <meshBasicMaterial color="#fef3c7" transparent opacity={0.28} />
+      </mesh>
+      <group ref={beamGroupRef} position={[0, 0.58, 0]}>
+        <mesh scale={[0.28, 1.5, 0.28]}>
+          <cylinderGeometry args={[1, 1, 1, 24, 1, true]} />
+          <meshBasicMaterial color={color} transparent opacity={0.07} side={THREE.DoubleSide} />
+        </mesh>
+        <mesh rotation={[0, Math.PI / 4, 0]} scale={[0.18, 1.25, 1.1]}>
+          <planeGeometry args={[1, 1]} />
+          <meshBasicMaterial color="#fde68a" transparent opacity={0.09} side={THREE.DoubleSide} />
+        </mesh>
+        <mesh rotation={[0, -Math.PI / 4, 0]} scale={[0.18, 1.25, 1.1]}>
+          <planeGeometry args={[1, 1]} />
+          <meshBasicMaterial color="#fbbf24" transparent opacity={0.08} side={THREE.DoubleSide} />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
 function BranchMarkers({
   annotations,
   selectedBookSlug,
@@ -648,6 +732,43 @@ function RiverWorld({
       ? new THREE.Vector3(...selectedBook.coordinates)
       : null;
   }, [books, selectedBookSlug]);
+  const selectedBookNode = useMemo(
+    () => books.find((book) => book.slug === selectedBookSlug) ?? null,
+    [books, selectedBookSlug],
+  );
+  const focusStreamPoints = useMemo(() => {
+    if (tracePathPoints.length >= 2) {
+      return tracePathPoints;
+    }
+
+    const sceneBook = sceneFocus?.currentTitle
+      ? books.find((book) => book.title === sceneFocus.currentTitle) ?? null
+      : null;
+    const baseBook = sceneBook ?? selectedBookNode;
+
+    if (!baseBook) {
+      return [];
+    }
+
+    const orderedBooks = books
+      .filter((book) => book.branchLevel === baseBook.branchLevel)
+      .sort((left, right) => left.year - right.year);
+    const currentIndex = orderedBooks.findIndex((book) => book.id === baseBook.id);
+
+    if (currentIndex === -1) {
+      return [new THREE.Vector3(...baseBook.coordinates)];
+    }
+
+    return orderedBooks
+      .slice(Math.max(0, currentIndex - 1), Math.min(orderedBooks.length, currentIndex + 2))
+      .map((book) => new THREE.Vector3(...book.coordinates));
+  }, [books, sceneFocus, selectedBookNode, tracePathPoints]);
+  const focusAuraColor =
+    traceFocus?.active
+      ? "#f59e0b"
+      : sceneFocus?.active
+        ? "#fde68a"
+        : "#fcd34d";
 
   const branchStreams = useMemo(() => {
     return [1, 2].map((branchLevel) =>
@@ -844,6 +965,30 @@ function RiverWorld({
         traceFocus={traceFocus}
         sceneFocus={sceneFocus}
       />
+      {focusStreamPoints.length >= 2 ? (
+        <group>
+          <Line
+            points={focusStreamPoints}
+            color={focusAuraColor}
+            transparent
+            opacity={0.9}
+            lineWidth={3.4}
+          />
+          <Line
+            points={focusStreamPoints}
+            color="#fef3c7"
+            transparent
+            opacity={0.22}
+            lineWidth={7.2}
+          />
+          <RiverParticleStream
+            points={focusStreamPoints}
+            color={traceFocus?.active ? "#fbbf24" : "#fde68a"}
+            density={96}
+          />
+        </group>
+      ) : null}
+      <FocusCurrentAura focusPosition={selectedBookPosition} color={focusAuraColor} />
       <BranchMarkers
         annotations={branchAnnotations}
         selectedBookSlug={selectedBookSlug}
