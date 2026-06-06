@@ -1123,6 +1123,8 @@ const peopleMergePlan: Partial<Record<string, string[]>> = {
   shijing: ["孔颖达", "朱熹", "王国维"],
   shangshu: ["孔颖达", "蔡沈"],
   lunyu: ["朱熹"],
+  daxue: ["朱熹"],
+  zhongyong: ["朱熹"],
   "sishu-zhangju": ["朱熹"],
   shiji: ["司马迁"],
   mengzi: ["孟子", "朱熹"],
@@ -1298,7 +1300,7 @@ if (soongLiteratureSample.available) {
 
 if (souyunKnowledgeGraphSample.available) {
   const institutionSamples = (souyunKnowledgeGraphSample.sampleRecords ?? []).slice(0, 3);
-  for (const slug of ["shijing", "ren-jian-ci-hua", "lunyu"] as const) {
+  for (const slug of ["shijing", "lunyu", "daxue", "zhongyong", "mengzi", "sishu-zhangju", "ren-jian-ci-hua"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -1309,10 +1311,10 @@ if (souyunKnowledgeGraphSample.available) {
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
       ],
-      venueSummary:
-        detail.realWorldSignals?.venueSummary ??
-        souyunKnowledgeGraphSample.summary ??
-        "已接入搜韵网古典诗词知识图谱 API 样本。",
+      venueSummary: detail.realWorldSignals?.venueSummary
+        ? `${detail.realWorldSignals.venueSummary} 同时已挂接搜韵知识图谱接口样本，可继续外推到诗文库、古籍库和文本比对能力。`
+        : souyunKnowledgeGraphSample.summary ??
+          "已接入搜韵网古典诗词知识图谱 API 样本。",
     };
   }
 }
