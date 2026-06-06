@@ -220,6 +220,29 @@ interface RealSupplementCbdbSummary {
   }>;
 }
 
+interface RealSupplementPayload {
+  curatedBooks?: RealSupplementBook[];
+  demoBooks?: RealSupplementBook[];
+  curatedCitations?: RealSupplementCitation[];
+  demoCitations?: RealSupplementCitation[];
+  curatedBookDetails?: Record<string, BookDetail>;
+  demoBookDetails?: Record<string, BookDetail>;
+  cbdbPeople?: RealSupplementPerson[];
+  cbdbSummary?: RealSupplementCbdbSummary;
+  shanghaiLibraryActivity?: RealSupplementActivity;
+  nanjingLibrarySample?: RealSupplementInstitutionSample;
+  fudanArchiveSample?: RealSupplementArchiveSample;
+  nanhuArchiveSample?: RealSupplementNanhuSample;
+  videoTopicSample?: RealSupplementVideoTopicSample;
+  shenzhenLibrarySample?: RealSupplementShenzhenLibrarySample;
+  taofenMuseumSample?: RealSupplementTaofenMuseumSample;
+  soongLiteratureSample?: RealSupplementSoongLiteratureSample;
+  souyunKnowledgeGraphSample?: RealSupplementSouyunKnowledgeGraphSample;
+  periodicalIndexSample?: RealSupplementPeriodicalIndexSample;
+}
+
+const supplementPayload = realSupplements as unknown as RealSupplementPayload;
+
 const coreClassicExtensions: RealSupplementBook[] = [
   {
     id: "book-lunyu",
@@ -475,8 +498,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         deathYear: -479,
         era: "先秦",
         bio: "孔门学统核心人物，其言行被后世编纂为《论语》，成为儒家修身与政治伦理的源头文本。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 1,
         relationType: "著",
       },
@@ -488,8 +511,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         deathYear: 1200,
         era: "宋",
         bio: "以《论语集注》重整孔门语录的义理结构，把《论语》纳入四书学习主轴。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 1,
         relationType: "注",
       },
@@ -501,8 +524,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         deathYear: 1107,
         era: "宋",
         bio: "北宋理学家，二程学脉经由《论语》重新组织心性与礼法论述。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 2,
         relationType: "评",
       },
@@ -720,8 +743,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         role: "作者",
         era: "先秦",
         bio: "后世常将《大学》学脉追溯至曾子系统，是修身治国纲领的重要思想祖线。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 1,
         relationType: "著",
       },
@@ -733,8 +756,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         deathYear: 1200,
         era: "宋",
         bio: "将《大学》定为四书起首，使格物致知与修齐治平路径标准化。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 1,
         relationType: "注",
       },
@@ -746,8 +769,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         deathYear: 1085,
         era: "宋",
         bio: "二程学脉经由《大学》重述德性与政治秩序的连通关系。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 2,
         relationType: "评",
       },
@@ -913,8 +936,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         role: "作者",
         era: "先秦",
         bio: "后世常将《中庸》义理系谱追溯至子思学脉，是孔门向形上义理展开的关键节点。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 1,
         relationType: "著",
       },
@@ -926,8 +949,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         deathYear: 1200,
         era: "宋",
         bio: "通过章句把《中庸》的诚与中和论推进为理学心性论的关键入口。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 1,
         relationType: "注",
       },
@@ -939,8 +962,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         deathYear: 1107,
         era: "宋",
         bio: "北宋理学家，经由《中庸》强化天理与工夫论的连动解释。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 2,
         relationType: "评",
       },
@@ -1116,8 +1139,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         deathYear: 249,
         era: "魏晋",
         bio: "魏晋玄学代表人物，以义理化诠释重塑《周易》，成为后世《易》学的重要转折点。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 1,
         relationType: "注",
       },
@@ -1129,8 +1152,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         deathYear: 648,
         era: "隋唐",
         bio: "主持《五经正义》体系，使《周易》进入更稳定的官学解释框架。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 1,
         relationType: "注",
       },
@@ -1142,8 +1165,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         deathYear: 1200,
         era: "宋",
         bio: "在理学系统中持续借《易》学资源重述天道、性命与工夫论。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 2,
         relationType: "评",
       },
@@ -1363,8 +1386,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         role: "注者",
         era: "两汉",
         bio: "后世《孝经》传授常借孔门后学名义建立权威，强化经典教化属性。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 1,
         relationType: "注",
       },
@@ -1376,8 +1399,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         deathYear: 762,
         era: "隋唐",
         bio: "御注《孝经》推动其进入国家教化与学校教育更核心的位置。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 1,
         relationType: "评",
       },
@@ -1389,8 +1412,8 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         deathYear: 1200,
         era: "宋",
         bio: "宋代理学继续以《孝经》回应家国伦理与德性秩序问题。",
-        source: "demo",
-        sourceStatus: "fallback",
+        source: "curated",
+        sourceStatus: "curated",
         relationTier: 2,
         relationType: "评",
       },
@@ -1573,14 +1596,14 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
 };
 
 const books = [
-  ...((realSupplements.demoBooks ?? []) as RealSupplementBook[]),
+  ...((supplementPayload.curatedBooks ?? supplementPayload.demoBooks ?? []) as RealSupplementBook[]),
   ...coreClassicExtensions,
 ] as RealSupplementBook[];
 const citations = [
-  ...((realSupplements.demoCitations ?? []) as RealSupplementCitation[]),
+  ...((supplementPayload.curatedCitations ?? supplementPayload.demoCitations ?? []) as RealSupplementCitation[]),
   ...coreClassicCitationExtensions,
 ] as RealSupplementCitation[];
-const generatedDetails = (realSupplements.demoBookDetails ?? {}) as Record<string, BookDetail>;
+const generatedDetails = ((supplementPayload.curatedBookDetails ?? supplementPayload.demoBookDetails) ?? {}) as Record<string, BookDetail>;
 
 const cloneDetail = (detail: BookDetail): BookDetail => ({
   ...detail,
@@ -1640,27 +1663,27 @@ for (const book of books) {
   }
 }
 
-const cbdbPeople = (realSupplements.cbdbPeople ?? []) as RealSupplementPerson[];
-const cbdbSummary = (realSupplements.cbdbSummary ?? {}) as RealSupplementCbdbSummary;
-const shanghaiLibraryActivity = (realSupplements.shanghaiLibraryActivity ??
+const cbdbPeople = (supplementPayload.cbdbPeople ?? []) as RealSupplementPerson[];
+const cbdbSummary = (supplementPayload.cbdbSummary ?? {}) as RealSupplementCbdbSummary;
+const shanghaiLibraryActivity = (supplementPayload.shanghaiLibraryActivity ??
   {}) as RealSupplementActivity;
-const nanjingLibrarySample = (realSupplements.nanjingLibrarySample ??
+const nanjingLibrarySample = (supplementPayload.nanjingLibrarySample ??
   {}) as RealSupplementInstitutionSample;
-const fudanArchiveSample = (realSupplements.fudanArchiveSample ??
+const fudanArchiveSample = (supplementPayload.fudanArchiveSample ??
   {}) as RealSupplementArchiveSample;
-const nanhuArchiveSample = (realSupplements.nanhuArchiveSample ??
+const nanhuArchiveSample = (supplementPayload.nanhuArchiveSample ??
   {}) as RealSupplementNanhuSample;
-const videoTopicSample = (realSupplements.videoTopicSample ??
+const videoTopicSample = (supplementPayload.videoTopicSample ??
   {}) as RealSupplementVideoTopicSample;
-const shenzhenLibrarySample = (realSupplements.shenzhenLibrarySample ??
+const shenzhenLibrarySample = (supplementPayload.shenzhenLibrarySample ??
   {}) as RealSupplementShenzhenLibrarySample;
-const taofenMuseumSample = (realSupplements.taofenMuseumSample ??
+const taofenMuseumSample = (supplementPayload.taofenMuseumSample ??
   {}) as RealSupplementTaofenMuseumSample;
-const soongLiteratureSample = (realSupplements.soongLiteratureSample ??
+const soongLiteratureSample = (supplementPayload.soongLiteratureSample ??
   {}) as RealSupplementSoongLiteratureSample;
-const souyunKnowledgeGraphSample = (realSupplements.souyunKnowledgeGraphSample ??
+const souyunKnowledgeGraphSample = (supplementPayload.souyunKnowledgeGraphSample ??
   {}) as RealSupplementSouyunKnowledgeGraphSample;
-const periodicalIndexSample = (realSupplements.periodicalIndexSample ??
+const periodicalIndexSample = (supplementPayload.periodicalIndexSample ??
   {}) as RealSupplementPeriodicalIndexSample;
 
 const personByName = new Map(cbdbPeople.map((person) => [person.name, person]));
@@ -1681,8 +1704,8 @@ function mergePeople(names: string[], fallback: PersonNode[]): PersonNode[] {
         deathYear: person.deathYear ?? null,
         era: person.era ?? "未详",
         bio: person.bio ?? "",
-        source: person.foundInCbdb ? "cbdb" : "demo",
-        sourceStatus: person.foundInCbdb ? "matched" : "fallback",
+        source: person.foundInCbdb ? "cbdb" : "curated",
+        sourceStatus: person.foundInCbdb ? "matched" : "curated",
         matchedAlias: person.matchedAlias,
         activityPlaces: person.activityPlaces?.map((place) => ({ ...place })),
         relationTier: 1,

@@ -48,8 +48,8 @@ export interface PersonNode {
   deathYear?: number | null;
   era: string;
   bio: string;
-  source?: "demo" | "cbdb";
-  sourceStatus?: "matched" | "fallback";
+  source?: "curated" | "cbdb";
+  sourceStatus?: "matched" | "curated";
   matchedAlias?: string;
   relationTier?: 1 | 2;
   relationType?: "著" | "注" | "校" | "藏" | "引" | "评" | "承";
@@ -86,7 +86,7 @@ export interface TimelineEvent {
   year: number;
   title: string;
   detail: string;
-  source?: "demo" | "cbdb";
+  source?: "curated" | "cbdb";
 }
 
 export interface PassageLink {

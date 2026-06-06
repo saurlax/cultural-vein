@@ -89,7 +89,7 @@ function versionTypeClass(type?: string) {
   }
 }
 
-function sourceBadgeClass(source: "real" | "demo" | "hybrid") {
+function sourceBadgeClass(source: "real" | "curated" | "hybrid") {
   if (source === "real") {
     return "border-amber-300/25 bg-amber-300/10 text-amber-100";
   }
@@ -112,7 +112,7 @@ function spreadSourceMeta(hasVenueSignals: boolean) {
 
   return {
     label: "传播关系建模",
-    tone: "demo" as const,
+      tone: "curated" as const,
     detail: "当前传播路径以现有地理叙事和关系建模组织，后续可继续补入更完整的馆藏传播证据。",
   };
 }
@@ -128,12 +128,12 @@ function versionSourceMeta(library: string) {
 
   return {
     label: "版本流变建模",
-    tone: "demo" as const,
+      tone: "curated" as const,
     detail: "当前版本节点用于说明流变结构，后续可继续接入更多真实馆藏或 IIIF 资源。",
   };
 }
 
-function timelineSourceMeta(source?: "demo" | "cbdb") {
+function timelineSourceMeta(source?: "curated" | "cbdb") {
   if (source === "cbdb") {
     return {
       label: "人物纪传信号",
@@ -144,7 +144,7 @@ function timelineSourceMeta(source?: "demo" | "cbdb") {
 
   return {
     label: "叙事时间节点",
-    tone: "demo" as const,
+    tone: "curated" as const,
     detail: "该事件用于补齐典籍叙事主线，目前仍以现有时间节点组织为主。",
   };
 }

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { BookExplorer, type TraceFocusState } from "@/components/book-explorer";
 import { RiverScene, type RiverBranchAnnotation } from "@/components/river-scene";
-import { riverDataset } from "@/data/demo-graph";
+import { riverDataset } from "@/data/river-dataset";
 import { useCulturalVeinStore } from "@/store/app-store";
 import type { CitationEdge, DatasetInsight } from "@/types/domain";
 
