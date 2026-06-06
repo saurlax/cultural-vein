@@ -920,7 +920,13 @@ export function CulturalVeinShell() {
                       </div>
                     ) : resolvedSearchResult?.query && !searchPending ? (
                       <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3">
-                        <div className="text-sm text-[#eadfbc]">这个检索词还没有直接照见河上节点。</div>
+                        <button
+                          type="button"
+                          onClick={() => setActiveDesktopPanel("branch")}
+                          className="text-left text-sm text-[#eadfbc] transition hover:text-[#fbf3da]"
+                        >
+                          这个检索词还没有直接照见河上节点，先切到支流题签顺着主河道继续找入口。
+                        </button>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {searchSuggestionChips.slice(0, 3).map((concept) => (
                             <button
@@ -1015,7 +1021,13 @@ export function CulturalVeinShell() {
                       ))}
                     </div>
                     <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-sm text-[#eadfbc]">
-                      当前河段推进到 {activeEra}，河上保留 {categoryFilter} 与 {schoolFilter} 的主线节点。
+                      <button
+                        type="button"
+                        onClick={() => setActiveDesktopPanel("branch")}
+                        className="text-left transition hover:text-[#fbf3da]"
+                      >
+                        当前河段推进到 {activeEra}，河上保留 {categoryFilter} 与 {schoolFilter} 的主线节点。继续切到支流题签，顺着当前筛选后的主线节点入卷。
+                      </button>
                     </div>
                   </div>
                 ) : null}

@@ -1120,7 +1120,7 @@ export function BookExplorer({
                   ))
                 ) : (
                   <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4">
-                    <div className="text-sm text-stone-200">这一层还没有落到场馆样本。</div>
+                    <div className="text-sm text-stone-200">这一层暂时没有落到场馆样本时，先去时间回声或传播航段继续追看现实落点。</div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
@@ -1128,6 +1128,13 @@ export function BookExplorer({
                         className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                       >
                         转看时间回声
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setTab("spread")}
+                        className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                      >
+                        转看传播航段
                       </button>
                     </div>
                   </div>
@@ -1163,7 +1170,7 @@ export function BookExplorer({
                   ))
                 ) : (
                   <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4">
-                    <div className="text-sm text-stone-200">这一层还没有落到活动事件样本。</div>
+                    <div className="text-sm text-stone-200">这一层暂时没有落到活动事件样本时，先去传播航段或人物网络继续把扩散路径接起来。</div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
@@ -1171,6 +1178,13 @@ export function BookExplorer({
                         className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                       >
                         转看传播航段
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setTab("people")}
+                        className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                      >
+                        转看人物网络
                       </button>
                     </div>
                   </div>
@@ -1218,7 +1232,7 @@ export function BookExplorer({
                   })
                 ) : (
                   <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4">
-                    <div className="text-sm text-stone-200">这一层还没有落到机构资源样本。</div>
+                    <div className="text-sm text-stone-200">这一层暂时没有落到机构资源样本时，先回版本流变或来源证据总表继续补资源挂接点。</div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
@@ -1226,6 +1240,13 @@ export function BookExplorer({
                         className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                       >
                         转看版本流变
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedSourceEvidenceId("institution-samples")}
+                        className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                      >
+                        打开来源总表
                       </button>
                     </div>
                   </div>
