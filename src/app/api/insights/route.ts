@@ -75,6 +75,14 @@ export function GET() {
           sampleTitles: realSupplements.soongLiteratureSample.sampleTitles,
         }
       : undefined,
+    souyunKnowledgeGraphSample: realSupplements.souyunKnowledgeGraphSample
+      ? {
+          available: realSupplements.souyunKnowledgeGraphSample.available,
+          institution: realSupplements.souyunKnowledgeGraphSample.institution,
+          collectionTitle: realSupplements.souyunKnowledgeGraphSample.collectionTitle,
+          sampleTitles: realSupplements.souyunKnowledgeGraphSample.sampleTitles,
+        }
+      : undefined,
   };
 
   return NextResponse.json(payload);

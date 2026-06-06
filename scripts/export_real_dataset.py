@@ -36,6 +36,7 @@ VIDEO_TOPIC_RAR = DATA_DIR / "专题片数据.rar"
 SZ_ZIP = DATA_DIR / "深圳图书馆2024.zip"
 TAOFEN_PDF = DATA_DIR / "API_韬奋纪念馆.pdf"
 SOONG_PDF = DATA_DIR / "API_宋庆龄文献.pdf"
+SOUYUN_PDF = DATA_DIR / "API_搜韵网知识图谱.pdf"
 
 DEMO_BOOKS = [
     {
@@ -2137,6 +2138,58 @@ def fetch_soong_literature_sample() -> dict[str, object]:
     }
 
 
+def fetch_souyun_knowledge_graph_sample() -> dict[str, object]:
+    if not SOUYUN_PDF.exists():
+        return {"available": False, "reason": "pdf missing"}
+
+    text = extract_pdf_text(SOUYUN_PDF, page_to=5)
+    if not text:
+        return {"available": False, "reason": "pdftotext unavailable"}
+
+    sample_records = [
+        {
+            "institution": "搜韵网知识图谱",
+            "title": "开放知识图谱接口",
+            "category": "文史知识图谱 / REST API",
+            "year": "2024",
+            "imageRef": "",
+            "sourceText": "开放中文领域特别是古典诗词、文史领域的知识图谱接口，返回 JSON 数据。",
+        },
+        {
+            "institution": "搜韵网知识图谱",
+            "title": "诗文库与古籍库接口",
+            "category": "诗词文本 / 古籍数据",
+            "year": "2024",
+            "imageRef": "",
+            "sourceText": "提供诗文库与古籍库接口入口，可为典籍引用、诗学传播与文本关系分析提供补充线索。",
+        },
+        {
+            "institution": "搜韵网知识图谱",
+            "title": "繁简转换与 Schema 说明",
+            "category": "文本规范 / OpenAPI",
+            "year": "2024",
+            "imageRef": "",
+            "sourceText": "支持 Accept-Language 控制原始文本返回，并提供 OpenAPI/YAML schema 说明，便于后续规范化接入。",
+        },
+    ]
+
+    summary = (
+        "搜韵网知识图谱开放中文领域尤其是古典诗词、文史领域的 RESTful JSON 接口，"
+        "并包含诗文库、古籍库与 OpenAPI schema，可为诗学典籍关系与文本比对提供稳定扩展方向。"
+    )
+    if "古籍库接口网址" in text and "诗文库接口" in text:
+        summary += " 当前文档已明确区分开放接口与古籍库入口。"
+
+    return {
+        "available": True,
+        "institution": "搜韵网知识图谱",
+        "collectionTitle": "古典诗词知识图谱 API 样本",
+        "summary": summary[:280],
+        "sampleTitles": [record["title"] for record in sample_records],
+        "sampleRecords": sample_records,
+    }
+
+
 def main() -> None:
     ensure_out_dir()
     cbdb_people = fetch_cbdb_people()
@@ -2175,6 +2228,7 @@ def main() -> None:
         "shenzhenLibrarySample": fetch_shenzhen_library_sample(),
         "taofenMuseumSample": fetch_taofen_museum_sample(),
         "soongLiteratureSample": fetch_soong_literature_sample(),
+        "souyunKnowledgeGraphSample": fetch_souyun_knowledge_graph_sample(),
     }
     OUT_FILE.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2),

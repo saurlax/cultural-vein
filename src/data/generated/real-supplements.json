@@ -2289,5 +2289,42 @@
         "sourceText": "字段代码包含写作地点、题词对象，适合补足空间传播与人际指向信息。"
       }
     ]
+  },
+  "souyunKnowledgeGraphSample": {
+    "available": true,
+    "institution": "搜韵网知识图谱",
+    "collectionTitle": "古典诗词知识图谱 API 样本",
+    "summary": "搜韵网知识图谱开放中文领域尤其是古典诗词、文史领域的 RESTful JSON 接口，并包含诗文库、古籍库与 OpenAPI schema，可为诗学典籍关系与文本比对提供稳定扩展方向。 当前文档已明确区分开放接口与古籍库入口。",
+    "sampleTitles": [
+      "开放知识图谱接口",
+      "诗文库与古籍库接口",
+      "繁简转换与 Schema 说明"
+    ],
+    "sampleRecords": [
+      {
+        "institution": "搜韵网知识图谱",
+        "title": "开放知识图谱接口",
+        "category": "文史知识图谱 / REST API",
+        "year": "2024",
+        "imageRef": "",
+        "sourceText": "开放中文领域特别是古典诗词、文史领域的知识图谱接口，返回 JSON 数据。"
+      },
+      {
+        "institution": "搜韵网知识图谱",
+        "title": "诗文库与古籍库接口",
+        "category": "诗词文本 / 古籍数据",
+        "year": "2024",
+        "imageRef": "",
+        "sourceText": "提供诗文库与古籍库接口入口，可为典籍引用、诗学传播与文本关系分析提供补充线索。"
+      },
+      {
+        "institution": "搜韵网知识图谱",
+        "title": "繁简转换与 Schema 说明",
+        "category": "文本规范 / OpenAPI",
+        "year": "2024",
+        "imageRef": "",
+        "sourceText": "支持 Accept-Language 控制原始文本返回，并提供 OpenAPI/YAML schema 说明，便于后续规范化接入。"
+      }
+    ]
   }
 }

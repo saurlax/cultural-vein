@@ -373,6 +373,14 @@ export function CulturalVeinShell() {
         : insights?.soongLiteratureSample?.collectionTitle ?? "人物事件字段样本",
       detail: "覆盖文中人名、事件组织、写作地点与题词对象等字段，适合补强人物、事件与空间传播叙事。",
     },
+    {
+      name: "搜韵知识图谱 API",
+      status: insights?.souyunKnowledgeGraphSample?.available ? "已接入" : "待补充",
+      scale: insights?.souyunKnowledgeGraphSample?.sampleTitles?.length
+        ? `${insights.souyunKnowledgeGraphSample.sampleTitles.length} 组诗词图谱样本`
+        : insights?.souyunKnowledgeGraphSample?.collectionTitle ?? "诗词图谱样本",
+      detail: "覆盖古典诗词、文史知识图谱、诗文库与古籍库接口方向，和当前典籍诗学叙事高度贴合。",
+    },
   ];
   const visibleBranchAnnotations = branchAnnotations.filter((annotation) => {
     const targetBook = riverDataset.books.find((book) => book.slug === annotation.targetSlug);

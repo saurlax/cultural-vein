@@ -230,6 +230,12 @@ export interface DatasetInsight {
     collectionTitle?: string;
     sampleTitles?: string[];
   };
+  souyunKnowledgeGraphSample?: {
+    available?: boolean;
+    institution?: string;
+    collectionTitle?: string;
+    sampleTitles?: string[];
+  };
 }
 
 export interface RiverDataset {
