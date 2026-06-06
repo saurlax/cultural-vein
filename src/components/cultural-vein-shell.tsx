@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { BookExplorer } from "@/components/book-explorer";
@@ -349,6 +350,12 @@ export function CulturalVeinShell() {
               以三维河流隐喻重构典籍传承网络，先完成可演示的 MVP：宏观文脉总览、典籍钻入与文本溯源的统一框架。
             </p>
             <div className="flex flex-wrap gap-2 pt-1">
+              <Link
+                href="/demo"
+                className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-xs text-cyan-100 transition hover:bg-cyan-300/18"
+              >
+                打开答辩页
+              </Link>
               <button
                 type="button"
                 onClick={() => setDemoMode((value) => !value)}
