@@ -149,5 +149,6 @@
 - 5 分钟左右演示视频
 - 答辩讲稿或提词卡
 - 架构与数据流说明文档，见 [ARCHITECTURE.md](./ARCHITECTURE.md)
+- 终稿完成度审计，见 [FINAL_AUDIT.md](./FINAL_AUDIT.md)
 
 如果需要补一页 PDF 架构附图，可以直接基于 [ARCHITECTURE.md](./ARCHITECTURE.md) 的 ASCII 结构图整理成提交附件。
