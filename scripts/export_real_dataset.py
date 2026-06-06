@@ -30,6 +30,7 @@ SL_ZIP = DATA_DIR / "上海图书馆开放数据2026.zip"
 NJ_ZIP = DATA_DIR / "南京图书馆2024.zip"
 FUDAN_ZIP = DATA_DIR / "复旦大学图书馆.zip"
 NANHU_RAR = DATA_DIR / "南湖文献数据.rar"
+VIDEO_TOPIC_RAR = DATA_DIR / "专题片数据.rar"
 
 DEMO_BOOKS = [
     {
@@ -1309,6 +1310,84 @@ def fetch_nanhu_archive_sample() -> dict[str, object]:
     }
 
 
+def read_docx_text(path: Path) -> str:
+    from xml.etree import ElementTree
+    import io
+
+    with zipfile.ZipFile(io.BytesIO(path.read_bytes())) as docx_archive:
+        xml = docx_archive.read("word/document.xml")
+
+    root = ElementTree.fromstring(xml)
+    texts = []
+    for elem in root.iter():
+        if elem.tag.endswith("}t") and elem.text:
+            texts.append(elem.text)
+    return "".join(texts)
+
+
+def fetch_video_topic_sample() -> dict[str, object]:
+    if not VIDEO_TOPIC_RAR.exists():
+        return {"available": False, "reason": "rar missing"}
+
+    import subprocess
+
+    extract_dir = WORK_DIR / "video_topic_extract"
+    extract_dir.mkdir(parents=True, exist_ok=True)
+    extract_result = subprocess.run(
+        ["7z", "e", "-y", str(VIDEO_TOPIC_RAR), f"-o{extract_dir}"],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="ignore",
+        check=False,
+    )
+    if extract_result.returncode != 0:
+        return {"available": False, "reason": "7z extract failed"}
+
+    intro_doc = extract_dir / "数据介绍.docx"
+    access_doc = extract_dir / "专题片数据访问方式.docx"
+    if not intro_doc.exists():
+        return {"available": False, "reason": "intro doc missing"}
+
+    intro_text = read_docx_text(intro_doc)
+    access_text = read_docx_text(access_doc) if access_doc.exists() else ""
+    summary = intro_text[:260]
+
+    sample_titles = []
+    for marker in [
+        "石纯农：为病患者的一生",
+        "舞担擎石论勇武",
+        "月份牌的故事",
+        "调香师的故事",
+        "马桥手狮舞",
+        "七宝皮影画",
+    ]:
+        if marker in intro_text:
+            sample_titles.append(marker)
+
+    sample_records = [
+        {
+            "institution": "近代上海城市文化专题片",
+            "title": title,
+            "category": "专题片 / 影像资源",
+            "year": "",
+            "imageRef": "",
+            "sourceText": "来自《近代上海城市文化》专题片数据介绍文档。",
+        }
+        for title in sample_titles[:6]
+    ]
+
+    return {
+        "available": True,
+        "institution": "近代上海城市文化专题片",
+        "collectionTitle": "近代上海城市文化影像样本",
+        "summary": summary,
+        "accessNote": access_text[:140],
+        "sampleTitles": sample_titles[:6],
+        "sampleRecords": sample_records,
+    }
+
+
 def main() -> None:
     ensure_out_dir()
     cbdb_people = fetch_cbdb_people()
@@ -1343,6 +1422,7 @@ def main() -> None:
         "nanjingLibrarySample": fetch_nanjing_library_sample(),
         "fudanArchiveSample": fetch_fudan_archive_sample(),
         "nanhuArchiveSample": fetch_nanhu_archive_sample(),
+        "videoTopicSample": fetch_video_topic_sample(),
     }
     OUT_FILE.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2),

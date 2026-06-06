@@ -206,6 +206,12 @@ export interface DatasetInsight {
     documentCount?: number;
     imageCount?: number;
   };
+  videoTopicSample?: {
+    available?: boolean;
+    institution?: string;
+    collectionTitle?: string;
+    sampleTitles?: string[];
+  };
 }
 
 export interface RiverDataset {

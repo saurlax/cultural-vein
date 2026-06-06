@@ -43,6 +43,14 @@ export function GET() {
           imageCount: realSupplements.nanhuArchiveSample.imageCount,
         }
       : undefined,
+    videoTopicSample: realSupplements.videoTopicSample
+      ? {
+          available: realSupplements.videoTopicSample.available,
+          institution: realSupplements.videoTopicSample.institution,
+          collectionTitle: realSupplements.videoTopicSample.collectionTitle,
+          sampleTitles: realSupplements.videoTopicSample.sampleTitles,
+        }
+      : undefined,
   };
 
   return NextResponse.json(payload);

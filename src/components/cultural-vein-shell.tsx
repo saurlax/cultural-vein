@@ -294,6 +294,14 @@ export function CulturalVeinShell() {
         : insights?.nanhuArchiveSample?.collectionTitle ?? "专题资源样本",
       detail: "专题文献、图像资源与专题型历史知识分支样本。",
     },
+    {
+      name: "近代上海城市文化专题片",
+      status: insights?.videoTopicSample?.available ? "已接入" : "待补充",
+      scale: insights?.videoTopicSample?.sampleTitles?.length
+        ? `${insights.videoTopicSample.sampleTitles.length} 条影像片目样本`
+        : insights?.videoTopicSample?.collectionTitle ?? "影像专题样本",
+      detail: "城市文化专题片、非遗与民俗影像资源样本，强化公共传播叙事。",
+    },
   ];
 
   useEffect(() => {

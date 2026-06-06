@@ -114,6 +114,23 @@ interface RealSupplementNanhuSample {
   }>;
 }
 
+interface RealSupplementVideoTopicSample {
+  available?: boolean;
+  institution?: string;
+  collectionTitle?: string;
+  summary?: string;
+  accessNote?: string;
+  sampleTitles?: string[];
+  sampleRecords?: Array<{
+    institution: string;
+    title: string;
+    category?: string;
+    year?: string;
+    imageRef?: string;
+    sourceText?: string;
+  }>;
+}
+
 interface RealSupplementCbdbSummary {
   available?: boolean;
   personCount?: number;
@@ -192,6 +209,8 @@ const fudanArchiveSample = (realSupplements.fudanArchiveSample ??
   {}) as RealSupplementArchiveSample;
 const nanhuArchiveSample = (realSupplements.nanhuArchiveSample ??
   {}) as RealSupplementNanhuSample;
+const videoTopicSample = (realSupplements.videoTopicSample ??
+  {}) as RealSupplementVideoTopicSample;
 
 const personByName = new Map(cbdbPeople.map((person) => [person.name, person]));
 
@@ -320,6 +339,25 @@ if (nanhuArchiveSample.available) {
       detail.realWorldSignals?.venueSummary ??
       nanhuArchiveSample.summary ??
       "已接入南湖文献数据库专题样本。",
+  };
+}
+
+if (videoTopicSample.available) {
+  const institutionSamples = (videoTopicSample.sampleRecords ?? []).slice(0, 4);
+  const detail = details["ren-jian-ci-hua"];
+  detail.realWorldSignals = {
+    ...detail.realWorldSignals,
+    sourceLabel: detail.realWorldSignals?.sourceLabel
+      ? `${detail.realWorldSignals.sourceLabel} + 近代上海城市文化专题片`
+      : "近代上海城市文化专题片",
+    institutionSamples: [
+      ...(detail.realWorldSignals?.institutionSamples ?? []),
+      ...institutionSamples,
+    ],
+    venueSummary:
+      detail.realWorldSignals?.venueSummary ??
+      videoTopicSample.summary ??
+      "已接入近代上海城市文化专题片样本。",
   };
 }
 
