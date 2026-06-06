@@ -53,6 +53,23 @@ function inlineConfidenceClass(label: string) {
   return "rounded border border-dashed border-white/15 px-1.5 py-0.5 text-stone-300";
 }
 
+function versionTypeClass(type?: string) {
+  switch (type) {
+    case "祖本":
+      return "bg-amber-300/12 text-amber-100";
+    case "刻本":
+      return "bg-sky-300/12 text-sky-100";
+    case "抄本":
+      return "bg-violet-300/12 text-violet-100";
+    case "重刊本":
+      return "bg-emerald-300/12 text-emerald-100";
+    case "整理本":
+      return "bg-cyan-300/12 text-cyan-100";
+    default:
+      return "bg-white/10 text-stone-200";
+  }
+}
+
 export function BookExplorer({
   book,
   detail,
@@ -352,33 +369,82 @@ export function BookExplorer({
               该典籍尚未补充版本链路样例。
             </div>
           ) : (
-            detail.versions.map((version, index) => (
-              <div key={version.id} className="flex gap-3">
-                <div className="flex w-8 flex-col items-center pt-2">
-                  <div className="h-3 w-3 rounded-full bg-amber-300" />
-                  {index < detail.versions.length - 1 ? (
-                    <div className="mt-1 h-full w-px bg-white/15" />
-                  ) : null}
-                </div>
-                <div className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="font-medium text-stone-50">{version.label}</div>
-                    <div
-                      className={`rounded-full px-3 py-1 text-xs ${
-                        version.status === "存世"
-                          ? "bg-emerald-300/10 text-emerald-100"
-                          : "bg-white/10 text-stone-300"
-                      }`}
-                    >
-                      {version.status}
+            <>
+              <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-4">
+                <div className="space-y-4">
+                  {detail.versions.map((version, index) => (
+                    <div key={version.id} className="flex gap-3">
+                      <div className="flex w-8 flex-col items-center pt-2">
+                        <div
+                          className={`h-3 w-3 rounded-full ${
+                            version.status === "存世" ? "bg-emerald-300" : "bg-stone-400"
+                          }`}
+                        />
+                        {index < detail.versions.length - 1 ? (
+                          <div className="mt-1 h-full w-px bg-white/15" />
+                        ) : null}
+                      </div>
+                      <div className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <div>
+                            <div className="font-medium text-stone-50">{version.label}</div>
+                            <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone-400">
+                              {version.year} · {version.place} · {version.library}
+                            </div>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            {version.editionType ? (
+                              <span
+                                className={`rounded-full px-3 py-1 text-xs ${versionTypeClass(version.editionType)}`}
+                              >
+                                {version.editionType}
+                              </span>
+                            ) : null}
+                            <div
+                              className={`rounded-full px-3 py-1 text-xs ${
+                                version.status === "存世"
+                                  ? "bg-emerald-300/10 text-emerald-100"
+                                  : "bg-white/10 text-stone-300"
+                              }`}
+                            >
+                              {version.status}
+                            </div>
+                          </div>
+                        </div>
+
+                        {version.note ? (
+                          <p className="mt-3 text-sm leading-7 text-stone-300">
+                            {version.note}
+                          </p>
+                        ) : null}
+
+                        {version.parentId ? (
+                          <div className="mt-3 inline-flex rounded-full border border-white/10 bg-black/15 px-3 py-1 text-xs text-stone-400">
+                            承接上一个版本节点继续流传
+                          </div>
+                        ) : (
+                          <div className="mt-3 inline-flex rounded-full border border-amber-300/15 bg-amber-300/8 px-3 py-1 text-xs text-amber-100">
+                            版本链起点 / 祖本层
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="mt-2 text-sm text-stone-300">
-                    {version.year} · {version.place} · {version.library}
-                  </div>
+                  ))}
                 </div>
               </div>
-            ))
+
+              <div className="grid gap-3 md:grid-cols-3">
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+                  版本链按“祖本 → 抄本/刻本 → 重刊/整理本”的方式组织，更接近方案中的版本流变树表达。
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+                  存世状态与版本类型同时编码，既能看传播链，也能看哪些层次已经失传或仅能间接复原。
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+                  下一步可以把这组节点进一步接到真正的树图或 IIIF 页面浏览入口上。
+                </div>
+              </div>
+            </>
           )}
         </section>
       ) : null}

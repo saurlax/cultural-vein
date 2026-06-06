@@ -70,6 +70,8 @@ export interface VersionNode {
   library: string;
   status: "存世" | "佚失";
   parentId?: string;
+  note?: string;
+  editionType?: "祖本" | "刻本" | "抄本" | "重刊本" | "整理本";
 }
 
 export interface TimelineEvent {
