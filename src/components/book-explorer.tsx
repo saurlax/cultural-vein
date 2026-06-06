@@ -106,7 +106,7 @@ function spreadSourceMeta(hasVenueSignals: boolean) {
     return {
       label: "传播建模 + 上图场馆信号",
       tone: "hybrid" as const,
-      detail: "传播航段结合当前关系建模组织，场馆样本与活动信号来自上海图书馆开放数据。",
+      detail: "传播航段结合当前关系建模组织，场馆资料与活动信号来自上海图书馆开放数据。",
     };
   }
 
@@ -487,7 +487,7 @@ export function BookExplorer({
                 纪传库对照 {detail.realWorldSignals.cbdbMatchedPeople ?? 0} 人
               </div>
               <div className="mt-1 text-xs text-stone-400">
-                待补人物 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
+                整理人物 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
               </div>
             </div>
             <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-3 py-3">
@@ -496,11 +496,11 @@ export function BookExplorer({
               </div>
               <div className="mt-2 text-sm text-stone-100">
                 {detail.realWorldSignals.venueSamples?.length
-                  ? `上图场馆样本 ${detail.realWorldSignals.venueSamples.length} 组`
-                  : "暂无场馆样本"}
+                  ? `上图场馆资料 ${detail.realWorldSignals.venueSamples.length} 组`
+                  : "暂无场馆资料"}
               </div>
               <div className="mt-1 text-xs text-stone-400">
-                活动事件样本 {detail.realWorldSignals.eventSamples?.length ?? 0} 条
+                活动事件资料 {detail.realWorldSignals.eventSamples?.length ?? 0} 条
               </div>
             </div>
           </div>
@@ -523,13 +523,13 @@ export function BookExplorer({
                     >
                       <div className="font-medium text-stone-100">{venue.name}</div>
                       <div className="mt-1 text-xs text-stone-400">
-                        活动样本 {venue.sampleCount}
+                        活动记录 {venue.sampleCount}
                       </div>
                     </div>
                   ))
                 ) : (
                   <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4 text-sm text-stone-400">
-                    当前没有挂接场馆样本。
+                    当前没有挂接场馆资料。
                   </div>
                 )}
               </div>
@@ -558,7 +558,7 @@ export function BookExplorer({
                   ))
                 ) : (
                   <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4 text-sm text-stone-400">
-                    当前没有挂接活动事件样本。
+                    当前没有挂接活动事件资料。
                   </div>
                 )}
               </div>
@@ -593,7 +593,7 @@ export function BookExplorer({
                   ))
                 ) : (
                   <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4 text-sm text-stone-400">
-                    当前没有挂接机构资源样本。
+                    当前没有挂接机构资源资料。
                   </div>
                 )}
               </div>
@@ -603,7 +603,7 @@ export function BookExplorer({
             <div className="mt-4 rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                  机构图像资源样本
+                  机构图像资源资料
                 </div>
                 <div className="rounded-full bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
                   {detail.realWorldSignals.institutionSamples.length} 条
@@ -879,7 +879,7 @@ export function BookExplorer({
           {detail.realWorldSignals?.venueSamples?.length ? (
             <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-medium text-stone-50">上图活动场馆样本</h4>
+                <h4 className="text-sm font-medium text-stone-50">上图活动场馆资料</h4>
                 <span className="text-xs text-stone-400">真实数据辅助</span>
               </div>
               <div className="mt-3 grid gap-2">
@@ -1072,7 +1072,7 @@ export function BookExplorer({
                                             : "bg-white/10 text-stone-300"
                                         }`}
                                       >
-                                        {person.source === "cbdb" ? "纪传库已对照" : "待补人物"}
+                                        {person.source === "cbdb" ? "纪传库已对照" : "整理人物"}
                                       </div>
                                     </div>
                                   </div>
@@ -1134,12 +1134,12 @@ export function BookExplorer({
                               数据来源
                             </div>
                             <div className="mt-2 text-base font-semibold text-stone-50">
-                              {activePerson.source === "cbdb" ? "纪传库已对照" : "待补人物"}
+                              {activePerson.source === "cbdb" ? "纪传库已对照" : "整理人物"}
                             </div>
                             <div className="mt-2 text-sm text-stone-300">
                               {activePerson.source === "cbdb"
                                 ? `当前人物已接入真实人物纪传数据${activePerson.matchedAlias ? `，匹配别名为 ${activePerson.matchedAlias}` : ""}。`
-                                : "当前仍为待补人物，后续可继续替换为更完整的真实人物图谱记录。"}
+                                : "当前仍为整理人物，后续可继续补入更完整的真实人物图谱记录。"}
                             </div>
                           </div>
                         </div>
@@ -1200,7 +1200,7 @@ export function BookExplorer({
                   二级关联承载引用者、评论者、校勘者等辅助角色，帮助用户理解文脉在后世如何扩散和再解释。
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
-                  亮色来源标记说明人物已与纪传资料对照，灰色说明当前仍待补入，便于后续继续充实真实人物图谱。
+                  亮色来源标记说明人物已与纪传资料对照，灰色说明当前仍为整理节点，便于后续继续充实真实人物图谱。
                 </div>
               </div>
             </>
@@ -1521,7 +1521,7 @@ export function BookExplorer({
           {detail.realWorldSignals?.eventSamples?.length ? (
             <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-medium text-stone-50">上图活动时间样本</h4>
+                <h4 className="text-sm font-medium text-stone-50">上图活动时间资料</h4>
                 <span className="text-xs text-stone-400">真实传播现场</span>
               </div>
               <div className="mt-3 space-y-2">

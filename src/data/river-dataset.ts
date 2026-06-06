@@ -707,7 +707,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "CBDB 人物 + 上图活动样本 + 搜韵知识图谱 API 样本",
+      sourceLabel: "CBDB 人物 + 上图活动资料 + 搜韵知识图谱 API 资料",
       venueSummary: "补入《论语》后，四书主干从孔门语录源头一直连到宋代理学教材化阶段，增强“主河道不是单节点”的展示力度。",
     },
   },
@@ -900,7 +900,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "CBDB 人物 + 上海图书馆活动样本",
+      sourceLabel: "CBDB 人物 + 上海图书馆活动资料",
       venueSummary: "补入《大学》后，可以更清楚地展示《礼记》篇章如何被析出并重组进四书教材体系。",
     },
   },
@@ -1093,7 +1093,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "CBDB 人物 + 上海图书馆活动样本",
+      sourceLabel: "CBDB 人物 + 上海图书馆活动资料",
       venueSummary: "补入《中庸》后，四书主干中的心性义理层得到明确落点，不再只停留在《礼记》与《四书章句集注》的跳跃连接。",
     },
   },
@@ -1342,7 +1342,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "CBDB 人物 + 上海图书馆活动样本 + 搜韵知识图谱 API 样本",
+      sourceLabel: "CBDB 人物 + 上海图书馆活动资料 + 搜韵知识图谱 API 资料",
       venueSummary: "补入《周易》后，主河道不再只覆盖四书内部，而能向五经义理与天道论方向继续展开。",
     },
   },
@@ -1589,7 +1589,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "CBDB 人物 + 上海图书馆活动样本",
+      sourceLabel: "CBDB 人物 + 上海图书馆活动资料",
       venueSummary: "补入《孝经》后，主河道可以更自然地延伸到家礼、教化与家族传播叙事，为后续接家谱数据预留落点。",
     },
   },
@@ -1760,11 +1760,11 @@ if (shanghaiLibraryActivity.available) {
   for (const slug of ["shijing", "shangshu", "mengzi", "sishu-zhangju", "lunyu", "daxue", "zhongyong", "zhouyi", "xiaojing"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
-      sourceLabel: "CBDB 人物 + 上海图书馆活动样本",
+      sourceLabel: "CBDB 人物 + 上海图书馆活动资料",
       venueSummary:
         venueSamples.length > 0
-          ? `上图活动样本当前集中在 ${venueSamples[0].name}，可作为“文化传播现场”辅助信号。`
-          : "已接入上海图书馆活动样本。",
+          ? `上图活动资料当前集中在 ${venueSamples[0].name}，可作为“文化传播现场”辅助信号。`
+          : "已接入上海图书馆活动资料。",
       venueSamples,
       eventSamples: eventSamples.slice(0, 3),
     };
@@ -1778,8 +1778,8 @@ if (nanjingLibrarySample.available) {
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
       sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 南京图书馆图像样本`
-        : "CBDB + 南京图书馆图像样本",
+        ? `${detail.realWorldSignals.sourceLabel} + 南京图书馆图像资料`
+        : "CBDB + 南京图书馆图像资料",
       institutionSamples,
     };
   }
@@ -1791,8 +1791,8 @@ if (fudanArchiveSample.available) {
   detail.realWorldSignals = {
     ...detail.realWorldSignals,
     sourceLabel: detail.realWorldSignals?.sourceLabel
-      ? `${detail.realWorldSignals.sourceLabel} + 复旦馆藏样例`
-      : "复旦大学图书馆馆藏样例",
+      ? `${detail.realWorldSignals.sourceLabel} + 复旦馆藏资料`
+      : "复旦大学图书馆馆藏资料",
     institutionSamples: [
       ...(detail.realWorldSignals?.institutionSamples ?? []),
       ...institutionSamples,
@@ -1800,7 +1800,7 @@ if (fudanArchiveSample.available) {
     venueSummary:
       detail.realWorldSignals?.venueSummary ??
       fudanArchiveSample.summary ??
-      "已接入复旦大学图书馆馆藏样例。",
+      "已接入复旦大学图书馆馆藏资料。",
   };
 }
 
@@ -1810,8 +1810,8 @@ if (nanhuArchiveSample.available) {
   detail.realWorldSignals = {
     ...detail.realWorldSignals,
     sourceLabel: detail.realWorldSignals?.sourceLabel
-      ? `${detail.realWorldSignals.sourceLabel} + 南湖专题文献样本`
-      : "南湖专题文献样本",
+      ? `${detail.realWorldSignals.sourceLabel} + 南湖专题文献资料`
+      : "南湖专题文献资料",
     institutionSamples: [
       ...(detail.realWorldSignals?.institutionSamples ?? []),
       ...institutionSamples,
@@ -1819,7 +1819,7 @@ if (nanhuArchiveSample.available) {
     venueSummary:
       detail.realWorldSignals?.venueSummary ??
       nanhuArchiveSample.summary ??
-      "已接入南湖文献数据库专题样本。",
+      "已接入南湖文献数据库专题资料。",
   };
 }
 
@@ -1838,7 +1838,7 @@ if (videoTopicSample.available) {
     venueSummary:
       detail.realWorldSignals?.venueSummary ??
       videoTopicSample.summary ??
-      "已接入近代上海城市文化专题片样本。",
+      "已接入近代上海城市文化专题片资料。",
   };
 }
 
@@ -1849,8 +1849,8 @@ if (shenzhenLibrarySample.available) {
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
       sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 深圳图书馆专题接口样本`
-        : "深圳图书馆专题接口样本",
+        ? `${detail.realWorldSignals.sourceLabel} + 深圳图书馆专题接口资料`
+        : "深圳图书馆专题接口资料",
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
@@ -1858,7 +1858,7 @@ if (shenzhenLibrarySample.available) {
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         shenzhenLibrarySample.summary ??
-        "已接入深圳图书馆专题文化接口样本。",
+        "已接入深圳图书馆专题文化接口资料。",
     };
   }
 }
@@ -1870,8 +1870,8 @@ if (taofenMuseumSample.available) {
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
       sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 韬奋纪念馆 API 样本`
-        : "韬奋纪念馆 API 样本",
+        ? `${detail.realWorldSignals.sourceLabel} + 韬奋纪念馆 API 资料`
+        : "韬奋纪念馆 API 资料",
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
@@ -1879,7 +1879,7 @@ if (taofenMuseumSample.available) {
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         taofenMuseumSample.summary ??
-        "已接入韬奋纪念馆近现代出版文化 API 样本。",
+        "已接入韬奋纪念馆近现代出版文化 API 资料。",
     };
   }
 }
@@ -1891,8 +1891,8 @@ if (soongLiteratureSample.available) {
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
       sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 宋庆龄文献 API 样本`
-        : "宋庆龄文献 API 样本",
+        ? `${detail.realWorldSignals.sourceLabel} + 宋庆龄文献 API 资料`
+        : "宋庆龄文献 API 资料",
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
@@ -1900,7 +1900,7 @@ if (soongLiteratureSample.available) {
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         soongLiteratureSample.summary ??
-        "已接入宋庆龄文献人物与事件字段 API 样本。",
+        "已接入宋庆龄文献人物与事件字段 API 资料。",
     };
   }
 }
@@ -1912,16 +1912,16 @@ if (souyunKnowledgeGraphSample.available) {
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
       sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 搜韵知识图谱 API 样本`
-        : "搜韵知识图谱 API 样本",
+        ? `${detail.realWorldSignals.sourceLabel} + 搜韵知识图谱 API 资料`
+        : "搜韵知识图谱 API 资料",
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
       ],
       venueSummary: detail.realWorldSignals?.venueSummary
-        ? `${detail.realWorldSignals.venueSummary} 同时已挂接搜韵知识图谱接口样本，可继续外推到诗文库、古籍库和文本比对能力。`
+        ? `${detail.realWorldSignals.venueSummary} 同时已挂接搜韵知识图谱接口资料，可继续外推到诗文库、古籍库和文本比对能力。`
         : souyunKnowledgeGraphSample.summary ??
-          "已接入搜韵网古典诗词知识图谱 API 样本。",
+          "已接入搜韵网古典诗词知识图谱 API 资料。",
     };
   }
 }
@@ -1933,8 +1933,8 @@ if (periodicalIndexSample.available) {
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
       sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 全国报刊索引 API 样本`
-        : "全国报刊索引 API 样本",
+        ? `${detail.realWorldSignals.sourceLabel} + 全国报刊索引 API 资料`
+        : "全国报刊索引 API 资料",
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
@@ -1942,7 +1942,7 @@ if (periodicalIndexSample.available) {
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         periodicalIndexSample.summary ??
-        "已接入全国报刊索引近现代研究文献 API 样本。",
+        "已接入全国报刊索引近现代研究文献 API 资料。",
     };
   }
 }
@@ -1974,7 +1974,7 @@ if (cbdbSummary.available) {
       sourceLabel: detail.realWorldSignals?.sourceLabel ?? "CBDB + 上图数据",
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
-        `CBDB 当前可用人物 ${cbdbSummary.personCount?.toLocaleString() ?? "未知"} 条；高频朝代样本为 ${topDynastyLine}。`,
+        `CBDB 当前可用人物 ${cbdbSummary.personCount?.toLocaleString() ?? "未知"} 条；高频朝代分布为 ${topDynastyLine}。`,
       cbdbMatchedPeople: matchedCount,
       cbdbFallbackPeople: fallbackCount,
     };
