@@ -166,6 +166,19 @@ export interface BookDetail {
 }
 
 export interface DatasetInsight {
+  sourceAtlas?: Array<{
+    id: string;
+    name: string;
+    summary?: string;
+    stat?: string;
+    sampleTitles?: string[];
+    sampleRecords?: Array<{
+      title: string;
+      category?: string;
+      year?: string;
+      note?: string;
+    }>;
+  }>;
   cbdbSummary?: {
     available?: boolean;
     personCount?: number;
@@ -183,6 +196,12 @@ export interface DatasetInsight {
     available?: boolean;
     sourceWorkbook?: string;
     sheetName?: string;
+    sampleRecords?: Array<{
+      venue?: string;
+      title?: string;
+      status?: string;
+      startTime?: string;
+    }>;
     topVenues?: Array<{
       name: string;
       sampleCount: number;
@@ -192,12 +211,14 @@ export interface DatasetInsight {
     available?: boolean;
     institution?: string;
     recordCount?: number;
+    summary?: string;
     sampleTitles?: string[];
   };
   fudanArchiveSample?: {
     available?: boolean;
     institution?: string;
     collectionTitle?: string;
+    summary?: string;
   };
   nanhuArchiveSample?: {
     available?: boolean;
@@ -205,41 +226,48 @@ export interface DatasetInsight {
     collectionTitle?: string;
     documentCount?: number;
     imageCount?: number;
+    summary?: string;
   };
   videoTopicSample?: {
     available?: boolean;
     institution?: string;
     collectionTitle?: string;
+    summary?: string;
     sampleTitles?: string[];
   };
   shenzhenLibrarySample?: {
     available?: boolean;
     institution?: string;
     collectionTitle?: string;
+    summary?: string;
     sampleTitles?: string[];
   };
   taofenMuseumSample?: {
     available?: boolean;
     institution?: string;
     collectionTitle?: string;
+    summary?: string;
     sampleTitles?: string[];
   };
   soongLiteratureSample?: {
     available?: boolean;
     institution?: string;
     collectionTitle?: string;
+    summary?: string;
     sampleTitles?: string[];
   };
   souyunKnowledgeGraphSample?: {
     available?: boolean;
     institution?: string;
     collectionTitle?: string;
+    summary?: string;
     sampleTitles?: string[];
   };
   periodicalIndexSample?: {
     available?: boolean;
     institution?: string;
     collectionTitle?: string;
+    summary?: string;
     sampleTitles?: string[];
   };
 }

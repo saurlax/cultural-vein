@@ -127,6 +127,7 @@ export function CulturalVeinShell() {
   const [showMobileControls, setShowMobileControls] = useState(false);
   const [showMobileDossier, setShowMobileDossier] = useState(false);
   const [showDesktopDossier, setShowDesktopDossier] = useState(false);
+  const [activeSourceAtlasId, setActiveSourceAtlasId] = useState<string | null>(null);
   const [activeDesktopPanel, setActiveDesktopPanel] = useState<
     "search" | "era" | "category" | "branch"
   >("search");
@@ -366,80 +367,19 @@ export function CulturalVeinShell() {
     insights?.periodicalIndexSample?.available,
   ].filter(Boolean).length;
   const sourceAtlasEntries = useMemo(
-    () =>
-      [
-        insights?.cbdbSummary?.available
-          ? {
-              id: "cbdb",
-              name: "CBDB",
-              stat: `${insights.cbdbSummary.personCount?.toLocaleString() ?? "--"} 位人物`,
-              detail: (insights.cbdbSummary.topDynasties ?? [])
-                .slice(0, 2)
-                .map((item) => `${item.name}${item.count}`)
-                .join(" / "),
-            }
-          : null,
-        insights?.shanghaiLibraryActivity?.available
-          ? {
-              id: "shl",
-              name: "上图活动",
-              stat: `${insights.shanghaiLibraryActivity.topVenues?.length ?? 0} 组场馆`,
-              detail:
-                insights.shanghaiLibraryActivity.topVenues?.[0]
-                  ? `${insights.shanghaiLibraryActivity.topVenues[0].name} ${insights.shanghaiLibraryActivity.topVenues[0].sampleCount} 场`
-                  : "活动资料已挂接",
-            }
-          : null,
-        insights?.nanjingLibrarySample?.available
-          ? {
-              id: "njl",
-              name: "南京图书馆",
-              stat: `${insights.nanjingLibrarySample.recordCount?.toLocaleString() ?? "--"} 条图像`,
-              detail: insights.nanjingLibrarySample.sampleTitles?.[0] ?? "图像资源样本",
-            }
-          : null,
-        insights?.nanhuArchiveSample?.available
-          ? {
-              id: "nanhu",
-              name: "南湖文献",
-              stat: `${insights.nanhuArchiveSample.documentCount?.toLocaleString() ?? "--"} 篇文献`,
-              detail: insights.nanhuArchiveSample.collectionTitle ?? "专题文献资料",
-            }
-          : null,
-        insights?.videoTopicSample?.available
-          ? {
-              id: "video",
-              name: "城市专题片",
-              stat: `${insights.videoTopicSample.sampleTitles?.length ?? 0} 组影像`,
-              detail: insights.videoTopicSample.sampleTitles?.[0] ?? "近代上海影像资料",
-            }
-          : null,
-        insights?.souyunKnowledgeGraphSample?.available
-          ? {
-              id: "souyun",
-              name: "搜韵图谱",
-              stat: `${insights.souyunKnowledgeGraphSample.sampleTitles?.length ?? 0} 组接口`,
-              detail:
-                insights.souyunKnowledgeGraphSample.collectionTitle ??
-                insights.souyunKnowledgeGraphSample.sampleTitles?.[0] ??
-                "古籍与诗文知识图谱",
-            }
-          : null,
-        insights?.periodicalIndexSample?.available
-          ? {
-              id: "periodical",
-              name: "报刊索引",
-              stat: `${insights.periodicalIndexSample.sampleTitles?.length ?? 0} 组期刊`,
-              detail:
-                insights.periodicalIndexSample.collectionTitle ??
-                insights.periodicalIndexSample.sampleTitles?.[0] ??
-                "近现代报刊资料",
-            }
-          : null,
-      ].filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
-        .slice(0, 6),
-    [insights],
+    () => (insights?.sourceAtlas ?? []).slice(0, 6),
+    [insights?.sourceAtlas],
   );
+  const activeSourceAtlasEntry = useMemo(() => {
+    if (!sourceAtlasEntries.length) {
+      return null;
+    }
+
+    return (
+      sourceAtlasEntries.find((entry) => entry.id === activeSourceAtlasId) ??
+      sourceAtlasEntries[0]
+    );
+  }, [activeSourceAtlasId, sourceAtlasEntries]);
   const sourceAtlasMass =
     (insights?.cbdbSummary?.personCount ?? 0) +
     (insights?.nanjingLibrarySample?.recordCount ?? 0) +
@@ -641,22 +581,59 @@ export function CulturalVeinShell() {
                       样本量级 {sourceAtlasMass.toLocaleString()}
                     </div>
                   </div>
-                  <div className="mt-3 grid gap-2">
+                  <div className="mt-3 flex flex-wrap gap-2">
                     {sourceAtlasEntries.map((entry) => (
-                      <div
+                      <button
                         key={entry.id}
-                        className="rounded-[20px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3"
+                        type="button"
+                        onClick={() => setActiveSourceAtlasId(entry.id)}
+                        className={`rounded-full px-3 py-1.5 text-[11px] transition ${
+                          activeSourceAtlasEntry?.id === entry.id
+                            ? "bg-[#f3dfab] text-[#42290a]"
+                            : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                        }`}
                       >
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="text-xs font-medium text-[#fbf3da]">{entry.name}</div>
-                          <div className="text-[10px] text-[#f2dfab]">{entry.stat}</div>
-                        </div>
-                        <div className="mt-1 text-[11px] leading-5 text-[#e6d7ae]">
-                          {entry.detail}
-                        </div>
-                      </div>
+                        {entry.name}
+                      </button>
                     ))}
                   </div>
+                  {activeSourceAtlasEntry ? (
+                    <div className="mt-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <div className="text-xs font-medium text-[#fbf3da]">
+                            {activeSourceAtlasEntry.name}
+                          </div>
+                          <div className="mt-1 text-[11px] leading-5 text-[#e6d7ae]">
+                            {activeSourceAtlasEntry.summary ?? "真实来源样本"}
+                          </div>
+                        </div>
+                        <div className="text-[10px] text-[#f2dfab]">{activeSourceAtlasEntry.stat}</div>
+                      </div>
+                      {activeSourceAtlasEntry.sampleRecords?.length ? (
+                        <div className="mt-3 space-y-2">
+                          {activeSourceAtlasEntry.sampleRecords.slice(0, 3).map((record) => (
+                            <div
+                              key={`${activeSourceAtlasEntry.id}-${record.title}`}
+                              className="rounded-[18px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.36)] px-3 py-2.5"
+                            >
+                              <div className="text-[11px] font-medium leading-5 text-[#fbf3da]">
+                                {record.title}
+                              </div>
+                              <div className="mt-1 text-[10px] text-[#f2dfab]">
+                                {[record.category, record.year].filter(Boolean).join(" · ") || "样本条目"}
+                              </div>
+                              {record.note ? (
+                                <div className="mt-1 text-[11px] leading-5 text-[#dccb9c] line-clamp-3">
+                                  {record.note}
+                                </div>
+                              ) : null}
+                            </div>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
                 </div>
               ) : null}
 
@@ -1042,20 +1019,53 @@ export function CulturalVeinShell() {
                     <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">真实数据版图</div>
                     <div className="text-[11px] text-[#f2dfab]">{sourceAtlasMass.toLocaleString()}</div>
                   </div>
-                  <div className="mt-3 space-y-2">
-                    {sourceAtlasEntries.slice(0, 3).map((entry) => (
-                      <div
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {sourceAtlasEntries.slice(0, 4).map((entry) => (
+                      <button
                         key={`mobile-source-${entry.id}`}
-                        className="rounded-[18px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-2.5"
+                        type="button"
+                        onClick={() => setActiveSourceAtlasId(entry.id)}
+                        className={`rounded-full px-3 py-1.5 text-[11px] transition ${
+                          activeSourceAtlasEntry?.id === entry.id
+                            ? "bg-[#f3dfab] text-[#42290a]"
+                            : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc]"
+                        }`}
                       >
-                        <div className="flex items-center justify-between gap-2 text-xs">
-                          <span className="text-[#fbf3da]">{entry.name}</span>
-                          <span className="text-[#f2dfab]">{entry.stat}</span>
-                        </div>
-                        <div className="mt-1 text-[11px] leading-5 text-[#e6d7ae]">{entry.detail}</div>
-                      </div>
+                        {entry.name}
+                      </button>
                     ))}
                   </div>
+                  {activeSourceAtlasEntry ? (
+                    <div className="mt-3 rounded-[18px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="text-xs text-[#fbf3da]">{activeSourceAtlasEntry.name}</div>
+                        <div className="text-[10px] text-[#f2dfab]">{activeSourceAtlasEntry.stat}</div>
+                      </div>
+                      <div className="mt-1 text-[11px] leading-5 text-[#e6d7ae]">
+                        {activeSourceAtlasEntry.summary ?? "真实来源样本"}
+                      </div>
+                      {activeSourceAtlasEntry.sampleRecords?.[0] ? (
+                        <div className="mt-2 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.34)] px-3 py-2.5">
+                          <div className="text-[11px] font-medium leading-5 text-[#fbf3da]">
+                            {activeSourceAtlasEntry.sampleRecords[0].title}
+                          </div>
+                          <div className="mt-1 text-[10px] text-[#f2dfab]">
+                            {[
+                              activeSourceAtlasEntry.sampleRecords[0].category,
+                              activeSourceAtlasEntry.sampleRecords[0].year,
+                            ]
+                              .filter(Boolean)
+                              .join(" · ") || "样本条目"}
+                          </div>
+                          {activeSourceAtlasEntry.sampleRecords[0].note ? (
+                            <div className="mt-1 text-[11px] leading-5 text-[#dccb9c] line-clamp-3">
+                              {activeSourceAtlasEntry.sampleRecords[0].note}
+                            </div>
+                          ) : null}
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
                 </div>
               ) : null}
               <div className="mt-4 flex flex-wrap gap-2">
