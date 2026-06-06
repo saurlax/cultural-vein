@@ -44,3 +44,4 @@ next-env.d.ts
 /data
 /tmp_cbdb
 /tmp_generated
+__pycache__/

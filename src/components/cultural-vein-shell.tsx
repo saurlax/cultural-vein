@@ -39,6 +39,19 @@ export function CulturalVeinShell() {
     });
   }, [activeEra, categoryFilter, searchTerm]);
 
+  const activeEraIndex = eras.indexOf(activeEra);
+  const visibleCitations = riverDataset.citations.filter((citation) => {
+    return filteredBooks.some((book) => book.id === citation.source) &&
+      filteredBooks.some((book) => book.id === citation.target);
+  });
+  const matchedBooks = filteredBooks.filter((book) =>
+    searchTerm.trim().length > 0
+      ? `${book.title}${book.summary}${book.concepts.join("")}${book.school}`.includes(
+          searchTerm.trim(),
+        )
+      : true,
+  );
+
   const selectedBook = riverDataset.books.find((book) => book.slug === selectedBookSlug);
   const selectedDetail = riverDataset.booksBySlug[selectedBookSlug];
   const cbdbSummary = insights?.cbdbSummary;
@@ -154,11 +167,36 @@ export function CulturalVeinShell() {
             </div>
 
             <div>
-              <div className="mb-2 text-xs uppercase tracking-[0.25em] text-stone-400">
-                时间轴
+            <div className="mb-2 text-xs uppercase tracking-[0.25em] text-stone-400">
+              时间轴
+            </div>
+              <div className="rounded-[24px] border border-white/10 bg-white/5 p-3">
+                <input
+                  type="range"
+                  min={0}
+                  max={eras.length - 1}
+                  step={1}
+                  value={activeEraIndex}
+                  onChange={(event) => setActiveEra(eras[Number(event.target.value)])}
+                  className="h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
+                />
+                <div className="mt-3 flex items-center justify-between text-[11px] text-stone-500">
+                  <span>{eras[0]}</span>
+                  <span>{eras[eras.length - 1]}</span>
+                </div>
+                <div className="mt-3 rounded-2xl border border-amber-300/20 bg-amber-300/8 px-4 py-3">
+                  <div className="text-xs uppercase tracking-[0.22em] text-amber-100/70">
+                    当前断代
+                  </div>
+                  <div className="mt-1 text-lg font-semibold text-amber-50">{activeEra}</div>
+                  <p className="mt-2 text-sm leading-6 text-stone-300">
+                    当前已显现 {filteredBooks.length} 条典籍河段与 {visibleCitations.length} 条关系边，
+                    模拟文脉随时代逐步生长。
+                  </p>
+                </div>
               </div>
-              <div className="grid gap-2">
-                {eras.map((era) => (
+              <div className="mt-3 grid gap-2">
+                {eras.map((era, index) => (
                   <button
                     key={era}
                     type="button"
@@ -169,7 +207,12 @@ export function CulturalVeinShell() {
                         : "border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
                     }`}
                   >
-                    {era}
+                    <div className="flex items-center justify-between gap-3">
+                      <span>{era}</span>
+                      <span className="text-xs text-stone-400">
+                        {riverDataset.books.filter((book) => eras.indexOf(book.dynasty) <= index).length}
+                      </span>
+                    </div>
                   </button>
                 ))}
               </div>
@@ -192,12 +235,10 @@ export function CulturalVeinShell() {
 
           <RiverScene
             books={filteredBooks}
-            citations={riverDataset.citations.filter((citation) => {
-              return filteredBooks.some((book) => book.id === citation.source) &&
-                filteredBooks.some((book) => book.id === citation.target);
-            })}
+            citations={visibleCitations}
             selectedBookSlug={selectedBookSlug}
             onSelectBook={setSelectedBookSlug}
+            activeEra={activeEra}
           />
 
           <div className="mt-4 grid gap-3 md:grid-cols-4">
@@ -206,7 +247,7 @@ export function CulturalVeinShell() {
                 主河段
               </div>
               <div className="mt-2 text-lg font-semibold text-stone-50">
-                先秦至宋元
+                {eras[0]}至{activeEra}
               </div>
               <p className="mt-2 text-sm leading-6 text-stone-300">
                 以《诗经》《礼记》与《四书章句集注》构成知识主河道。
@@ -217,7 +258,7 @@ export function CulturalVeinShell() {
                 支流
               </div>
               <div className="mt-2 text-lg font-semibold text-stone-50">
-                史学 / 考据 / 近代诗学
+                {Array.from(new Set(filteredBooks.map((book) => book.school))).slice(0, 3).join(" / ") || "待显现"}
               </div>
               <p className="mt-2 text-sm leading-6 text-stone-300">
                 支流通过关系弧线与主河汇接，表达注疏、史法和影响扩散。
@@ -228,7 +269,7 @@ export function CulturalVeinShell() {
                 关系编码
               </div>
               <div className="mt-2 text-lg font-semibold text-stone-50">
-                4 层置信度
+                {new Set(visibleCitations.map((citation) => citation.layer)).size} 层已显现
               </div>
               <p className="mt-2 text-sm leading-6 text-stone-300">
                 白色元数据、绿色显式引用、黄色语义关联、灰色影响链。
@@ -277,6 +318,11 @@ export function CulturalVeinShell() {
           ) : null}
 
           <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {filteredBooks.length === 0 ? (
+              <div className="xl:col-span-3 rounded-[26px] border border-dashed border-white/10 bg-black/10 px-5 py-8 text-sm text-stone-400">
+                当前筛选下没有匹配典籍。可以放宽时间轴、清空概念词，或切换类别后继续探索。
+              </div>
+            ) : null}
             {filteredBooks.map((book) => (
               <button
                 key={book.id}
@@ -319,6 +365,11 @@ export function CulturalVeinShell() {
                   <div className="rounded-2xl bg-white/5 px-3 py-2">
                     传播速率 <span className="ml-2 text-stone-100">{book.velocity.toFixed(2)}</span>
                   </div>
+                </div>
+                <div className="mt-3 text-xs text-stone-500">
+                  {matchedBooks.some((item) => item.id === book.id)
+                    ? "命中当前文脉筛选"
+                    : "位于当前时间层但未命中搜索"}
                 </div>
               </button>
             ))}

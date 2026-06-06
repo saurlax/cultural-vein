@@ -6,12 +6,14 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 
 import type { BookNode, CitationEdge } from "@/types/domain";
+import type { RiverEra } from "@/types/domain";
 
 interface RiverSceneProps {
   books: BookNode[];
   citations: CitationEdge[];
   selectedBookSlug: string;
   onSelectBook: (slug: string) => void;
+  activeEra: RiverEra;
 }
 
 interface RiverRibbonProps {
@@ -72,17 +74,19 @@ function RiverRibbon({
 function RiverParticleStream({
   points,
   color,
+  density = 180,
 }: {
   points: THREE.Vector3[];
   color: string;
+  density?: number;
 }) {
   const particleRef = useRef<THREE.Points>(null);
   const curve = useMemo(() => new THREE.CatmullRomCurve3(points), [points]);
   const positions = useMemo(() => {
-    const values = new Float32Array(180 * 3);
+    const values = new Float32Array(density * 3);
 
-    for (let index = 0; index < 180; index += 1) {
-      const t = index / 179;
+    for (let index = 0; index < density; index += 1) {
+      const t = density === 1 ? 0 : index / (density - 1);
       const point = curve.getPointAt(t);
       values[index * 3] = point.x + (pseudoNoise(index + 1.37) - 0.5) * 0.12;
       values[index * 3 + 1] =
@@ -92,7 +96,7 @@ function RiverParticleStream({
     }
 
     return values;
-  }, [curve]);
+  }, [curve, density]);
 
   useFrame((state) => {
     if (!particleRef.current) {
@@ -119,26 +123,33 @@ function BookMarkers({
   books,
   selectedBookSlug,
   onSelectBook,
+  activeEra,
 }: {
   books: BookNode[];
   selectedBookSlug: string;
   onSelectBook: (slug: string) => void;
+  activeEra: RiverEra;
 }) {
+  const eraOrder: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
+  const activeIndex = eraOrder.indexOf(activeEra);
+
   return (
     <>
       {books.map((book) => {
         const isSelected = book.slug === selectedBookSlug;
+        const bookEraIndex = eraOrder.indexOf(book.dynasty);
+        const isNewestVisible = bookEraIndex === activeIndex;
         const markerColor = isSelected ? "#fcd34d" : "#d6fff6";
-        const emissive = isSelected ? "#f59e0b" : "#6ee7b7";
+        const emissive = isSelected ? "#f59e0b" : isNewestVisible ? "#a7f3d0" : "#6ee7b7";
 
         return (
           <group key={book.id} position={book.coordinates}>
             <mesh onClick={() => onSelectBook(book.slug)}>
-              <sphereGeometry args={[isSelected ? 0.22 : 0.16, 24, 24]} />
+              <sphereGeometry args={[isSelected ? 0.22 : isNewestVisible ? 0.18 : 0.16, 24, 24]} />
               <meshStandardMaterial
                 color={markerColor}
                 emissive={new THREE.Color(emissive)}
-                emissiveIntensity={0.8}
+                emissiveIntensity={isNewestVisible ? 1 : 0.8}
               />
             </mesh>
             <Text
@@ -148,7 +159,7 @@ function BookMarkers({
               anchorX="center"
               anchorY="middle"
             >
-              {book.shortTitle}
+              {isNewestVisible ? `${book.shortTitle} · 新显现` : book.shortTitle}
             </Text>
           </group>
         );
@@ -216,6 +227,7 @@ function RiverWorld({
   citations,
   selectedBookSlug,
   onSelectBook,
+  activeEra,
 }: RiverSceneProps) {
   const mainStream = useMemo(
     () =>
@@ -258,7 +270,7 @@ function RiverWorld({
             glow="#67e8f9"
             animated
           />
-          <RiverParticleStream points={mainStream} color="#cffafe" />
+          <RiverParticleStream points={mainStream} color="#cffafe" density={220} />
         </>
       ) : null}
 
@@ -274,6 +286,7 @@ function RiverWorld({
             <RiverParticleStream
               points={stream}
               color={index === 0 ? "#dcfce7" : "#fef3c7"}
+              density={index === 0 ? 150 : 120}
             />
           </group>
         ) : null,
@@ -284,6 +297,7 @@ function RiverWorld({
         books={books}
         selectedBookSlug={selectedBookSlug}
         onSelectBook={onSelectBook}
+        activeEra={activeEra}
       />
       <OrbitControls
         enablePan={false}
@@ -300,7 +314,7 @@ export function RiverScene(props: RiverSceneProps) {
     <div className="relative h-[480px] overflow-hidden rounded-[28px] border border-white/10 bg-[#091110]">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5 py-4 text-xs tracking-[0.24em] text-stone-300">
         <span>Fly Over The Vein</span>
-        <span>拖拽旋转 · 点击节点钻入</span>
+        <span>{props.activeEra} · 拖拽旋转 · 点击节点钻入</span>
       </div>
       <Canvas dpr={[1, 1.8]}>
         <RiverWorld {...props} />
