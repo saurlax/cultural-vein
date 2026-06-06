@@ -656,6 +656,7 @@ function BookMarkers({
   sceneFocus?: SceneFocusState | null;
   highlightedBookSlugs?: string[];
 }) {
+  const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
   const activeIndex = RIVER_ERA_ORDER.indexOf(activeEra);
   const traceTitleSet = useMemo(
     () => new Set(traceFocus?.titles ?? []),
@@ -683,6 +684,7 @@ function BookMarkers({
     <group ref={markerRef}>
       {books.map((book) => {
         const isSelected = book.slug === selectedBookSlug;
+        const isHovered = hoveredSlug === book.slug;
         const bookEraIndex = RIVER_ERA_ORDER.indexOf(book.dynasty);
         const isNewestVisible = bookEraIndex === activeIndex;
         const isTraceLinked = traceTitleSet.has(book.title);
@@ -701,6 +703,8 @@ function BookMarkers({
           ? "#fbbf24"
           : isSceneFocused
             ? "#fde68a"
+          : isHovered
+            ? "#fde68a"
           : isSelected
             ? "#fcd34d"
             : isSearchHighlighted
@@ -712,6 +716,8 @@ function BookMarkers({
           ? "#f59e0b"
           : isSceneFocused
             ? "#f59e0b"
+          : isHovered
+            ? "#fbbf24"
           : isSelected
             ? "#f59e0b"
             : isSearchHighlighted
@@ -725,6 +731,8 @@ function BookMarkers({
           ? 0.25
           : isSceneFocused
             ? 0.22
+          : isHovered
+            ? 0.21
           : isSelected
             ? 0.22
             : isSearchHighlighted
@@ -739,16 +747,22 @@ function BookMarkers({
 
         return (
           <group key={book.id} position={book.coordinates}>
-            <mesh onClick={() => onSelectBook(book.slug)}>
+            <mesh
+              onClick={() => onSelectBook(book.slug)}
+              onPointerOver={() => setHoveredSlug(book.slug)}
+              onPointerOut={() => setHoveredSlug((current) => (current === book.slug ? null : current))}
+            >
               <sphereGeometry args={[markerSize, 24, 24]} />
               <meshStandardMaterial
                 color={markerColor}
                 transparent
-                opacity={shouldDim ? 0.22 : isSearchHighlighted ? 1 : 0.94}
+                opacity={shouldDim ? 0.22 : isHovered || isSearchHighlighted ? 1 : 0.94}
                 emissive={new THREE.Color(emissive)}
                 emissiveIntensity={
                   isTraceCurrent
                     ? 1.7
+                    : isHovered
+                      ? 1.45
                     : isSearchHighlighted
                       ? 1.25
                       : isTraceLinked
@@ -759,24 +773,34 @@ function BookMarkers({
                 }
               />
             </mesh>
-            {isTraceLinked || isSearchHighlighted ? (
+            {isTraceLinked || isSearchHighlighted || isHovered || isSelected ? (
               <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
                 <ringGeometry
-                  args={[markerSize + 0.08, markerSize + (isTraceCurrent ? 0.2 : 0.15), 32]}
+                  args={[markerSize + 0.08, markerSize + (isTraceCurrent ? 0.2 : isHovered ? 0.18 : 0.15), 32]}
                 />
                 <meshBasicMaterial
-                  color={isTraceCurrent ? "#fbbf24" : isSearchHighlighted ? "#fde68a" : "#f59e0b"}
+                  color={
+                    isTraceCurrent
+                      ? "#fbbf24"
+                      : isHovered
+                        ? "#fde68a"
+                        : isSearchHighlighted
+                          ? "#fde68a"
+                          : "#f59e0b"
+                  }
                   transparent
-                  opacity={isTraceCurrent ? 0.65 : isSearchHighlighted ? 0.4 : 0.28}
+                  opacity={isTraceCurrent ? 0.65 : isHovered ? 0.52 : isSearchHighlighted ? 0.4 : 0.28}
                 />
               </mesh>
             ) : null}
             <Text
-              position={[0, isTraceLinked || isSearchHighlighted ? 0.44 : 0.38, 0]}
-              fontSize={isTraceCurrent ? 0.19 : 0.17}
+              position={[0, isTraceLinked || isSearchHighlighted || isHovered ? 0.46 : 0.38, 0]}
+              fontSize={isTraceCurrent ? 0.19 : isHovered ? 0.18 : 0.17}
               color={
                 isTraceCurrent
                   ? "#fef3c7"
+                  : isHovered
+                    ? "#fde68a"
                   : isSelected
                     ? "#fde68a"
                     : isSearchHighlighted
@@ -794,6 +818,8 @@ function BookMarkers({
                 ? `${book.shortTitle} · 当前溯源`
                 : isSceneFocused
                   ? `${book.shortTitle} · 场景联动`
+                  : isHovered
+                    ? `${book.shortTitle} · 点此入卷`
                   : isSearchHighlighted
                     ? `${book.shortTitle} · 概念命中`
                   : isTraceLinked

@@ -376,6 +376,14 @@ export function CulturalVeinShell() {
     : transitionState === "diving" || transitionState === "settling"
       ? "border-amber-300/20 bg-[linear-gradient(135deg,rgba(121,75,14,0.48),rgba(42,26,9,0.9))]"
       : "border-amber-200/18 bg-[linear-gradient(135deg,rgba(97,63,14,0.42),rgba(34,22,8,0.9))]";
+  const dossierMotionClass =
+    transitionState === "diving"
+      ? "translate-y-6 scale-[0.985] opacity-0"
+      : transitionState === "settling"
+        ? "translate-y-0 scale-100 opacity-100"
+        : transitionState === "returning"
+          ? "translate-y-3 scale-[0.992] opacity-0"
+          : "translate-y-0 scale-100 opacity-100";
   const visibleNodePreview = filteredBooks.slice(0, 5);
   const resolvedSearchResult =
     searchResult?.query.trim() === searchTerm.trim() ? searchResult : null;
@@ -431,8 +439,17 @@ export function CulturalVeinShell() {
               transitionState === "diving"
                 ? "bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.18),rgba(4,8,7,0.92)_68%)] backdrop-blur-[2px]"
                 : transitionState === "settling"
-                  ? "bg-[radial-gradient(circle_at_center,rgba(45,212,191,0.12),rgba(4,8,7,0.78)_72%)]"
+                  ? "bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.16),rgba(38,24,8,0.76)_72%)]"
                   : "bg-[radial-gradient(circle_at_center,rgba(34,197,94,0.08),rgba(4,8,7,0.88)_70%)]"
+            }`}
+          />
+          <div
+            className={`absolute inset-y-0 left-1/2 w-[min(38vw,440px)] -translate-x-1/2 bg-[linear-gradient(180deg,rgba(248,223,154,0.16),rgba(248,223,154,0.03),rgba(248,223,154,0.14))] transition-all duration-500 ${
+              transitionState === "diving"
+                ? "opacity-80 blur-[10px]"
+                : transitionState === "settling"
+                  ? "opacity-55 blur-[14px]"
+                  : "opacity-0 blur-[18px]"
             }`}
           />
         </div>
@@ -762,7 +779,7 @@ export function CulturalVeinShell() {
 
         {showDesktopDossier && selectedBook && selectedDetail ? (
           <div className="absolute right-4 top-[104px] z-20 hidden w-[min(400px,calc(100vw-20rem))] sm:right-6 lg:right-8 xl:block">
-            <aside className="pointer-events-auto xl:pt-2">
+            <aside className={`pointer-events-auto transition-all duration-500 ease-out xl:pt-2 ${dossierMotionClass}`}>
               <div className={`overflow-hidden p-4 ${panelBaseClass}`}>
                 <div
                   className={`rounded-[30px] border border-[#ead8a6]/20 bg-[linear-gradient(180deg,rgba(245,231,188,0.14),rgba(104,72,25,0.14))] p-3 ${
@@ -1089,7 +1106,7 @@ export function CulturalVeinShell() {
 
         {showMobileDossier && selectedBook && selectedDetail ? (
           <div className="absolute inset-x-3 bottom-[5.2rem] z-40 md:hidden">
-            <div className={`pointer-events-auto overflow-hidden p-3 ${panelBaseClass}`}>
+            <div className={`pointer-events-auto overflow-hidden p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
               <div className="rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(245,231,188,0.16),rgba(104,72,25,0.14))] p-3">
                 <div className="flex items-start justify-between gap-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(61,40,11,0.42)] px-4 py-3">
                   <div>
