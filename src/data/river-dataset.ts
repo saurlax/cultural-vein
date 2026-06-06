@@ -1286,6 +1286,66 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
           },
         ],
       },
+      {
+        id: "passage-zy-2",
+        section: "中和",
+        original: "喜怒哀乐之未发谓之中，发而皆中节谓之和。中也者，天下之大本也；和也者，天下之达道也。",
+        links: [
+          {
+            id: "passage-zy-2-link-1",
+            quote: "礼之节文转为中和秩序",
+            sourceBookId: "book-liji",
+            sourceTitle: "礼记",
+            layer: "explicit",
+            confidenceLabel: "高",
+            evidence: "《中庸》原出《礼记》，关于“中节”的论述直接承接礼学中的节文与秩序观。",
+          },
+          {
+            id: "passage-zy-2-link-2",
+            quote: "变化与中和的天道人事联动",
+            sourceBookId: "book-zhouyi",
+            sourceTitle: "周易",
+            layer: "semantic",
+            confidenceLabel: "中",
+            evidence: "《周易》强调阴阳变化与人事秩序的贯通，《中庸》则把这种关系转写为中和工夫与达道结构。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-zy-4",
+            title: "礼记",
+            relation: "礼学背景",
+            note: "“中节”首先来自礼学对节文与秩序的组织。 ",
+          },
+          {
+            id: "trace-zy-5",
+            title: "中庸",
+            relation: "工夫提炼",
+            note: "将礼学秩序提升为中和与诚的修养结构。",
+          },
+          {
+            id: "trace-zy-6",
+            title: "周易",
+            relation: "天道互证",
+            note: "后世理学再以《易》学天道论为《中庸》中和结构提供形上支撑。",
+          },
+          {
+            id: "trace-zy-7",
+            title: "四书章句集注",
+            relation: "教材定型",
+            note: "朱熹再把这一结构稳定为四书学习中的核心义理层。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-zy-2",
+            targetTitle: "周易",
+            relation: "天道互释",
+            note: "理学传统不断让《中庸》中和论与《周易》变化论互相解释。",
+            confidenceLabel: "中",
+          },
+        ],
+      },
     ],
     realWorldSignals: {
       sourceLabel: "CBDB 人物 + 上海图书馆活动资料",
@@ -3163,14 +3223,18 @@ if (shanghaiLibraryActivity.available) {
     startTime: record["预约开始时间"] ?? "",
   }));
 
-  for (const slug of ["shijing", "shangshu", "mengzi", "sishu-zhangju", "lunyu", "daxue", "zhongyong", "zhouyi", "xiaojing"] as const) {
+  for (const slug of ["shijing", "shangshu", "mengzi", "sishu-zhangju", "lunyu", "daxue", "zhongyong", "zhouyi", "xiaojing", "gongyang-zhuan", "chuci-zhangju", "wenxin-diaolong", "wenxuan"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
-      sourceLabel: "CBDB 人物 + 上海图书馆活动资料",
+      ...detail.realWorldSignals,
+      sourceLabel: detail.realWorldSignals?.sourceLabel
+        ? `${detail.realWorldSignals.sourceLabel} + 上海图书馆活动资料`
+        : "CBDB 人物 + 上海图书馆活动资料",
       venueSummary:
-        venueSamples.length > 0
+        detail.realWorldSignals?.venueSummary ??
+        (venueSamples.length > 0
           ? `上图活动资料当前集中在 ${venueSamples[0].name}，可作为“文化传播现场”辅助信号。`
-          : "已接入上海图书馆活动资料。",
+          : "已接入上海图书馆活动资料。"),
       venueSamples,
       eventSamples: eventSamples.slice(0, 3),
     };
@@ -3319,7 +3383,7 @@ if (soongLiteratureSample.available) {
 
 if (souyunKnowledgeGraphSample.available) {
   const institutionSamples = (souyunKnowledgeGraphSample.sampleRecords ?? []).slice(0, 3);
-  for (const slug of ["shijing", "lunyu", "daxue", "zhongyong", "zhouyi", "mengzi", "sishu-zhangju", "ren-jian-ci-hua", "chuci-zhangju"] as const) {
+  for (const slug of ["shijing", "lunyu", "daxue", "zhongyong", "zhouyi", "mengzi", "sishu-zhangju", "ren-jian-ci-hua", "chuci-zhangju", "wenxin-diaolong"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
