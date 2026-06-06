@@ -685,6 +685,61 @@ export function BookExplorer({
       setTab("versions");
     }
   };
+  const handleOpenSourceSample = (evidenceId: string, sample: { label: string; detail?: string }) => {
+    if (evidenceId === "cbdb-people") {
+      const targetPerson = sample.label.includes("纪传命中")
+        ? visiblePeople.find((person) => person.source === "cbdb") ?? visiblePeople[0]
+        : visiblePeople.find((person) => person.source !== "cbdb") ?? visiblePeople[0];
+
+      if (targetPerson?.id) {
+        setSelectedPersonId(targetPerson.id);
+      }
+
+      setSelectedSourceEvidenceId("cbdb-people");
+      setTab("people");
+      return;
+    }
+
+    if (evidenceId === "venue-samples") {
+      const targetVenue = detail.realWorldSignals?.venueSamples?.find((item) => item.name === sample.label);
+      const linkedSpread = targetVenue ? linkedVenueSpreadMap.get(targetVenue.name) : null;
+
+      if (linkedSpread?.id) {
+        setSelectedSpreadId(linkedSpread.id);
+      }
+
+      setSelectedSourceEvidenceId("venue-samples");
+      setTab("spread");
+      return;
+    }
+
+    if (evidenceId === "event-samples") {
+      const targetEvent = detail.realWorldSignals?.eventSamples?.find((item) => item.title === sample.label);
+
+      if (targetEvent) {
+        handleSelectEventSample(targetEvent);
+      } else {
+        setSelectedSourceEvidenceId("event-samples");
+      }
+
+      setTab("timeline");
+      return;
+    }
+
+    if (evidenceId === "institution-samples") {
+      const targetRecord = institutionRecords.find((item) => item.title === sample.label);
+
+      if (targetRecord) {
+        handleSelectInstitutionRecord(targetRecord);
+      }
+
+      if (visibleVersions[0]?.id) {
+        setSelectedVersionId(visibleVersions[0].id);
+      }
+
+      setTab("versions");
+    }
+  };
   const handleSelectSpreadIndex = (index: number) => {
     const nextSpread = visibleSpread[index];
 
@@ -802,40 +857,37 @@ export function BookExplorer({
         return activeInstitutionRecord.year.includes(String(item.year));
       }) ?? null
     : null;
-  const linkedVenueEventMap = useMemo(() => {
-    const events = detail.realWorldSignals?.eventSamples ?? [];
+  const linkedVenueEventMap = new Map(
+    venuePreview.map((venue) => {
+      const matchedEvents = (detail.realWorldSignals?.eventSamples ?? []).filter(
+        (event) => event.venue === venue.name,
+      );
 
-    return new Map(
-      venuePreview.map((venue) => {
-        const matchedEvents = events.filter((event) => event.venue === venue.name);
-        return [venue.name, matchedEvents] as const;
-      }),
-    );
-  }, [detail.realWorldSignals?.eventSamples, venuePreview]);
-  const linkedVenueSpreadMap = useMemo(() => {
-    return new Map(
-      venuePreview.map((venue) => {
-        const matchedSpread =
-          visibleSpread.find((item) => {
-            const fromPlace = detail.places.find((place) => place.id === item.fromPlaceId);
-            const toPlace = detail.places.find((place) => place.id === item.toPlaceId);
-            const target = venue.name.toLowerCase();
+      return [venue.name, matchedEvents] as const;
+    }),
+  );
+  const linkedVenueSpreadMap = new Map(
+    venuePreview.map((venue) => {
+      const matchedSpread =
+        visibleSpread.find((item) => {
+          const fromPlace = detail.places.find((place) => place.id === item.fromPlaceId);
+          const toPlace = detail.places.find((place) => place.id === item.toPlaceId);
+          const target = venue.name.toLowerCase();
 
-            return (
-              fromPlace?.name.toLowerCase().includes(target) ||
-              toPlace?.name.toLowerCase().includes(target) ||
-              fromPlace?.note.toLowerCase().includes(target) ||
-              toPlace?.note.toLowerCase().includes(target)
-            );
-          }) ??
-          activeSpread ??
-          visibleSpread[0] ??
-          null;
+          return (
+            fromPlace?.name.toLowerCase().includes(target) ||
+            toPlace?.name.toLowerCase().includes(target) ||
+            fromPlace?.note.toLowerCase().includes(target) ||
+            toPlace?.note.toLowerCase().includes(target)
+          );
+        }) ??
+        activeSpread ??
+        visibleSpread[0] ??
+        null;
 
-        return [venue.name, matchedSpread] as const;
-      }),
-    );
-  }, [activeSpread, detail.places, venuePreview, visibleSpread]);
+      return [venue.name, matchedSpread] as const;
+    }),
+  );
   const linkedPersonSpread = activePerson?.activityPlaces?.length
     ? visibleSpread.find((item) => {
         const fromPlace = detail.places.find((place) => place.id === item.fromPlaceId);
@@ -1279,15 +1331,20 @@ export function BookExplorer({
                     </div>
                     <div className="mt-3 grid gap-2">
                       {item.samples.map((sample) => (
-                        <div
+                        <button
                           key={`${item.id}-${sample.label}-${sample.detail ?? "detail"}`}
-                          className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3"
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleOpenSourceSample(item.id, sample);
+                          }}
+                          className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-left transition hover:bg-white/10"
                         >
                           <div className="text-sm text-stone-100">{sample.label}</div>
                           {sample.detail ? (
                             <div className="mt-1 text-xs text-stone-400">{sample.detail}</div>
                           ) : null}
-                        </div>
+                        </button>
                       ))}
                     </div>
                   </button>
@@ -1342,9 +1399,11 @@ export function BookExplorer({
                     </div>
                     <div className="mt-3 grid gap-2">
                       {activeSourceEvidence.samples.map((sample) => (
-                        <div
+                        <button
                           key={`active-${activeSourceEvidence.id}-${sample.label}-${sample.detail ?? "detail"}`}
-                          className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3"
+                          type="button"
+                          onClick={() => handleOpenSourceSample(activeSourceEvidence.id, sample)}
+                          className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-left transition hover:bg-white/10"
                         >
                           <div className="text-sm text-stone-100">{sample.label}</div>
                           {sample.detail ? (
@@ -1352,7 +1411,7 @@ export function BookExplorer({
                               {sample.detail}
                             </div>
                           ) : null}
-                        </div>
+                        </button>
                       ))}
                     </div>
                   </div>
