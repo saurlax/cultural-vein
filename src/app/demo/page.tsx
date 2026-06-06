@@ -89,6 +89,23 @@ const fourBooksHighlights = [
   },
 ] as const;
 
+const classicExpansionHighlights = [
+  {
+    title: "周易",
+    era: "先秦",
+    role: "五经义理枢纽",
+    detail: "把主河道从四书继续拉向五经天道论，使理学与经学主干的连接更完整。",
+    sources: ["CBDB", "上海图书馆活动样本", "搜韵知识图谱 API"],
+  },
+  {
+    title: "孝经",
+    era: "两汉",
+    role: "家礼教化节点",
+    detail: "让系统能自然承接家国伦理、家礼传播与未来家谱数据的接入方向。",
+    sources: ["CBDB", "上海图书馆活动样本"],
+  },
+] as const;
+
 const sourceShowcase = [
   {
     name: "CBDB",
@@ -325,6 +342,45 @@ export default function DemoPage() {
                     <span
                       key={`${item.title}-${source}`}
                       className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-[11px] text-cyan-100"
+                    >
+                      {source}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-[32px] border border-emerald-300/12 bg-[linear-gradient(135deg,rgba(12,36,30,0.94),rgba(7,13,13,0.98))] px-6 py-6">
+          <div className="max-w-3xl">
+            <div className="text-xs uppercase tracking-[0.24em] text-emerald-100/75">
+              Beyond Four Books
+            </div>
+            <h2 className="mt-2 text-2xl font-semibold text-stone-50">
+              主河道已经开始向五经与教化体系外扩
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-stone-300">
+              这一轮继续补入《周易》《孝经》，让评审看到系统不是只围绕四书做局部故事，而是已经具备向五经义理、礼教传播和家谱叙事继续生长的能力。
+            </p>
+          </div>
+
+          <div className="mt-5 grid gap-4 xl:grid-cols-2">
+            {classicExpansionHighlights.map((item) => (
+              <div
+                key={item.title}
+                className="rounded-[24px] border border-white/10 bg-black/15 px-4 py-4"
+              >
+                <div className="text-lg font-semibold text-stone-50">{item.title}</div>
+                <div className="mt-1 text-xs uppercase tracking-[0.18em] text-stone-400">
+                  {item.era} · {item.role}
+                </div>
+                <p className="mt-3 text-sm leading-7 text-stone-300">{item.detail}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {item.sources.map((source) => (
+                    <span
+                      key={`${item.title}-${source}`}
+                      className="rounded-full border border-emerald-300/15 bg-emerald-300/10 px-3 py-1 text-[11px] text-emerald-100"
                     >
                       {source}
                     </span>
