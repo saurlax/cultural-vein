@@ -80,6 +80,7 @@
 - 状态：`已实现`
 - 证据：
   - versions tab
+  - `src/components/version-tree.tsx`
   - 祖本 / 刻本 / 抄本 / 重刊本 / 整理本
   - 存佚状态标识
 

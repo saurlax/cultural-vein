@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { PersonNetwork3D } from "@/components/person-network-3d";
 import { SpreadGlobe } from "@/components/spread-globe";
+import { VersionTree } from "@/components/version-tree";
 import type { BookDetail, BookNode, RiverEra } from "@/types/domain";
 
 const tabs = [
@@ -1096,60 +1097,11 @@ export function BookExplorer({
             <>
               <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-4">
                 <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
-                  <div className="rounded-[24px] border border-white/10 bg-black/15 px-4 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
-                          版本轨道
-                        </div>
-                        <div className="mt-1 text-sm text-stone-300">
-                          点击节点切换当前版本焦点
-                        </div>
-                      </div>
-                      <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
-                        {visibleVersions.length} 个版本
-                      </div>
-                    </div>
-
-                    <div className="mt-6 flex items-center gap-2 overflow-x-auto pb-2">
-                      {visibleVersions.map((version, index) => {
-                        const isActive = activeVersion?.id === version.id;
-                        return (
-                          <div key={version.id} className="flex min-w-max items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => setSelectedVersionId(version.id)}
-                              className={`rounded-[24px] border px-4 py-4 text-left transition ${
-                                isActive
-                                  ? "border-amber-300/35 bg-amber-300/10 shadow-lg shadow-amber-500/10"
-                                  : "border-white/10 bg-white/5 hover:bg-white/10"
-                              }`}
-                            >
-                              <div className="text-xs uppercase tracking-[0.18em] text-stone-400">
-                                {version.editionType ?? "版本节点"}
-                              </div>
-                              <div className="mt-2 text-sm font-medium text-stone-50">
-                                {version.label}
-                              </div>
-                              <div className="mt-2 text-xs text-stone-400">
-                                {version.year} · {version.place}
-                              </div>
-                              <div className="mt-2">
-                                <span
-                                  className={`rounded-full border px-2 py-1 text-[10px] ${sourceBadgeClass(versionSourceMeta(version.library).tone)}`}
-                                >
-                                  {versionSourceMeta(version.library).label}
-                                </span>
-                              </div>
-                            </button>
-                            {index < visibleVersions.length - 1 ? (
-                              <div className="h-px w-8 bg-gradient-to-r from-amber-300/35 to-transparent" />
-                            ) : null}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
+                  <VersionTree
+                    versions={visibleVersions}
+                    activeVersionId={activeVersion?.id ?? null}
+                    onSelectVersion={setSelectedVersionId}
+                  />
 
                   <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
                     {activeVersion ? (
