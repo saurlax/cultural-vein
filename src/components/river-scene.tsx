@@ -1872,6 +1872,7 @@ export function RiverScene(props: RiverSceneProps) {
   const [cruiseProgress, setCruiseProgress] = useState(0.18);
   const [autoCruise, setAutoCruise] = useState(false);
   const [isInteracting, setIsInteracting] = useState(false);
+  const [showMobileTouchHint, setShowMobileTouchHint] = useState(true);
   const eraProgress = props.activeEra
     ? ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"].indexOf(props.activeEra) / 6
     : 0;
@@ -1912,6 +1913,18 @@ export function RiverScene(props: RiverSceneProps) {
   }, []);
 
   useEffect(() => {
+    if (!showMobileTouchHint) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setShowMobileTouchHint(false);
+    }, 2600);
+
+    return () => window.clearTimeout(timer);
+  }, [showMobileTouchHint]);
+
+  useEffect(() => {
     if (!cruiseRunning) {
       return;
     }
@@ -1937,7 +1950,7 @@ export function RiverScene(props: RiverSceneProps) {
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(146,102,36,0.4),rgba(78,51,15,0))]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(44,26,8,0.74),rgba(44,26,8,0))]" />
-      <div className="pointer-events-none absolute left-4 top-4 z-10 flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#ead8a6]/26 bg-[rgba(113,75,24,0.64)] px-4 py-2 text-[10px] text-[#f7edd1] sm:left-5 sm:top-5 sm:max-w-none sm:text-[11px]">
+      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#ead8a6]/22 bg-[rgba(113,75,24,0.52)] px-4 py-2 text-[10px] text-[#f7edd1] sm:left-5 sm:top-5 sm:flex sm:max-w-none sm:text-[11px]">
         <span className="tracking-[0.28em] text-[#fff0c2]">黄河文脉长卷</span>
         <span className="hidden h-3 w-px bg-[#ead8a6]/24 sm:block" />
         <span className="truncate text-[#f1e3bd]">
@@ -1952,12 +1965,12 @@ export function RiverScene(props: RiverSceneProps) {
                   : `${props.activeEra} 水位`}
         </span>
       </div>
-      <div className="pointer-events-none absolute left-1/2 top-16 z-10 w-[min(420px,calc(100vw-2.5rem))] -translate-x-1/2 px-3 sm:top-20">
+      <div className="pointer-events-none absolute left-1/2 top-16 z-10 hidden w-[min(420px,calc(100vw-2.5rem))] -translate-x-1/2 px-3 md:block md:top-20">
         <div className="rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(79,52,16,0.74)] px-4 py-3 text-center text-[11px] leading-6 text-[#f7e9c0] shadow-lg shadow-black/20 backdrop-blur-md sm:text-xs">
           {sceneHint}
         </div>
       </div>
-      <div className="pointer-events-none absolute left-5 bottom-5 z-10 hidden rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.58)] px-4 py-3 text-[11px] text-[#f0e0b8] backdrop-blur-md xl:block">
+      <div className="pointer-events-none absolute left-5 bottom-5 z-10 hidden rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.52)] px-4 py-3 text-[11px] text-[#f0e0b8] backdrop-blur-md 2xl:block">
         <div className="text-[10px] tracking-[0.24em] text-stone-500">
           河面扫描
         </div>
@@ -2032,17 +2045,21 @@ export function RiverScene(props: RiverSceneProps) {
           ) : null}
         </div>
       </div>
-      <div className="pointer-events-none absolute right-4 top-4 z-10 hidden rounded-full border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.5)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md lg:flex">
+      <div className="pointer-events-none absolute right-4 top-4 z-10 hidden rounded-full border border-[#ead8a6]/14 bg-[rgba(79,52,16,0.42)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md lg:flex">
         {isInteracting ? "正在拖动画卷" : "左键拖移河面 · 右键旋看 · 滚轮缩放"}
       </div>
-      <div className="pointer-events-none absolute left-1/2 top-5 z-10 -translate-x-1/2 md:hidden">
+      <div
+        className={`pointer-events-none absolute left-1/2 top-5 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
+          showMobileTouchHint || isInteracting ? "opacity-100" : "opacity-0"
+        }`}
+      >
         <div className="rounded-full border border-[#ead8a6]/18 bg-[rgba(79,52,16,0.5)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
           {isInteracting ? "正在拖移河面" : touchModeLabel}
         </div>
       </div>
       {canCruise ? (
-        <div className="absolute bottom-4 left-1/2 z-20 w-[min(280px,calc(100vw-2rem))] -translate-x-1/2 sm:bottom-5 sm:left-auto sm:right-5 sm:w-[min(320px,calc(100vw-2.5rem))] sm:translate-x-0">
-          <div className="pointer-events-auto rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(79,52,16,0.78)] px-4 py-4 text-[#f1e2bb] shadow-xl shadow-black/20 backdrop-blur-md">
+        <div className="absolute bottom-4 left-1/2 z-20 w-[min(220px,calc(100vw-2.5rem))] -translate-x-1/2 sm:bottom-5 sm:left-auto sm:right-5 sm:w-[min(320px,calc(100vw-2.5rem))] sm:translate-x-0">
+          <div className="pointer-events-auto rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(79,52,16,0.72)] px-4 py-3 text-[#f1e2bb] shadow-xl shadow-black/20 backdrop-blur-md sm:px-4 sm:py-4">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[10px] tracking-[0.24em] text-[#d8c9a3]">
@@ -2051,7 +2068,7 @@ export function RiverScene(props: RiverSceneProps) {
                 <div className="mt-1 text-xs text-[#fbf3da] sm:text-sm">
                   顺着长河前后巡看文脉起伏
                 </div>
-                <div className="mt-2 text-[10px] leading-5 text-[#e8d6aa]">
+                <div className="mt-2 hidden text-[10px] leading-5 text-[#e8d6aa] sm:block">
                   可先自动巡航找节点，再用上下游按钮把镜头停在想讲的河段。
                 </div>
               </div>
@@ -2077,19 +2094,19 @@ export function RiverScene(props: RiverSceneProps) {
               <button
                 type="button"
                 onClick={() => nudgeCruise(-0.08)}
-                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-[11px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
               >
                 回溯上游
               </button>
               <button
                 type="button"
                 onClick={() => nudgeCruise(0.08)}
-                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-[11px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
               >
                 顺流下看
               </button>
             </div>
-            <div className="mt-3 flex flex-wrap gap-2 text-[10px]">
+            <div className="mt-3 hidden flex-wrap gap-2 text-[10px] sm:flex">
               <button
                 type="button"
                 onClick={() => props.onOpenControlPanel?.()}
