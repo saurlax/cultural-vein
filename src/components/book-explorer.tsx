@@ -1794,12 +1794,14 @@ export function BookExplorer({
                             </div>
                             <div className="mt-3 space-y-2">
                               {activeVersionTrail.map((version, index) => (
-                                <div
+                                <button
                                   key={`trail-${version.id}`}
-                                  className={`rounded-2xl border px-3 py-3 text-sm ${
+                                  type="button"
+                                  onClick={() => setSelectedVersionId(version.id)}
+                                  className={`w-full rounded-2xl border px-3 py-3 text-left text-sm transition ${
                                     version.id === activeVersion.id
                                       ? "border-amber-300/30 bg-amber-300/10 text-amber-50"
-                                      : "border-white/10 bg-white/5 text-stone-300"
+                                      : "border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
                                   }`}
                                 >
                                   <div className="flex items-center justify-between gap-3">
@@ -1813,13 +1815,17 @@ export function BookExplorer({
                                   <div className="mt-1 text-xs text-stone-400">
                                     {version.place} · {version.library}
                                   </div>
-                                </div>
+                                </button>
                               ))}
                             </div>
                             {activeVersionParent ? (
-                              <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-stone-300">
+                              <button
+                                type="button"
+                                onClick={() => setSelectedVersionId(activeVersionParent.id)}
+                                className="mt-3 w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left text-sm text-stone-300 transition hover:bg-white/10"
+                              >
                                 上游承接：{activeVersionParent.label}
-                              </div>
+                              </button>
                             ) : (
                               <div className="mt-3 rounded-2xl border border-amber-300/15 bg-amber-300/8 px-3 py-3 text-sm text-amber-100">
                                 当前节点即版本源头，暂无更早父节点。
