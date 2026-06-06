@@ -316,6 +316,23 @@ export function RiverScene(props: RiverSceneProps) {
         <span>Fly Over The Vein</span>
         <span>{props.activeEra} · 拖拽旋转 · 点击节点钻入</span>
       </div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-wrap items-center gap-2 px-5 py-4 text-[11px] text-stone-300">
+        <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1">
+          关系图例
+        </span>
+        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+          白色 = 元数据
+        </span>
+        <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-emerald-100">
+          绿色 = 显式引用
+        </span>
+        <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-amber-100">
+          黄色 = 语义关联
+        </span>
+        <span className="rounded-full border border-slate-300/20 bg-slate-300/10 px-3 py-1 text-slate-100">
+          灰色 = 间接影响
+        </span>
+      </div>
       <Canvas dpr={[1, 1.8]}>
         <RiverWorld {...props} />
       </Canvas>

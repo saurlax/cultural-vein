@@ -6,11 +6,50 @@ import { BookExplorer } from "@/components/book-explorer";
 import { RiverScene } from "@/components/river-scene";
 import { riverDataset } from "@/data/demo-graph";
 import { useCulturalVeinStore } from "@/store/app-store";
-import type { DatasetInsight } from "@/types/domain";
+import type { CitationEdge, DatasetInsight } from "@/types/domain";
 import type { ExplorerTab } from "@/components/book-explorer";
 
 const eras = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"] as const;
 const categories = ["全部", "经", "史", "子", "集"] as const;
+const relationLayerMeta: Record<
+  CitationEdge["layer"],
+  {
+    label: string;
+    lineLabel: string;
+    colorClass: string;
+    badgeClass: string;
+    description: string;
+  }
+> = {
+  metadata: {
+    label: "元数据关系",
+    lineLabel: "白色实线",
+    colorClass: "bg-stone-100",
+    badgeClass: "border-white/15 bg-white/10 text-stone-100",
+    description: "直接来自书目、作者、版本等权威元数据，可靠度最高。",
+  },
+  explicit: {
+    label: "显式引用",
+    lineLabel: "绿色实线",
+    colorClass: "bg-emerald-300",
+    badgeClass: "border-emerald-300/25 bg-emerald-300/10 text-emerald-100",
+    description: "文本中存在明确引述痕迹，可解释为高置信度引用证据。",
+  },
+  semantic: {
+    label: "语义关联",
+    lineLabel: "黄色虚线",
+    colorClass: "bg-amber-300",
+    badgeClass: "border-amber-300/25 bg-amber-300/10 text-amber-100",
+    description: "段落义理或表达高度相似，但缺少直接引文标记。",
+  },
+  influence: {
+    label: "间接影响",
+    lineLabel: "灰色点线",
+    colorClass: "bg-slate-300",
+    badgeClass: "border-slate-300/20 bg-slate-300/10 text-slate-100",
+    description: "更适合视作研究线索，不在界面中伪装成确定事实。",
+  },
+};
 
 const demoSteps: Array<{
   id: string;
@@ -121,6 +160,24 @@ export function CulturalVeinShell() {
     return filteredBooks.some((book) => book.id === citation.source) &&
       filteredBooks.some((book) => book.id === citation.target);
   });
+  const layerSummary = (Object.keys(relationLayerMeta) as CitationEdge["layer"][]).map(
+    (layer) => {
+      const items = visibleCitations.filter((citation) => citation.layer === layer);
+
+      return {
+        layer,
+        count: items.length,
+        averageConfidence:
+          items.length > 0
+            ? Math.round(
+                (items.reduce((total, citation) => total + citation.confidence, 0) /
+                  items.length) *
+                  100,
+              )
+            : 0,
+      };
+    },
+  );
   const matchedBooks = filteredBooks.filter((book) =>
     searchTerm.trim().length > 0
       ? `${book.title}${book.summary}${book.concepts.join("")}${book.school}`.includes(
@@ -134,6 +191,28 @@ export function CulturalVeinShell() {
   const cbdbSummary = insights?.cbdbSummary;
   const currentDemoStep =
     demoSteps.find((step) => step.id === demoStepId) ?? demoSteps[0];
+  const selectedBookCitations = selectedBook
+    ? visibleCitations.filter((citation) =>
+        citation.source === selectedBook.id || citation.target === selectedBook.id
+      )
+    : [];
+  const selectedEvidenceCards = selectedBookCitations
+    .map((citation) => {
+      const sourceBook = riverDataset.books.find((book) => book.id === citation.source);
+      const targetBook = riverDataset.books.find((book) => book.id === citation.target);
+
+      if (!sourceBook || !targetBook) {
+        return null;
+      }
+
+      return {
+        ...citation,
+        sourceTitle: sourceBook.title,
+        targetTitle: targetBook.title,
+      };
+    })
+    .filter((citation): citation is NonNullable<typeof citation> => Boolean(citation))
+    .sort((left, right) => right.confidence - left.confidence);
 
   useEffect(() => {
     let cancelled = false;
@@ -493,6 +572,126 @@ export function CulturalVeinShell() {
               <p className="mt-2 text-sm leading-6 text-stone-300">
                 仅显示不晚于当前时代的河段与分支，模拟文脉逐步生长。
               </p>
+            </div>
+          </div>
+
+          <div className="mt-4 grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+            <div className="rounded-[28px] border border-white/10 bg-black/15 px-5 py-5">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs uppercase tracking-[0.24em] text-stone-400">
+                    Confidence Layers
+                  </div>
+                  <h3 className="mt-2 text-xl font-semibold text-stone-50">
+                    三层置信度 + 影响线索
+                  </h3>
+                </div>
+                <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
+                  当前可见 {visibleCitations.length} 条
+                </div>
+              </div>
+              <p className="mt-3 text-sm leading-7 text-stone-300">
+                方案里的学术严谨性在这里直接展开：不同关系层级用不同线型、颜色和解释方式呈现，避免把研究线索包装成确定事实。
+              </p>
+              <div className="mt-4 grid gap-3">
+                {layerSummary.map((item) => {
+                  const meta = relationLayerMeta[item.layer];
+
+                  return (
+                    <div
+                      key={item.layer}
+                      className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <span className={`h-2.5 w-8 rounded-full ${meta.colorClass}`} />
+                          <div>
+                            <div className="text-sm font-medium text-stone-50">
+                              {meta.label}
+                            </div>
+                            <div className="mt-1 text-xs text-stone-400">
+                              {meta.lineLabel}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-base font-semibold text-stone-50">
+                            {item.count}
+                          </div>
+                          <div className="text-xs text-stone-400">
+                            平均可信度 {item.averageConfidence}%
+                          </div>
+                        </div>
+                      </div>
+                      <p className="mt-3 text-sm leading-6 text-stone-300">
+                        {meta.description}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="rounded-[28px] border border-cyan-300/12 bg-[linear-gradient(180deg,rgba(24,35,35,0.96),rgba(6,12,12,0.98))] px-5 py-5">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs uppercase tracking-[0.24em] text-cyan-100/75">
+                    Evidence Board
+                  </div>
+                  <h3 className="mt-2 text-xl font-semibold text-stone-50">
+                    {selectedBook ? `${selectedBook.title} 的关系证据` : "关系证据面板"}
+                  </h3>
+                </div>
+                <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                  {selectedEvidenceCards.length} 条直接关系
+                </div>
+              </div>
+              <p className="mt-3 text-sm leading-7 text-stone-300">
+                这里把当前选中典籍的直接关系逐条拆开，评审可以直接看到“关系是什么、证据来自哪里、我们把它判在哪个层级”。
+              </p>
+              <div className="mt-4 grid gap-3">
+                {selectedEvidenceCards.length > 0 ? (
+                  selectedEvidenceCards.slice(0, 6).map((citation) => {
+                    const meta = relationLayerMeta[citation.layer];
+
+                    return (
+                      <div
+                        key={citation.id}
+                        className="rounded-[24px] border border-white/10 bg-black/15 px-4 py-4"
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={`rounded-full border px-3 py-1 text-xs ${meta.badgeClass}`}
+                            >
+                              {meta.label}
+                            </span>
+                            <span className="text-xs text-stone-400">
+                              可信度 {Math.round(citation.confidence * 100)}%
+                            </span>
+                          </div>
+                          <div className="text-xs uppercase tracking-[0.18em] text-stone-500">
+                            {citation.label}
+                          </div>
+                        </div>
+                        <div className="mt-3 text-base font-semibold text-stone-50">
+                          {citation.sourceTitle} → {citation.targetTitle}
+                        </div>
+                        <p className="mt-3 text-sm leading-7 text-stone-300">
+                          {citation.evidence}
+                        </p>
+                        <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-xs leading-6 text-stone-300">
+                          说明：{meta.description}
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-white/10 bg-black/10 px-4 py-8 text-sm text-stone-400">
+                    当前没有与所选典籍直接相连的证据卡。可以切换时间轴、类别或重新选择节点后继续查看。
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
