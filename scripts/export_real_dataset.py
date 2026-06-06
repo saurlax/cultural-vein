@@ -1,10 +1,10 @@
-"""Export real-world cultural vein supplements from downloaded datasets.
+"""Export cultural vein supplements from downloaded datasets.
 
 This script currently focuses on two reliable sources already present in /data:
 1. CBDB SQLite dump for historical person metadata
 2. Shanghai Library 2026 Excel package for activity / circulation samples
 
-The output is a small checked-in JSON artifact that can enrich the demo graph
+The output is a checked-in JSON artifact that can enrich the river dataset
 without requiring the full raw datasets at runtime.
 """
 
@@ -39,7 +39,7 @@ SOONG_PDF = DATA_DIR / "API_宋庆龄文献.pdf"
 SOUYUN_PDF = DATA_DIR / "API_搜韵网知识图谱.pdf"
 CNBK_PDF = DATA_DIR / "API_全国报刊索引.pdf"
 
-DEMO_BOOKS = [
+CURATED_BOOKS = [
     {
         "id": "book-shijing",
         "slug": "shijing",
@@ -218,7 +218,7 @@ DEMO_BOOKS = [
     },
 ]
 
-DEMO_CITATIONS = [
+CURATED_CITATIONS = [
     {
         "id": "edge-1",
         "source": "book-liji",
@@ -329,7 +329,7 @@ DEMO_CITATIONS = [
     },
 ]
 
-DEMO_BOOK_DETAILS = {
+CURATED_BOOK_DETAILS = {
     "shijing": {
         "bookId": "book-shijing",
         "heroMetric": {
@@ -372,8 +372,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": 648,
                 "era": "唐",
                 "bio": "奉诏撰《毛诗正义》，奠定经学义疏传统。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 1,
                 "relationType": "注",
             },
@@ -385,8 +385,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": 1200,
                 "era": "宋",
                 "bio": "以理学视角重新解释诗教，强化修身与教化内核。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 2,
                 "relationType": "引",
             },
@@ -398,8 +398,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": 1927,
                 "era": "清末民初",
                 "bio": "近代诗学家，以境界论回接《诗经》传统。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 2,
                 "relationType": "评",
             },
@@ -543,7 +543,7 @@ DEMO_BOOK_DETAILS = {
             },
         ],
         "realWorldSignals": {
-            "sourceLabel": "CBDB 人物 + 上图活动样本",
+            "sourceLabel": "CBDB 人物 + 上图活动资料",
         },
     },
     "shangshu": {
@@ -588,8 +588,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": 648,
                 "era": "唐",
                 "bio": "主持《尚书正义》编纂，使经义与政教解释体系化。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 1,
                 "relationType": "注",
             },
@@ -601,8 +601,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": 1230,
                 "era": "南宋",
                 "bio": "撰《书集传》，推动《尚书》进入理学化、治道化的新解释阶段。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 2,
                 "relationType": "注",
             },
@@ -728,8 +728,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": 1200,
                 "era": "南宋",
                 "bio": "以四书为核心重新组织儒学经典秩序。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 1,
                 "relationType": "著",
             },
@@ -741,8 +741,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": 1295,
                 "era": "元",
                 "bio": "参与元代学宫刻本的校勘整理。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 2,
                 "relationType": "校",
             },
@@ -872,7 +872,7 @@ DEMO_BOOK_DETAILS = {
             },
         ],
         "realWorldSignals": {
-            "sourceLabel": "CBDB 人物 + 上图活动样本",
+            "sourceLabel": "CBDB 人物 + 上图活动资料",
         },
     },
     "shiji": {
@@ -892,8 +892,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": -86,
                 "era": "西汉",
                 "bio": "纪传体史学奠基者，以人物书写重构历史叙述。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 1,
                 "relationType": "著",
             }
@@ -961,8 +961,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": -451,
                 "era": "春秋",
                 "bio": "传统上被视为《左传》作者，象征春秋史事叙述的源头。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 1,
                 "relationType": "著",
             },
@@ -974,8 +974,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": 285,
                 "era": "西晋",
                 "bio": "《春秋左氏经传集解》奠定后世阅读《左传》的重要注释底本。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 2,
                 "relationType": "注",
             },
@@ -1044,7 +1044,7 @@ DEMO_BOOK_DETAILS = {
                     {
                         "id": "trace-zzh-1",
                         "title": "春秋左传",
-                        "relation": "事件叙事原型",
+                        "relation": "事件叙事起点",
                         "note": "把礼乐政治与战争、外交事件编织成连续叙事。",
                     },
                     {
@@ -1108,8 +1108,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": -289,
                 "era": "战国",
                 "bio": "以仁政、王道与性善学说扩展儒家政治伦理话语。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 1,
                 "relationType": "著",
             },
@@ -1121,8 +1121,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": 1200,
                 "era": "南宋",
                 "bio": "通过章句系统将《孟子》推入四书核心结构，强化其理学入口地位。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 2,
                 "relationType": "注",
             },
@@ -1246,8 +1246,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": 1086,
                 "era": "宋",
                 "bio": "主持编纂《资治通鉴》，以编年体方式重塑治道叙事。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 1,
                 "relationType": "著",
             },
@@ -1259,8 +1259,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": 1078,
                 "era": "宋",
                 "bio": "通鉴局重要助手，负责资料搜辑与校勘。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 2,
                 "relationType": "校",
             },
@@ -1322,8 +1322,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": 1682,
                 "era": "明清",
                 "bio": "以考据与经世之学贯通经史，开启清代朴学风气。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 1,
                 "relationType": "著",
             }
@@ -1385,8 +1385,8 @@ DEMO_BOOK_DETAILS = {
                 "deathYear": 1927,
                 "era": "清末民初",
                 "bio": "以境界论重释古典诗学，连接近代审美与经史传统。",
-                "source": "demo",
-                "sourceStatus": "fallback",
+                "source": "curated",
+                "sourceStatus": "curated",
                 "relationTier": 1,
                 "relationType": "著",
             }
@@ -1761,7 +1761,7 @@ def fetch_fudan_archive_sample() -> dict[str, object]:
     return {
         "available": True,
         "institution": "复旦大学图书馆",
-        "collectionTitle": "南社诗笺样例",
+        "collectionTitle": "南社诗笺资料",
         "summary": summary,
         "sampleRecords": [
             {
@@ -1856,10 +1856,10 @@ def fetch_nanhu_archive_sample() -> dict[str, object]:
     return {
         "available": True,
         "institution": "南湖文献数据库",
-        "collectionTitle": "专题文献与图像资源样本",
+        "collectionTitle": "专题文献与图像资源资料",
         "documentCount": doc_count,
         "imageCount": image_count,
-        "summary": summary or "已发现可稳定列举的专题文献与图片资源，可作为专题分支样本接入。",
+        "summary": summary or "已发现可稳定列举的专题文献与图片资源，可作为专题分支资料接入。",
         "sampleRecords": sample_records,
     }
 
@@ -1934,7 +1934,7 @@ def fetch_video_topic_sample() -> dict[str, object]:
     return {
         "available": True,
         "institution": "近代上海城市文化专题片",
-        "collectionTitle": "近代上海城市文化影像样本",
+        "collectionTitle": "近代上海城市文化影像资料",
         "summary": summary,
         "accessNote": access_text[:140],
         "sampleTitles": sample_titles[:6],
@@ -2008,7 +2008,7 @@ def fetch_shenzhen_library_sample() -> dict[str, object]:
     return {
         "available": True,
         "institution": "深圳图书馆",
-        "collectionTitle": "深圳专题文化接口样本",
+        "collectionTitle": "深圳专题文化接口资料",
         "summary": "".join(summary_parts)[:260],
         "sampleTitles": sample_titles,
         "sampleRecords": sample_records,
@@ -2072,7 +2072,7 @@ def fetch_taofen_museum_sample() -> dict[str, object]:
 
     summary = (
         "韬奋纪念馆开放接口覆盖机构年表、人物年表、图书列表与邹韬奋人物关系，"
-        "可为近现代出版文化、人物网络和事件时间线提供稳定样本。"
+        "可为近现代出版文化、人物网络和事件时间线提供稳定资料。"
     )
     if "邹韬奋人物关系" in text:
         summary += " 当前文档已明确列出邹韬奋人物关系与图书列表等接口方向。"
@@ -2080,7 +2080,7 @@ def fetch_taofen_museum_sample() -> dict[str, object]:
     return {
         "available": True,
         "institution": "韬奋纪念馆",
-        "collectionTitle": "近现代出版文化 API 样本",
+        "collectionTitle": "近现代出版文化 API 资料",
         "summary": summary[:280],
         "sampleTitles": [record["title"] for record in sample_records],
         "sampleRecords": sample_records,
@@ -2132,7 +2132,7 @@ def fetch_soong_literature_sample() -> dict[str, object]:
     return {
         "available": True,
         "institution": "宋庆龄文献数据中心",
-        "collectionTitle": "人物与事件字段 API 样本",
+        "collectionTitle": "人物与事件字段 API 资料",
         "summary": summary[:280],
         "sampleTitles": [record["title"] for record in sample_records],
         "sampleRecords": sample_records,
@@ -2184,7 +2184,7 @@ def fetch_souyun_knowledge_graph_sample() -> dict[str, object]:
     return {
         "available": True,
         "institution": "搜韵网知识图谱",
-        "collectionTitle": "古典诗词知识图谱 API 样本",
+        "collectionTitle": "古典诗词知识图谱 API 资料",
         "summary": summary[:280],
         "sampleTitles": [record["title"] for record in sample_records],
         "sampleRecords": sample_records,
@@ -2236,7 +2236,7 @@ def fetch_periodical_index_sample() -> dict[str, object]:
     return {
         "available": True,
         "institution": "全国报刊索引",
-        "collectionTitle": "近现代研究文献 API 样本",
+        "collectionTitle": "近现代研究文献 API 资料",
         "summary": summary[:280],
         "sampleTitles": [record["title"] for record in sample_records],
         "sampleRecords": sample_records,
@@ -2252,9 +2252,9 @@ def main() -> None:
         if person.get("foundInCbdb")
     }
 
-    demo_book_details = json.loads(json.dumps(DEMO_BOOK_DETAILS, ensure_ascii=False))
+    curated_book_details = json.loads(json.dumps(CURATED_BOOK_DETAILS, ensure_ascii=False))
     for slug, linked_people in BOOK_PERSON_LINKS.items():
-        detail = demo_book_details.get(slug)
+        detail = curated_book_details.get(slug)
         if not detail:
             continue
 
@@ -2268,9 +2268,9 @@ def main() -> None:
             detail["timeline"] = merged[:6]
 
     payload = {
-        "demoBooks": DEMO_BOOKS,
-        "demoCitations": DEMO_CITATIONS,
-        "demoBookDetails": demo_book_details,
+        "curatedBooks": CURATED_BOOKS,
+        "curatedCitations": CURATED_CITATIONS,
+        "curatedBookDetails": curated_book_details,
         "cbdbPeople": cbdb_people,
         "cbdbSummary": fetch_cbdb_summary(),
         "shanghaiLibraryActivity": fetch_shanghai_activity_sample(),

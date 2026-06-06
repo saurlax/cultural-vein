@@ -1,5 +1,5 @@
 {
-  "demoBooks": [
+  "curatedBooks": [
     {
       "id": "book-shijing",
       "slug": "shijing",
@@ -277,7 +277,7 @@
       ]
     }
   ],
-  "demoCitations": [
+  "curatedCitations": [
     {
       "id": "edge-1",
       "source": "book-liji",
@@ -387,7 +387,7 @@
       "evidence": "顾炎武关于天下国家与民生治理的论述，与《孟子》王道民本传统持续对话。"
     }
   ],
-  "demoBookDetails": {
+  "curatedBookDetails": {
     "shijing": {
       "bookId": "book-shijing",
       "heroMetric": {
@@ -430,8 +430,8 @@
           "deathYear": 648,
           "era": "唐",
           "bio": "奉诏撰《毛诗正义》，奠定经学义疏传统。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 1,
           "relationType": "注"
         },
@@ -443,8 +443,8 @@
           "deathYear": 1200,
           "era": "宋",
           "bio": "以理学视角重新解释诗教，强化修身与教化内核。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 2,
           "relationType": "引"
         },
@@ -456,8 +456,8 @@
           "deathYear": 1927,
           "era": "清末民初",
           "bio": "近代诗学家，以境界论回接《诗经》传统。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 2,
           "relationType": "评"
         }
@@ -640,7 +640,7 @@
         }
       ],
       "realWorldSignals": {
-        "sourceLabel": "CBDB 人物 + 上图活动样本"
+        "sourceLabel": "CBDB 人物 + 上图活动资料"
       }
     },
     "shangshu": {
@@ -685,8 +685,8 @@
           "deathYear": 648,
           "era": "唐",
           "bio": "主持《尚书正义》编纂，使经义与政教解释体系化。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 1,
           "relationType": "注"
         },
@@ -698,8 +698,8 @@
           "deathYear": 1230,
           "era": "南宋",
           "bio": "撰《书集传》，推动《尚书》进入理学化、治道化的新解释阶段。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 2,
           "relationType": "注"
         }
@@ -864,8 +864,8 @@
           "deathYear": 1200,
           "era": "南宋",
           "bio": "以四书为核心重新组织儒学经典秩序。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 1,
           "relationType": "著"
         },
@@ -877,8 +877,8 @@
           "deathYear": 1295,
           "era": "元",
           "bio": "参与元代学宫刻本的校勘整理。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 2,
           "relationType": "校"
         }
@@ -1041,7 +1041,7 @@
         }
       ],
       "realWorldSignals": {
-        "sourceLabel": "CBDB 人物 + 上图活动样本"
+        "sourceLabel": "CBDB 人物 + 上图活动资料"
       }
     },
     "shiji": {
@@ -1061,8 +1061,8 @@
           "deathYear": -86,
           "era": "西汉",
           "bio": "纪传体史学奠基者，以人物书写重构历史叙述。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 1,
           "relationType": "著"
         }
@@ -1135,8 +1135,8 @@
           "deathYear": -451,
           "era": "春秋",
           "bio": "传统上被视为《左传》作者，象征春秋史事叙述的源头。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 1,
           "relationType": "著"
         },
@@ -1148,8 +1148,8 @@
           "deathYear": 285,
           "era": "西晋",
           "bio": "《春秋左氏经传集解》奠定后世阅读《左传》的重要注释底本。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 2,
           "relationType": "注"
         }
@@ -1251,7 +1251,7 @@
             {
               "id": "trace-zzh-1",
               "title": "春秋左传",
-              "relation": "事件叙事原型",
+              "relation": "事件叙事起点",
               "note": "把礼乐政治与战争、外交事件编织成连续叙事。"
             },
             {
@@ -1315,8 +1315,8 @@
           "deathYear": -289,
           "era": "战国",
           "bio": "以仁政、王道与性善学说扩展儒家政治伦理话语。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 1,
           "relationType": "著"
         },
@@ -1328,8 +1328,8 @@
           "deathYear": 1200,
           "era": "南宋",
           "bio": "通过章句系统将《孟子》推入四书核心结构，强化其理学入口地位。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 2,
           "relationType": "注"
         }
@@ -1492,8 +1492,8 @@
           "deathYear": 1086,
           "era": "宋",
           "bio": "主持编纂《资治通鉴》，以编年体方式重塑治道叙事。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 1,
           "relationType": "著"
         },
@@ -1505,8 +1505,8 @@
           "deathYear": 1078,
           "era": "宋",
           "bio": "通鉴局重要助手，负责资料搜辑与校勘。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 2,
           "relationType": "校"
         }
@@ -1580,8 +1580,8 @@
           "deathYear": 1682,
           "era": "明清",
           "bio": "以考据与经世之学贯通经史，开启清代朴学风气。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 1,
           "relationType": "著"
         }
@@ -1648,8 +1648,8 @@
           "deathYear": 1927,
           "era": "清末民初",
           "bio": "以境界论重释古典诗学，连接近代审美与经史传统。",
-          "source": "demo",
-          "sourceStatus": "fallback",
+          "source": "curated",
+          "sourceStatus": "curated",
           "relationTier": 1,
           "relationType": "著"
         }
@@ -2053,7 +2053,7 @@
   "fudanArchiveSample": {
     "available": true,
     "institution": "复旦大学图书馆",
-    "collectionTitle": "南社诗笺样例",
+    "collectionTitle": "南社诗笺资料",
     "summary": "南社詩箋介紹《亭林周氏後來雨樓藏南社詩箋》九十二件，係成立於清宣統元年（1909）之近代著名文學團體南社成員所遺詩文墨跡，原由南社後期主任姚光（1891-1945）收掌，嗣經周大烈、東壁父子遞藏，今承東壁老人舉贈復旦大學圖書館。周大烈先生（1901-1976），江蘇金山縣（今上海金山區）亭林鎮人，爲清乾隆間獻書助編《四庫全書》之藏書家周厚堉（室名來雨樓）族裔。先生幼而岐嶷，長而劬學，人品高潔，學問博洽，中年以前，足未出鄉關，藏書萬卷，以“後來雨樓”爲名，有志於亭林鎮創辦圖書館事業。1937年後，避難遷滬，隱居里閈，",
     "sampleRecords": [
       {
@@ -2068,10 +2068,10 @@
   "nanhuArchiveSample": {
     "available": true,
     "institution": "南湖文献数据库",
-    "collectionTitle": "专题文献与图像资源样本",
+    "collectionTitle": "专题文献与图像资源资料",
     "documentCount": 62,
     "imageCount": 137,
-    "summary": "已发现可稳定列举的专题文献与图片资源，可作为专题分支样本接入。",
+    "summary": "已发现可稳定列举的专题文献与图片资源，可作为专题分支资料接入。",
     "sampleRecords": [
       {
         "institution": "南湖文献数据库",
@@ -2126,7 +2126,7 @@
   "videoTopicSample": {
     "available": true,
     "institution": "近代上海城市文化专题片",
-    "collectionTitle": "近代上海城市文化影像样本",
+    "collectionTitle": "近代上海城市文化影像资料",
     "summary": "数据介绍《近代上海城市文化》专题片近代上海，作为中国最大的对外开放窗口，东西方文化交流的总汇，在近代中国的历史上扮演着重要的角色，许多影响中国近代进程的人物在这里活动，许多重大的事件在这里发生，上海也在这星转斗移之中，从一个滨海县城迅速发展成为国际大都会，同时也是中国最重要的经济、文化中心。在近代中国的城市发展史上，这是特别令人瞩目的篇章。20世纪80年代以来，随着国家浦东开发开放政策的制定，上海重又振起昔日雄风，成为全国的一片热土；2010年世博会的举办，更使上海成为当今世界最具活力的城市。这个大背景为上海增添了",
     "accessNote": "链接：https://pan.baidu.com/s/13fjSIdlPkurzI8OxvheGkw?pwd=1234 提取码：1234 ",
     "sampleTitles": [
@@ -2191,7 +2191,7 @@
   "shenzhenLibrarySample": {
     "available": true,
     "institution": "深圳图书馆",
-    "collectionTitle": "深圳专题文化接口样本",
+    "collectionTitle": "深圳专题文化接口资料",
     "summary": "深圳记忆专题库可提供题名、类别、区域、时间、作者、相关人物与活动等专题记忆字段。城市景观雕塑数据库可提供位置、经纬度、作品时间、材质与城市空间描述等字段。",
     "sampleTitles": [
       "深圳记忆专题库 API",
@@ -2219,8 +2219,8 @@
   "taofenMuseumSample": {
     "available": true,
     "institution": "韬奋纪念馆",
-    "collectionTitle": "近现代出版文化 API 样本",
-    "summary": "韬奋纪念馆开放接口覆盖机构年表、人物年表、图书列表与邹韬奋人物关系，可为近现代出版文化、人物网络和事件时间线提供稳定样本。 当前文档已明确列出邹韬奋人物关系与图书列表等接口方向。",
+    "collectionTitle": "近现代出版文化 API 资料",
+    "summary": "韬奋纪念馆开放接口覆盖机构年表、人物年表、图书列表与邹韬奋人物关系，可为近现代出版文化、人物网络和事件时间线提供稳定资料。 当前文档已明确列出邹韬奋人物关系与图书列表等接口方向。",
     "sampleTitles": [
       "机构年表接口",
       "人物年表接口",
@@ -2256,7 +2256,7 @@
   "soongLiteratureSample": {
     "available": true,
     "institution": "宋庆龄文献数据中心",
-    "collectionTitle": "人物与事件字段 API 样本",
+    "collectionTitle": "人物与事件字段 API 资料",
     "summary": "宋庆龄文献数据中心开放接口覆盖题名、作者、摘要、关键词，并显式提供文中人名、事件组织、写作地点与题词对象等字段，可补强人物、事件与空间传播叙事。 当前文档已明确列出相关字段代码表。",
     "sampleTitles": [
       "文献检索接口",
@@ -2293,7 +2293,7 @@
   "souyunKnowledgeGraphSample": {
     "available": true,
     "institution": "搜韵网知识图谱",
-    "collectionTitle": "古典诗词知识图谱 API 样本",
+    "collectionTitle": "古典诗词知识图谱 API 资料",
     "summary": "搜韵网知识图谱开放中文领域尤其是古典诗词、文史领域的 RESTful JSON 接口，并包含诗文库、古籍库与 OpenAPI schema，可为诗学典籍关系与文本比对提供稳定扩展方向。 当前文档已明确区分开放接口与古籍库入口。",
     "sampleTitles": [
       "开放知识图谱接口",
@@ -2330,7 +2330,7 @@
   "periodicalIndexSample": {
     "available": true,
     "institution": "全国报刊索引",
-    "collectionTitle": "近现代研究文献 API 样本",
+    "collectionTitle": "近现代研究文献 API 资料",
     "summary": "全国报刊索引开放接口覆盖刊名、年卷期、作者、摘要、关键词以及全文路径、主题词等字段，可作为近现代研究论文、传播线索与二次文献网络的补充来源。 当前文档已给出全文路径和摘要字段示例。",
     "sampleTitles": [
       "期刊检索接口",

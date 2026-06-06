@@ -9,7 +9,6 @@
 │                         浏览器 / Next.js                    │
 │                                                             │
 │  /                    综合工作台                            │
-│  /demo                一页式答辩页                          │
 │                                                             │
 │  组件层                                                    │
 │  - cultural-vein-shell.tsx   宏观总控 + 首页叙事            │
@@ -27,9 +26,9 @@
 │  /api/books/[slug]         单书详情                         │
 │  /api/insights             真实数据覆盖与统计               │
 │                                                             │
-│  src/data/demo-graph.ts    运行时图谱合并与增强             │
+│  src/data/river-dataset.ts 运行时图谱合并与增强             │
 │  src/data/generated/real-supplements.json                   │
-│                           由脚本生成的真实样本数据          │
+│                           由脚本生成的真实资料数据          │
 └──────────────────────────────┬──────────────────────────────┘
                                │ generated from
 ┌──────────────────────────────┴──────────────────────────────┐
@@ -38,7 +37,7 @@
 │  scripts/export_real_dataset.py                             │
 │  - 读取 /data 中已下载的数据包                              │
 │  - 读取 tmp_cbdb/CBDB_20240208.db                           │
-│  - 抽取人物、活动、馆藏、图像资源样本                       │
+│  - 抽取人物、活动、馆藏、图像资源资料                       │
 │  - 输出统一 JSON 供前端与 API 使用                          │
 └──────────────────────────────┬──────────────────────────────┘
                                │ source files
@@ -70,11 +69,11 @@
 
 ### 数据层
 
-方案中原本设想更完整的图数据库与搜索后端。当前版本为了先完成可演示 MVP，采用了更稳的轻量路线：
+方案中原本设想更完整的图数据库与搜索后端。当前版本为了先完成可运行、可展示的参赛作品，采用了更稳的轻量路线：
 
 - 以 `scripts/export_real_dataset.py` 做离线抽取
 - 以 `src/data/generated/real-supplements.json` 作为稳定中间产物
-- 以 `src/data/demo-graph.ts` 做运行时增强和前端消费整合
+- 以 `src/data/river-dataset.ts` 做运行时增强和前端消费整合
 - 以 Next.js Route Handlers 模拟本地 API 访问结构
 
 这意味着当前仓库虽然还不是正式 Neo4j + MeiliSearch 架构，但已经把“数据装配”和“前端消费”的边界划清，后续可平滑迁移。
@@ -85,17 +84,16 @@
 1. 用户把下载好的竞赛数据放入 /data
 2. Python 脚本读取 /data 与 tmp_cbdb
 3. 脚本输出 src/data/generated/real-supplements.json
-4. src/data/demo-graph.ts 合并：
-   - 示例典籍骨架
+4. src/data/river-dataset.ts 合并：
+   - 当前典籍骨架
    - 真实人物与地点信号
-   - 馆藏 / 活动 / 机构样本
+   - 馆藏 / 活动 / 机构资料
    - 关系层级与证据文本
 5. /api/* 路由返回图谱、单书和统计信息
 6. React 组件消费这些数据，驱动：
    - 河流总览
    - 典籍钻入
    - 文本溯源
-   - 答辩页 /demo
 ```
 
 ## 4. 关键文件职责
@@ -104,8 +102,6 @@
 
 - `src/app/page.tsx`
   - 综合工作台入口
-- `src/app/demo/page.tsx`
-  - 一页式答辩叙事页
 - `src/app/api/graph/route.ts`
   - 图谱数据接口
 - `src/app/api/books/[slug]/route.ts`
@@ -117,7 +113,6 @@
 
 - `src/components/cultural-vein-shell.tsx`
   - 首页主容器
-  - 答辩模式
   - 数据规模与证据面板
 - `src/components/river-scene.tsx`
   - 3D 河流总览
@@ -128,8 +123,8 @@
 
 ### 数据与状态
 
-- `src/data/demo-graph.ts`
-  - 合并示例数据与真实样本
+- `src/data/river-dataset.ts`
+  - 合并当前典籍数据与真实资料
   - 输出 `riverDataset`
 - `src/data/generated/real-supplements.json`
   - 由脚本生成的真实数据中间层
@@ -172,7 +167,7 @@
 
 ### 数据层升级
 
-- 把 `demo-graph.ts` 中的运行时整合逐步外迁到服务端
+- 把 `river-dataset.ts` 中的运行时整合逐步外迁到服务端
 - 将典籍关系正式落入 Neo4j
 - 引入全文检索与多条件查询
 
@@ -186,10 +181,10 @@
 
 - 增加更明显的镜头转场
 - 提升版本树与传播图的沉浸式视觉表现
-- 补录屏脚本与答辩视频素材
+- 补录屏脚本与展示视频素材
 
 ## 7. 适合放进提交材料的简述
 
 如果需要在作品文档或 PPT 中用一句话说明当前架构，可以直接使用：
 
-“当前版本采用‘离线抽取 + 统一图谱装配 + 本地 API + 三层交互前端’的轻量架构，先保证典籍传承网络的可视化表达、真实数据接入与答辩可演示性，同时保留后续平滑升级到图数据库与检索服务的工程空间。”
+“当前版本采用‘离线抽取 + 统一图谱装配 + 本地 API + 三层交互前端’的轻量架构，先保证典籍传承网络的可视化表达、真实数据接入与现场展示效果，同时保留后续平滑升级到图数据库与检索服务的工程空间。”
