@@ -162,6 +162,10 @@ function versionStatusMeta(status: VersionNode["status"]) {
   };
 }
 
+function formatVersionYear(year: number) {
+  return year < 0 ? `前${Math.abs(year)}年` : `${year}年`;
+}
+
 function timelineSourceMeta(source?: "curated" | "cbdb") {
   if (source === "cbdb") {
     return {
@@ -486,6 +490,47 @@ export function BookExplorer({
   const activeTimelineMeta = activeTimelineItem
     ? timelineSourceMeta(activeTimelineItem.source)
     : null;
+  const activeVersionParent = activeVersion?.parentId
+    ? visibleVersions.find((version) => version.id === activeVersion.parentId) ?? null
+    : null;
+  const activeVersionChildren = activeVersion
+    ? visibleVersions
+        .filter((version) => version.parentId === activeVersion.id)
+        .sort((left, right) => left.year - right.year)
+    : [];
+  const activeVersionTrail = activeVersion
+    ? (() => {
+        const trail: VersionNode[] = [];
+        let cursor: VersionNode | null = activeVersion;
+
+        while (cursor) {
+          trail.unshift(cursor);
+          cursor = cursor.parentId
+            ? visibleVersions.find((version) => version.id === cursor?.parentId) ?? null
+            : null;
+        }
+
+        return trail;
+      })()
+    : [];
+  const versionEvidenceSamples = activeVersion
+    ? (detail.realWorldSignals?.institutionSamples ?? [])
+        .filter((item) => {
+          const normalizedLibrary = activeVersion.library.toLowerCase();
+          const normalizedPlace = activeVersion.place.toLowerCase();
+          const normalizedInstitution = item.institution.toLowerCase();
+          const normalizedTitle = item.title.toLowerCase();
+
+          return (
+            normalizedInstitution.includes(normalizedLibrary) ||
+            normalizedLibrary.includes(normalizedInstitution) ||
+            normalizedTitle.includes(book.title.toLowerCase()) ||
+            normalizedInstitution.includes(normalizedPlace) ||
+            item.year === String(activeVersion.year)
+          );
+        })
+        .slice(0, 4)
+    : [];
 
   return (
     <div className="space-y-4">
@@ -1372,6 +1417,130 @@ export function BookExplorer({
                           </div>
                         </div>
 
+                        <div className="mt-4 grid gap-3 xl:grid-cols-[0.92fr_1.08fr]">
+                          <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                                传承链路
+                              </div>
+                              <div className="rounded-full bg-white/10 px-3 py-1 text-[10px] text-stone-300">
+                                {activeVersionTrail.length} 层
+                              </div>
+                            </div>
+                            <div className="mt-3 space-y-2">
+                              {activeVersionTrail.map((version, index) => (
+                                <div
+                                  key={`trail-${version.id}`}
+                                  className={`rounded-2xl border px-3 py-3 text-sm ${
+                                    version.id === activeVersion.id
+                                      ? "border-amber-300/30 bg-amber-300/10 text-amber-50"
+                                      : "border-white/10 bg-white/5 text-stone-300"
+                                  }`}
+                                >
+                                  <div className="flex items-center justify-between gap-3">
+                                    <div className="font-medium">
+                                      第{index + 1}层 · {version.label}
+                                    </div>
+                                    <div className="text-xs">
+                                      {formatVersionYear(version.year)}
+                                    </div>
+                                  </div>
+                                  <div className="mt-1 text-xs text-stone-400">
+                                    {version.place} · {version.library}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                            {activeVersionParent ? (
+                              <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-stone-300">
+                                上游承接：{activeVersionParent.label}
+                              </div>
+                            ) : (
+                              <div className="mt-3 rounded-2xl border border-amber-300/15 bg-amber-300/8 px-3 py-3 text-sm text-amber-100">
+                                当前节点即版本源头，暂无更早父节点。
+                              </div>
+                            )}
+                            <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+                              <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                                下游分化
+                              </div>
+                              {activeVersionChildren.length ? (
+                                <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                                  {activeVersionChildren.map((version) => (
+                                    <button
+                                      key={`child-${version.id}`}
+                                      type="button"
+                                      onClick={() => setSelectedVersionId(version.id)}
+                                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-stone-200 transition hover:bg-white/10"
+                                    >
+                                      {version.label}
+                                    </button>
+                                  ))}
+                                </div>
+                              ) : (
+                                <div className="mt-2 text-sm text-stone-400">
+                                  当前时代层下未继续分化出更晚版本。
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="rounded-2xl border border-amber-300/12 bg-amber-300/6 px-4 py-4">
+                            <div className="flex items-center justify-between gap-3">
+                              <div>
+                                <div className="text-xs uppercase tracking-[0.2em] text-amber-100/75">
+                                  影像与馆藏线索
+                                </div>
+                                <div className="mt-1 text-sm text-stone-200">
+                                  结合当前版本节点，展开可直接讲述的馆藏与图像证据。
+                                </div>
+                              </div>
+                              <div className="rounded-full bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
+                                {versionEvidenceSamples.length || institutionPreview.length} 条线索
+                              </div>
+                            </div>
+                            <div className="mt-3 grid gap-3">
+                              {(versionEvidenceSamples.length
+                                ? versionEvidenceSamples
+                                : institutionPreview
+                              ).map((item) => (
+                                <div
+                                  key={`version-evidence-${item.institution}-${item.title}-${item.imageRef ?? item.sourceText ?? "trace"}`}
+                                  className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4"
+                                >
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                      <div className="text-sm font-medium text-stone-50">
+                                        {item.title}
+                                      </div>
+                                      <div className="mt-1 text-xs text-stone-400">
+                                        {item.institution}
+                                        {item.category ? ` · ${item.category}` : ""}
+                                        {item.year ? ` · ${item.year}` : ""}
+                                      </div>
+                                    </div>
+                                    {item.imageRef ? (
+                                      <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
+                                        影像号 {item.imageRef}
+                                      </div>
+                                    ) : null}
+                                  </div>
+                                  {item.sourceText ? (
+                                    <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm leading-6 text-stone-300">
+                                      图像出处：{item.sourceText}
+                                    </div>
+                                  ) : null}
+                                </div>
+                              ))}
+                              {!versionEvidenceSamples.length && !institutionPreview.length ? (
+                                <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-stone-400">
+                                  当前版本尚未匹配到可直接展示的馆藏影像线索，但版本链与馆藏系统名称已可作为演示证据。
+                                </div>
+                              ) : null}
+                            </div>
+                          </div>
+                        </div>
+
                         <div className="mt-4 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
                           <div className="flex items-center justify-between gap-3">
                             <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
@@ -1407,7 +1576,7 @@ export function BookExplorer({
                   存世状态与版本类型同时编码，既能看传播链，也能看哪些层次已经失传或仅能间接复原。
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
-                  当前版本卡已经把馆藏/系统、存佚判断和版本说明集中到一处，便于现场直接说明版本证据。
+                  当前版本卡已补入传承链和影像馆藏线索，现场既能讲版本演化，也能顺手展示可追溯的资料落点。
                 </div>
               </div>
             </>
