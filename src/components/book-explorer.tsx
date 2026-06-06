@@ -1095,7 +1095,12 @@ export function BookExplorer({
                     <button
                       key={venue.name}
                       type="button"
-                      onClick={() => handleOpenSourceEvidence("venue-samples")}
+                      onClick={() =>
+                        handleOpenSourceSample("venue-samples", {
+                          label: venue.name,
+                          detail: `活动记录 ${venue.sampleCount}`,
+                        })
+                      }
                       className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left text-sm transition hover:bg-white/10"
                     >
                       <div className="font-medium text-stone-100">{venue.name}</div>
@@ -1126,7 +1131,10 @@ export function BookExplorer({
                     <button
                       key={`${event.venue}-${event.title}-${event.startTime}`}
                       type="button"
-                      onClick={handleFocusEventEvidence}
+                      onClick={() => {
+                        handleSelectEventSample(event);
+                        setTab("timeline");
+                      }}
                       className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left text-sm transition hover:bg-white/10"
                     >
                       <div className="font-medium text-stone-100">{event.title}</div>
@@ -1155,13 +1163,13 @@ export function BookExplorer({
                 {institutionPreview.length ? (
                   institutionPreview.map((item) => {
                     const recordId = `${item.institution}-${item.title}-${item.imageRef ?? item.sourceText ?? "trace"}`;
-                    const isActive = activeInstitutionRecord === item;
+                    const isActive = selectedInstitutionRecordId === recordId;
 
                     return (
                     <button
                       key={`${item.institution}-${item.title}-${item.imageRef}`}
                       type="button"
-                      onClick={() => setSelectedInstitutionRecordId(recordId)}
+                      onClick={() => handleSelectInstitutionRecord(item)}
                       className={`w-full rounded-2xl border px-3 py-3 text-left text-sm transition ${
                         isActive
                           ? "border-amber-300/35 bg-amber-300/10"
