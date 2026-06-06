@@ -64,7 +64,7 @@
 - 证据：
   - `book-explorer.tsx` 中的 spread tab
   - `src/components/spread-globe.tsx`
-  - 传播航线、3D 地球、起终点说明
+  - 传播航线、流动粒子、3D 地球、起终点说明
 
 ### 2. 人物关系网
 

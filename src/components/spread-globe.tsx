@@ -17,6 +17,72 @@ interface SpreadGlobeProps {
   onSelectSpread?: (spreadId: string) => void;
 }
 
+function FlowArc({
+  points,
+  spreadId,
+  isActive,
+  flowStrength,
+  onSelect,
+}: {
+  points: THREE.Vector3[];
+  spreadId: string;
+  isActive: boolean;
+  flowStrength: number;
+  onSelect?: (spreadId: string) => void;
+}) {
+  const particlesRef = useRef<THREE.Group>(null);
+  const curve = useMemo(() => new THREE.CatmullRomCurve3(points), [points]);
+  const particleOffsets = useMemo(() => [0.08, 0.3, 0.52, 0.74, 0.9], []);
+
+  useFrame((state) => {
+    if (!particlesRef.current) {
+      return;
+    }
+
+    particlesRef.current.children.forEach((child, index) => {
+      const mesh = child as THREE.Mesh;
+      const speed = 0.035 + flowStrength / 2400;
+      const t = (state.clock.elapsedTime * speed + particleOffsets[index]!) % 1;
+      const point = curve.getPointAt(t);
+      mesh.position.copy(point);
+      const scale = isActive ? 1.1 + Math.sin(state.clock.elapsedTime * 3 + index) * 0.12 : 0.92;
+      mesh.scale.setScalar(scale);
+    });
+  });
+
+  return (
+    <group>
+      <Line
+        points={points}
+        color={isActive ? "#fde68a" : "#f59e0b"}
+        transparent
+        opacity={isActive ? 0.95 : 0.5}
+        lineWidth={isActive ? 2.4 : 1.3}
+        onClick={() => onSelect?.(spreadId)}
+      />
+      <group ref={particlesRef}>
+        {particleOffsets.map((offset, index) => {
+          const point = curve.getPointAt(offset);
+          return (
+            <mesh key={`${spreadId}-particle-${index}`} position={point} onClick={() => onSelect?.(spreadId)}>
+              <sphereGeometry args={[isActive ? 0.055 : 0.04, 10, 10]} />
+              <meshBasicMaterial
+                color={isActive ? "#fff7d6" : "#fde68a"}
+                transparent
+                opacity={isActive ? 0.95 : 0.7}
+              />
+            </mesh>
+          );
+        })}
+      </group>
+      <mesh position={points[points.length - 1] ?? [0, 0, 0]} onClick={() => onSelect?.(spreadId)}>
+        <coneGeometry args={[0.06, 0.18, 10]} />
+        <meshBasicMaterial color={isActive ? "#fde68a" : "#f59e0b"} />
+      </mesh>
+    </group>
+  );
+}
+
 function latLngToVector(lat: number, lng: number, radius = 2.4) {
   const phi = ((90 - lat) * Math.PI) / 180;
   const theta = ((lng + 180) * Math.PI) / 180;
@@ -93,13 +159,12 @@ function SpreadGlobeScene({
 
           return (
             <group key={spread.id}>
-              <Line
+              <FlowArc
                 points={points}
-                color={isActive ? "#fde68a" : "#f59e0b"}
-                transparent
-                opacity={isActive ? 0.95 : 0.5}
-                lineWidth={isActive ? 2.4 : 1.3}
-                onClick={() => onSelectSpread?.(spread.id)}
+                spreadId={spread.id}
+                isActive={isActive}
+                flowStrength={spread.volume}
+                onSelect={onSelectSpread}
               />
               <mesh position={mid} onClick={() => onSelectSpread?.(spread.id)}>
                 <sphereGeometry args={[isActive ? 0.08 : 0.05, 12, 12]} />
