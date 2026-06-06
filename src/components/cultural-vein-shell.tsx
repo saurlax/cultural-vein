@@ -809,6 +809,8 @@ export function CulturalVeinShell() {
             selectedBookSlug={selectedBookSlug}
             onSelectBook={handleDiveToBook}
             activeEra={activeEra}
+            viewMode={viewMode}
+            cinematicState={transitionState}
             branchAnnotations={visibleBranchAnnotations}
             hoveredBranchId={hoveredBranchId}
             onHoverBranch={setHoveredBranchId}

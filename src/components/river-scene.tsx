@@ -2,12 +2,14 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Line, OrbitControls, PerspectiveCamera, Text } from "@react-three/drei";
-import { useEffect, useMemo, useRef } from "react";
+import { type ElementRef, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
 import type { TraceFocusState } from "@/components/book-explorer";
 import type { BookNode, CitationEdge } from "@/types/domain";
-import type { RiverEra } from "@/types/domain";
+import type { RiverEra, ViewMode } from "@/types/domain";
+
+type OrbitControlsInstance = ElementRef<typeof OrbitControls>;
 
 export interface RiverBranchAnnotation {
   id: string;
@@ -24,6 +26,8 @@ interface RiverSceneProps {
   selectedBookSlug: string;
   onSelectBook: (slug: string) => void;
   activeEra: RiverEra;
+  viewMode: ViewMode;
+  cinematicState?: "idle" | "diving" | "settling" | "returning";
   branchAnnotations?: RiverBranchAnnotation[];
   hoveredBranchId?: string | null;
   onHoverBranch?: (branchId: string | null) => void;
@@ -357,12 +361,18 @@ function RiverWorld({
   selectedBookSlug,
   onSelectBook,
   activeEra,
+  viewMode,
+  cinematicState = "idle",
   branchAnnotations = [],
   hoveredBranchId,
   onHoverBranch,
   traceFocus,
 }: RiverSceneProps) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
+  const controlsRef = useRef<OrbitControlsInstance>(null);
+  const desiredCameraPosition = useRef(new THREE.Vector3(3.5, 3.8, 11));
+  const desiredCameraTarget = useRef(new THREE.Vector3(3.5, 0, 0));
+  const initialControlsTarget = useMemo(() => new THREE.Vector3(3.5, 0, 0), []);
   const mainStream = useMemo(
     () =>
       books
@@ -395,6 +405,12 @@ function RiverWorld({
       ? new THREE.Vector3(...traceCurrentBook.coordinates)
       : new THREE.Vector3(3.5, 0, 0);
   }, [books, selectedBookSlug, traceFocus?.currentTitle]);
+  const selectedBookPosition = useMemo(() => {
+    const selectedBook = books.find((book) => book.slug === selectedBookSlug);
+    return selectedBook
+      ? new THREE.Vector3(...selectedBook.coordinates)
+      : null;
+  }, [books, selectedBookSlug]);
 
   const branchStreams = useMemo(() => {
     return [1, 2].map((branchLevel) =>
@@ -406,21 +422,52 @@ function RiverWorld({
   }, [books]);
 
   useEffect(() => {
+    const focusPoint = traceFocus?.active
+      ? cameraTarget.clone()
+      : selectedBookPosition ?? new THREE.Vector3(3.5, 0, 0);
+
+    let nextTarget = new THREE.Vector3(3.5, 0, 0);
+    let nextPosition = new THREE.Vector3(3.5, 3.8, 11);
+
+    if (traceFocus?.active) {
+      nextTarget = focusPoint;
+      nextPosition = focusPoint.clone().add(new THREE.Vector3(1.65, 1.25, 3.2));
+    } else if (cinematicState === "diving" && selectedBookPosition) {
+      nextTarget = focusPoint.clone().add(new THREE.Vector3(0.18, 0.12, 0));
+      nextPosition = focusPoint.clone().add(new THREE.Vector3(0.45, 3.2, 6.4));
+    } else if ((viewMode === "book" || cinematicState === "settling") && selectedBookPosition) {
+      nextTarget = focusPoint;
+      nextPosition = focusPoint.clone().add(new THREE.Vector3(1.35, 1.6, 4.25));
+    } else if (cinematicState === "returning") {
+      nextTarget = new THREE.Vector3(3.5, 0.15, 0);
+      nextPosition = new THREE.Vector3(4.5, 5.3, 13.4);
+    }
+
+    desiredCameraPosition.current.copy(nextPosition);
+    desiredCameraTarget.current.copy(nextTarget);
+  }, [cameraTarget, cinematicState, selectedBookPosition, traceFocus, viewMode]);
+
+  useFrame((_, delta) => {
     if (!cameraRef.current) {
       return;
     }
 
-    const focusBook =
-      books.find((book) => book.title === traceFocus?.currentTitle) ??
-      books.find((book) => book.slug === selectedBookSlug);
-    const nextPosition =
-      traceFocus?.active && focusBook
-        ? new THREE.Vector3(...focusBook.coordinates).add(new THREE.Vector3(1.65, 1.25, 3.2))
-        : new THREE.Vector3(3.5, 3.8, 11);
+    const positionEase =
+      traceFocus?.active ? 5.6 : cinematicState === "diving" ? 6.8 : cinematicState === "returning" ? 4.8 : 3.8;
+    const targetEase =
+      traceFocus?.active ? 6.2 : cinematicState === "diving" ? 7.4 : cinematicState === "returning" ? 5 : 4.2;
+    const positionAlpha = 1 - Math.exp(-positionEase * delta);
+    const targetAlpha = 1 - Math.exp(-targetEase * delta);
 
-    cameraRef.current.position.copy(nextPosition);
-    cameraRef.current.lookAt(cameraTarget);
-  }, [books, cameraTarget, selectedBookSlug, traceFocus]);
+    cameraRef.current.position.lerp(desiredCameraPosition.current, positionAlpha);
+
+    if (controlsRef.current) {
+      controlsRef.current.target.lerp(desiredCameraTarget.current, targetAlpha);
+      controlsRef.current.update();
+    } else {
+      cameraRef.current.lookAt(desiredCameraTarget.current);
+    }
+  });
 
   return (
     <>
@@ -502,11 +549,14 @@ function RiverWorld({
         traceFocus={traceFocus}
       />
       <OrbitControls
+        ref={controlsRef}
         enablePan={false}
         maxDistance={16}
         minDistance={6}
         maxPolarAngle={Math.PI / 2.1}
-        target={cameraTarget}
+        enableRotate={cinematicState === "idle"}
+        enableZoom={cinematicState === "idle" || Boolean(traceFocus?.active)}
+        target={initialControlsTarget}
       />
     </>
   );
@@ -520,7 +570,11 @@ export function RiverScene(props: RiverSceneProps) {
         <span>
           {props.traceFocus?.active
             ? `溯源联动 ${props.traceFocus.progress}/${props.traceFocus.total} · ${props.traceFocus.currentTitle ?? "当前节点"}`
-            : `${props.activeEra} · 拖拽旋转 · 点击节点钻入`}
+            : props.cinematicState === "diving"
+              ? "镜头俯冲中 · 正在进入典籍脉络"
+              : props.cinematicState === "returning"
+                ? "镜头拉回中 · 回到文脉总览"
+                : `${props.activeEra} · 拖拽旋转 · 点击节点钻入`}
         </span>
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-wrap items-center gap-2 px-5 py-4 text-[11px] text-stone-300">
