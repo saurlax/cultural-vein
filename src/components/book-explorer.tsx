@@ -558,6 +558,26 @@ export function BookExplorer({
     [detail.realWorldSignals?.eventSamples],
   );
   const institutionPreview = useMemo(() => institutionRecords.slice(0, 3), [institutionRecords]);
+  const heroEntryCards = [
+    {
+      label: "直接引用",
+      value: detail.heroMetric.directCitations,
+      hint: "切到文本溯源",
+      onClick: () => setTab("passages"),
+    },
+    {
+      label: "下游影响",
+      value: detail.heroMetric.downstreamInfluence,
+      hint: "切到人物关系",
+      onClick: () => setTab("people"),
+    },
+    {
+      label: "传播区域",
+      value: detail.heroMetric.coveredRegions,
+      hint: "切到地理传播",
+      onClick: () => setTab("spread"),
+    },
+  ] as const;
   const eraLinkedSummary = {
     spread: visibleSpread.length,
     people: visiblePeople.length,
@@ -565,6 +585,28 @@ export function BookExplorer({
     timeline: visibleTimeline.length,
     passages: visiblePassages.length,
   };
+  const eraEntryCards = [
+    {
+      label: "传播",
+      value: `${eraLinkedSummary.spread} 段`,
+      onClick: () => setTab("spread"),
+    },
+    {
+      label: "人物",
+      value: `${eraLinkedSummary.people} 人`,
+      onClick: () => setTab("people"),
+    },
+    {
+      label: "版本",
+      value: `${eraLinkedSummary.versions} 个`,
+      onClick: () => setTab("versions"),
+    },
+    {
+      label: "事件",
+      value: `${eraLinkedSummary.timeline} 条`,
+      onClick: () => setTab("timeline"),
+    },
+  ] as const;
 
   const handleSelectPassage = (passageId: string) => {
     setSelectedPassageId(passageId);
@@ -944,24 +986,18 @@ export function BookExplorer({
       </section>
 
       <section className="grid grid-cols-3 gap-3 text-center text-sm">
-        <div className="rounded-[24px] border border-[#caa45b]/18 bg-[rgba(248,237,206,0.12)] px-3 py-3">
-          <div className="text-[#c9b68a]">直接引用</div>
-          <div className="mt-2 text-xl font-semibold text-[#fbf3da]">
-            {detail.heroMetric.directCitations}
-          </div>
-        </div>
-        <div className="rounded-[24px] border border-[#caa45b]/18 bg-[rgba(248,237,206,0.12)] px-3 py-3">
-          <div className="text-[#c9b68a]">下游影响</div>
-          <div className="mt-2 text-xl font-semibold text-[#fbf3da]">
-            {detail.heroMetric.downstreamInfluence}
-          </div>
-        </div>
-        <div className="rounded-[24px] border border-[#caa45b]/18 bg-[rgba(248,237,206,0.12)] px-3 py-3">
-          <div className="text-[#c9b68a]">传播区域</div>
-          <div className="mt-2 text-xl font-semibold text-[#fbf3da]">
-            {detail.heroMetric.coveredRegions}
-          </div>
-        </div>
+        {heroEntryCards.map((item) => (
+          <button
+            key={item.label}
+            type="button"
+            onClick={item.onClick}
+            className="rounded-[24px] border border-[#caa45b]/18 bg-[rgba(248,237,206,0.12)] px-3 py-3 text-center transition hover:border-[#d7b066]/30 hover:bg-[rgba(248,237,206,0.18)]"
+          >
+            <div className="text-[#8d6a2c]">{item.label}</div>
+            <div className="mt-2 text-xl font-semibold text-[#4a2c08]">{item.value}</div>
+            <div className="mt-2 text-[11px] text-[#9d7631]">{item.hint}</div>
+          </button>
+        ))}
       </section>
 
       <section className="rounded-[24px] border border-[#e1bd6e]/18 bg-[linear-gradient(180deg,rgba(194,140,42,0.16),rgba(78,50,14,0.2))] px-4 py-4">
@@ -974,25 +1010,34 @@ export function BookExplorer({
               卷内内容已联动到 {activeEra}
             </div>
           </div>
-          <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
+          <button
+            type="button"
+            onClick={() => setTab("timeline")}
+            className="rounded-full border border-[#d7b066]/24 bg-[rgba(252,220,124,0.12)] px-3 py-1 text-xs text-[#f7e4a7] transition hover:bg-[rgba(252,220,124,0.18)]"
+          >
             可见阶段 {eraLinkedSummary.timeline || 1} 条
-          </div>
+          </button>
         </div>
         <div className="mt-3 grid gap-2 md:grid-cols-4">
-          <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm text-stone-200">
-            传播 {eraLinkedSummary.spread} 段
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm text-stone-200">
-            人物 {eraLinkedSummary.people} 人
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm text-stone-200">
-            版本 {eraLinkedSummary.versions} 个
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm text-stone-200">
-            事件 {eraLinkedSummary.timeline} 条
-          </div>
+          {eraEntryCards.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              onClick={item.onClick}
+              className="rounded-2xl border border-[#ead8a6]/12 bg-[rgba(54,33,10,0.28)] px-3 py-3 text-left text-sm text-[#f6e8bd] transition hover:bg-[rgba(84,54,18,0.4)]"
+            >
+              <div className="text-[11px] tracking-[0.18em] text-[#d8c9a3]">{item.label}</div>
+              <div className="mt-2">{item.value}</div>
+            </button>
+          ))}
         </div>
-        <div className="mt-2 text-xs text-amber-100/75">微观文本已显出 {eraLinkedSummary.passages} 个片段。</div>
+        <button
+          type="button"
+          onClick={() => setTab("passages")}
+          className="mt-2 text-xs text-amber-100/75 transition hover:text-amber-50"
+        >
+          微观文本已显出 {eraLinkedSummary.passages} 个片段，继续入文本溯源细看。
+        </button>
       </section>
 
       <section className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(27,17,7,0.2)] px-4 py-4">
@@ -1041,12 +1086,14 @@ export function BookExplorer({
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             {sourceBadges.map((item) => (
-              <span
+              <button
                 key={item}
-                className="rounded-full border border-amber-300/15 bg-black/15 px-3 py-1 text-xs text-amber-100"
+                type="button"
+                onClick={() => handleOpenSourceEvidence("institution-samples")}
+                className="rounded-full border border-amber-300/15 bg-black/15 px-3 py-1 text-xs text-amber-100 transition hover:bg-white/10"
               >
                 {item}
-              </span>
+              </button>
             ))}
           </div>
           {detail.realWorldSignals.venueSummary ? (

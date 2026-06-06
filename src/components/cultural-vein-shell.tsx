@@ -731,6 +731,23 @@ export function CulturalVeinShell() {
   ];
   const activeDesktopPanelConfig =
     desktopPanels.find((panel) => panel.id === activeDesktopPanel) ?? desktopPanels[0];
+  const compactStatButtons = [
+    {
+      label: "典籍",
+      value: filteredBooks.length,
+      panel: "search" as const,
+    },
+    {
+      label: "关系",
+      value: visibleCitations.length,
+      panel: "branch" as const,
+    },
+    {
+      label: "来源",
+      value: connectedSourceCount || "--",
+      panel: "branch" as const,
+    },
+  ];
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#2b1906] text-stone-100">
@@ -762,7 +779,7 @@ export function CulturalVeinShell() {
 
       <div className="relative z-10 min-h-screen">
         <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
-          <div className={`pointer-events-auto max-w-[220px] px-4 py-3 sm:max-w-[260px] ${panelBaseClass}`}>
+          <div className={`pointer-events-auto max-w-[240px] px-4 py-3 sm:max-w-[280px] ${panelBaseClass}`}>
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[11px] tracking-[0.32em] text-[#f2dfab]/80">
@@ -775,6 +792,21 @@ export function CulturalVeinShell() {
               <div className="rounded-full border border-[#ead8a6]/24 bg-[rgba(255,248,220,0.08)] px-3 py-1 text-[11px] text-[#eadfbc]">
                 {viewMode === "river" ? "巡河" : "入卷"}
               </div>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+              {compactStatButtons.map((item) => (
+                <button
+                  key={item.label}
+                  type="button"
+                  onClick={() => {
+                    setShowDesktopControls(true);
+                    setActiveDesktopPanel(item.panel);
+                  }}
+                  className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-[#f3e5be] transition hover:bg-[rgba(255,248,220,0.12)]"
+                >
+                  {item.label} {item.value}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -806,7 +838,7 @@ export function CulturalVeinShell() {
         </div>
 
         {showDesktopControls ? (
-          <div className="absolute right-4 top-[104px] z-20 hidden w-[228px] sm:right-6 md:block lg:right-8 lg:w-[236px]">
+          <div className="absolute right-4 top-[132px] z-20 hidden w-[220px] sm:right-6 md:block lg:right-8 lg:w-[228px]">
             <aside className="pointer-events-auto xl:pt-2">
               <div className={`p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
@@ -827,30 +859,6 @@ export function CulturalVeinShell() {
                     归河
                   </button>
                 ) : null}
-              </div>
-
-              <div className="mt-4 flex flex-wrap gap-2 text-[11px] text-[#eadfbc]">
-                <button
-                  type="button"
-                  onClick={() => setActiveDesktopPanel("search")}
-                  className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 transition hover:bg-[rgba(255,248,220,0.1)]"
-                >
-                  典籍 {filteredBooks.length}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveDesktopPanel("branch")}
-                  className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 transition hover:bg-[rgba(255,248,220,0.1)]"
-                >
-                  关系 {visibleCitations.length}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveDesktopPanel("branch")}
-                  className="rounded-full border border-[#ead8a6]/20 bg-[rgba(233,191,86,0.08)] px-3 py-1.5 text-[#fbf3da] transition hover:bg-[rgba(233,191,86,0.14)]"
-                >
-                  来源 {connectedSourceCount || "--"}
-                </button>
               </div>
 
               <div className="mt-4 flex flex-wrap gap-2">
@@ -1350,8 +1358,8 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileControls ? (
-          <div className="absolute bottom-20 right-3 z-40 w-[min(340px,calc(100vw-1.5rem))] md:hidden">
-            <div className={`pointer-events-auto max-h-[62vh] overflow-auto p-3 ${panelBaseClass}`}>
+          <div className="absolute inset-x-3 bottom-20 z-40 md:hidden">
+            <div className={`pointer-events-auto max-h-[56vh] overflow-auto p-3 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">长卷侧注</div>
@@ -1368,9 +1376,16 @@ export function CulturalVeinShell() {
                 </button>
               </div>
               <div className="mt-3 grid grid-cols-3 gap-2 text-[11px] text-[#eadfbc]">
-                <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-2.5">典籍 {filteredBooks.length}</div>
-                <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-2.5">关系 {visibleCitations.length}</div>
-                <div className="rounded-2xl border border-[#ead8a6]/20 bg-[rgba(233,191,86,0.08)] px-3 py-2.5 text-[#fbf3da]">来源 {connectedSourceCount || "--"}</div>
+                {compactStatButtons.map((item) => (
+                  <button
+                    key={`mobile-stat-${item.label}`}
+                    type="button"
+                    onClick={() => setActiveDesktopPanel(item.panel)}
+                    className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-2.5 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                  >
+                    {item.label} {item.value}
+                  </button>
+                ))}
               </div>
               {sourceAtlasEntries.length ? (
                 <div className="mt-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(93,62,18,0.22)] px-3 py-3">
@@ -1730,7 +1745,7 @@ export function CulturalVeinShell() {
                   : "bg-[rgba(78,52,18,0.88)] text-[#f7edd1]"
               }`}
             >
-              {showMobileControls ? "收起题签" : "展开题签"}
+              {showMobileControls ? "收起题签" : "题签"}
             </button>
             {showMobileControls ? (
               <div className="rounded-[24px] border border-[#ead8a6]/20 bg-[linear-gradient(180deg,rgba(90,60,19,0.94),rgba(40,26,9,0.92))] p-2 shadow-xl shadow-black/25 backdrop-blur-xl">

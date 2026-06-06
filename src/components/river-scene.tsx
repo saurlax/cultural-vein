@@ -11,6 +11,7 @@ import type { RiverEra, ViewMode } from "@/types/domain";
 
 type OrbitControlsInstance = ElementRef<typeof OrbitControls>;
 const RIVER_ERA_ORDER: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
+const touchModeLabel = "单指拖移河面 · 双指缩放并旋看";
 
 export interface RiverBranchAnnotation {
   id: string;
@@ -1855,7 +1856,7 @@ function RiverWorld({
         }}
         touches={{
           ONE: THREE.TOUCH.PAN,
-          TWO: THREE.TOUCH.DOLLY_ROTATE,
+          TWO: THREE.TOUCH.DOLLY_PAN,
         }}
       />
     </>
@@ -2003,8 +2004,13 @@ export function RiverScene(props: RiverSceneProps) {
           顺着节点密度、时代水位与河段显现继续拖拽巡看，锁定感兴趣的典籍后再入卷细看。
         </div>
       </div>
-      <div className="pointer-events-none absolute right-4 top-4 z-10 hidden rounded-full border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.58)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md lg:flex">
-        {isInteracting ? "正在拖动画卷" : "左键拖动画卷 · 右键旋转 · 滚轮缩放"}
+      <div className="pointer-events-none absolute right-4 top-4 z-10 hidden rounded-full border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.5)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md lg:flex">
+        {isInteracting ? "正在拖动画卷" : "左键拖移河面 · 右键旋看 · 滚轮缩放"}
+      </div>
+      <div className="pointer-events-none absolute left-1/2 top-5 z-10 -translate-x-1/2 md:hidden">
+        <div className="rounded-full border border-[#ead8a6]/18 bg-[rgba(79,52,16,0.5)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
+          {isInteracting ? "正在拖移河面" : touchModeLabel}
+        </div>
       </div>
       {canCruise ? (
         <div className="absolute bottom-4 left-1/2 z-20 w-[min(280px,calc(100vw-2rem))] -translate-x-1/2 sm:bottom-5 sm:left-auto sm:right-5 sm:w-[min(320px,calc(100vw-2.5rem))] sm:translate-x-0">
