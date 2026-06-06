@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { SpreadGlobe } from "@/components/spread-globe";
 import type { BookDetail, BookNode, RiverEra } from "@/types/domain";
 
 const tabs = [
@@ -796,10 +797,10 @@ export function BookExplorer({
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
-                      传播节点地图
+                      传播地球
                     </div>
                     <div className="mt-1 text-sm text-stone-300">
-                      用位置投影模拟 3D 地球上的传播落点与航线
+                      在 3D 地球上查看典籍传播落点、航线抬升与方向
                     </div>
                   </div>
                   <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
@@ -807,71 +808,23 @@ export function BookExplorer({
                   </div>
                 </div>
 
-                <div className="relative mt-4 overflow-hidden rounded-[24px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.12),rgba(6,12,12,0.95))]">
-                  <div className="absolute inset-0 bg-[linear-gradient(transparent_24px,rgba(255,255,255,0.04)_25px),linear-gradient(90deg,transparent_24px,rgba(255,255,255,0.04)_25px)] bg-[length:100%_25%,25%_100%] opacity-40" />
-                  <div className="relative h-[320px]">
-                    <svg viewBox="0 0 100 100" className="h-full w-full">
-                      {visibleSpread.map((item) => {
-                        const fromPlace = detail.places.find((place) => place.id === item.fromPlaceId);
-                        const toPlace = detail.places.find((place) => place.id === item.toPlaceId);
-                        if (!fromPlace || !toPlace) {
-                          return null;
-                        }
-
-                        const fromX = ((fromPlace.lng + 180) / 360) * 100;
-                        const fromY = ((90 - fromPlace.lat) / 180) * 100;
-                        const toX = ((toPlace.lng + 180) / 360) * 100;
-                        const toY = ((90 - toPlace.lat) / 180) * 100;
-                        const midX = (fromX + toX) / 2;
-                        const midY = Math.min(fromY, toY) - 10;
-                        const isActive = activeSpread?.id === item.id;
-
-                        return (
-                          <g key={item.id} onClick={() => setSelectedSpreadId(item.id)} className="cursor-pointer">
-                            <path
-                              d={`M ${fromX} ${fromY} Q ${midX} ${midY} ${toX} ${toY}`}
-                              fill="none"
-                              stroke={isActive ? "#67e8f9" : "rgba(255,255,255,0.28)"}
-                              strokeWidth={isActive ? 1.2 : 0.6}
-                              strokeDasharray={isActive ? "0" : "2 2"}
-                            />
-                          </g>
-                        );
-                      })}
-
-                      {detail.places.map((place) => {
-                        const x = ((place.lng + 180) / 360) * 100;
-                        const y = ((90 - place.lat) / 180) * 100;
-                        const isActive =
-                          place.id === activeSpreadPlaces?.from?.id || place.id === activeSpreadPlaces?.to?.id;
-
-                        return (
-                          <g key={place.id}>
-                            <circle
-                              cx={x}
-                              cy={y}
-                              r={isActive ? 2.2 : 1.35}
-                              fill={isActive ? "#fcd34d" : "#d6fff6"}
-                            />
-                            <text
-                              x={x + 1.8}
-                              y={y - 1.8}
-                              fill={isActive ? "#fde68a" : "#e7e5e4"}
-                              fontSize="3.1"
-                            >
-                              {place.name}
-                            </text>
-                          </g>
-                        );
-                      })}
-                    </svg>
-                  </div>
+                <div className="mt-4">
+                  <SpreadGlobe
+                    places={detail.places}
+                    spreads={visibleSpread}
+                    activeSpreadId={activeSpread?.id ?? null}
+                    activePlaceIds={[
+                      activeSpreadPlaces?.from?.id ?? "",
+                      activeSpreadPlaces?.to?.id ?? "",
+                    ].filter(Boolean)}
+                    onSelectSpread={setSelectedSpreadId}
+                  />
                 </div>
               </div>
             </>
           )}
           <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
-            当前传播视图已经具备“航线聚焦 + 地点投影 + 阶段切换”的中观交互骨架，后续再把这套坐标映射接入真正的 3D 地球即可。
+            传播视图当前以 3D 地球、抬升航线与传播落点来呈现典籍在不同历史节点之间的空间流动，可直接对应方案中的地理传播层。
           </div>
           <div className="rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4 text-sm leading-7 text-amber-50/90">
             传播层当前采用“传播关系建模 + 上图活动场馆信号补强”的混合组织，既保持叙事连续，也明确区分真实接入与结构性补足。

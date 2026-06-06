@@ -1,0 +1,156 @@
+"use client";
+
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Line, OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import { useMemo, useRef } from "react";
+import * as THREE from "three";
+
+import type { BookDetail, PlaceNode } from "@/types/domain";
+
+type SpreadSegment = BookDetail["spread"][number];
+
+interface SpreadGlobeProps {
+  places: PlaceNode[];
+  spreads: SpreadSegment[];
+  activeSpreadId?: string | null;
+  activePlaceIds?: string[];
+  onSelectSpread?: (spreadId: string) => void;
+}
+
+function latLngToVector(lat: number, lng: number, radius = 2.4) {
+  const phi = ((90 - lat) * Math.PI) / 180;
+  const theta = ((lng + 180) * Math.PI) / 180;
+
+  return new THREE.Vector3(
+    -radius * Math.sin(phi) * Math.cos(theta),
+    radius * Math.cos(phi),
+    radius * Math.sin(phi) * Math.sin(theta),
+  );
+}
+
+function SpreadGlobeScene({
+  places,
+  spreads,
+  activeSpreadId,
+  activePlaceIds = [],
+  onSelectSpread,
+}: SpreadGlobeProps) {
+  const globeRef = useRef<THREE.Group>(null);
+  const placeMap = useMemo(() => new Map(places.map((place) => [place.id, place])), [places]);
+  const activePlaceIdSet = useMemo(() => new Set(activePlaceIds), [activePlaceIds]);
+
+  useFrame((state) => {
+    if (!globeRef.current) {
+      return;
+    }
+
+    globeRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.08) * 0.08;
+  });
+
+  return (
+    <>
+      <color attach="background" args={["#120b05"]} />
+      <fog attach="fog" args={["#120b05", 5.5, 11]} />
+      <PerspectiveCamera makeDefault position={[0, 0.8, 6.6]} fov={34} />
+      <ambientLight intensity={1.3} />
+      <directionalLight position={[4, 5, 6]} intensity={1.8} color="#fff4d0" />
+      <pointLight position={[-4, -2, 3]} intensity={1.1} color="#f59e0b" />
+
+      <group ref={globeRef}>
+        <mesh>
+          <sphereGeometry args={[2.4, 48, 48]} />
+          <meshStandardMaterial
+            color="#3b2a18"
+            emissive={new THREE.Color("#7c5a1f")}
+            emissiveIntensity={0.24}
+            roughness={0.88}
+            metalness={0.04}
+          />
+        </mesh>
+        <mesh scale={[1.05, 1.05, 1.05]}>
+          <sphereGeometry args={[2.4, 48, 48]} />
+          <meshBasicMaterial color="#fcd34d" transparent opacity={0.05} />
+        </mesh>
+
+        {spreads.map((spread) => {
+          const fromPlace = placeMap.get(spread.fromPlaceId);
+          const toPlace = placeMap.get(spread.toPlaceId);
+
+          if (!fromPlace || !toPlace) {
+            return null;
+          }
+
+          const from = latLngToVector(fromPlace.lat, fromPlace.lng);
+          const to = latLngToVector(toPlace.lat, toPlace.lng);
+          const mid = from
+            .clone()
+            .lerp(to, 0.5)
+            .normalize()
+            .multiplyScalar(3 + spread.volume / 110);
+          const curve = new THREE.QuadraticBezierCurve3(from, mid, to);
+          const points = curve.getPoints(48);
+          const isActive = spread.id === activeSpreadId;
+
+          return (
+            <group key={spread.id}>
+              <Line
+                points={points}
+                color={isActive ? "#fde68a" : "#f59e0b"}
+                transparent
+                opacity={isActive ? 0.95 : 0.5}
+                lineWidth={isActive ? 2.4 : 1.3}
+                onClick={() => onSelectSpread?.(spread.id)}
+              />
+              <mesh position={mid} onClick={() => onSelectSpread?.(spread.id)}>
+                <sphereGeometry args={[isActive ? 0.08 : 0.05, 12, 12]} />
+                <meshBasicMaterial color={isActive ? "#fde68a" : "#f59e0b"} />
+              </mesh>
+            </group>
+          );
+        })}
+
+        {places.map((place) => {
+          const position = latLngToVector(place.lat, place.lng, activePlaceIdSet.has(place.id) ? 2.48 : 2.43);
+          const isActive = activePlaceIdSet.has(place.id);
+
+          return (
+            <group key={place.id} position={position}>
+              <mesh>
+                <sphereGeometry args={[isActive ? 0.1 : 0.07, 16, 16]} />
+                <meshStandardMaterial
+                  color={isActive ? "#fde68a" : "#f8e7b2"}
+                  emissive={new THREE.Color(isActive ? "#f59e0b" : "#d97706")}
+                  emissiveIntensity={isActive ? 1.4 : 0.7}
+                />
+              </mesh>
+              {isActive ? (
+                <mesh>
+                  <sphereGeometry args={[0.16, 16, 16]} />
+                  <meshBasicMaterial color="#fde68a" transparent opacity={0.14} />
+                </mesh>
+              ) : null}
+            </group>
+          );
+        })}
+      </group>
+
+      <OrbitControls enablePan={false} minDistance={4.8} maxDistance={8.5} />
+    </>
+  );
+}
+
+export function SpreadGlobe(props: SpreadGlobeProps) {
+  return (
+    <div className="relative h-[360px] overflow-hidden rounded-[24px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.14),rgba(18,11,5,0.96))]">
+      <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-full border border-amber-300/15 bg-[#2d1d0c]/70 px-3 py-1 text-[11px] text-stone-200">
+        3D 地球传播视图
+      </div>
+      <div className="pointer-events-none absolute right-4 top-4 z-10 rounded-full border border-amber-300/15 bg-[#2d1d0c]/70 px-3 py-1 text-[11px] text-stone-300">
+        拖拽旋转 · 点击航线聚焦
+      </div>
+      <Canvas dpr={[1, 1.8]}>
+        <SpreadGlobeScene {...props} />
+      </Canvas>
+    </div>
+  );
+}

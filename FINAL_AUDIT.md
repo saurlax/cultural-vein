@@ -63,7 +63,8 @@
 - 状态：`已实现`
 - 证据：
   - `book-explorer.tsx` 中的 spread tab
-  - 传播航线、传播节点地图、起终点说明
+  - `src/components/spread-globe.tsx`
+  - 传播航线、3D 地球、起终点说明
 
 ### 2. 人物关系网
 
