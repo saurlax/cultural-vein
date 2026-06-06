@@ -1475,47 +1475,149 @@ export function BookExplorer({
                       </span>
                     </div>
                     {activePassage.tracePath?.length ? (
-                      <div className="mt-3 space-y-3">
-                        {activePassage.tracePath.map((trace, index) => {
-                          const isActive = index <= traceStep;
-                          return (
-                            <div key={trace.id} className="flex gap-3">
-                              <div className="flex w-8 flex-col items-center pt-1">
-                                <div
-                                  className={`h-3 w-3 rounded-full transition ${
-                                    isActive ? "bg-cyan-300 shadow-[0_0_16px_rgba(103,232,249,0.65)]" : "bg-white/20"
-                                  }`}
-                                />
-                                {index < activePassage.tracePath!.length - 1 ? (
+                      <div className="mt-3 space-y-4">
+                        <div className="overflow-hidden rounded-[24px] border border-cyan-300/10 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.16),rgba(3,9,8,0.96))] px-4 py-4">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/70">
+                              Trace Field
+                            </div>
+                            <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-[10px] text-cyan-100">
+                              Reverse Flow
+                            </div>
+                          </div>
+                          <div className="relative mt-4 h-[180px] rounded-[20px] border border-white/10 bg-[linear-gradient(180deg,rgba(5,12,12,0.92),rgba(3,8,8,0.98))]">
+                            <div className="absolute inset-0 bg-[linear-gradient(transparent_39px,rgba(255,255,255,0.04)_40px),linear-gradient(90deg,transparent_39px,rgba(255,255,255,0.04)_40px)] bg-[length:100%_40px,40px_100%] opacity-20" />
+                            <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full">
+                              <defs>
+                                <linearGradient id="trace-line" x1="0%" x2="100%" y1="0%" y2="0%">
+                                  <stop offset="0%" stopColor="rgba(245,158,11,0.9)" />
+                                  <stop offset="55%" stopColor="rgba(103,232,249,0.95)" />
+                                  <stop offset="100%" stopColor="rgba(52,211,153,0.9)" />
+                                </linearGradient>
+                                <filter id="trace-glow">
+                                  <feGaussianBlur stdDeviation="1.6" result="coloredBlur" />
+                                  <feMerge>
+                                    <feMergeNode in="coloredBlur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                  </feMerge>
+                                </filter>
+                              </defs>
+                              {activePassage.tracePath.map((trace, index) => {
+                                const total = Math.max(activePassage.tracePath!.length - 1, 1);
+                                const x = 12 + (index / total) * 76;
+                                const y = 62 - Math.sin((index / total) * Math.PI) * 22;
+                                const isActive = index <= traceStep;
+                                const next = activePassage.tracePath?.[index + 1];
+                                const nextX = next ? 12 + ((index + 1) / total) * 76 : null;
+                                const nextY = next
+                                  ? 62 - Math.sin(((index + 1) / total) * Math.PI) * 22
+                                  : null;
+
+                                return (
+                                  <g key={trace.id}>
+                                    {nextX !== null && nextY !== null ? (
+                                      <>
+                                        <path
+                                          d={`M ${x} ${y} C ${x + 7} ${y - 12}, ${nextX - 7} ${nextY + 12}, ${nextX} ${nextY}`}
+                                          fill="none"
+                                          stroke="rgba(255,255,255,0.12)"
+                                          strokeWidth="1.2"
+                                        />
+                                        <path
+                                          d={`M ${x} ${y} C ${x + 7} ${y - 12}, ${nextX - 7} ${nextY + 12}, ${nextX} ${nextY}`}
+                                          fill="none"
+                                          stroke="url(#trace-line)"
+                                          strokeWidth={isActive ? "2.4" : "0"}
+                                          filter={isActive ? "url(#trace-glow)" : undefined}
+                                          strokeLinecap="round"
+                                        />
+                                      </>
+                                    ) : null}
+                                    <circle
+                                      cx={x}
+                                      cy={y}
+                                      r={isActive ? 3.6 : 2.4}
+                                      fill={isActive ? "#67e8f9" : "rgba(255,255,255,0.22)"}
+                                      filter={isActive ? "url(#trace-glow)" : undefined}
+                                    />
+                                    <text
+                                      x={x}
+                                      y={y - 7}
+                                      textAnchor="middle"
+                                      fill={isActive ? "#cffafe" : "rgba(231,229,228,0.72)"}
+                                      fontSize="4"
+                                    >
+                                      {trace.title}
+                                    </text>
+                                  </g>
+                                );
+                              })}
+                              {activePassage.tracePath[traceStep] ? (() => {
+                                const total = Math.max(activePassage.tracePath!.length - 1, 1);
+                                const x = 12 + (traceStep / total) * 76;
+                                const y = 62 - Math.sin((traceStep / total) * Math.PI) * 22;
+                                return (
+                                  <circle
+                                    cx={x}
+                                    cy={y}
+                                    r="6"
+                                    fill="rgba(103,232,249,0.15)"
+                                    stroke="rgba(103,232,249,0.9)"
+                                    strokeWidth="0.8"
+                                  />
+                                );
+                              })() : null}
+                            </svg>
+                            <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-stone-400">
+                              <span>当前文本</span>
+                              <span>中间转引</span>
+                              <span>源头典籍</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          {activePassage.tracePath.map((trace, index) => {
+                            const isActive = index <= traceStep;
+                            return (
+                              <div key={trace.id} className="flex gap-3">
+                                <div className="flex w-8 flex-col items-center pt-1">
                                   <div
-                                    className={`mt-1 h-full w-px transition ${
-                                      isActive ? "bg-cyan-300/35" : "bg-white/10"
+                                    className={`h-3 w-3 rounded-full transition ${
+                                      isActive ? "bg-cyan-300 shadow-[0_0_16px_rgba(103,232,249,0.65)]" : "bg-white/20"
                                     }`}
                                   />
-                                ) : null}
-                              </div>
-                              <div
-                                className={`flex-1 rounded-2xl px-3 py-3 transition ${
-                                  isActive
-                                    ? "bg-cyan-300/10 ring-1 ring-cyan-300/15"
-                                    : "bg-black/15"
-                                }`}
-                              >
-                                <div className="flex items-center justify-between gap-3">
-                                  <span className="font-medium text-stone-50">
-                                    {trace.title}
-                                  </span>
-                                  <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-xs text-cyan-100">
-                                    {trace.relation}
-                                  </span>
+                                  {index < activePassage.tracePath!.length - 1 ? (
+                                    <div
+                                      className={`mt-1 h-full w-px transition ${
+                                        isActive ? "bg-cyan-300/35" : "bg-white/10"
+                                      }`}
+                                    />
+                                  ) : null}
                                 </div>
-                                <p className="mt-2 text-sm leading-6 text-stone-300">
-                                  {trace.note}
-                                </p>
+                                <div
+                                  className={`flex-1 rounded-2xl px-3 py-3 transition ${
+                                    isActive
+                                      ? "bg-cyan-300/10 ring-1 ring-cyan-300/15"
+                                      : "bg-black/15"
+                                  }`}
+                                >
+                                  <div className="flex items-center justify-between gap-3">
+                                    <span className="font-medium text-stone-50">
+                                      {trace.title}
+                                    </span>
+                                    <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-xs text-cyan-100">
+                                      {trace.relation}
+                                    </span>
+                                  </div>
+                                  <p className="mt-2 text-sm leading-6 text-stone-300">
+                                    {trace.note}
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                       </div>
                     ) : (
                       <div className="mt-3 text-sm text-stone-400">暂无溯源链路样例。</div>
