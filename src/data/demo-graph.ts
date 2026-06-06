@@ -7,6 +7,31 @@ import type {
   RiverDataset,
 } from "@/types/domain";
 
+interface RealSupplementPerson {
+  id?: string;
+  name: string;
+  role: string;
+  birthYear?: number | null;
+  deathYear?: number | null;
+  era?: string;
+  bio?: string;
+  foundInCbdb?: boolean;
+}
+
+interface RealSupplementActivity {
+  available?: boolean;
+  topVenues?: Array<{
+    name: string;
+    sampleCount: number;
+  }>;
+  sampleRecords?: Array<{
+    场馆名称?: string;
+    活动名称?: string;
+    预约状态?: string;
+    预约开始时间?: string;
+  }>;
+}
+
 const books: BookNode[] = [
   {
     id: "book-shijing",
@@ -289,6 +314,9 @@ const details: Record<string, BookDetail> = {
         ],
       },
     ],
+    realWorldSignals: {
+      sourceLabel: "CBDB 人物 + 上图活动样本",
+    },
   },
   "sishu-zhangju": {
     bookId: "book-sishu-zhangju",
@@ -365,6 +393,9 @@ const details: Record<string, BookDetail> = {
         ],
       },
     ],
+    realWorldSignals: {
+      sourceLabel: "CBDB 人物 + 上图活动样本",
+    },
   },
 };
 
@@ -390,9 +421,9 @@ const placeholderDetail = (book: BookNode): BookDetail => ({
   passages: [],
 });
 
-const cbdbPeople = (realSupplements.cbdbPeople ?? []) as Array<
-  PersonNode & { foundInCbdb?: boolean }
->;
+const cbdbPeople = (realSupplements.cbdbPeople ?? []) as RealSupplementPerson[];
+const shanghaiLibraryActivity = (realSupplements.shanghaiLibraryActivity ??
+  {}) as RealSupplementActivity;
 
 const personByName = new Map(cbdbPeople.map((person) => [person.name, person]));
 
@@ -400,9 +431,26 @@ function mergePeople(
   names: string[],
   fallback: PersonNode[],
 ): PersonNode[] {
-  const resolved = names
-    .map((name) => personByName.get(name))
-    .filter((person): person is PersonNode => Boolean(person && person.name));
+  const resolved: PersonNode[] = names
+    .map((name) => {
+      const person = personByName.get(name);
+      if (!person || !person.name) {
+        return null;
+      }
+
+      return {
+        id: person.id ?? `fallback-${person.name}`,
+        name: person.name,
+        role: person.role,
+        birthYear: person.birthYear ?? null,
+        deathYear: person.deathYear ?? null,
+        era: person.era ?? "未详",
+        bio: person.bio ?? "",
+        source: person.foundInCbdb ? "cbdb" : "demo",
+        sourceStatus: person.foundInCbdb ? "matched" : "fallback",
+      } satisfies PersonNode;
+    })
+    .filter((person): person is NonNullable<typeof person> => Boolean(person));
 
   return resolved.length > 0 ? resolved : fallback;
 }
@@ -416,6 +464,8 @@ details.shijing.people = mergePeople(["孔颖达", "朱熹", "王国维"], [
     deathYear: 648,
     era: "唐",
     bio: "奉诏撰《毛诗正义》，奠定经学义疏传统。",
+    source: "demo",
+    sourceStatus: "fallback",
   },
   {
     id: "person-zhuxi",
@@ -425,6 +475,8 @@ details.shijing.people = mergePeople(["孔颖达", "朱熹", "王国维"], [
     deathYear: 1200,
     era: "宋",
     bio: "以理学视角重新解释诗教，强化修身与教化内核。",
+    source: "demo",
+    sourceStatus: "fallback",
   },
   {
     id: "person-wangguowei",
@@ -434,6 +486,8 @@ details.shijing.people = mergePeople(["孔颖达", "朱熹", "王国维"], [
     deathYear: 1927,
     era: "清末民初",
     bio: "近代诗学家，以境界论回接《诗经》传统。",
+    source: "demo",
+    sourceStatus: "fallback",
   },
 ]);
 
@@ -446,6 +500,8 @@ details["sishu-zhangju"].people = mergePeople(["朱熹"], [
     deathYear: 1200,
     era: "南宋",
     bio: "以四书为核心重新组织儒学经典秩序。",
+    source: "demo",
+    sourceStatus: "fallback",
   },
   {
     id: "person-huxian",
@@ -455,8 +511,33 @@ details["sishu-zhangju"].people = mergePeople(["朱熹"], [
     deathYear: 1295,
     era: "元",
     bio: "参与元代学宫刻本的校勘整理。",
+    source: "demo",
+    sourceStatus: "fallback",
   },
 ]);
+
+if (shanghaiLibraryActivity.available) {
+  const venueSamples = shanghaiLibraryActivity.topVenues ?? [];
+  const eventSamples = (shanghaiLibraryActivity.sampleRecords ?? []).map((record) => ({
+    venue: record["场馆名称"] ?? "未知场馆",
+    title: record["活动名称"] ?? "未知活动",
+    status: record["预约状态"] ?? "未知状态",
+    startTime: record["预约开始时间"] ?? "",
+  }));
+
+  for (const slug of ["shijing", "sishu-zhangju"] as const) {
+    const detail = details[slug];
+    detail.realWorldSignals = {
+      sourceLabel: "CBDB 人物 + 上海图书馆活动样本",
+      venueSummary:
+        venueSamples.length > 0
+          ? `上图活动样本当前集中在 ${venueSamples[0].name}，可作为“文化传播现场”辅助信号。`
+          : "已接入上海图书馆活动样本。",
+      venueSamples,
+      eventSamples: eventSamples.slice(0, 3),
+    };
+  }
+}
 
 const booksBySlug = Object.fromEntries(
   books.map((book) => [book.slug, details[book.slug] ?? placeholderDetail(book)]),

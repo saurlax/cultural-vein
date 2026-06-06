@@ -44,10 +44,12 @@ export interface PersonNode {
   id: string;
   name: string;
   role: string;
-  birthYear: number;
-  deathYear: number;
+  birthYear?: number | null;
+  deathYear?: number | null;
   era: string;
   bio: string;
+  source?: "demo" | "cbdb";
+  sourceStatus?: "matched" | "fallback";
 }
 
 export interface PlaceNode {
@@ -112,6 +114,20 @@ export interface BookDetail {
   versions: VersionNode[];
   timeline: TimelineEvent[];
   passages: TextPassage[];
+  realWorldSignals?: {
+    sourceLabel: string;
+    venueSummary?: string;
+    venueSamples?: Array<{
+      name: string;
+      sampleCount: number;
+    }>;
+    eventSamples?: Array<{
+      venue: string;
+      title: string;
+      status: string;
+      startTime: string;
+    }>;
+  };
 }
 
 export interface RiverDataset {

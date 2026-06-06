@@ -85,6 +85,29 @@ export function BookExplorer({
         </div>
       </section>
 
+      {detail.realWorldSignals ? (
+        <section className="rounded-2xl border border-cyan-300/15 bg-cyan-300/5 px-4 py-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/80">
+                真实数据接入
+              </div>
+              <div className="mt-1 text-sm font-medium text-cyan-50">
+                {detail.realWorldSignals.sourceLabel}
+              </div>
+            </div>
+            <div className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+              Live Sample
+            </div>
+          </div>
+          {detail.realWorldSignals.venueSummary ? (
+            <p className="mt-3 text-sm leading-7 text-cyan-50/90">
+              {detail.realWorldSignals.venueSummary}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
+
       {tab === "spread" ? (
         <section className="space-y-3">
           <div className="flex items-center justify-between">
@@ -129,6 +152,27 @@ export function BookExplorer({
           <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
             这一视图后续会接入 3D 地球与历史地名坐标。当前先用“航线卡片 + 流量条”稳定表达传播方向、时间和规模。
           </div>
+          {detail.realWorldSignals?.venueSamples?.length ? (
+            <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-sm font-medium text-stone-50">上图活动场馆样本</h4>
+                <span className="text-xs text-stone-400">真实数据辅助</span>
+              </div>
+              <div className="mt-3 grid gap-2">
+                {detail.realWorldSignals.venueSamples.map((venue) => (
+                  <div
+                    key={venue.name}
+                    className="flex items-center justify-between rounded-2xl bg-black/15 px-3 py-3 text-sm"
+                  >
+                    <span className="text-stone-200">{venue.name}</span>
+                    <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-xs text-cyan-100">
+                      样本 {venue.sampleCount}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </section>
       ) : null}
 
@@ -155,8 +199,19 @@ export function BookExplorer({
                       {person.role} · {person.era}
                     </div>
                   </div>
-                  <div className="rounded-full bg-violet-300/10 px-3 py-1 text-xs text-violet-100">
-                    {person.birthYear} - {person.deathYear}
+                  <div className="flex flex-col items-end gap-2">
+                    <div className="rounded-full bg-violet-300/10 px-3 py-1 text-xs text-violet-100">
+                      {person.birthYear ?? "?"} - {person.deathYear ?? "?"}
+                    </div>
+                    <div
+                      className={`rounded-full px-3 py-1 text-xs ${
+                        person.source === "cbdb"
+                          ? "bg-emerald-300/10 text-emerald-100"
+                          : "bg-white/10 text-stone-300"
+                      }`}
+                    >
+                      {person.source === "cbdb" ? "CBDB 已命中" : "示范补全"}
+                    </div>
                   </div>
                 </div>
                 <p className="mt-3 text-sm leading-7 text-stone-300">{person.bio}</p>
@@ -224,6 +279,34 @@ export function BookExplorer({
               <p className="mt-2 text-sm leading-6 text-stone-300">{item.detail}</p>
             </div>
           ))}
+          {detail.realWorldSignals?.eventSamples?.length ? (
+            <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-sm font-medium text-stone-50">上图活动时间样本</h4>
+                <span className="text-xs text-stone-400">真实传播现场</span>
+              </div>
+              <div className="mt-3 space-y-2">
+                {detail.realWorldSignals.eventSamples.map((event) => (
+                  <div
+                    key={`${event.venue}-${event.title}-${event.startTime}`}
+                    className="rounded-2xl bg-white/5 px-3 py-3"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-sm font-medium text-stone-100">
+                        {event.title}
+                      </span>
+                      <span className="rounded-full bg-amber-300/10 px-2 py-1 text-xs text-amber-100">
+                        {event.status}
+                      </span>
+                    </div>
+                    <div className="mt-2 text-xs text-stone-400">
+                      {event.venue} · {event.startTime}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </section>
       ) : null}
 
