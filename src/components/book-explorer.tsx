@@ -292,6 +292,11 @@ export function BookExplorer({
                           </div>
                         </div>
                         <p className="mt-3 text-sm leading-7 text-stone-300">{person.bio}</p>
+                        {person.source === "cbdb" && person.matchedAlias ? (
+                          <div className="mt-3 rounded-full border border-emerald-300/15 bg-emerald-300/8 px-3 py-1 text-xs text-emerald-100">
+                            CBDB 匹配别名：{person.matchedAlias}
+                          </div>
+                        ) : null}
                       </div>
                     ))}
                   </div>
@@ -361,6 +366,11 @@ export function BookExplorer({
                             </div>
                           </div>
                           <p className="mt-3 text-sm leading-7 text-stone-300">{person.bio}</p>
+                          {person.source === "cbdb" && person.matchedAlias ? (
+                            <div className="mt-3 rounded-full border border-emerald-300/15 bg-emerald-300/8 px-3 py-1 text-xs text-emerald-100">
+                              CBDB 匹配别名：{person.matchedAlias}
+                            </div>
+                          ) : null}
                         </div>
                       ))
                     )}

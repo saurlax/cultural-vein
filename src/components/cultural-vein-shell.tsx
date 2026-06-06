@@ -1,22 +1,15 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { BookExplorer } from "@/components/book-explorer";
 import { RiverScene } from "@/components/river-scene";
 import { riverDataset } from "@/data/demo-graph";
-import realSupplements from "@/data/generated/real-supplements.json";
 import { useCulturalVeinStore } from "@/store/app-store";
+import type { DatasetInsight } from "@/types/domain";
 
 const eras = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"] as const;
 const categories = ["全部", "经", "史", "子", "集"] as const;
-const cbdbSummary = realSupplements.cbdbSummary as
-  | {
-      available?: boolean;
-      personCount?: number;
-      topDynasties?: Array<{ name: string; count: number }>;
-    }
-  | undefined;
 
 export function CulturalVeinShell() {
   const {
@@ -31,6 +24,7 @@ export function CulturalVeinShell() {
     setSelectedBookSlug,
     resetSelection,
   } = useCulturalVeinStore();
+  const [insights, setInsights] = useState<DatasetInsight | null>(null);
 
   const filteredBooks = useMemo(() => {
     return riverDataset.books.filter((book) => {
@@ -47,6 +41,33 @@ export function CulturalVeinShell() {
 
   const selectedBook = riverDataset.books.find((book) => book.slug === selectedBookSlug);
   const selectedDetail = riverDataset.booksBySlug[selectedBookSlug];
+  const cbdbSummary = insights?.cbdbSummary;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadInsights = async () => {
+      try {
+        const response = await fetch("/api/insights");
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as DatasetInsight;
+        if (!cancelled) {
+          setInsights(payload);
+        }
+      } catch {
+        // Keep the static shell usable even if the request fails.
+      }
+    };
+
+    void loadInsights();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col bg-[radial-gradient(circle_at_top,#214d46_0%,#102622_35%,#081512_65%,#050a09_100%)] text-stone-100">
@@ -246,6 +267,12 @@ export function CulturalVeinShell() {
                   ))}
                 </div>
               </div>
+              {insights?.shanghaiLibraryActivity?.available ? (
+                <div className="mt-3 text-xs text-cyan-100/75">
+                  活动样本源：{insights.shanghaiLibraryActivity.sourceWorkbook} · 表：
+                  {insights.shanghaiLibraryActivity.sheetName}
+                </div>
+              ) : null}
             </div>
           ) : null}
 

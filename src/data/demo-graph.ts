@@ -797,6 +797,7 @@ function mergePeople(
         bio: person.bio ?? "",
         source: person.foundInCbdb ? "cbdb" : "demo",
         sourceStatus: person.foundInCbdb ? "matched" : "fallback",
+        matchedAlias: person.matchedAlias,
         relationTier: 1,
         relationType:
           person.role === "作者"
