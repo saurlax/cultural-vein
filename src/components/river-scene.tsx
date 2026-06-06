@@ -199,6 +199,140 @@ function RiverBed({
   );
 }
 
+function RiverBanks() {
+  const bankRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (!bankRef.current) {
+      return;
+    }
+
+    bankRef.current.children.forEach((child, index) => {
+      const mesh = child as THREE.Mesh;
+      const material = mesh.material;
+
+      if (material instanceof THREE.MeshStandardMaterial) {
+        material.emissiveIntensity =
+          0.12 + Math.max(0, Math.sin(state.clock.elapsedTime * 0.3 + index * 0.35)) * 0.08;
+      }
+    });
+  });
+
+  return (
+    <group ref={bankRef}>
+      <mesh rotation={[-Math.PI / 2.08, 0, 0.11]} position={[3.2, -0.96, 3.45]}>
+        <planeGeometry args={[21.5, 6.8, 1, 1]} />
+        <meshStandardMaterial
+          color="#5b3b17"
+          emissive={new THREE.Color("#8b5a21")}
+          emissiveIntensity={0.16}
+          roughness={0.94}
+          metalness={0.02}
+          transparent
+          opacity={0.98}
+        />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2.06, 0, -0.09]} position={[3.5, -0.98, -3.55]}>
+        <planeGeometry args={[22.8, 7.6, 1, 1]} />
+        <meshStandardMaterial
+          color="#4a2f14"
+          emissive={new THREE.Color("#7b4b18")}
+          emissiveIntensity={0.14}
+          roughness={0.95}
+          metalness={0.02}
+          transparent
+          opacity={0.96}
+        />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.35, -0.9, 4.45]}>
+        <planeGeometry args={[18.5, 1.4, 1, 1]} />
+        <meshBasicMaterial color="#e2bd73" transparent opacity={0.07} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.55, -0.92, -4.6]}>
+        <planeGeometry args={[19.4, 1.6, 1, 1]} />
+        <meshBasicMaterial color="#d6a54a" transparent opacity={0.06} />
+      </mesh>
+    </group>
+  );
+}
+
+function ScrollContourLines() {
+  const contourPaths = useMemo(
+    () => [
+      [
+        new THREE.Vector3(-4.8, -0.72, 3.5),
+        new THREE.Vector3(-0.8, -0.7, 3.85),
+        new THREE.Vector3(3.6, -0.68, 3.72),
+        new THREE.Vector3(8.5, -0.66, 3.38),
+        new THREE.Vector3(12.2, -0.64, 3.55),
+      ],
+      [
+        new THREE.Vector3(-5.1, -0.73, -3.85),
+        new THREE.Vector3(-0.9, -0.71, -4.08),
+        new THREE.Vector3(3.8, -0.69, -3.94),
+        new THREE.Vector3(8.8, -0.67, -4.16),
+        new THREE.Vector3(12.4, -0.65, -3.9),
+      ],
+      [
+        new THREE.Vector3(-3.6, -0.7, 2.64),
+        new THREE.Vector3(0.8, -0.69, 2.94),
+        new THREE.Vector3(4.8, -0.68, 2.82),
+        new THREE.Vector3(9.6, -0.66, 2.58),
+      ],
+    ],
+    [],
+  );
+
+  return (
+    <group>
+      {contourPaths.map((points, index) => (
+        <Line
+          key={`scroll-contour-${index}`}
+          points={points}
+          color={index === 1 ? "#b88a34" : "#d7b567"}
+          transparent
+          opacity={index === 2 ? 0.18 : 0.24}
+          lineWidth={1.2}
+        />
+      ))}
+    </group>
+  );
+}
+
+function ScrollMistBands() {
+  const bandRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (!bandRef.current) {
+      return;
+    }
+
+    bandRef.current.children.forEach((child, index) => {
+      const mesh = child as THREE.Mesh;
+      mesh.position.y =
+        0.32 + index * 0.18 + Math.sin(state.clock.elapsedTime * 0.24 + index * 0.62) * 0.03;
+      mesh.rotation.z = Math.sin(state.clock.elapsedTime * 0.08 + index * 0.4) * 0.04;
+    });
+  });
+
+  return (
+    <group ref={bandRef}>
+      <mesh position={[2.6, 0.32, -5.4]} scale={[11.6, 2.3, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#f3d58b" transparent opacity={0.045} />
+      </mesh>
+      <mesh position={[8.4, 0.5, -4.9]} scale={[8.8, 1.9, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#fde7b0" transparent opacity={0.04} />
+      </mesh>
+      <mesh position={[-1.6, 0.68, -4.2]} scale={[7.4, 1.6, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#e7bf63" transparent opacity={0.034} />
+      </mesh>
+    </group>
+  );
+}
+
 function EraRiverZones({
   books,
 }: {
@@ -1388,12 +1522,11 @@ function RiverWorld({
         color={traceFocus?.active ? "#ffd27a" : "#fde68a"}
       />
 
-      <AtmosphereField
-        activeEra={activeEra}
-        traceFocus={traceFocus}
-        sceneFocus={sceneFocus}
-      />
+      <AtmosphereField activeEra={activeEra} traceFocus={traceFocus} sceneFocus={sceneFocus} />
+      <ScrollMistBands />
       <RiverBed />
+      <RiverBanks />
+      <ScrollContourLines />
       <EraRiverZones books={books} />
 
       {mainStream.length >= 2 ? (
