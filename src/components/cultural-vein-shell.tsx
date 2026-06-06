@@ -399,20 +399,8 @@ export function CulturalVeinShell() {
     transitionState === "diving" ||
     transitionState === "settling" ||
     transitionState === "returning";
-  const connectedSourceCount = [
-    insights?.cbdbSummary?.available,
-    insights?.shanghaiLibraryActivity?.available,
-    insights?.nanjingLibrarySample?.available,
-    insights?.fudanArchiveSample?.available,
-    insights?.nanhuArchiveSample?.available,
-    insights?.videoTopicSample?.available,
-    insights?.shenzhenLibrarySample?.available,
-    insights?.taofenMuseumSample?.available,
-    insights?.soongLiteratureSample?.available,
-    insights?.souyunKnowledgeGraphSample?.available,
-    insights?.periodicalIndexSample?.available,
-  ].filter(Boolean).length;
-  const sourceAtlasEntries = (insights?.sourceAtlas ?? []).slice(0, 10);
+  const sourceAtlasEntries = insights?.sourceAtlas ?? [];
+  const connectedSourceCount = sourceAtlasEntries.length;
   const inferSourceAtlasEra = (entry: NonNullable<typeof sourceAtlasEntries>[number]) => {
     const inferredEra =
       entry.sampleRecords
