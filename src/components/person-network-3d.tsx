@@ -27,6 +27,7 @@ interface SimulationEdge {
   sourceId: string;
   targetId: string;
   type: "core" | "orbit";
+  relationType?: PersonNode["relationType"];
 }
 
 const CORE_ID = "book-core";
@@ -86,19 +87,96 @@ function buildEdges(nodes: SimulationNode[], primaryPeople: PersonNode[]) {
 
   nodes.forEach((node) => {
     if (node.tier === 1) {
-      edges.push({ sourceId: CORE_ID, targetId: node.id, type: "core" });
+      edges.push({
+        sourceId: CORE_ID,
+        targetId: node.id,
+        type: "core",
+        relationType: node.person.relationType,
+      });
       return;
     }
 
     const anchorId = primaryIds[node.anchorIndex] ?? primaryIds[0];
     if (anchorId) {
-      edges.push({ sourceId: anchorId, targetId: node.id, type: "orbit" });
+      edges.push({
+        sourceId: anchorId,
+        targetId: node.id,
+        type: "orbit",
+        relationType: node.person.relationType,
+      });
     } else {
-      edges.push({ sourceId: CORE_ID, targetId: node.id, type: "core" });
+      edges.push({
+        sourceId: CORE_ID,
+        targetId: node.id,
+        type: "core",
+        relationType: node.person.relationType,
+      });
     }
   });
 
   return edges;
+}
+
+function relationEdgeStyle(relationType?: PersonNode["relationType"]) {
+  switch (relationType) {
+    case "著":
+      return {
+        color: "#34d399",
+        activeColor: "#bbf7d0",
+        lineWidth: 1.7,
+        opacity: 0.84,
+        label: "著述",
+      };
+    case "注":
+      return {
+        color: "#38bdf8",
+        activeColor: "#bae6fd",
+        lineWidth: 1.58,
+        opacity: 0.8,
+        label: "注疏",
+      };
+    case "校":
+      return {
+        color: "#c084fc",
+        activeColor: "#e9d5ff",
+        lineWidth: 1.45,
+        opacity: 0.76,
+        label: "校勘",
+      };
+    case "评":
+      return {
+        color: "#f59e0b",
+        activeColor: "#fde68a",
+        lineWidth: 1.34,
+        opacity: 0.74,
+        label: "评议",
+      };
+    case "承":
+      return {
+        color: "#fb7185",
+        activeColor: "#fecdd3",
+        lineWidth: 1.3,
+        opacity: 0.72,
+        label: "承续",
+      };
+    case "藏":
+      return {
+        color: "#a78bfa",
+        activeColor: "#ddd6fe",
+        lineWidth: 1.24,
+        opacity: 0.68,
+        label: "收藏",
+      };
+    case "引":
+    default:
+      return {
+        color: "#d6d3d1",
+        activeColor: "#f5f5f4",
+        lineWidth: 1.08,
+        opacity: 0.5,
+        label: "引用",
+      };
+  }
 }
 
 function runForceSimulation(primaryPeople: PersonNode[], secondaryPeople: PersonNode[]) {
@@ -312,6 +390,7 @@ function PersonNetworkScene({
           edge.sourceId === CORE_ID ? simulation.core : nodeMap.get(edge.sourceId)?.position;
         const target = nodeMap.get(edge.targetId)?.position;
         const targetNode = nodeMap.get(edge.targetId);
+        const edgeStyle = relationEdgeStyle(edge.relationType);
         const isActive =
           activePersonId === edge.targetId || (edge.sourceId !== CORE_ID && activePersonId === edge.sourceId);
 
@@ -330,18 +409,10 @@ function PersonNetworkScene({
           <Line
             key={`${edge.sourceId}-${edge.targetId}`}
             points={points}
-            color={
-              edge.type === "core"
-                ? isActive
-                  ? "#fde68a"
-                  : "#34d399"
-                : isActive
-                  ? "#fcd34d"
-                  : "#d6d3d1"
-            }
+            color={isActive ? edgeStyle.activeColor : edgeStyle.color}
             transparent
-            opacity={isActive ? 0.96 : edge.type === "core" ? 0.72 : 0.46}
-            lineWidth={isActive ? 2 : edge.type === "core" ? 1.45 : 0.9}
+            opacity={isActive ? 0.96 : edgeStyle.opacity}
+            lineWidth={isActive ? Math.max(edgeStyle.lineWidth + 0.42, 1.6) : edgeStyle.lineWidth}
           />
         );
       })}
@@ -399,6 +470,14 @@ function PersonNetworkScene({
 }
 
 export function PersonNetwork3D(props: PersonNetwork3DProps) {
+  const relationLegend = [
+    relationEdgeStyle("著"),
+    relationEdgeStyle("注"),
+    relationEdgeStyle("校"),
+    relationEdgeStyle("评"),
+    relationEdgeStyle("引"),
+  ];
+
   return (
     <div className="relative h-[360px] overflow-hidden rounded-[24px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.14),rgba(20,13,6,0.96))]">
       <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-full border border-amber-300/15 bg-[#2d1d0c]/70 px-3 py-1 text-[11px] text-stone-200">
@@ -406,6 +485,23 @@ export function PersonNetwork3D(props: PersonNetwork3DProps) {
       </div>
       <div className="pointer-events-none absolute right-4 top-4 z-10 rounded-full border border-amber-300/15 bg-[#2d1d0c]/70 px-3 py-1 text-[11px] text-stone-300">
         拖拽旋转 · 点击人物聚焦
+      </div>
+      <div className="pointer-events-none absolute inset-x-4 bottom-4 z-10 flex flex-wrap gap-2">
+        {relationLegend.map((item) => (
+          <div
+            key={item.label}
+            className="flex items-center gap-2 rounded-full border border-amber-300/10 bg-[#2d1d0c]/72 px-3 py-1 text-[10px] text-stone-200"
+          >
+            <span
+              className="h-[2px] w-5 rounded-full"
+              style={{
+                backgroundColor: item.color,
+                opacity: item.opacity,
+              }}
+            />
+            <span>{item.label}</span>
+          </div>
+        ))}
       </div>
       <Canvas dpr={[1, 1.8]}>
         <PersonNetworkScene {...props} />
