@@ -862,13 +862,23 @@ function RiverWorld({
       />
       <OrbitControls
         ref={controlsRef}
-        enablePan={false}
+        enablePan
+        screenSpacePanning
         maxDistance={16}
         minDistance={6}
         maxPolarAngle={Math.PI / 2.1}
         enableRotate={cinematicState !== "diving"}
         enableZoom
         target={initialControlsTarget}
+        mouseButtons={{
+          LEFT: THREE.MOUSE.PAN,
+          MIDDLE: THREE.MOUSE.DOLLY,
+          RIGHT: THREE.MOUSE.ROTATE,
+        }}
+        touches={{
+          ONE: THREE.TOUCH.PAN,
+          TWO: THREE.TOUCH.DOLLY_ROTATE,
+        }}
       />
     </>
   );
@@ -884,24 +894,24 @@ export function RiverScene(props: RiverSceneProps) {
       : 0;
 
   return (
-    <div className="relative h-full min-h-screen overflow-hidden rounded-[32px] border border-amber-200/12 bg-[#1b1209] shadow-[0_0_80px_rgba(0,0,0,0.42)] touch-none">
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(17,10,4,0.72),rgba(17,10,4,0))]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(17,10,4,0.9),rgba(17,10,4,0))]" />
-      <div className="pointer-events-none absolute left-5 top-5 z-10 rounded-full border border-amber-200/15 bg-[#2d1d0c]/70 px-4 py-2 text-[11px] tracking-[0.32em] text-stone-200">
+    <div className="relative h-full min-h-screen overflow-hidden rounded-[32px] border border-[#e4c98a]/18 bg-[#1f1408] shadow-[0_0_80px_rgba(0,0,0,0.42)] touch-none">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(52,34,10,0.6),rgba(52,34,10,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(29,18,6,0.8),rgba(29,18,6,0))]" />
+      <div className="pointer-events-none absolute left-5 top-5 z-10 rounded-full border border-[#ead8a6]/30 bg-[rgba(83,58,21,0.7)] px-4 py-2 text-[11px] tracking-[0.32em] text-[#f7edd1]">
         黄河文脉长卷
       </div>
-      <div className="pointer-events-none absolute right-5 top-5 z-10 rounded-full border border-amber-200/15 bg-[#2d1d0c]/70 px-4 py-2 text-[11px] text-stone-300">
+      <div className="pointer-events-none absolute right-5 top-5 z-10 rounded-full border border-[#ead8a6]/24 bg-[rgba(83,58,21,0.7)] px-4 py-2 text-[11px] text-[#eadfbc]">
         {props.traceFocus?.active
           ? `溯源联动 ${props.traceFocus.progress}/${props.traceFocus.total}`
           : props.sceneFocus?.active
             ? props.sceneFocus.contextLabel
-          : props.cinematicState === "diving"
+            : props.cinematicState === "diving"
             ? "镜头俯冲中"
             : props.cinematicState === "returning"
               ? "镜头拉回中"
               : `${props.activeEra} 水位`}
       </div>
-      <div className="pointer-events-none absolute left-5 bottom-5 z-10 hidden rounded-[24px] border border-amber-200/12 bg-[#2b1b0b]/72 px-4 py-3 text-[11px] text-stone-300 backdrop-blur-md lg:block">
+      <div className="pointer-events-none absolute left-5 bottom-5 z-10 hidden rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(54,36,12,0.72)] px-4 py-3 text-[11px] text-[#eadfbc] backdrop-blur-md lg:block">
         <div className="text-[10px] tracking-[0.24em] text-stone-500">
           河面扫描
         </div>
@@ -947,17 +957,6 @@ export function RiverScene(props: RiverSceneProps) {
             </div>
           </div>
         </div>
-      </div>
-      <div className="pointer-events-none absolute right-5 bottom-5 z-10 hidden max-w-[360px] flex-wrap justify-end gap-2 text-[11px] text-stone-300 lg:flex">
-        <span className="rounded-full border border-amber-300/15 bg-amber-300/10 px-3 py-1 text-amber-100">
-          支流标注可直接跳转
-        </span>
-        <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-amber-100">
-          琥珀 显式引用
-        </span>
-        <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-amber-100">
-          黄色 语义关联
-        </span>
       </div>
       <Canvas dpr={[1, 1.8]}>
         <RiverWorld {...props} />
