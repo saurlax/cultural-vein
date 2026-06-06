@@ -183,6 +183,9 @@ export function CulturalVeinShell() {
   const [insights, setInsights] = useState<DatasetInsight | null>(null);
   const [demoMode, setDemoMode] = useState(false);
   const [demoStepId, setDemoStepId] = useState(demoSteps[0].id);
+  const [transitionState, setTransitionState] = useState<
+    "idle" | "diving" | "settling" | "returning"
+  >("idle");
 
   const filteredBooks = useMemo(() => {
     return riverDataset.books.filter((book) => {
@@ -360,8 +363,81 @@ export function CulturalVeinShell() {
     setSelectedBookSlug,
   ]);
 
+  useEffect(() => {
+    if (transitionState !== "settling" && transitionState !== "returning") {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setTransitionState("idle");
+    }, transitionState === "settling" ? 650 : 420);
+
+    return () => window.clearTimeout(timer);
+  }, [transitionState]);
+
+  const handleDiveToBook = (slug: string) => {
+    if (selectedBookSlug === slug && viewMode === "book") {
+      setSelectedBookSlug(slug);
+      return;
+    }
+
+    setTransitionState("diving");
+    window.setTimeout(() => {
+      setSelectedBookSlug(slug);
+      setTransitionState("settling");
+    }, 180);
+  };
+
+  const handleReturnToRiver = () => {
+    setTransitionState("returning");
+    window.setTimeout(() => {
+      resetSelection();
+    }, 120);
+  };
+
+  const isTransitionActive = transitionState !== "idle";
+  const showDiveOverlay =
+    transitionState === "diving" || transitionState === "settling" || transitionState === "returning";
+
   return (
-    <div className="flex min-h-screen flex-col bg-[radial-gradient(circle_at_top,#214d46_0%,#102622_35%,#081512_65%,#050a09_100%)] text-stone-100">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[radial-gradient(circle_at_top,#214d46_0%,#102622_35%,#081512_65%,#050a09_100%)] text-stone-100">
+      {showDiveOverlay ? (
+        <div className="pointer-events-none absolute inset-0 z-40 overflow-hidden">
+          <div
+            className={`absolute inset-0 transition-all duration-500 ${
+              transitionState === "diving"
+                ? "bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.18),rgba(4,8,7,0.92)_68%)] backdrop-blur-[2px]"
+                : transitionState === "settling"
+                  ? "bg-[radial-gradient(circle_at_center,rgba(103,232,249,0.12),rgba(4,8,7,0.82)_75%)] opacity-100"
+                  : "bg-[radial-gradient(circle_at_center,rgba(20,184,166,0.08),rgba(4,8,7,0.72)_78%)] opacity-100"
+            }`}
+          />
+          <div
+            className={`absolute left-1/2 top-1/2 h-[58vmax] w-[58vmax] -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-200/15 transition-all ${
+              transitionState === "diving"
+                ? "scale-[0.62] opacity-90"
+                : transitionState === "settling"
+                  ? "scale-[1.18] opacity-0 duration-700"
+                  : "scale-[0.88] opacity-0 duration-500"
+            }`}
+          />
+          <div
+            className={`absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center transition-all ${
+              transitionState === "diving"
+                ? "opacity-100"
+                : "translate-y-3 opacity-0 duration-300"
+            }`}
+          >
+            <div className="text-xs uppercase tracking-[0.38em] text-amber-100/75">
+              Camera Dive
+            </div>
+            <div className="mt-3 text-2xl font-semibold text-stone-50">
+              正在钻入典籍脉络
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       <header className="border-b border-white/10 bg-black/15 backdrop-blur">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-6 py-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl space-y-3">
@@ -520,7 +596,7 @@ export function CulturalVeinShell() {
               <h2 className="text-lg font-medium">宏观控制台</h2>
               <button
                 className="rounded-full border border-white/10 px-3 py-1 text-xs text-stone-300 transition hover:bg-white/10"
-                onClick={resetSelection}
+                onClick={handleReturnToRiver}
                 type="button"
               >
                 回到河流
@@ -614,7 +690,17 @@ export function CulturalVeinShell() {
           </section>
         </aside>
 
-        <main className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-5 shadow-[0_25px_80px_rgba(0,0,0,0.45)] backdrop-blur">
+        <main
+          className={`rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-5 shadow-[0_25px_80px_rgba(0,0,0,0.45)] backdrop-blur transition-all duration-500 ${
+            transitionState === "diving"
+              ? "scale-[1.02] opacity-35 blur-[1px]"
+              : transitionState === "settling"
+                ? "translate-y-1 scale-[0.985]"
+                : transitionState === "returning"
+                  ? "scale-[0.992] opacity-70"
+                  : ""
+          }`}
+        >
           <div className="mb-4 flex items-center justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.28em] text-stone-400">
@@ -631,7 +717,7 @@ export function CulturalVeinShell() {
             books={filteredBooks}
             citations={visibleCitations}
             selectedBookSlug={selectedBookSlug}
-            onSelectBook={setSelectedBookSlug}
+            onSelectBook={handleDiveToBook}
             activeEra={activeEra}
           />
 
@@ -1109,7 +1195,7 @@ export function CulturalVeinShell() {
               <button
                 key={book.id}
                 type="button"
-                onClick={() => setSelectedBookSlug(book.slug)}
+                onClick={() => handleDiveToBook(book.slug)}
                 className={`group rounded-[26px] border p-4 text-left transition ${
                   selectedBookSlug === book.slug
                     ? "border-amber-300/50 bg-amber-200/10 shadow-lg shadow-amber-500/10"
@@ -1170,7 +1256,17 @@ export function CulturalVeinShell() {
           </div>
         </main>
 
-        <aside className="space-y-4 rounded-[28px] border border-white/10 bg-black/20 p-5 shadow-2xl shadow-black/20 backdrop-blur">
+        <aside
+          className={`space-y-4 rounded-[28px] border border-white/10 bg-black/20 p-5 shadow-2xl shadow-black/20 backdrop-blur transition-all duration-500 ${
+            viewMode === "book" && !isTransitionActive
+              ? "translate-x-0 opacity-100"
+              : transitionState === "diving"
+                ? "translate-x-6 opacity-0"
+                : transitionState === "settling"
+                  ? "translate-x-0 opacity-100"
+                  : ""
+          }`}
+        >
           {selectedBook && selectedDetail ? (
             <BookExplorer
               book={selectedBook}
