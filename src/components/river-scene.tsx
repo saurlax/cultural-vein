@@ -64,6 +64,9 @@ interface RiverSceneProps {
   sourceAtlasSummary?: string | null;
   sourceAtlasPathPoints?: Array<[number, number, number]>;
   sourceAtlasRoutes?: SourceAtlasRoute[];
+  onOpenControlPanel?: (() => void) | null;
+  onOpenEraPanel?: (() => void) | null;
+  onReturnToRiver?: (() => void) | null;
 }
 
 interface CruiseSnapshot {
@@ -2003,6 +2006,31 @@ export function RiverScene(props: RiverSceneProps) {
         <div className="mt-3 text-[10px] leading-5 text-[#e8d6aa]">
           顺着节点密度、时代水位与河段显现继续拖拽巡看，锁定感兴趣的典籍后再入卷细看。
         </div>
+        <div className="pointer-events-auto mt-3 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => props.onOpenControlPanel?.()}
+            className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#f0e0b8] transition hover:bg-[rgba(255,248,220,0.12)]"
+          >
+            展开河上题签
+          </button>
+          <button
+            type="button"
+            onClick={() => props.onOpenEraPanel?.()}
+            className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#f0e0b8] transition hover:bg-[rgba(255,248,220,0.12)]"
+          >
+            切换时代水位
+          </button>
+          {props.viewMode === "book" ? (
+            <button
+              type="button"
+              onClick={() => props.onReturnToRiver?.()}
+              className="rounded-full border border-amber-300/24 bg-amber-300/10 px-3 py-1.5 text-[10px] text-amber-100 transition hover:bg-amber-300/18"
+            >
+              回到主河道
+            </button>
+          ) : null}
+        </div>
       </div>
       <div className="pointer-events-none absolute right-4 top-4 z-10 hidden rounded-full border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.5)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md lg:flex">
         {isInteracting ? "正在拖动画卷" : "左键拖移河面 · 右键旋看 · 滚轮缩放"}
@@ -2059,6 +2087,22 @@ export function RiverScene(props: RiverSceneProps) {
                 className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
               >
                 顺流下看
+              </button>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2 text-[10px]">
+              <button
+                type="button"
+                onClick={() => props.onOpenControlPanel?.()}
+                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+              >
+                打开河上题签
+              </button>
+              <button
+                type="button"
+                onClick={() => props.onOpenEraPanel?.()}
+                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+              >
+                改看别的时代
               </button>
             </div>
           </div>

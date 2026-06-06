@@ -399,6 +399,13 @@ export function CulturalVeinShell() {
       resetSelection();
     }, 120);
   };
+  const handleOpenDesktopPanel = (panel: "search" | "era" | "category" | "branch") => {
+    setShowMobileControls(false);
+    setShowMobileDossier(false);
+    setShowDesktopDossier(false);
+    setActiveDesktopPanel(panel);
+    setShowDesktopControls(true);
+  };
 
   const showDiveOverlay =
     transitionState === "diving" ||
@@ -799,8 +806,7 @@ export function CulturalVeinShell() {
                   key={item.label}
                   type="button"
                   onClick={() => {
-                    setShowDesktopControls(true);
-                    setActiveDesktopPanel(item.panel);
+                    handleOpenDesktopPanel(item.panel);
                   }}
                   className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-[#f3e5be] transition hover:bg-[rgba(255,248,220,0.12)]"
                 >
@@ -1354,6 +1360,9 @@ export function CulturalVeinShell() {
             visibleNodeCount={filteredBooks.length}
             totalNodeCount={riverDataset.books.length}
             highlightedBookSlugs={mergedHighlightedBookSlugs}
+            onOpenControlPanel={() => handleOpenDesktopPanel("branch")}
+            onOpenEraPanel={() => handleOpenDesktopPanel("era")}
+            onReturnToRiver={selectedBook ? handleReturnToRiver : null}
           />
         </main>
 
