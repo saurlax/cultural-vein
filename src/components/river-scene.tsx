@@ -25,6 +25,7 @@ export interface RiverDockMarker {
   id: string;
   label: string;
   note?: string;
+  accentColor?: string;
   position: [number, number, number];
 }
 
@@ -47,6 +48,8 @@ interface RiverSceneProps {
   highlightedBookSlugs?: string[];
   hoveredBookSlug?: string | null;
   onHoverBook?: (slug: string | null) => void;
+  sourceAtlasLabel?: string | null;
+  sourceAtlasSummary?: string | null;
 }
 
 interface CruiseSnapshot {
@@ -1209,15 +1212,27 @@ function DockMarkers({
         <group key={dock.id} position={dock.position}>
           <mesh position={[0, 0.12, 0]}>
             <cylinderGeometry args={[0.02, 0.02, 0.28, 12]} />
-            <meshStandardMaterial color="#e7c97c" emissive={new THREE.Color("#d97706")} emissiveIntensity={0.55} />
+            <meshStandardMaterial
+              color="#e7c97c"
+              emissive={new THREE.Color(dock.accentColor ?? "#d97706")}
+              emissiveIntensity={0.55}
+            />
           </mesh>
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.025, 0]}>
             <ringGeometry args={[0.08, 0.15, 28]} />
-            <meshBasicMaterial color={activeColor} transparent opacity={0.34 + index * 0.03} />
+            <meshBasicMaterial
+              color={dock.accentColor ?? activeColor}
+              transparent
+              opacity={0.34 + index * 0.03}
+            />
           </mesh>
           <mesh position={[0, 0.31, 0]}>
             <sphereGeometry args={[0.045, 16, 16]} />
-            <meshStandardMaterial color="#fde68a" emissive={new THREE.Color(activeColor)} emissiveIntensity={1.25} />
+            <meshStandardMaterial
+              color="#fde68a"
+              emissive={new THREE.Color(dock.accentColor ?? activeColor)}
+              emissiveIntensity={1.25}
+            />
           </mesh>
           <Text
             position={[0, 0.48, 0]}
@@ -1739,6 +1754,8 @@ export function RiverScene(props: RiverSceneProps) {
     ? `逆流追溯正在经过 ${props.traceFocus.currentTitle ?? "当前节点"}，沿链回看文脉源头。`
     : props.sceneFocus?.active
       ? props.sceneFocus.detail
+      : props.sourceAtlasLabel && props.dockMarkers?.length
+        ? `${props.sourceAtlasLabel} 的样本资料已映上河面，可沿数据码头顺流细看。${props.sourceAtlasSummary ? ` ${props.sourceAtlasSummary}` : ""}`
       : hoveredBook
         ? `${hoveredBook.shortTitle} 已浮起，点击可直接入卷细看。`
         : hoveredBranch

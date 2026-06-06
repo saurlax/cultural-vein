@@ -283,7 +283,6 @@ export function CulturalVeinShell() {
       };
     });
   }, [selectedBook, selectedDetail]);
-
   useEffect(() => {
     let cancelled = false;
 
@@ -380,6 +379,48 @@ export function CulturalVeinShell() {
       sourceAtlasEntries[0]
     );
   }, [activeSourceAtlasId, sourceAtlasEntries]);
+  const sourceAtlasDockMarkers = useMemo<RiverDockMarker[]>(() => {
+    if (!activeSourceAtlasEntry?.sampleRecords?.length) {
+      return [];
+    }
+
+    const anchorBooks = filteredBooks
+      .filter((book) => {
+        if (
+          !activeSourceAtlasEntry.name.includes("报刊") &&
+          !activeSourceAtlasEntry.name.includes("专题片")
+        ) {
+          return true;
+        }
+
+        return book.dynasty === "近现代" || book.dynasty === "明清";
+      })
+      .sort((left, right) => left.year - right.year);
+
+    const accentPalette = ["#fbbf24", "#f59e0b", "#fcd34d", "#f97316"];
+
+    return activeSourceAtlasEntry.sampleRecords.slice(0, 4).map((record, index) => {
+      const fallbackBook = filteredBooks[index % Math.max(filteredBooks.length, 1)];
+      const anchorBook =
+        anchorBooks[Math.min(index, Math.max(anchorBooks.length - 1, 0))] ?? fallbackBook;
+
+      const [baseX, baseY, baseZ] = anchorBook?.coordinates ?? [index * 1.6, 0.18, 0];
+      const laneDirection = index % 2 === 0 ? 1 : -1;
+
+      return {
+        id: `source-atlas-${activeSourceAtlasEntry.id}-${index}`,
+        label: record.title,
+        note: record.note,
+        accentColor: accentPalette[index % accentPalette.length],
+        position: [
+          baseX + (index - 1.5) * 0.68,
+          baseY + 0.04,
+          baseZ + laneDirection * (0.96 + index * 0.12),
+        ],
+      };
+    });
+  }, [activeSourceAtlasEntry, filteredBooks]);
+  const mergedDockMarkers = selectedBook ? riverDockMarkers : sourceAtlasDockMarkers;
   const sourceAtlasMass =
     (insights?.cbdbSummary?.personCount ?? 0) +
     (insights?.nanjingLibrarySample?.recordCount ?? 0) +
@@ -983,7 +1024,9 @@ export function CulturalVeinShell() {
             onHoverBook={setHoveredBookSlug}
             traceFocus={traceFocus}
             sceneFocus={sceneFocus}
-            dockMarkers={riverDockMarkers}
+            dockMarkers={mergedDockMarkers}
+            sourceAtlasLabel={!selectedBook ? activeSourceAtlasEntry?.name ?? null : null}
+            sourceAtlasSummary={!selectedBook ? activeSourceAtlasEntry?.summary ?? null : null}
             visibleNodeCount={filteredBooks.length}
             totalNodeCount={riverDataset.books.length}
             highlightedBookSlugs={searchHighlightedSlugs}
