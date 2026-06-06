@@ -80,6 +80,8 @@ export function BookExplorer({
   const [tab, setTab] = useState<ExplorerTab>("spread");
   const [passageLayout, setPassageLayout] = useState<"horizontal" | "vertical">("horizontal");
   const [selectedSpreadId, setSelectedSpreadId] = useState<string | null>(null);
+  const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
+  const [selectedTimelineId, setSelectedTimelineId] = useState<string | null>(null);
   const [selectedPassageId, setSelectedPassageId] = useState<string | null>(null);
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null);
   const [traceStep, setTraceStep] = useState<number>(0);
@@ -87,6 +89,10 @@ export function BookExplorer({
   const secondaryPeople = detail.people.filter((person) => (person.relationTier ?? 2) === 2);
   const activeSpread =
     detail.spread.find((item) => item.id === selectedSpreadId) ?? detail.spread[0];
+  const activeVersion =
+    detail.versions.find((item) => item.id === selectedVersionId) ?? detail.versions[0];
+  const activeTimelineItem =
+    detail.timeline.find((item) => item.id === selectedTimelineId) ?? detail.timeline[0];
   const activeSpreadPlaces = activeSpread
     ? {
         from: detail.places.find((place) => place.id === activeSpread.fromPlaceId),
@@ -623,65 +629,125 @@ export function BookExplorer({
           ) : (
             <>
               <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-4">
-                <div className="space-y-4">
-                  {detail.versions.map((version, index) => (
-                    <div key={version.id} className="flex gap-3">
-                      <div className="flex w-8 flex-col items-center pt-2">
-                        <div
-                          className={`h-3 w-3 rounded-full ${
-                            version.status === "存世" ? "bg-emerald-300" : "bg-stone-400"
-                          }`}
-                        />
-                        {index < detail.versions.length - 1 ? (
-                          <div className="mt-1 h-full w-px bg-white/15" />
-                        ) : null}
+                <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
+                  <div className="rounded-[24px] border border-white/10 bg-black/15 px-4 py-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                          版本轨道
+                        </div>
+                        <div className="mt-1 text-sm text-stone-300">
+                          点击节点切换当前版本焦点
+                        </div>
                       </div>
-                      <div className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                      <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
+                        {detail.versions.length} 个版本
+                      </div>
+                    </div>
+
+                    <div className="mt-6 flex items-center gap-2 overflow-x-auto pb-2">
+                      {detail.versions.map((version, index) => {
+                        const isActive = activeVersion?.id === version.id;
+                        return (
+                          <div key={version.id} className="flex min-w-max items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedVersionId(version.id)}
+                              className={`rounded-[24px] border px-4 py-4 text-left transition ${
+                                isActive
+                                  ? "border-amber-300/35 bg-amber-300/10 shadow-lg shadow-amber-500/10"
+                                  : "border-white/10 bg-white/5 hover:bg-white/10"
+                              }`}
+                            >
+                              <div className="text-xs uppercase tracking-[0.18em] text-stone-400">
+                                {version.editionType ?? "版本节点"}
+                              </div>
+                              <div className="mt-2 text-sm font-medium text-stone-50">
+                                {version.label}
+                              </div>
+                              <div className="mt-2 text-xs text-stone-400">
+                                {version.year} · {version.place}
+                              </div>
+                            </button>
+                            {index < detail.versions.length - 1 ? (
+                              <div className="h-px w-8 bg-gradient-to-r from-amber-300/35 to-transparent" />
+                            ) : null}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
+                    {activeVersion ? (
+                      <>
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div>
-                            <div className="font-medium text-stone-50">{version.label}</div>
-                            <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone-400">
-                              {version.year} · {version.place} · {version.library}
+                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                              当前版本焦点
+                            </div>
+                            <div className="mt-2 text-xl font-semibold text-stone-50">
+                              {activeVersion.label}
+                            </div>
+                            <div className="mt-2 text-sm text-stone-300">
+                              {activeVersion.year} · {activeVersion.place} · {activeVersion.library}
                             </div>
                           </div>
                           <div className="flex flex-wrap items-center gap-2">
-                            {version.editionType ? (
+                            {activeVersion.editionType ? (
                               <span
-                                className={`rounded-full px-3 py-1 text-xs ${versionTypeClass(version.editionType)}`}
+                                className={`rounded-full px-3 py-1 text-xs ${versionTypeClass(activeVersion.editionType)}`}
                               >
-                                {version.editionType}
+                                {activeVersion.editionType}
                               </span>
                             ) : null}
-                            <div
+                            <span
                               className={`rounded-full px-3 py-1 text-xs ${
-                                version.status === "存世"
+                                activeVersion.status === "存世"
                                   ? "bg-emerald-300/10 text-emerald-100"
                                   : "bg-white/10 text-stone-300"
                               }`}
                             >
-                              {version.status}
-                            </div>
+                              {activeVersion.status}
+                            </span>
                           </div>
                         </div>
 
-                        {version.note ? (
-                          <p className="mt-3 text-sm leading-7 text-stone-300">
-                            {version.note}
+                        {activeVersion.note ? (
+                          <p className="mt-4 text-sm leading-7 text-stone-300">
+                            {activeVersion.note}
                           </p>
                         ) : null}
 
-                        {version.parentId ? (
-                          <div className="mt-3 inline-flex rounded-full border border-white/10 bg-black/15 px-3 py-1 text-xs text-stone-400">
-                            承接上一个版本节点继续流传
+                        <div className="mt-4 grid gap-3 md:grid-cols-2">
+                          <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                              版本位置
+                            </div>
+                            <div className="mt-2 text-base font-semibold text-stone-50">
+                              {activeVersion.place}
+                            </div>
+                            <div className="mt-2 text-sm text-stone-300">
+                              藏馆 / 系统：{activeVersion.library}
+                            </div>
                           </div>
-                        ) : (
-                          <div className="mt-3 inline-flex rounded-full border border-amber-300/15 bg-amber-300/8 px-3 py-1 text-xs text-amber-100">
-                            版本链起点 / 祖本层
+                          <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                              传承位置
+                            </div>
+                            <div className="mt-2 text-base font-semibold text-stone-50">
+                              {activeVersion.parentId ? "承接上一个版本" : "祖本起点"}
+                            </div>
+                            <div className="mt-2 text-sm text-stone-300">
+                              {activeVersion.parentId
+                                ? "当前节点位于版本链中段或后段，继续承接前一层文字流传。"
+                                : "该节点作为版本流变链的起点，承担源头层标记。"}
+                            </div>
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
                 </div>
               </div>
 
@@ -707,16 +773,108 @@ export function BookExplorer({
             <h3 className="text-lg font-medium">关联时间线</h3>
             <span className="text-xs text-stone-400">中观视图</span>
           </div>
-          {detail.timeline.map((item) => (
-            <div
-              key={item.id}
-              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3"
-            >
-              <div className="text-sm text-amber-100">{item.year}</div>
-              <div className="mt-1 font-medium text-stone-50">{item.title}</div>
-              <p className="mt-2 text-sm leading-6 text-stone-300">{item.detail}</p>
+          {detail.timeline.length > 0 ? (
+            <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.12),rgba(255,255,255,0.03))] p-4">
+              <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
+                <div className="rounded-[24px] border border-white/10 bg-black/15 px-4 py-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                        时间轨道
+                      </div>
+                      <div className="mt-1 text-sm text-stone-300">
+                        按时间顺序浏览该典籍的关键事件
+                      </div>
+                    </div>
+                    <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
+                      {detail.timeline.length} 个事件
+                    </div>
+                  </div>
+
+                  <div className="mt-5 space-y-3">
+                    {detail.timeline.map((item, index) => {
+                      const isActive = activeTimelineItem?.id === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedTimelineId(item.id)}
+                          className={`flex w-full gap-3 rounded-[22px] border px-4 py-4 text-left transition ${
+                            isActive
+                              ? "border-amber-300/35 bg-amber-300/10 shadow-lg shadow-amber-500/10"
+                              : "border-white/10 bg-white/5 hover:bg-white/10"
+                          }`}
+                        >
+                          <div className="flex w-10 flex-col items-center pt-1">
+                            <div
+                              className={`h-3 w-3 rounded-full ${
+                                isActive ? "bg-amber-300" : "bg-white/30"
+                              }`}
+                            />
+                            {index < detail.timeline.length - 1 ? (
+                              <div className="mt-1 h-full w-px bg-white/10" />
+                            ) : null}
+                          </div>
+                          <div className="flex-1">
+                            <div className="text-sm text-amber-100">{item.year}</div>
+                            <div className="mt-1 font-medium text-stone-50">{item.title}</div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
+                  {activeTimelineItem ? (
+                    <>
+                      <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                        当前事件焦点
+                      </div>
+                      <div className="mt-2 flex items-center justify-between gap-3">
+                        <div className="text-2xl font-semibold text-stone-50">
+                          {activeTimelineItem.title}
+                        </div>
+                        <div className="rounded-full bg-amber-300/10 px-3 py-1 text-sm text-amber-100">
+                          {activeTimelineItem.year}
+                        </div>
+                      </div>
+                      <p className="mt-4 text-sm leading-7 text-stone-300">
+                        {activeTimelineItem.detail}
+                      </p>
+
+                      <div className="mt-5 rounded-[22px] border border-white/10 bg-black/15 px-4 py-4">
+                        <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                          时间定位
+                        </div>
+                        <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2">
+                          {detail.timeline.map((item) => {
+                            const isActive = item.id === activeTimelineItem.id;
+                            return (
+                              <div key={item.id} className="flex min-w-max items-center gap-3">
+                                <div
+                                  className={`rounded-full px-3 py-2 text-xs ${
+                                    isActive
+                                      ? "bg-amber-300 text-stone-950"
+                                      : "border border-white/10 bg-white/5 text-stone-300"
+                                  }`}
+                                >
+                                  {item.year}
+                                </div>
+                                {item.id !== detail.timeline[detail.timeline.length - 1]?.id ? (
+                                  <div className="h-px w-8 bg-gradient-to-r from-amber-300/35 to-transparent" />
+                                ) : null}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </>
+                  ) : null}
+                </div>
+              </div>
             </div>
-          ))}
+          ) : null}
           {detail.realWorldSignals?.eventSamples?.length ? (
             <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between">
