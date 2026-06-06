@@ -412,7 +412,7 @@ export function CulturalVeinShell() {
     insights?.souyunKnowledgeGraphSample?.available,
     insights?.periodicalIndexSample?.available,
   ].filter(Boolean).length;
-  const sourceAtlasEntries = (insights?.sourceAtlas ?? []).slice(0, 6);
+  const sourceAtlasEntries = (insights?.sourceAtlas ?? []).slice(0, 10);
   const inferSourceAtlasEra = (entry: NonNullable<typeof sourceAtlasEntries>[number]) => {
     const inferredEra =
       entry.sampleRecords
@@ -1323,7 +1323,7 @@ export function CulturalVeinShell() {
                     <div className="text-[11px] text-[#f2dfab]">{sourceAtlasMass.toLocaleString()}</div>
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {sourceAtlasEntries.slice(0, 3).map((entry) => (
+                    {sourceAtlasEntries.slice(0, 5).map((entry) => (
                       <button
                         key={`mobile-source-${entry.id}`}
                         type="button"

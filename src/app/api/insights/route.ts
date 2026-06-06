@@ -60,6 +60,25 @@ export function GET() {
             })),
         }
       : null,
+    realSupplements.fudanArchiveSample?.available
+      ? {
+          id: "fudan-archive",
+          name: "复旦馆藏",
+          summary: realSupplements.fudanArchiveSample.summary,
+          stat: realSupplements.fudanArchiveSample.collectionTitle ?? "近代手稿资料",
+          sampleTitles: (realSupplements.fudanArchiveSample.sampleRecords ?? [])
+            .slice(0, 3)
+            .map((item) => item.title),
+          sampleRecords: (realSupplements.fudanArchiveSample.sampleRecords ?? [])
+            .slice(0, 3)
+            .map((item) => ({
+              title: item.title,
+              category: item.category,
+              year: item.year,
+              note: item.sourceText,
+            })),
+        }
+      : null,
     realSupplements.nanhuArchiveSample?.available
       ? {
           id: "nanhu-archive",
@@ -70,6 +89,57 @@ export function GET() {
             .slice(0, 3)
             .map((item) => item.title),
           sampleRecords: (realSupplements.nanhuArchiveSample.sampleRecords ?? [])
+            .slice(0, 3)
+            .map((item) => ({
+              title: item.title,
+              category: item.category,
+              year: item.year,
+              note: item.sourceText,
+            })),
+        }
+      : null,
+    realSupplements.shenzhenLibrarySample?.available
+      ? {
+          id: "shenzhen-library",
+          name: "深圳图书馆",
+          summary: realSupplements.shenzhenLibrarySample.summary,
+          stat: `${realSupplements.shenzhenLibrarySample.sampleTitles?.length ?? 0} 组接口`,
+          sampleTitles: realSupplements.shenzhenLibrarySample.sampleTitles?.slice(0, 3),
+          sampleRecords: (realSupplements.shenzhenLibrarySample.sampleRecords ?? [])
+            .slice(0, 3)
+            .map((item) => ({
+              title: item.title,
+              category: item.category,
+              year: item.year,
+              note: item.sourceText,
+            })),
+        }
+      : null,
+    realSupplements.taofenMuseumSample?.available
+      ? {
+          id: "taofen-museum",
+          name: "韬奋纪念馆",
+          summary: realSupplements.taofenMuseumSample.summary,
+          stat: `${realSupplements.taofenMuseumSample.sampleTitles?.length ?? 0} 组出版资料`,
+          sampleTitles: realSupplements.taofenMuseumSample.sampleTitles?.slice(0, 3),
+          sampleRecords: (realSupplements.taofenMuseumSample.sampleRecords ?? [])
+            .slice(0, 3)
+            .map((item) => ({
+              title: item.title,
+              category: item.category,
+              year: item.year,
+              note: item.sourceText,
+            })),
+        }
+      : null,
+    realSupplements.soongLiteratureSample?.available
+      ? {
+          id: "soong-literature",
+          name: "宋庆龄文献",
+          summary: realSupplements.soongLiteratureSample.summary,
+          stat: `${realSupplements.soongLiteratureSample.sampleTitles?.length ?? 0} 组人物事件字段`,
+          sampleTitles: realSupplements.soongLiteratureSample.sampleTitles?.slice(0, 3),
+          sampleRecords: (realSupplements.soongLiteratureSample.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => ({
               title: item.title,
