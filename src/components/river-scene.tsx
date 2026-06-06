@@ -180,6 +180,85 @@ function RiverBed({
   );
 }
 
+function EraRiverZones({
+  books,
+}: {
+  books: BookNode[];
+}) {
+  const zoneRef = useRef<THREE.Group>(null);
+  const zones = useMemo(
+    () =>
+      RIVER_ERA_ORDER
+        .map((era, index) => {
+          const eraBooks = books.filter((book) => book.dynasty === era);
+
+          if (!eraBooks.length) {
+            return null;
+          }
+
+          const xValues = eraBooks.map((book) => book.coordinates[0]);
+          const zValues = eraBooks.map((book) => book.coordinates[2]);
+          const minX = Math.min(...xValues);
+          const maxX = Math.max(...xValues);
+          const minZ = Math.min(...zValues);
+          const maxZ = Math.max(...zValues);
+          const centerX = (minX + maxX) / 2;
+          const centerZ = (minZ + maxZ) / 2;
+
+          return {
+            era,
+            index,
+            position: [centerX, -1.02 - index * 0.008, centerZ] as [number, number, number],
+            scale: [
+              Math.max(1.8, maxX - minX + 2.2),
+              1,
+              Math.max(1.5, maxZ - minZ + 1.6),
+            ] as [number, number, number],
+            color:
+              index % 3 === 0
+                ? "#f59e0b"
+                : index % 3 === 1
+                  ? "#fcd34d"
+                  : "#fb923c",
+          };
+        })
+        .filter((item): item is NonNullable<typeof item> => Boolean(item)),
+    [books],
+  );
+
+  useFrame((state) => {
+    if (!zoneRef.current) {
+      return;
+    }
+
+    zoneRef.current.children.forEach((child, index) => {
+      const mesh = child as THREE.Mesh;
+      const pulse = 1 + Math.sin(state.clock.elapsedTime * 0.42 + index * 0.38) * 0.035;
+      mesh.scale.set(pulse, 1, pulse);
+      const material = mesh.material;
+      if (material instanceof THREE.MeshBasicMaterial) {
+        material.opacity = 0.05 + Math.max(0, Math.sin(state.clock.elapsedTime * 0.55 + index * 0.45)) * 0.035;
+      }
+    });
+  });
+
+  return (
+    <group ref={zoneRef}>
+      {zones.map((zone) => (
+        <mesh
+          key={`era-zone-${zone.era}`}
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={zone.position}
+          scale={zone.scale}
+        >
+          <planeGeometry args={[1, 1, 1, 1]} />
+          <meshBasicMaterial color={zone.color} transparent opacity={0.06} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function RiverParticleStream({
   points,
   color,
@@ -1265,6 +1344,7 @@ function RiverWorld({
 
       <AtmosphereField />
       <RiverBed />
+      <EraRiverZones books={books} />
 
       {mainStream.length >= 2 ? (
         <>
