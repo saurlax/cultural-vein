@@ -39,7 +39,7 @@ const relationLayerMeta: Record<
 const branchAnnotations: RiverBranchAnnotation[] = [
   {
     id: "branch-li-xue",
-    label: "朱熹集注 -> 理学分流",
+    label: "朱熹集注 至 理学分流",
     description:
       "以《论语集注》《四书章句集注》为中心，把经学重新组织成理学化、教材化的主河段。",
     targetSlug: "sishu-zhangju",
@@ -48,7 +48,7 @@ const branchAnnotations: RiverBranchAnnotation[] = [
   },
   {
     id: "branch-shi-fa",
-    label: "左传史法 -> 通鉴支流",
+    label: "左传史法 至 通鉴支流",
     description:
       "从《春秋左传》到《史记》《资治通鉴》，展示经史互证如何沉淀为后世史学叙事方法。",
     targetSlug: "zi-zhi-tong-jian",
@@ -57,7 +57,7 @@ const branchAnnotations: RiverBranchAnnotation[] = [
   },
   {
     id: "branch-jing-shi",
-    label: "孟子义理 -> 经世反思",
+    label: "孟子义理 至 经世反思",
     description:
       "从《孟子》到《日知录》，强调王道、民本与现实制度讨论之间的批评性承继。",
     targetSlug: "ri-zhi-lu",
@@ -66,7 +66,7 @@ const branchAnnotations: RiverBranchAnnotation[] = [
   },
   {
     id: "branch-poetics",
-    label: "诗教传统 -> 近代诗学",
+    label: "诗教传统 至 近代诗学",
     description:
       "从《诗经》一路回流到《人间词话》，把古典诗教转译为近代审美与境界论。",
     targetSlug: "ren-jian-ci-hua",
@@ -93,6 +93,7 @@ export function CulturalVeinShell() {
   const [traceFocus, setTraceFocus] = useState<TraceFocusState | null>(null);
   const [showMobileControls, setShowMobileControls] = useState(false);
   const [showMobileDossier, setShowMobileDossier] = useState(false);
+  const [showDesktopDossier, setShowDesktopDossier] = useState(false);
   const [transitionState, setTransitionState] = useState<
     "idle" | "diving" | "settling" | "returning"
   >("idle");
@@ -201,12 +202,14 @@ export function CulturalVeinShell() {
 
   const handleDiveToBook = (slug: string) => {
     if (selectedBookSlug === slug && viewMode === "book") {
+      setShowDesktopDossier(true);
       setSelectedBookSlug(slug);
       return;
     }
 
     setTransitionState("diving");
     window.setTimeout(() => {
+      setShowDesktopDossier(true);
       setSelectedBookSlug(slug);
       setTransitionState("settling");
     }, 180);
@@ -216,6 +219,8 @@ export function CulturalVeinShell() {
     setTransitionState("returning");
     window.setTimeout(() => {
       setTraceFocus(null);
+      setShowDesktopDossier(false);
+      setShowMobileDossier(false);
       resetSelection();
     }, 120);
   };
@@ -287,7 +292,7 @@ export function CulturalVeinShell() {
               </div>
             </div>
             <p className="mt-3 text-sm leading-6 text-stone-300">
-              以整页黄河文脉为唯一主场景，界面只保留必要操作与典籍细节。
+              以整页黄河文脉为唯一主场景，只保留筛选、钻入与必要的典籍细节。
             </p>
           </div>
 
@@ -298,6 +303,7 @@ export function CulturalVeinShell() {
             <button
               type="button"
               onClick={() => {
+                setShowDesktopDossier(false);
                 setShowMobileDossier(false);
                 setShowMobileControls((current) => !current);
               }}
@@ -310,6 +316,7 @@ export function CulturalVeinShell() {
                 type="button"
                 onClick={() => {
                   setShowMobileControls(false);
+                  setShowDesktopDossier(false);
                   setShowMobileDossier((current) => !current);
                 }}
                 className="rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl xl:hidden"
@@ -317,191 +324,208 @@ export function CulturalVeinShell() {
                 文卷
               </button>
             ) : null}
+            {selectedBook ? (
+              <button
+                type="button"
+                onClick={() => setShowDesktopDossier((current) => !current)}
+                className="hidden rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl xl:inline-flex"
+              >
+                {showDesktopDossier ? "收起文卷" : "展开文卷"}
+              </button>
+            ) : null}
           </div>
         </div>
 
-        <div className="absolute inset-x-0 top-[108px] z-20 hidden px-4 sm:px-6 lg:px-8 xl:block">
-          <div className="grid gap-4 xl:grid-cols-[280px_minmax(0,1fr)_420px]">
-            <aside className="pointer-events-auto xl:pt-2">
-              <div className={`p-4 ${panelBaseClass}`}>
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <div className="text-[11px] tracking-[0.28em] text-stone-400">
-                      河道控制
-                    </div>
-                    <div className="mt-1 text-base font-medium text-stone-50">
-                      河流仪表盘
-                    </div>
+        <div className="absolute left-4 top-[108px] z-20 hidden w-[280px] sm:left-6 lg:left-8 xl:block">
+          <aside className="pointer-events-auto xl:pt-2">
+            <div className={`p-4 ${panelBaseClass}`}>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-[11px] tracking-[0.28em] text-stone-400">
+                    河道控制
                   </div>
-                  {viewMode === "book" ? (
-                    <button
-                      type="button"
-                      onClick={handleReturnToRiver}
-                      className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-2 text-xs text-amber-100 transition hover:bg-amber-300/15"
-                    >
-                      返回总览
-                    </button>
-                  ) : null}
-                </div>
-
-                <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-stone-300">
-                  <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                    <div className="text-stone-500">典籍</div>
-                    <div className="mt-1 text-sm font-medium text-stone-100">
-                      {filteredBooks.length}
-                    </div>
-                  </div>
-                  <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                    <div className="text-stone-500">关系</div>
-                    <div className="mt-1 text-sm font-medium text-stone-100">
-                      {visibleCitations.length}
-                    </div>
-                  </div>
-                  <div className="rounded-2xl border border-amber-300/10 bg-amber-300/5 px-3 py-3">
-                    <div className="text-amber-100/70">来源</div>
-                    <div className="mt-1 text-sm font-medium text-amber-50">
-                      {connectedSourceCount || "--"}
-                    </div>
+                  <div className="mt-1 text-base font-medium text-stone-50">
+                    河流仪表盘
                   </div>
                 </div>
-
-                <label className="mt-4 block">
-                  <span className="text-xs uppercase tracking-[0.22em] text-stone-400">
-                    检索关键词
-                  </span>
-                  <input
-                    value={searchTerm}
-                    onChange={(event) => setSearchTerm(event.target.value)}
-                    placeholder="例如 朱熹、礼、诗教"
-                    className="mt-2 w-full rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-amber-300/30"
-                  />
-                </label>
-
-                <div className="mt-4 rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
-                  <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-stone-400">
-                    <span>时代水位</span>
-                    <span className="text-amber-100">{activeEra}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={eras.length - 1}
-                    step={1}
-                    value={activeEraIndex}
-                    onChange={(event) =>
-                      setActiveEra(eras[Number(event.target.value)] ?? eras[0])
-                    }
-                    className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
-                  />
-                  <div className="mt-3 grid grid-cols-4 gap-2 text-[11px] text-stone-500">
-                    {eras.map((era) => (
-                      <button
-                        key={era}
-                        type="button"
-                        onClick={() => setActiveEra(era)}
-                        className={`rounded-full px-2 py-1 transition ${
-                          activeEra === era
-                            ? "bg-amber-300/14 text-amber-100"
-                            : "bg-white/0 text-stone-500 hover:bg-white/5 hover:text-stone-300"
-                        }`}
-                      >
-                        {era}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {categories.map((category) => (
-                      <button
-                        key={category}
-                        type="button"
-                        onClick={() => setCategoryFilter(category)}
-                        className={`rounded-full px-3 py-2 text-xs transition ${
-                          categoryFilter === category
-                            ? "bg-stone-100 text-stone-950"
-                            : "border border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
-                        }`}
-                      >
-                        {category}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                  <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                    <div className="text-stone-400">显现上限</div>
-                    <div className="mt-1 font-medium text-stone-50">
-                      {eras[0]}至{activeEra}
-                    </div>
-                  </div>
-                  <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                    <div className="text-stone-400">运行模式</div>
-                    <div className="mt-1 font-medium text-stone-50">
-                      {viewMode === "river" ? "河流总览" : "典籍钻入"}
-                    </div>
-                  </div>
-                </div>
-
-                {viewMode === "river" && visibleNodePreview.length ? (
-                  <div className="mt-4 rounded-[24px] border border-white/10 bg-black/18 px-4 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="text-[11px] tracking-[0.24em] text-stone-400">
-                        当前河段
-                      </div>
-                      <div className="text-[11px] text-stone-500">
-                        {filteredBooks.length} 本
-                      </div>
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {visibleNodePreview.map((book) => (
-                        <button
-                          key={book.id}
-                          type="button"
-                          onClick={() => handleDiveToBook(book.slug)}
-                          className={`rounded-full border px-3 py-1.5 text-xs transition ${
-                            selectedBookSlug === book.slug
-                              ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
-                              : "border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
-                          }`}
-                        >
-                          {book.shortTitle}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-
-                {activeBranchAnnotation ? (
-                  <div className="mt-4 rounded-[26px] border border-amber-300/14 bg-amber-300/8 px-4 py-4">
-                    <div className="text-[11px] tracking-[0.24em] text-amber-100/75">
-                      当前支流
-                    </div>
-                    <div className="mt-2 text-sm font-medium text-amber-50">
-                      {activeBranchAnnotation.label}
-                    </div>
-                    <p className="mt-2 text-sm leading-6 text-amber-50/85">
-                      {activeBranchAnnotation.description}
-                    </p>
-                  </div>
+                {viewMode === "book" ? (
+                  <button
+                    type="button"
+                    onClick={handleReturnToRiver}
+                    className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-2 text-xs text-amber-100 transition hover:bg-amber-300/15"
+                  >
+                    返回总览
+                  </button>
                 ) : null}
               </div>
-            </aside>
 
-            <div className="pointer-events-none hidden xl:block" />
+              <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-stone-300">
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+                  <div className="text-stone-500">典籍</div>
+                  <div className="mt-1 text-sm font-medium text-stone-100">
+                    {filteredBooks.length}
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+                  <div className="text-stone-500">关系</div>
+                  <div className="mt-1 text-sm font-medium text-stone-100">
+                    {visibleCitations.length}
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-amber-300/10 bg-amber-300/5 px-3 py-3">
+                  <div className="text-amber-100/70">来源</div>
+                  <div className="mt-1 text-sm font-medium text-amber-50">
+                    {connectedSourceCount || "--"}
+                  </div>
+                </div>
+              </div>
 
-            <aside
-              className={`pointer-events-auto transition-all duration-500 xl:pt-2 ${
-                viewMode === "book"
-                  ? "translate-y-0 opacity-100"
-                  : "xl:translate-x-6 xl:opacity-70"
-              }`}
-            >
-              <div className={`max-h-[calc(100vh-170px)] overflow-hidden p-4 ${panelBaseClass}`}>
-                {selectedBook && selectedDetail ? (
-                  <>
+              <label className="mt-4 block">
+                <span className="text-xs tracking-[0.22em] text-stone-400">
+                  检索关键词
+                </span>
+                <input
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  placeholder="例如 朱熹、礼、诗教"
+                  className="mt-2 w-full rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-amber-300/30"
+                />
+              </label>
+
+              <div className="mt-4 rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
+                <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-stone-400">
+                  <span>时代水位</span>
+                  <span className="text-amber-100">{activeEra}</span>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={eras.length - 1}
+                  step={1}
+                  value={activeEraIndex}
+                  onChange={(event) =>
+                    setActiveEra(eras[Number(event.target.value)] ?? eras[0])
+                  }
+                  className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
+                />
+                <div className="mt-3 grid grid-cols-4 gap-2 text-[11px] text-stone-500">
+                  {eras.map((era) => (
+                    <button
+                      key={era}
+                      type="button"
+                      onClick={() => setActiveEra(era)}
+                      className={`rounded-full px-2 py-1 transition ${
+                        activeEra === era
+                          ? "bg-amber-300/14 text-amber-100"
+                          : "bg-white/0 text-stone-500 hover:bg-white/5 hover:text-stone-300"
+                      }`}
+                    >
+                      {era}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={() => setCategoryFilter(category)}
+                    className={`rounded-full px-3 py-2 text-xs transition ${
+                      categoryFilter === category
+                        ? "bg-stone-100 text-stone-950"
+                        : "border border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <div className="text-stone-400">显现上限</div>
+                  <div className="mt-1 font-medium text-stone-50">
+                    {eras[0]}至{activeEra}
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <div className="text-stone-400">运行模式</div>
+                  <div className="mt-1 font-medium text-stone-50">
+                    {viewMode === "river" ? "河流总览" : "典籍钻入"}
+                  </div>
+                </div>
+              </div>
+
+              {viewMode === "river" && visibleNodePreview.length ? (
+                <div className="mt-4 rounded-[24px] border border-white/10 bg-black/18 px-4 py-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-[11px] tracking-[0.24em] text-stone-400">
+                      当前河段
+                    </div>
+                    <div className="text-[11px] text-stone-500">
+                      {filteredBooks.length} 本
+                    </div>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {visibleNodePreview.map((book) => (
+                      <button
+                        key={book.id}
+                        type="button"
+                        onClick={() => handleDiveToBook(book.slug)}
+                        className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                          selectedBookSlug === book.slug
+                            ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
+                            : "border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                        }`}
+                      >
+                        {book.shortTitle}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              {activeBranchAnnotation ? (
+                <div className="mt-4 rounded-[26px] border border-amber-300/14 bg-amber-300/8 px-4 py-4">
+                  <div className="text-[11px] tracking-[0.24em] text-amber-100/75">
+                    当前支流
+                  </div>
+                  <div className="mt-2 text-sm font-medium text-amber-50">
+                    {activeBranchAnnotation.label}
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-amber-50/85">
+                    {activeBranchAnnotation.description}
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          </aside>
+        </div>
+
+        {showDesktopDossier && selectedBook && selectedDetail ? (
+          <div className="absolute right-4 top-[108px] z-20 hidden w-[min(420px,calc(100vw-22rem))] sm:right-6 lg:right-8 xl:block">
+            <aside className="pointer-events-auto xl:pt-2">
+              <div className={`p-4 ${panelBaseClass}`}>
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-[11px] tracking-[0.24em] text-amber-100/75">
+                      文卷展开
+                    </div>
+                    <div className="mt-1 text-base font-medium text-stone-50">
+                      焦点典籍细览
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowDesktopDossier(false)}
+                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200"
+                  >
+                    收起
+                  </button>
+                </div>
+                <div className="max-h-[calc(100vh-240px)] overflow-hidden">
                     <div
                       className={`mb-4 rounded-[24px] px-4 py-4 transition-all duration-500 ${dossierToneClass} ${
                         traceFocus?.active
@@ -576,16 +600,11 @@ export function CulturalVeinShell() {
                         onTraceFocusChange={setTraceFocus}
                       />
                     </div>
-                  </>
-                ) : (
-                  <div className="rounded-[24px] border border-dashed border-white/10 bg-white/5 px-5 py-10 text-center text-sm leading-7 text-stone-400">
-                    当前没有可显示的典籍。可以放宽筛选，或直接点击河流中的节点进入。
-                  </div>
-                )}
+                </div>
               </div>
             </aside>
           </div>
-        </div>
+        ) : null}
 
         <main className="h-screen w-full p-2 sm:p-3 lg:p-4">
           <RiverScene
@@ -631,25 +650,27 @@ export function CulturalVeinShell() {
                   </span>
                 ) : null}
                 <span className="rounded-full border border-white/10 bg-white/5 px-3 py-2">
-                  点击节点钻入，拖拽旋转河流
+                  拖拽旋转河流，滚轮远近，点击节点钻入
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="pointer-events-none absolute inset-x-4 bottom-4 z-40 xl:hidden">
+        {!showMobileControls && !showMobileDossier ? (
+          <div className="pointer-events-none absolute inset-x-4 bottom-4 z-40 xl:hidden">
           <div className="pointer-events-auto flex items-center justify-between rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(79,54,19,0.92),rgba(34,23,10,0.86))] px-4 py-3 text-xs text-stone-200 shadow-2xl shadow-black/30 backdrop-blur-xl">
             <span>{selectedBook ? `当前焦点 ${selectedBook.shortTitle}` : "拖拽旋转河流，点击节点钻入"}</span>
             <span className="rounded-full border border-amber-200/15 bg-white/5 px-3 py-1 text-amber-100">
               {traceFocus?.active ? `溯源 ${traceFocus.progress}/${traceFocus.total}` : activeEra}
             </span>
           </div>
-        </div>
+          </div>
+        ) : null}
 
         {showMobileControls ? (
-          <div className="absolute inset-x-4 top-[96px] z-40 xl:hidden">
-            <div className={`pointer-events-auto p-4 ${panelBaseClass}`}>
+          <div className="absolute inset-x-4 bottom-20 z-40 xl:hidden">
+            <div className={`pointer-events-auto max-h-[56vh] overflow-auto p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-stone-400">河道控制</div>

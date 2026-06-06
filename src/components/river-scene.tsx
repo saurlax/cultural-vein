@@ -833,7 +833,7 @@ export function RiverScene(props: RiverSceneProps) {
       : 0;
 
   return (
-    <div className="relative h-full min-h-screen overflow-hidden rounded-[32px] border border-amber-200/12 bg-[#1b1209] shadow-[0_0_80px_rgba(0,0,0,0.42)]">
+    <div className="relative h-full min-h-screen overflow-hidden rounded-[32px] border border-amber-200/12 bg-[#1b1209] shadow-[0_0_80px_rgba(0,0,0,0.42)] touch-none">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(17,10,4,0.72),rgba(17,10,4,0))]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(17,10,4,0.9),rgba(17,10,4,0))]" />
       <div className="pointer-events-none absolute left-5 top-5 z-10 rounded-full border border-amber-200/15 bg-[#2d1d0c]/70 px-4 py-2 text-[11px] tracking-[0.32em] text-stone-200">
@@ -847,46 +847,6 @@ export function RiverScene(props: RiverSceneProps) {
             : props.cinematicState === "returning"
               ? "镜头拉回中"
               : `${props.activeEra} 水位`}
-      </div>
-      <div className="pointer-events-none absolute left-5 top-20 z-10 hidden max-w-[320px] rounded-[24px] border border-amber-200/12 bg-[#2b1b0b]/72 px-4 py-3 text-sm text-stone-300 backdrop-blur-md lg:block">
-        <div className="text-[11px] tracking-[0.24em] text-stone-500">
-          河流状态
-        </div>
-        <div className="mt-2 leading-6">
-          {props.traceFocus?.active
-            ? `镜头正沿着 ${props.traceFocus.currentTitle ?? "当前节点"} 的溯源链逆流而上。`
-            : props.cinematicState === "diving"
-              ? "镜头正在切入典籍局部脉络。"
-              : props.cinematicState === "returning"
-                ? "镜头正在回到整条河流的总览。"
-                : "拖拽旋转河流，点击节点或支流标注即可进入细部。"}
-        </div>
-        <div className="mt-3 space-y-2">
-          <div>
-            <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-stone-500">
-              <span>时代显现</span>
-              <span>{Math.round(eraProgress * 100)}%</span>
-            </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-              <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,#b45309,#fcd34d)]"
-                style={{ width: `${Math.max(10, eraProgress * 100)}%` }}
-              />
-            </div>
-          </div>
-          <div>
-            <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-stone-500">
-              <span>河段显现</span>
-              <span>{Math.round(visibilityRatio * 100)}%</span>
-            </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-              <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,#d97706,#fde68a)]"
-                style={{ width: `${Math.max(8, visibilityRatio * 100)}%` }}
-              />
-            </div>
-          </div>
-        </div>
       </div>
       <div className="pointer-events-none absolute left-5 bottom-5 z-10 hidden rounded-[24px] border border-amber-200/12 bg-[#2b1b0b]/72 px-4 py-3 text-[11px] text-stone-300 backdrop-blur-md lg:block">
         <div className="text-[10px] tracking-[0.24em] text-stone-500">
@@ -908,22 +868,42 @@ export function RiverScene(props: RiverSceneProps) {
             </div>
           </div>
         </div>
+        <div className="mt-3 space-y-2">
+          <div>
+            <div className="mb-1 flex items-center justify-between text-[10px] tracking-[0.22em] text-stone-500">
+              <span>时代显现</span>
+              <span>{Math.round(eraProgress * 100)}%</span>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div
+                className="h-full rounded-full bg-[linear-gradient(90deg,#b45309,#fcd34d)]"
+                style={{ width: `${Math.max(10, eraProgress * 100)}%` }}
+              />
+            </div>
+          </div>
+          <div>
+            <div className="mb-1 flex items-center justify-between text-[10px] tracking-[0.22em] text-stone-500">
+              <span>河段显现</span>
+              <span>{Math.round(visibilityRatio * 100)}%</span>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div
+                className="h-full rounded-full bg-[linear-gradient(90deg,#d97706,#fde68a)]"
+                style={{ width: `${Math.max(8, visibilityRatio * 100)}%` }}
+              />
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="pointer-events-none absolute right-5 bottom-5 z-10 hidden max-w-[520px] flex-wrap justify-end gap-2 text-[11px] text-stone-300 lg:flex">
+      <div className="pointer-events-none absolute right-5 bottom-5 z-10 hidden max-w-[360px] flex-wrap justify-end gap-2 text-[11px] text-stone-300 lg:flex">
         <span className="rounded-full border border-amber-300/15 bg-amber-300/10 px-3 py-1 text-amber-100">
           支流标注可直接跳转
-        </span>
-        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-          白色 元数据
         </span>
         <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-amber-100">
           琥珀 显式引用
         </span>
         <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-amber-100">
           黄色 语义关联
-        </span>
-        <span className="rounded-full border border-slate-300/20 bg-slate-300/10 px-3 py-1 text-slate-100">
-          灰色 间接影响
         </span>
       </div>
       <Canvas dpr={[1, 1.8]}>
