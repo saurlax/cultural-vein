@@ -906,7 +906,11 @@ export function BookExplorer({
             </p>
           ) : null}
           <div className="mt-4 grid gap-3 md:grid-cols-2">
-            <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-3 py-3">
+            <button
+              type="button"
+              onClick={() => handleOpenSourceEvidence("cbdb-people")}
+              className="rounded-2xl border border-amber-300/10 bg-black/15 px-3 py-3 text-left transition hover:bg-white/10"
+            >
               <div className="text-xs tracking-[0.2em] text-amber-100/70">
                 人物线索
               </div>
@@ -916,8 +920,12 @@ export function BookExplorer({
               <div className="mt-1 text-xs text-stone-400">
                 整理人物 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
               </div>
-            </div>
-            <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-3 py-3">
+            </button>
+            <button
+              type="button"
+              onClick={() => handleOpenSourceEvidence("venue-samples")}
+              className="rounded-2xl border border-amber-300/10 bg-black/15 px-3 py-3 text-left transition hover:bg-white/10"
+            >
               <div className="text-xs tracking-[0.2em] text-amber-100/70">
                 传播信号
               </div>
@@ -929,7 +937,7 @@ export function BookExplorer({
               <div className="mt-1 text-xs text-stone-400">
                 活动事件资料 {detail.realWorldSignals.eventSamples?.length ?? 0} 条
               </div>
-            </div>
+            </button>
           </div>
               <div className="mt-4 grid gap-3 xl:grid-cols-3">
                 <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
@@ -944,15 +952,17 @@ export function BookExplorer({
               <div className="mt-3 space-y-2">
                 {venuePreview.length ? (
                   venuePreview.map((venue) => (
-                    <div
+                    <button
                       key={venue.name}
-                      className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-sm"
+                      type="button"
+                      onClick={() => handleOpenSourceEvidence("venue-samples")}
+                      className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left text-sm transition hover:bg-white/10"
                     >
                       <div className="font-medium text-stone-100">{venue.name}</div>
                       <div className="mt-1 text-xs text-stone-400">
                         活动记录 {venue.sampleCount}
                       </div>
-                    </div>
+                    </button>
                   ))
                 ) : (
                   <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4 text-sm text-stone-400">
@@ -973,15 +983,17 @@ export function BookExplorer({
               <div className="mt-3 space-y-2">
                 {eventPreview.length ? (
                   eventPreview.map((event) => (
-                    <div
+                    <button
                       key={`${event.venue}-${event.title}-${event.startTime}`}
-                      className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-sm"
+                      type="button"
+                      onClick={handleFocusEventEvidence}
+                      className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left text-sm transition hover:bg-white/10"
                     >
                       <div className="font-medium text-stone-100">{event.title}</div>
                       <div className="mt-1 text-xs text-stone-400">
                         {event.venue} · {event.startTime}
                       </div>
-                    </div>
+                    </button>
                   ))
                 ) : (
                   <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4 text-sm text-stone-400">
