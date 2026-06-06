@@ -10,6 +10,7 @@ import type { BookNode, CitationEdge } from "@/types/domain";
 import type { RiverEra, ViewMode } from "@/types/domain";
 
 type OrbitControlsInstance = ElementRef<typeof OrbitControls>;
+const RIVER_ERA_ORDER: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
 
 export interface RiverBranchAnnotation {
   id: string;
@@ -268,10 +269,9 @@ function FlowBeacons({
   activeEra: RiverEra;
 }) {
   const beaconRef = useRef<THREE.Group>(null);
-  const eraOrder: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
-  const activeIndex = eraOrder.indexOf(activeEra);
+  const activeIndex = RIVER_ERA_ORDER.indexOf(activeEra);
   const latestBooks = books
-    .filter((book) => eraOrder.indexOf(book.dynasty) === activeIndex)
+    .filter((book) => RIVER_ERA_ORDER.indexOf(book.dynasty) === activeIndex)
     .slice(0, 4);
 
   useFrame((state) => {
@@ -306,6 +306,105 @@ function FlowBeacons({
   );
 }
 
+function EraMilestones({
+  books,
+  activeEra,
+}: {
+  books: BookNode[];
+  activeEra: RiverEra;
+}) {
+  const activeIndex = RIVER_ERA_ORDER.indexOf(activeEra);
+  const milestoneRef = useRef<THREE.Group>(null);
+  const milestones = useMemo(
+    () =>
+      RIVER_ERA_ORDER
+        .map((era, index) => {
+          const eraBooks = books.filter((book) => book.dynasty === era);
+
+          if (!eraBooks.length) {
+            return null;
+          }
+
+          const center = eraBooks.reduce(
+            (accumulator, book) => {
+              accumulator.x += book.coordinates[0];
+              accumulator.y += book.coordinates[1];
+              accumulator.z += book.coordinates[2];
+              return accumulator;
+            },
+            { x: 0, y: 0, z: 0 },
+          );
+
+          const count = eraBooks.length;
+          return {
+            era,
+            index,
+            position: [
+              center.x / count,
+              center.y / count + 0.34 + index * 0.015,
+              center.z / count,
+            ] as [number, number, number],
+          };
+        })
+        .filter((item): item is NonNullable<typeof item> => Boolean(item)),
+    [books],
+  );
+
+  useFrame((state) => {
+    if (!milestoneRef.current) {
+      return;
+    }
+
+    milestoneRef.current.children.forEach((child, index) => {
+      const group = child as THREE.Group;
+      const baseY = milestones[index]?.position[1] ?? 0;
+      group.position.y = baseY + Math.sin(state.clock.elapsedTime * 0.75 + index * 0.42) * 0.025;
+    });
+  });
+
+  return (
+    <group ref={milestoneRef}>
+      {milestones.map((milestone) => {
+        const isActive = milestone.index <= activeIndex;
+
+        return (
+          <group
+            key={`era-milestone-${milestone.era}`}
+            position={milestone.position}
+          >
+            <mesh rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[0.14, 0.24, 32]} />
+              <meshBasicMaterial
+                color={isActive ? "#fde68a" : "#78716c"}
+                transparent
+                opacity={isActive ? 0.45 : 0.16}
+              />
+            </mesh>
+            <mesh position={[0, 0.08, 0]}>
+              <cylinderGeometry args={[0.012, 0.012, 0.32, 12]} />
+              <meshBasicMaterial
+                color={isActive ? "#fbbf24" : "#57534e"}
+                transparent
+                opacity={isActive ? 0.72 : 0.24}
+              />
+            </mesh>
+            <Text
+              position={[0, 0.34, 0]}
+              fontSize={0.14}
+              maxWidth={1.2}
+              color={isActive ? "#fef3c7" : "#a8a29e"}
+              anchorX="center"
+              anchorY="middle"
+            >
+              {milestone.era}
+            </Text>
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
 function BookMarkers({
   books,
   selectedBookSlug,
@@ -325,8 +424,7 @@ function BookMarkers({
   sceneFocus?: SceneFocusState | null;
   highlightedBookSlugs?: string[];
 }) {
-  const eraOrder: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
-  const activeIndex = eraOrder.indexOf(activeEra);
+  const activeIndex = RIVER_ERA_ORDER.indexOf(activeEra);
   const traceTitleSet = useMemo(
     () => new Set(traceFocus?.titles ?? []),
     [traceFocus?.titles],
@@ -353,7 +451,7 @@ function BookMarkers({
     <group ref={markerRef}>
       {books.map((book) => {
         const isSelected = book.slug === selectedBookSlug;
-        const bookEraIndex = eraOrder.indexOf(book.dynasty);
+        const bookEraIndex = RIVER_ERA_ORDER.indexOf(book.dynasty);
         const isNewestVisible = bookEraIndex === activeIndex;
         const isTraceLinked = traceTitleSet.has(book.title);
         const isTraceCurrent = traceFocus?.currentTitle === book.title;
@@ -1215,6 +1313,7 @@ function RiverWorld({
       )}
 
       <FlowBeacons books={books} activeEra={activeEra} />
+      <EraMilestones books={books} activeEra={activeEra} />
       {tracePathPoints.length >= 2 ? (
         <group>
           <Line
