@@ -1422,6 +1422,18 @@ export function BookExplorer({
                     <p className="mt-4 text-sm leading-7 text-stone-300">
                       {activeSourceEvidence.summary}
                     </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {activeSourceEvidence.samples.slice(0, 3).map((sample) => (
+                        <button
+                          key={`lead-sample-${activeSourceEvidence.id}-${sample.label}`}
+                          type="button"
+                          onClick={() => handleOpenSourceSample(activeSourceEvidence.id, sample)}
+                          className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-xs text-amber-100 transition hover:bg-amber-300/15"
+                        >
+                          直达 {sample.label}
+                        </button>
+                      ))}
+                    </div>
                     <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
                       <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
                         回查入口
@@ -2946,6 +2958,22 @@ export function BookExplorer({
                               现实回声
                             </div>
                             <div className="text-[10px] text-stone-500">典籍资料预览</div>
+                          </div>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleOpenSourceEvidence("institution-samples")}
+                              className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                            >
+                              打开机构总表
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setTab("versions")}
+                              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                            >
+                              转看版本流变
+                            </button>
                           </div>
                           <div className="mt-3 grid gap-3">
                             {fallbackTimelineInstitutionEchoes.map((item) => (
