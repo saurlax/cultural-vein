@@ -8,12 +8,24 @@ import * as THREE from "three";
 import type { BookNode, CitationEdge } from "@/types/domain";
 import type { RiverEra } from "@/types/domain";
 
+export interface RiverBranchAnnotation {
+  id: string;
+  label: string;
+  description: string;
+  targetSlug: string;
+  accentColor: string;
+  position: [number, number, number];
+}
+
 interface RiverSceneProps {
   books: BookNode[];
   citations: CitationEdge[];
   selectedBookSlug: string;
   onSelectBook: (slug: string) => void;
   activeEra: RiverEra;
+  branchAnnotations?: RiverBranchAnnotation[];
+  hoveredBranchId?: string | null;
+  onHoverBranch?: (branchId: string | null) => void;
 }
 
 interface RiverRibbonProps {
@@ -222,12 +234,73 @@ function CitationArcs({
   );
 }
 
+function BranchMarkers({
+  annotations,
+  selectedBookSlug,
+  onSelectBook,
+  hoveredBranchId,
+  onHoverBranch,
+}: {
+  annotations: RiverBranchAnnotation[];
+  selectedBookSlug: string;
+  onSelectBook: (slug: string) => void;
+  hoveredBranchId?: string | null;
+  onHoverBranch?: (branchId: string | null) => void;
+}) {
+  return (
+    <>
+      {annotations.map((annotation) => {
+        const isHovered = hoveredBranchId === annotation.id;
+        const isSelected = selectedBookSlug === annotation.targetSlug;
+
+        return (
+          <group key={annotation.id} position={annotation.position}>
+            <mesh
+              onClick={() => onSelectBook(annotation.targetSlug)}
+              onPointerOver={() => onHoverBranch?.(annotation.id)}
+              onPointerOut={() => onHoverBranch?.(null)}
+            >
+              <sphereGeometry args={[isHovered || isSelected ? 0.14 : 0.11, 18, 18]} />
+              <meshStandardMaterial
+                color={isSelected ? "#fde68a" : annotation.accentColor}
+                emissive={new THREE.Color(annotation.accentColor)}
+                emissiveIntensity={isHovered ? 1.5 : 1.1}
+              />
+            </mesh>
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
+              <ringGeometry args={[0.18, isHovered || isSelected ? 0.31 : 0.27, 40]} />
+              <meshBasicMaterial
+                color={annotation.accentColor}
+                transparent
+                opacity={isHovered || isSelected ? 0.75 : 0.42}
+              />
+            </mesh>
+            <Text
+              position={[0, 0.3, 0]}
+              fontSize={0.12}
+              maxWidth={1.6}
+              color={isHovered || isSelected ? "#fef3c7" : "#e7e5e4"}
+              anchorX="center"
+              anchorY="middle"
+            >
+              {annotation.label}
+            </Text>
+          </group>
+        );
+      })}
+    </>
+  );
+}
+
 function RiverWorld({
   books,
   citations,
   selectedBookSlug,
   onSelectBook,
   activeEra,
+  branchAnnotations = [],
+  hoveredBranchId,
+  onHoverBranch,
 }: RiverSceneProps) {
   const mainStream = useMemo(
     () =>
@@ -293,6 +366,13 @@ function RiverWorld({
       )}
 
       <CitationArcs books={books} citations={citations} />
+      <BranchMarkers
+        annotations={branchAnnotations}
+        selectedBookSlug={selectedBookSlug}
+        onSelectBook={onSelectBook}
+        hoveredBranchId={hoveredBranchId}
+        onHoverBranch={onHoverBranch}
+      />
       <BookMarkers
         books={books}
         selectedBookSlug={selectedBookSlug}
@@ -319,6 +399,9 @@ export function RiverScene(props: RiverSceneProps) {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-wrap items-center gap-2 px-5 py-4 text-[11px] text-stone-300">
         <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1">
           关系图例
+        </span>
+        <span className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-cyan-100">
+          分支标注 = 悬停查看说明 / 点击直达典籍
         </span>
         <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
           白色 = 元数据

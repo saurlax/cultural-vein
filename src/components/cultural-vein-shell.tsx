@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { BookExplorer } from "@/components/book-explorer";
-import { RiverScene } from "@/components/river-scene";
+import { RiverScene, type RiverBranchAnnotation } from "@/components/river-scene";
 import { riverDataset } from "@/data/demo-graph";
 import { useCulturalVeinStore } from "@/store/app-store";
 import type { CitationEdge, DatasetInsight } from "@/types/domain";
@@ -90,6 +90,40 @@ const applicationScenarios = [
   {
     title: "知识服务",
     detail: "可作为图书馆数字人文基础设施的前端入口，后续接入更完整图数据库和搜索服务。",
+  },
+] as const;
+const branchAnnotations: RiverBranchAnnotation[] = [
+  {
+    id: "branch-li-xue",
+    label: "朱熹集注 -> 理学分流",
+    description: "以《论语集注》《四书章句集注》为中心，把经学重新组织成理学化、教材化的主河段。",
+    targetSlug: "sishu-zhangju",
+    accentColor: "#f59e0b",
+    position: [3.1, 1.05, 0.58],
+  },
+  {
+    id: "branch-shi-fa",
+    label: "左传史法 -> 通鉴支流",
+    description: "从《春秋左传》到《史记》《资治通鉴》，展示经史互证如何沉淀为后世史学叙事方法。",
+    targetSlug: "zi-zhi-tong-jian",
+    accentColor: "#38bdf8",
+    position: [-1.1, 0.58, -0.96],
+  },
+  {
+    id: "branch-jing-shi",
+    label: "孟子义理 -> 经世反思",
+    description: "从《孟子》到《日知录》，强调王道、民本与现实制度讨论之间的批评性承继。",
+    targetSlug: "ri-zhi-lu",
+    accentColor: "#34d399",
+    position: [5.95, 0.52, 0.8],
+  },
+  {
+    id: "branch-poetics",
+    label: "诗教传统 -> 近代诗学",
+    description: "从《诗经》一路回流到《人间词话》，把古典诗教转译为近代审美与境界论。",
+    targetSlug: "ren-jian-ci-hua",
+    accentColor: "#c084fc",
+    position: [9.2, 0.72, -0.18],
   },
 ] as const;
 
@@ -183,6 +217,7 @@ export function CulturalVeinShell() {
   const [insights, setInsights] = useState<DatasetInsight | null>(null);
   const [demoMode, setDemoMode] = useState(false);
   const [demoStepId, setDemoStepId] = useState(demoSteps[0].id);
+  const [hoveredBranchId, setHoveredBranchId] = useState<string | null>(null);
   const [transitionState, setTransitionState] = useState<
     "idle" | "diving" | "settling" | "returning"
   >("idle");
@@ -315,6 +350,19 @@ export function CulturalVeinShell() {
       detail: "城市文化专题片、非遗与民俗影像资源样本，强化公共传播叙事。",
     },
   ];
+  const visibleBranchAnnotations = branchAnnotations.filter((annotation) => {
+    const targetBook = riverDataset.books.find((book) => book.slug === annotation.targetSlug);
+    if (!targetBook) {
+      return false;
+    }
+
+    const targetVisible = filteredBooks.some((book) => book.slug === annotation.targetSlug);
+    return targetVisible && eras.indexOf(targetBook.dynasty) <= activeEraIndex;
+  });
+  const activeBranchAnnotation =
+    visibleBranchAnnotations.find((annotation) => annotation.id === hoveredBranchId) ??
+    visibleBranchAnnotations[0] ??
+    null;
 
   useEffect(() => {
     let cancelled = false;
@@ -719,6 +767,9 @@ export function CulturalVeinShell() {
             selectedBookSlug={selectedBookSlug}
             onSelectBook={handleDiveToBook}
             activeEra={activeEra}
+            branchAnnotations={visibleBranchAnnotations}
+            hoveredBranchId={hoveredBranchId}
+            onHoverBranch={setHoveredBranchId}
           />
 
           <div className="mt-4 grid gap-3 md:grid-cols-4">
@@ -763,6 +814,108 @@ export function CulturalVeinShell() {
               <p className="mt-2 text-sm leading-6 text-stone-300">
                 仅显示不晚于当前时代的河段与分支，模拟文脉逐步生长。
               </p>
+            </div>
+          </div>
+
+          <div className="mt-4 grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+            <div className="rounded-[28px] border border-cyan-300/12 bg-[linear-gradient(180deg,rgba(34,211,238,0.08),rgba(255,255,255,0.03))] px-5 py-5">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs uppercase tracking-[0.24em] text-cyan-100/75">
+                    Branch Annotations
+                  </div>
+                  <h3 className="mt-2 text-xl font-semibold text-stone-50">
+                    河流分叉标注层
+                  </h3>
+                </div>
+                <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                  {visibleBranchAnnotations.length} 处分流
+                </div>
+              </div>
+              <p className="mt-3 text-sm leading-7 text-stone-300">
+                方案里提到的“悬停分叉点显式标注”现在直接落在主场景里了。悬停 3D 标注点可以查看说明，点击后会直接钻入对应典籍支流。
+              </p>
+              {activeBranchAnnotation ? (
+                <div className="mt-4 rounded-[24px] border border-white/10 bg-black/20 px-4 py-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="h-3 w-3 rounded-full"
+                        style={{ backgroundColor: activeBranchAnnotation.accentColor }}
+                      />
+                      <div className="text-sm font-medium text-stone-50">
+                        {activeBranchAnnotation.label}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleDiveToBook(activeBranchAnnotation.targetSlug)}
+                      className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100 transition hover:bg-cyan-300/15"
+                    >
+                      直达分支
+                    </button>
+                  </div>
+                  <p className="mt-3 text-sm leading-7 text-stone-300">
+                    {activeBranchAnnotation.description}
+                  </p>
+                </div>
+              ) : (
+                <div className="mt-4 rounded-[24px] border border-dashed border-white/10 bg-black/10 px-4 py-5 text-sm text-stone-400">
+                  当前时代层尚未显现可标注的分流节点。
+                </div>
+              )}
+            </div>
+
+            <div className="rounded-[28px] border border-white/10 bg-black/15 px-5 py-5">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs uppercase tracking-[0.24em] text-stone-400">
+                    当前可见分流
+                  </div>
+                  <h3 className="mt-2 text-xl font-semibold text-stone-50">
+                    从主河到专题支流
+                  </h3>
+                </div>
+                <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
+                  Hover to focus
+                </div>
+              </div>
+              <div className="mt-4 grid gap-3">
+                {visibleBranchAnnotations.map((annotation) => (
+                  <button
+                    key={annotation.id}
+                    type="button"
+                    onMouseEnter={() => setHoveredBranchId(annotation.id)}
+                    onMouseLeave={() => setHoveredBranchId((current) => (current === annotation.id ? null : current))}
+                    onFocus={() => setHoveredBranchId(annotation.id)}
+                    onBlur={() => setHoveredBranchId((current) => (current === annotation.id ? null : current))}
+                    onClick={() => handleDiveToBook(annotation.targetSlug)}
+                    className={`rounded-2xl border px-4 py-4 text-left transition ${
+                      activeBranchAnnotation?.id === annotation.id
+                        ? "border-cyan-300/30 bg-cyan-300/10"
+                        : "border-white/10 bg-white/5 hover:bg-white/10"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <span
+                          className="h-2.5 w-2.5 rounded-full"
+                          style={{ backgroundColor: annotation.accentColor }}
+                        />
+                        <div className="text-sm font-medium text-stone-50">
+                          {annotation.label}
+                        </div>
+                      </div>
+                      <div className="text-xs text-stone-400">
+                        {riverDataset.books.find((book) => book.slug === annotation.targetSlug)?.title ?? "未命名典籍"}
+                      </div>
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-stone-300">
+                      {annotation.description}
+                    </p>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
