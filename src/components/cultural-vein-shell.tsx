@@ -1242,7 +1242,7 @@ export function CulturalVeinShell() {
                             ? `${traceFocus.progress}/${traceFocus.total}`
                             : sceneFocus?.active
                               ? sceneFocus.contextLabel
-                              : "静观"}
+                              : "待入卷"}
                         </div>
                       </div>
                     </div>

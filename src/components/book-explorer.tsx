@@ -1081,7 +1081,7 @@ export function BookExplorer({
               <div className="mt-2 text-sm text-stone-100">
                 {detail.realWorldSignals.venueSamples?.length
                   ? `上图场馆资料 ${detail.realWorldSignals.venueSamples.length} 组`
-                  : "场馆样本待补"}
+                  : "转看场馆证据"}
               </div>
               <div className="mt-1 text-xs text-stone-400">
                 活动事件资料 {detail.realWorldSignals.eventSamples?.length ?? 0} 条
@@ -3932,7 +3932,7 @@ export function BookExplorer({
                                     >
                                       {bookSlugByTitle.has(trace.title)
                                         ? "钻入此上游典籍"
-                                        : "上游入口待补"}
+                                        : "转看版本承接"}
                                     </button>
                                   </div>
                                 </div>
@@ -4048,7 +4048,7 @@ export function BookExplorer({
                               >
                                 {bookSlugByTitle.has(item.targetTitle)
                                   ? "继续钻入下游典籍"
-                                  : "暂无下游典籍入口"}
+                                  : "转看人物传播"}
                               </button>
                             </div>
                           </div>
