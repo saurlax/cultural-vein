@@ -13,6 +13,15 @@ const tabs = [
 ] as const;
 
 export type ExplorerTab = (typeof tabs)[number]["id"];
+export interface TraceFocusState {
+  active: boolean;
+  titles: string[];
+  currentTitle: string | null;
+  currentRelation: string | null;
+  progress: number;
+  total: number;
+}
+
 const eraOrder: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
 const eraYearRange: Record<RiverEra, { start: number; end: number }> = {
   "先秦": { start: -2000, end: -221 },
@@ -85,11 +94,13 @@ export function BookExplorer({
   detail,
   forcedTab,
   activeEra,
+  onTraceFocusChange,
 }: {
   book: BookNode;
   detail: BookDetail;
   forcedTab?: ExplorerTab | null;
   activeEra: RiverEra;
+  onTraceFocusChange?: (focus: TraceFocusState | null) => void;
 }) {
   const [tab, setTab] = useState<ExplorerTab>("spread");
   const [passageLayout, setPassageLayout] = useState<"horizontal" | "vertical">("horizontal");
@@ -210,6 +221,24 @@ export function BookExplorer({
     return activePassage?.links.find((link) => link.id === selectedLinkId) ?? activePassage?.links[0];
   }, [activePassage, selectedLinkId]);
   const activeLinkId = activeLink?.id ?? null;
+  const activeTab = forcedTab ?? tab;
+  const activeTraceFocus = useMemo<TraceFocusState | null>(() => {
+    if (activeTab !== "passages" || !activePassage?.tracePath?.length) {
+      return null;
+    }
+
+    const currentIndex = Math.min(traceStep, activePassage.tracePath.length - 1);
+    const currentTrace = activePassage.tracePath[currentIndex];
+
+    return {
+      active: true,
+      titles: [book.title, ...activePassage.tracePath.map((trace) => trace.title)],
+      currentTitle: currentTrace?.title ?? null,
+      currentRelation: currentTrace?.relation ?? null,
+      progress: currentIndex + 1,
+      total: activePassage.tracePath.length,
+    };
+  }, [activePassage, activeTab, book.title, traceStep]);
 
   useEffect(() => {
     if (!activePassage?.tracePath?.length) {
@@ -225,7 +254,13 @@ export function BookExplorer({
     return () => window.clearInterval(timer);
   }, [activePassage?.id, activePassage?.tracePath]);
 
-  const activeTab = forcedTab ?? tab;
+  useEffect(() => {
+    onTraceFocusChange?.(activeTraceFocus);
+
+    return () => {
+      onTraceFocusChange?.(null);
+    };
+  }, [activeTraceFocus, onTraceFocusChange]);
   const sourceBadges = detail.realWorldSignals?.sourceLabel
     ? detail.realWorldSignals.sourceLabel.split("+").map((item) => item.trim()).filter(Boolean)
     : [];

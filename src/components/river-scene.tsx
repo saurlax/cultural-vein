@@ -2,9 +2,10 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Line, OrbitControls, PerspectiveCamera, Text } from "@react-three/drei";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
+import type { TraceFocusState } from "@/components/book-explorer";
 import type { BookNode, CitationEdge } from "@/types/domain";
 import type { RiverEra } from "@/types/domain";
 
@@ -26,6 +27,7 @@ interface RiverSceneProps {
   branchAnnotations?: RiverBranchAnnotation[];
   hoveredBranchId?: string | null;
   onHoverBranch?: (branchId: string | null) => void;
+  traceFocus?: TraceFocusState | null;
 }
 
 interface RiverRibbonProps {
@@ -136,14 +138,20 @@ function BookMarkers({
   selectedBookSlug,
   onSelectBook,
   activeEra,
+  traceFocus,
 }: {
   books: BookNode[];
   selectedBookSlug: string;
   onSelectBook: (slug: string) => void;
   activeEra: RiverEra;
+  traceFocus?: TraceFocusState | null;
 }) {
   const eraOrder: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
   const activeIndex = eraOrder.indexOf(activeEra);
+  const traceTitleSet = useMemo(
+    () => new Set(traceFocus?.titles ?? []),
+    [traceFocus?.titles],
+  );
 
   return (
     <>
@@ -151,27 +159,78 @@ function BookMarkers({
         const isSelected = book.slug === selectedBookSlug;
         const bookEraIndex = eraOrder.indexOf(book.dynasty);
         const isNewestVisible = bookEraIndex === activeIndex;
-        const markerColor = isSelected ? "#fcd34d" : "#d6fff6";
-        const emissive = isSelected ? "#f59e0b" : isNewestVisible ? "#a7f3d0" : "#6ee7b7";
+        const isTraceLinked = traceTitleSet.has(book.title);
+        const isTraceCurrent = traceFocus?.currentTitle === book.title;
+        const markerColor = isTraceCurrent
+          ? "#67e8f9"
+          : isSelected
+            ? "#fcd34d"
+            : isTraceLinked
+              ? "#bbf7d0"
+              : "#d6fff6";
+        const emissive = isTraceCurrent
+          ? "#22d3ee"
+          : isSelected
+            ? "#f59e0b"
+            : isTraceLinked
+              ? "#34d399"
+              : isNewestVisible
+                ? "#a7f3d0"
+                : "#6ee7b7";
+        const markerSize = isTraceCurrent
+          ? 0.25
+          : isSelected
+            ? 0.22
+            : isTraceLinked
+              ? 0.19
+              : isNewestVisible
+                ? 0.18
+                : 0.16;
 
         return (
           <group key={book.id} position={book.coordinates}>
             <mesh onClick={() => onSelectBook(book.slug)}>
-              <sphereGeometry args={[isSelected ? 0.22 : isNewestVisible ? 0.18 : 0.16, 24, 24]} />
+              <sphereGeometry args={[markerSize, 24, 24]} />
               <meshStandardMaterial
                 color={markerColor}
                 emissive={new THREE.Color(emissive)}
-                emissiveIntensity={isNewestVisible ? 1 : 0.8}
+                emissiveIntensity={isTraceCurrent ? 1.7 : isTraceLinked ? 1.1 : isNewestVisible ? 1 : 0.8}
               />
             </mesh>
+            {isTraceLinked ? (
+              <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
+                <ringGeometry
+                  args={[markerSize + 0.08, markerSize + (isTraceCurrent ? 0.2 : 0.15), 32]}
+                />
+                <meshBasicMaterial
+                  color={isTraceCurrent ? "#67e8f9" : "#34d399"}
+                  transparent
+                  opacity={isTraceCurrent ? 0.65 : 0.28}
+                />
+              </mesh>
+            ) : null}
             <Text
               position={[0, 0.38, 0]}
               fontSize={0.17}
-              color={isSelected ? "#fde68a" : "#e7e5e4"}
+              color={
+                isTraceCurrent
+                  ? "#cffafe"
+                  : isSelected
+                    ? "#fde68a"
+                    : isTraceLinked
+                      ? "#dcfce7"
+                      : "#e7e5e4"
+              }
               anchorX="center"
               anchorY="middle"
             >
-              {isNewestVisible ? `${book.shortTitle} · 新显现` : book.shortTitle}
+              {isTraceCurrent
+                ? `${book.shortTitle} · 当前溯源`
+                : isTraceLinked
+                  ? `${book.shortTitle} · 溯源链`
+                  : isNewestVisible
+                    ? `${book.shortTitle} · 新显现`
+                    : book.shortTitle}
             </Text>
           </group>
         );
@@ -301,7 +360,9 @@ function RiverWorld({
   branchAnnotations = [],
   hoveredBranchId,
   onHoverBranch,
+  traceFocus,
 }: RiverSceneProps) {
+  const cameraRef = useRef<THREE.PerspectiveCamera>(null);
   const mainStream = useMemo(
     () =>
       books
@@ -310,6 +371,30 @@ function RiverWorld({
         .map((book) => new THREE.Vector3(...book.coordinates)),
     [books],
   );
+  const traceBooks = useMemo(() => {
+    const traceTitles = traceFocus?.titles ?? [];
+
+    if (traceTitles.length === 0) {
+      return [];
+    }
+
+    return traceTitles
+      .map((title) => books.find((book) => book.title === title))
+      .filter((book): book is BookNode => Boolean(book));
+  }, [books, traceFocus?.titles]);
+  const tracePathPoints = useMemo(
+    () => traceBooks.map((book) => new THREE.Vector3(...book.coordinates)),
+    [traceBooks],
+  );
+  const cameraTarget = useMemo(() => {
+    const traceCurrentBook =
+      books.find((book) => book.title === traceFocus?.currentTitle) ??
+      books.find((book) => book.slug === selectedBookSlug);
+
+    return traceCurrentBook
+      ? new THREE.Vector3(...traceCurrentBook.coordinates)
+      : new THREE.Vector3(3.5, 0, 0);
+  }, [books, selectedBookSlug, traceFocus?.currentTitle]);
 
   const branchStreams = useMemo(() => {
     return [1, 2].map((branchLevel) =>
@@ -320,11 +405,28 @@ function RiverWorld({
     );
   }, [books]);
 
+  useEffect(() => {
+    if (!cameraRef.current) {
+      return;
+    }
+
+    const focusBook =
+      books.find((book) => book.title === traceFocus?.currentTitle) ??
+      books.find((book) => book.slug === selectedBookSlug);
+    const nextPosition =
+      traceFocus?.active && focusBook
+        ? new THREE.Vector3(...focusBook.coordinates).add(new THREE.Vector3(1.65, 1.25, 3.2))
+        : new THREE.Vector3(3.5, 3.8, 11);
+
+    cameraRef.current.position.copy(nextPosition);
+    cameraRef.current.lookAt(cameraTarget);
+  }, [books, cameraTarget, selectedBookSlug, traceFocus]);
+
   return (
     <>
       <color attach="background" args={["#091110"]} />
       <fog attach="fog" args={["#091110", 8, 22]} />
-      <PerspectiveCamera makeDefault position={[3.5, 3.8, 11]} fov={42} />
+      <PerspectiveCamera ref={cameraRef} makeDefault position={[3.5, 3.8, 11]} fov={42} />
       <ambientLight intensity={1.1} />
       <directionalLight position={[4, 8, 6]} intensity={1.8} color="#fff7d6" />
       <pointLight position={[-6, 4, -2]} intensity={1.5} color="#7dd3fc" />
@@ -365,6 +467,25 @@ function RiverWorld({
         ) : null,
       )}
 
+      {tracePathPoints.length >= 2 ? (
+        <group>
+          <Line
+            points={tracePathPoints}
+            color="#67e8f9"
+            transparent
+            opacity={0.95}
+            lineWidth={2.8}
+          />
+          <Line
+            points={tracePathPoints}
+            color="#fcd34d"
+            transparent
+            opacity={0.25}
+            lineWidth={6.4}
+          />
+        </group>
+      ) : null}
+
       <CitationArcs books={books} citations={citations} />
       <BranchMarkers
         annotations={branchAnnotations}
@@ -378,12 +499,14 @@ function RiverWorld({
         selectedBookSlug={selectedBookSlug}
         onSelectBook={onSelectBook}
         activeEra={activeEra}
+        traceFocus={traceFocus}
       />
       <OrbitControls
         enablePan={false}
         maxDistance={16}
         minDistance={6}
         maxPolarAngle={Math.PI / 2.1}
+        target={cameraTarget}
       />
     </>
   );
@@ -394,7 +517,11 @@ export function RiverScene(props: RiverSceneProps) {
     <div className="relative h-[480px] overflow-hidden rounded-[28px] border border-white/10 bg-[#091110]">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5 py-4 text-xs tracking-[0.24em] text-stone-300">
         <span>Fly Over The Vein</span>
-        <span>{props.activeEra} · 拖拽旋转 · 点击节点钻入</span>
+        <span>
+          {props.traceFocus?.active
+            ? `溯源联动 ${props.traceFocus.progress}/${props.traceFocus.total} · ${props.traceFocus.currentTitle ?? "当前节点"}`
+            : `${props.activeEra} · 拖拽旋转 · 点击节点钻入`}
+        </span>
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-wrap items-center gap-2 px-5 py-4 text-[11px] text-stone-300">
         <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1">

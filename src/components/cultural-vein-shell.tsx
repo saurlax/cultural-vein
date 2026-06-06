@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
-import { BookExplorer } from "@/components/book-explorer";
+import { BookExplorer, type TraceFocusState } from "@/components/book-explorer";
 import { RiverScene, type RiverBranchAnnotation } from "@/components/river-scene";
 import { riverDataset } from "@/data/demo-graph";
 import { useCulturalVeinStore } from "@/store/app-store";
@@ -218,6 +218,7 @@ export function CulturalVeinShell() {
   const [demoMode, setDemoMode] = useState(false);
   const [demoStepId, setDemoStepId] = useState(demoSteps[0].id);
   const [hoveredBranchId, setHoveredBranchId] = useState<string | null>(null);
+  const [traceFocus, setTraceFocus] = useState<TraceFocusState | null>(null);
   const [transitionState, setTransitionState] = useState<
     "idle" | "diving" | "settling" | "returning"
   >("idle");
@@ -479,6 +480,7 @@ export function CulturalVeinShell() {
   const handleReturnToRiver = () => {
     setTransitionState("returning");
     window.setTimeout(() => {
+      setTraceFocus(null);
       resetSelection();
     }, 120);
   };
@@ -810,7 +812,41 @@ export function CulturalVeinShell() {
             branchAnnotations={visibleBranchAnnotations}
             hoveredBranchId={hoveredBranchId}
             onHoverBranch={setHoveredBranchId}
+            traceFocus={traceFocus}
           />
+
+          {traceFocus?.active ? (
+            <div className="mt-4 rounded-[26px] border border-cyan-300/18 bg-[linear-gradient(135deg,rgba(34,211,238,0.16),rgba(8,21,18,0.88))] px-5 py-4">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <div className="text-xs uppercase tracking-[0.26em] text-cyan-100/75">
+                    Macro-Micro Link
+                  </div>
+                  <div className="mt-2 text-lg font-semibold text-cyan-50">
+                    河流视图正在跟随当前文本溯源链
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-stone-200">
+                    当前聚焦 {traceFocus.currentTitle ?? "典籍节点"}，已推进 {traceFocus.progress}/{traceFocus.total}。
+                    上方 3D 河流会同步高亮相关河段与节点，帮助评审把“段落证据”直接对应回“整体文脉”。
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {traceFocus.titles.map((title, index) => (
+                    <span
+                      key={`${title}-${index}`}
+                      className={`rounded-full border px-3 py-1.5 text-xs ${
+                        title === traceFocus.currentTitle
+                          ? "border-cyan-200/40 bg-cyan-300/18 text-cyan-50"
+                          : "border-white/10 bg-white/5 text-stone-200"
+                      }`}
+                    >
+                      {index + 1}. {title}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : null}
 
           <div className="mt-4 grid gap-3 md:grid-cols-4">
             <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
@@ -1466,6 +1502,7 @@ export function CulturalVeinShell() {
               detail={selectedDetail}
               forcedTab={demoMode ? currentDemoStep.tab : null}
               activeEra={activeEra}
+              onTraceFocusChange={setTraceFocus}
             />
           ) : null}
         </aside>
