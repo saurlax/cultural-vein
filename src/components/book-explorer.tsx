@@ -231,6 +231,27 @@ export function BookExplorer({
       ["明内府本四书章句", "明清"],
     ]);
   }, []);
+  const bookSlugByTitle = useMemo(() => {
+    return new Map<string, string>([
+      ["诗经", "shijing"],
+      ["尚书", "shangshu"],
+      ["周易", "zhouyi"],
+      ["论语", "lunyu"],
+      ["礼记", "liji"],
+      ["孝经", "xiaojing"],
+      ["大学", "daxue"],
+      ["中庸", "zhongyong"],
+      ["史记", "shiji"],
+      ["春秋左传", "zuozhuan"],
+      ["左传", "zuozhuan"],
+      ["论语集注", "lunyu-jizhu"],
+      ["四书章句集注", "sishu-zhangju"],
+      ["孟子", "mengzi"],
+      ["资治通鉴", "zi-zhi-tong-jian"],
+      ["日知录", "ri-zhi-lu"],
+      ["人间词话", "ren-jian-ci-hua"],
+    ]);
+  }, []);
   const activeEraIndex = eraOrder.indexOf(activeEra);
   const activeEraRange = eraYearRange[activeEra];
   const visibleSpread = useMemo(
@@ -473,6 +494,15 @@ export function BookExplorer({
   };
   const handleOpenSpecificLinkedBook = (sourceBookId: string) => {
     onOpenBook?.(sourceBookId);
+  };
+  const handleOpenDownstreamBook = (targetTitle: string) => {
+    const targetSlug = bookSlugByTitle.get(targetTitle);
+
+    if (!targetSlug) {
+      return;
+    }
+
+    onOpenBook?.(targetSlug);
   };
   const handleStartTrace = () => {
     if (!activePassage?.tracePath?.length) {
@@ -2080,6 +2110,22 @@ export function BookExplorer({
                             <p className="mt-2 text-sm leading-6 text-stone-300">
                               {item.note}
                             </p>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => handleOpenDownstreamBook(item.targetTitle)}
+                                disabled={!bookSlugByTitle.has(item.targetTitle)}
+                                className={`rounded-full px-3 py-1.5 text-xs transition ${
+                                  bookSlugByTitle.has(item.targetTitle)
+                                    ? "border border-amber-300/25 bg-amber-300/15 text-amber-50 hover:bg-amber-300/20"
+                                    : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                                }`}
+                              >
+                                {bookSlugByTitle.has(item.targetTitle)
+                                  ? "继续钻入下游典籍"
+                                  : "暂无下游典籍入口"}
+                              </button>
+                            </div>
                           </div>
                         ))}
                       </div>
