@@ -82,11 +82,14 @@ export function BookExplorer({
   const [selectedSpreadId, setSelectedSpreadId] = useState<string | null>(null);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
   const [selectedTimelineId, setSelectedTimelineId] = useState<string | null>(null);
+  const [selectedPersonId, setSelectedPersonId] = useState<string | null>(null);
   const [selectedPassageId, setSelectedPassageId] = useState<string | null>(null);
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null);
   const [traceStep, setTraceStep] = useState<number>(0);
   const primaryPeople = detail.people.filter((person) => (person.relationTier ?? 2) === 1);
   const secondaryPeople = detail.people.filter((person) => (person.relationTier ?? 2) === 2);
+  const activePerson =
+    detail.people.find((person) => person.id === selectedPersonId) ?? detail.people[0];
   const activeSpread =
     detail.spread.find((item) => item.id === selectedSpreadId) ?? detail.spread[0];
   const activeVersion =
@@ -483,119 +486,244 @@ export function BookExplorer({
           ) : (
             <>
               <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-4">
-                <div className="grid gap-4 lg:grid-cols-[1fr_220px_1fr] lg:items-start">
-                  <div className="space-y-3">
-                    <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
-                      一级关联
-                    </div>
-                    {primaryPeople.map((person) => (
-                      <div
-                        key={person.id}
-                        className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <div className="text-lg font-semibold text-stone-50">
-                              {person.name}
-                            </div>
-                            <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone-400">
-                              {person.role} · {person.era}
-                            </div>
-                          </div>
-                          <div className="flex flex-col items-end gap-2">
-                            <div
-                              className={`rounded-full px-3 py-1 text-xs ${relationTypeClass(person.relationType)}`}
-                            >
-                              {person.relationType ?? "引"}
-                            </div>
-                            <div className="rounded-full bg-violet-300/10 px-3 py-1 text-xs text-violet-100">
-                              {person.birthYear ?? "?"} - {person.deathYear ?? "?"}
-                            </div>
-                          </div>
+                <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+                  <div className="rounded-[24px] border border-white/10 bg-[#081110] px-4 py-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                          人物关系场
                         </div>
-                        <p className="mt-3 text-sm leading-7 text-stone-300">{person.bio}</p>
-                        {person.source === "cbdb" && person.matchedAlias ? (
-                          <div className="mt-3 rounded-full border border-emerald-300/15 bg-emerald-300/8 px-3 py-1 text-xs text-emerald-100">
-                            CBDB 匹配别名：{person.matchedAlias}
+                        <div className="mt-1 text-sm text-stone-300">
+                          点击节点切换焦点人物，关系线区分一级 / 二级关联
+                        </div>
+                      </div>
+                      <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
+                        {detail.people.length} 个节点
+                      </div>
+                    </div>
+
+                    <div className="relative mt-4 rounded-[24px] border border-white/10 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.08),rgba(8,17,16,0.95))] px-4 py-6">
+                      <div className="absolute inset-0 opacity-30">
+                        <svg viewBox="0 0 100 100" className="h-full w-full">
+                          {primaryPeople.map((person, index) => {
+                            const x = 22;
+                            const y = 24 + index * (52 / Math.max(primaryPeople.length, 1));
+                            return (
+                              <line
+                                key={`primary-line-${person.id}`}
+                                x1="50"
+                                y1="50"
+                                x2={x}
+                                y2={y}
+                                stroke="rgba(110,231,183,0.6)"
+                                strokeWidth="1.4"
+                              />
+                            );
+                          })}
+                          {secondaryPeople.map((person, index) => {
+                            const x = 78;
+                            const y = 24 + index * (52 / Math.max(secondaryPeople.length, 1));
+                            return (
+                              <line
+                                key={`secondary-line-${person.id}`}
+                                x1="50"
+                                y1="50"
+                                x2={x}
+                                y2={y}
+                                stroke="rgba(148,163,184,0.45)"
+                                strokeWidth="1"
+                                strokeDasharray="2 2"
+                              />
+                            );
+                          })}
+                        </svg>
+                      </div>
+
+                      <div className="relative grid min-h-[340px] grid-cols-[1fr_220px_1fr] gap-4">
+                        <div className="space-y-3">
+                          <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                            一级关联
                           </div>
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="flex flex-col items-center gap-4 py-2">
-                    <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
-                      中心典籍
-                    </div>
-                    <div className="w-full rounded-[28px] border border-amber-300/25 bg-amber-300/10 px-5 py-6 text-center shadow-lg shadow-amber-500/10">
-                      <div className="text-xs uppercase tracking-[0.22em] text-amber-100/80">
-                        {book.dynasty} · {book.category}
-                      </div>
-                      <div className="mt-3 text-2xl font-semibold text-stone-50">
-                        {book.title}
-                      </div>
-                      <div className="mt-3 text-sm leading-7 text-stone-300">
-                        {book.school}
-                      </div>
-                    </div>
-                    <div className="flex w-full items-center justify-center gap-2 text-stone-500">
-                      <div className="h-px flex-1 bg-white/10" />
-                      <span className="text-[10px] uppercase tracking-[0.24em]">
-                        注 / 引 / 评
-                      </span>
-                      <div className="h-px flex-1 bg-white/10" />
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
-                      二级关联
-                    </div>
-                    {secondaryPeople.length === 0 ? (
-                      <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
-                        暂未补充二级关系人物。
-                      </div>
-                    ) : (
-                      secondaryPeople.map((person) => (
-                        <div
-                          key={person.id}
-                          className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <div>
-                              <div className="text-lg font-semibold text-stone-50">
-                                {person.name}
-                              </div>
-                              <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone-400">
-                                {person.role} · {person.era}
-                              </div>
-                            </div>
-                            <div className="flex flex-col items-end gap-2">
-                              <div
-                                className={`rounded-full px-3 py-1 text-xs ${relationTypeClass(person.relationType)}`}
-                              >
-                                {person.relationType ?? "引"}
-                              </div>
-                              <div
-                                className={`rounded-full px-3 py-1 text-xs ${
-                                  person.source === "cbdb"
-                                    ? "bg-emerald-300/10 text-emerald-100"
-                                    : "bg-white/10 text-stone-300"
+                          {primaryPeople.map((person) => {
+                            const isActive = activePerson?.id === person.id;
+                            return (
+                              <button
+                                key={person.id}
+                                type="button"
+                                onClick={() => setSelectedPersonId(person.id)}
+                                className={`w-full rounded-2xl border px-4 py-4 text-left transition ${
+                                  isActive
+                                    ? "border-emerald-300/30 bg-emerald-300/10 shadow-lg shadow-emerald-500/10"
+                                    : "border-white/10 bg-white/5 hover:bg-white/10"
                                 }`}
                               >
-                                {person.source === "cbdb" ? "CBDB 已命中" : "示范补全"}
-                              </div>
+                                <div className="flex items-start justify-between gap-3">
+                                  <div>
+                                    <div className="text-lg font-semibold text-stone-50">
+                                      {person.name}
+                                    </div>
+                                    <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone-400">
+                                      {person.role} · {person.era}
+                                    </div>
+                                  </div>
+                                  <div
+                                    className={`rounded-full px-3 py-1 text-xs ${relationTypeClass(person.relationType)}`}
+                                  >
+                                    {person.relationType ?? "引"}
+                                  </div>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        <div className="flex flex-col items-center justify-center gap-4 py-2">
+                          <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                            中心典籍
+                          </div>
+                          <div className="w-full rounded-[28px] border border-amber-300/25 bg-amber-300/10 px-5 py-6 text-center shadow-lg shadow-amber-500/10">
+                            <div className="text-xs uppercase tracking-[0.22em] text-amber-100/80">
+                              {book.dynasty} · {book.category}
+                            </div>
+                            <div className="mt-3 text-2xl font-semibold text-stone-50">
+                              {book.title}
+                            </div>
+                            <div className="mt-3 text-sm leading-7 text-stone-300">
+                              {book.school}
                             </div>
                           </div>
-                          <p className="mt-3 text-sm leading-7 text-stone-300">{person.bio}</p>
-                          {person.source === "cbdb" && person.matchedAlias ? (
-                            <div className="mt-3 rounded-full border border-emerald-300/15 bg-emerald-300/8 px-3 py-1 text-xs text-emerald-100">
-                              CBDB 匹配别名：{person.matchedAlias}
-                            </div>
-                          ) : null}
+                          <div className="flex w-full items-center justify-center gap-2 text-stone-500">
+                            <div className="h-px flex-1 bg-white/10" />
+                            <span className="text-[10px] uppercase tracking-[0.24em]">
+                              注 / 引 / 评
+                            </span>
+                            <div className="h-px flex-1 bg-white/10" />
+                          </div>
                         </div>
-                      ))
-                    )}
+
+                        <div className="space-y-3">
+                          <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                            二级关联
+                          </div>
+                          {secondaryPeople.length === 0 ? (
+                            <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
+                              暂未补充二级关系人物。
+                            </div>
+                          ) : (
+                            secondaryPeople.map((person) => {
+                              const isActive = activePerson?.id === person.id;
+                              return (
+                                <button
+                                  key={person.id}
+                                  type="button"
+                                  onClick={() => setSelectedPersonId(person.id)}
+                                  className={`w-full rounded-2xl border px-4 py-4 text-left transition ${
+                                    isActive
+                                      ? "border-cyan-300/30 bg-cyan-300/10 shadow-lg shadow-cyan-500/10"
+                                      : "border-white/10 bg-white/5 hover:bg-white/10"
+                                  }`}
+                                >
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                      <div className="text-lg font-semibold text-stone-50">
+                                        {person.name}
+                                      </div>
+                                      <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone-400">
+                                        {person.role} · {person.era}
+                                      </div>
+                                    </div>
+                                    <div className="flex flex-col items-end gap-2">
+                                      <div
+                                        className={`rounded-full px-3 py-1 text-xs ${relationTypeClass(person.relationType)}`}
+                                      >
+                                        {person.relationType ?? "引"}
+                                      </div>
+                                      <div
+                                        className={`rounded-full px-3 py-1 text-xs ${
+                                          person.source === "cbdb"
+                                            ? "bg-emerald-300/10 text-emerald-100"
+                                            : "bg-white/10 text-stone-300"
+                                        }`}
+                                      >
+                                        {person.source === "cbdb" ? "CBDB 已命中" : "示范补全"}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </button>
+                              );
+                            })
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
+                    {activePerson ? (
+                      <>
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <div>
+                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                              当前焦点人物
+                            </div>
+                            <div className="mt-2 text-2xl font-semibold text-stone-50">
+                              {activePerson.name}
+                            </div>
+                            <div className="mt-2 text-sm text-stone-300">
+                              {activePerson.role} · {activePerson.era}
+                            </div>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <div
+                              className={`rounded-full px-3 py-1 text-xs ${relationTypeClass(activePerson.relationType)}`}
+                            >
+                              {activePerson.relationType ?? "引"}
+                            </div>
+                            <div className="rounded-full bg-violet-300/10 px-3 py-1 text-xs text-violet-100">
+                              {activePerson.birthYear ?? "?"} - {activePerson.deathYear ?? "?"}
+                            </div>
+                          </div>
+                        </div>
+                        <p className="mt-4 text-sm leading-7 text-stone-300">
+                          {activePerson.bio}
+                        </p>
+
+                        <div className="mt-4 grid gap-3 md:grid-cols-2">
+                          <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                              关系层级
+                            </div>
+                            <div className="mt-2 text-base font-semibold text-stone-50">
+                              {(activePerson.relationTier ?? 2) === 1 ? "一级关联" : "二级关联"}
+                            </div>
+                            <div className="mt-2 text-sm text-stone-300">
+                              {(activePerson.relationTier ?? 2) === 1
+                                ? "该人物直接参与著述、注疏或核心编纂，是典籍关系网中的主干节点。"
+                                : "该人物代表后续引用、评论、校勘或再传播，是典籍向外扩散的支流节点。"}
+                            </div>
+                          </div>
+                          <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                              数据来源
+                            </div>
+                            <div className="mt-2 text-base font-semibold text-stone-50">
+                              {activePerson.source === "cbdb" ? "CBDB 已命中" : "示范补全"}
+                            </div>
+                            <div className="mt-2 text-sm text-stone-300">
+                              {activePerson.source === "cbdb"
+                                ? `当前人物已接入真实人物传记数据${activePerson.matchedAlias ? `，匹配别名为 ${activePerson.matchedAlias}` : ""}。`
+                                : "当前仍使用示范域补全，后续可继续替换为真实人物图谱记录。"}
+                            </div>
+                          </div>
+                        </div>
+
+                        {activePerson.source === "cbdb" && activePerson.matchedAlias ? (
+                          <div className="mt-4 rounded-full border border-emerald-300/15 bg-emerald-300/8 px-3 py-1 text-xs text-emerald-100">
+                            CBDB 匹配别名：{activePerson.matchedAlias}
+                          </div>
+                        ) : null}
+                      </>
+                    ) : null}
                   </div>
                 </div>
               </div>
