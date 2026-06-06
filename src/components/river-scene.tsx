@@ -48,6 +48,8 @@ interface RiverSceneProps {
   highlightedBookSlugs?: string[];
   hoveredBookSlug?: string | null;
   onHoverBook?: (slug: string | null) => void;
+  hoveredDockId?: string | null;
+  onHoverDock?: (dockId: string | null) => void;
   sourceAtlasLabel?: string | null;
   sourceAtlasSummary?: string | null;
   sourceAtlasPathPoints?: Array<[number, number, number]>;
@@ -1186,9 +1188,13 @@ function BranchMarkers({
 function DockMarkers({
   dockMarkers,
   activeColor,
+  hoveredDockId,
+  onHoverDock,
 }: {
   dockMarkers: RiverDockMarker[];
   activeColor: string;
+  hoveredDockId?: string | null;
+  onHoverDock?: (dockId: string | null) => void;
 }) {
   const dockRef = useRef<THREE.Group>(null);
 
@@ -1211,35 +1217,39 @@ function DockMarkers({
     <group ref={dockRef}>
       {dockMarkers.map((dock, index) => (
         <group key={dock.id} position={dock.position}>
-          <mesh position={[0, 0.12, 0]}>
+          <mesh
+            position={[0, 0.12, 0]}
+            onPointerOver={() => onHoverDock?.(dock.id)}
+            onPointerOut={() => onHoverDock?.(null)}
+          >
             <cylinderGeometry args={[0.02, 0.02, 0.28, 12]} />
             <meshStandardMaterial
               color="#e7c97c"
               emissive={new THREE.Color(dock.accentColor ?? "#d97706")}
-              emissiveIntensity={0.55}
+              emissiveIntensity={hoveredDockId === dock.id ? 0.92 : 0.55}
             />
           </mesh>
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.025, 0]}>
-            <ringGeometry args={[0.08, 0.15, 28]} />
+            <ringGeometry args={[0.08, hoveredDockId === dock.id ? 0.19 : 0.15, 28]} />
             <meshBasicMaterial
               color={dock.accentColor ?? activeColor}
               transparent
-              opacity={0.34 + index * 0.03}
+              opacity={(hoveredDockId === dock.id ? 0.62 : 0.34) + index * 0.03}
             />
           </mesh>
           <mesh position={[0, 0.31, 0]}>
-            <sphereGeometry args={[0.045, 16, 16]} />
+            <sphereGeometry args={[hoveredDockId === dock.id ? 0.06 : 0.045, 16, 16]} />
             <meshStandardMaterial
               color="#fde68a"
               emissive={new THREE.Color(dock.accentColor ?? activeColor)}
-              emissiveIntensity={1.25}
+              emissiveIntensity={hoveredDockId === dock.id ? 1.8 : 1.25}
             />
           </mesh>
           <Text
             position={[0, 0.48, 0]}
             fontSize={0.1}
             maxWidth={1.3}
-            color="#fef3c7"
+            color={hoveredDockId === dock.id ? "#fff7dc" : "#fef3c7"}
             anchorX="center"
             anchorY="middle"
           >
@@ -1269,6 +1279,8 @@ function RiverWorld({
   highlightedBookSlugs = [],
   hoveredBookSlug,
   onHoverBook,
+  hoveredDockId,
+  onHoverDock,
   sourceAtlasLabel,
   sourceAtlasPathPoints = [],
 }: RiverSceneProps & {
@@ -1715,7 +1727,12 @@ function RiverWorld({
         </group>
       ) : null}
       <FocusCurrentAura focusPosition={selectedBookPosition} color={focusAuraColor} />
-      <DockMarkers dockMarkers={dockMarkers} activeColor={focusAuraColor} />
+      <DockMarkers
+        dockMarkers={dockMarkers}
+        activeColor={focusAuraColor}
+        hoveredDockId={hoveredDockId}
+        onHoverDock={onHoverDock}
+      />
       <BranchMarkers
         annotations={branchAnnotations}
         selectedBookSlug={selectedBookSlug}
@@ -1779,6 +1796,7 @@ export function RiverScene(props: RiverSceneProps) {
     props.viewMode === "river" && !props.traceFocus?.active && !props.sceneFocus?.active;
   const cruiseRunning = canCruise && autoCruise;
   const hoveredBook = props.books.find((book) => book.slug === props.hoveredBookSlug) ?? null;
+  const hoveredDock = props.dockMarkers?.find((dock) => dock.id === props.hoveredDockId) ?? null;
   const hoveredBranch = props.branchAnnotations?.find(
     (annotation) => annotation.id === props.hoveredBranchId,
   ) ?? null;
@@ -1786,6 +1804,8 @@ export function RiverScene(props: RiverSceneProps) {
     ? `逆流追溯正在经过 ${props.traceFocus.currentTitle ?? "当前节点"}，沿链回看文脉源头。`
     : props.sceneFocus?.active
       ? props.sceneFocus.detail
+      : hoveredDock
+        ? `${hoveredDock.label} 的样本码头已浮起。${hoveredDock.note ? ` ${hoveredDock.note}` : ""}`
       : props.sourceAtlasLabel && props.dockMarkers?.length
         ? `${props.sourceAtlasLabel} 的样本资料已映上河面，可沿数据码头顺流细看。${props.sourceAtlasSummary ? ` ${props.sourceAtlasSummary}` : ""}`
       : hoveredBook
