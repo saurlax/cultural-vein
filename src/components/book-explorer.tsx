@@ -583,6 +583,15 @@ export function BookExplorer({
 
     onOpenBook?.(targetSlug);
   };
+  const handleOpenTraceBook = (traceTitle: string) => {
+    const targetSlug = bookSlugByTitle.get(traceTitle);
+
+    if (!targetSlug) {
+      return;
+    }
+
+    onOpenBook?.(targetSlug);
+  };
   const handleSelectSpreadIndex = (index: number) => {
     const nextSpread = visibleSpread[index];
 
@@ -2457,6 +2466,22 @@ export function BookExplorer({
                                   <p className="mt-2 text-sm leading-6 text-stone-300">
                                     {trace.note}
                                   </p>
+                                  <div className="mt-3 flex flex-wrap gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleOpenTraceBook(trace.title)}
+                                      disabled={!bookSlugByTitle.has(trace.title)}
+                                      className={`rounded-full px-3 py-1.5 text-xs transition ${
+                                        bookSlugByTitle.has(trace.title)
+                                          ? "border border-amber-300/25 bg-amber-300/15 text-amber-50 hover:bg-amber-300/20"
+                                          : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                                      }`}
+                                    >
+                                      {bookSlugByTitle.has(trace.title)
+                                        ? "钻入此上游典籍"
+                                        : "暂无典籍入口"}
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             );
