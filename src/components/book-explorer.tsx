@@ -1764,7 +1764,11 @@ export function BookExplorer({
 
                       {activeSpread ? (
                         <div className="mt-4 space-y-3">
-                          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                          <button
+                            type="button"
+                            onClick={() => setTab("timeline")}
+                            className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-left transition hover:bg-white/10"
+                          >
                             <div className="flex items-center justify-between gap-3">
                               <span className="text-sm font-medium text-stone-50">
                                 传播时间
@@ -1783,40 +1787,59 @@ export function BookExplorer({
                                 {spreadMeta.detail}
                               </span>
                             </div>
-                          <div className="mt-3 h-2 rounded-full bg-white/5">
-                            <div
-                              className="h-2 rounded-full bg-[linear-gradient(90deg,#67e8f9,#34d399)]"
-                              style={{ width: `${Math.min(activeSpread.volume, 100)}%` }}
-                            />
-                          </div>
-                        </div>
+                            <div className="mt-3 h-2 rounded-full bg-white/5">
+                              <div
+                                className="h-2 rounded-full bg-[linear-gradient(90deg,#67e8f9,#34d399)]"
+                                style={{ width: `${Math.min(activeSpread.volume, 100)}%` }}
+                              />
+                            </div>
+                            <div className="mt-3 text-xs text-amber-100/80">
+                              转看时间回声，把这段传播放回年代与事件里继续讲。
+                            </div>
+                          </button>
 
-                        <div className="grid gap-3 md:grid-cols-2">
-                          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                              起点
-                            </div>
-                          <div className="mt-2 text-base font-semibold text-stone-50">
-                            {activeSpreadPlaces?.from?.name ?? "未知地点"}
+                          <div className="grid gap-3 md:grid-cols-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedSourceEvidenceId("venue-samples");
+                              }}
+                              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-left transition hover:bg-white/10"
+                            >
+                              <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                                起点
+                              </div>
+                              <div className="mt-2 text-base font-semibold text-stone-50">
+                                {activeSpreadPlaces?.from?.name ?? "未知地点"}
+                              </div>
+                              <p className="mt-2 text-sm leading-6 text-stone-300">
+                                {activeSpreadPlaces?.from?.note ?? "当前航段已落到这座城市，可结合年份与航线继续追看传播落点。"}
+                              </p>
+                              <div className="mt-3 text-xs text-amber-100/80">
+                                打开场馆证据，从起点城市继续核对真实传播样本。
+                              </div>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setTab("people")}
+                              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-left transition hover:bg-white/10"
+                            >
+                              <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                                终点
+                              </div>
+                              <div className="mt-2 text-base font-semibold text-stone-50">
+                                {activeSpreadPlaces?.to?.name ?? "未知地点"}
+                              </div>
+                              <p className="mt-2 text-sm leading-6 text-stone-300">
+                                {activeSpreadPlaces?.to?.note ?? "这座终点城市承接当前航段，可继续回到时间线或人物网络追看扩散回声。"}
+                              </p>
+                              <div className="mt-3 text-xs text-amber-100/80">
+                                转看人物网络，继续讲清这段扩散在人物层如何接力。
+                              </div>
+                            </button>
                           </div>
-                          <p className="mt-2 text-sm leading-6 text-stone-300">
-                              {activeSpreadPlaces?.from?.note ?? "当前航段已落到这座城市，可结合年份与航线继续追看传播落点。"}
-                          </p>
                         </div>
-                        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-                          <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                            终点
-                            </div>
-                          <div className="mt-2 text-base font-semibold text-stone-50">
-                            {activeSpreadPlaces?.to?.name ?? "未知地点"}
-                          </div>
-                          <p className="mt-2 text-sm leading-6 text-stone-300">
-                              {activeSpreadPlaces?.to?.note ?? "这座终点城市承接当前航段，可继续回到时间线或人物网络追看扩散回声。"}
-                          </p>
-                        </div>
-                      </div>
-                      </div>
-                    ) : null}
+                      ) : null}
                   </div>
                 </div>
               </div>
@@ -3418,7 +3441,7 @@ export function BookExplorer({
                         微观导引
                       </div>
                       <p className="mt-3 text-sm leading-7 text-amber-50/90">
-                        这组快捷入口会把当前片段直接推进到证据聚焦、上游溯源或下游影响，适合现场连贯演示。
+                        从当前片段直接切证据、逆流、下游三条线，适合把现场讲解一口气带到底。
                       </p>
                     </div>
                     <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
@@ -3477,6 +3500,34 @@ export function BookExplorer({
                         继续进入下游典籍
                       </button>
                     ) : null}
+                  </div>
+                  <div className="mt-4 grid gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const firstLink = activePassage.links[0];
+
+                        if (firstLink) {
+                          handleSelectLink(firstLink.id);
+                        }
+                      }}
+                      className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-left transition hover:bg-white/10"
+                    >
+                      <div className="text-xs tracking-[0.2em] text-amber-100/75">证据入口</div>
+                      <div className="mt-2 text-sm text-stone-100">
+                        {activePassage.links[0]?.sourceTitle ?? "先看当前首条证据"}
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTab("timeline")}
+                      className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-left transition hover:bg-white/10"
+                    >
+                      <div className="text-xs tracking-[0.2em] text-amber-100/75">回声入口</div>
+                      <div className="mt-2 text-sm text-stone-100">
+                        转看时间回声，把当前片段重新挂回事件和年代。
+                      </div>
+                    </button>
                   </div>
                 </div>
               </div>
