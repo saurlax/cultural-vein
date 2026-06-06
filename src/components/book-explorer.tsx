@@ -79,11 +79,20 @@ export function BookExplorer({
 }) {
   const [tab, setTab] = useState<ExplorerTab>("spread");
   const [passageLayout, setPassageLayout] = useState<"horizontal" | "vertical">("horizontal");
+  const [selectedSpreadId, setSelectedSpreadId] = useState<string | null>(null);
   const [selectedPassageId, setSelectedPassageId] = useState<string | null>(null);
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null);
   const [traceStep, setTraceStep] = useState<number>(0);
   const primaryPeople = detail.people.filter((person) => (person.relationTier ?? 2) === 1);
   const secondaryPeople = detail.people.filter((person) => (person.relationTier ?? 2) === 2);
+  const activeSpread =
+    detail.spread.find((item) => item.id === selectedSpreadId) ?? detail.spread[0];
+  const activeSpreadPlaces = activeSpread
+    ? {
+        from: detail.places.find((place) => place.id === activeSpread.fromPlaceId),
+        to: detail.places.find((place) => place.id === activeSpread.toPlaceId),
+      }
+    : null;
   const activePassage = useMemo(() => {
     return detail.passages.find((passage) => passage.id === selectedPassageId) ?? detail.passages[0];
   }, [detail.passages, selectedPassageId]);
@@ -227,38 +236,209 @@ export function BookExplorer({
               该典籍尚未补充传播路径样例。
             </div>
           ) : (
-            detail.spread.map((item) => {
-              const fromPlace = detail.places.find((place) => place.id === item.fromPlaceId);
-              const toPlace = detail.places.find((place) => place.id === item.toPlaceId);
+            <>
+              <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(103,232,249,0.14),rgba(255,255,255,0.03))] p-4">
+                <div className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+                  <div className="rounded-[24px] border border-white/10 bg-[#081110] px-4 py-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                          传播航线总览
+                        </div>
+                        <div className="mt-1 text-sm text-stone-300">
+                          点击任意航段可聚焦当前传播阶段
+                        </div>
+                      </div>
+                      <div className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                        {detail.spread.length} 段航线
+                      </div>
+                    </div>
 
-              return (
-                <div
-                  key={item.id}
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm font-medium text-stone-50">
-                      {fromPlace?.name ?? "未知"} → {toPlace?.name ?? "未知"}
-                    </div>
-                    <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
-                      流量 {item.volume}
+                    <div className="mt-5 flex items-center justify-between gap-2 overflow-x-auto pb-2">
+                      {detail.spread.map((item, index) => {
+                        const fromPlace = detail.places.find((place) => place.id === item.fromPlaceId);
+                        const toPlace = detail.places.find((place) => place.id === item.toPlaceId);
+                        const isActive = activeSpread?.id === item.id;
+
+                        return (
+                          <div key={item.id} className="flex min-w-max items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedSpreadId(item.id)}
+                              className={`rounded-[22px] border px-4 py-3 text-left transition ${
+                                isActive
+                                  ? "border-cyan-300/35 bg-cyan-300/12 shadow-lg shadow-cyan-500/10"
+                                  : "border-white/10 bg-white/5 hover:bg-white/10"
+                              }`}
+                            >
+                              <div className="text-xs uppercase tracking-[0.18em] text-stone-400">
+                                航段 {index + 1}
+                              </div>
+                              <div className="mt-2 text-sm font-medium text-stone-50">
+                                {fromPlace?.name ?? "未知"} → {toPlace?.name ?? "未知"}
+                              </div>
+                              <div className="mt-2 flex items-center gap-2 text-xs text-stone-400">
+                                <span>{item.startYear} - {item.endYear}</span>
+                                <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-cyan-100">
+                                  流量 {item.volume}
+                                </span>
+                              </div>
+                            </button>
+                            {index < detail.spread.length - 1 ? (
+                              <div className="h-px w-8 bg-gradient-to-r from-cyan-300/40 to-transparent" />
+                            ) : null}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-                  <div className="mt-2 text-sm text-stone-300">
-                    {item.startYear} - {item.endYear}
-                  </div>
-                  <div className="mt-3 h-2 rounded-full bg-white/5">
-                    <div
-                      className="h-2 rounded-full bg-[linear-gradient(90deg,#67e8f9,#34d399)]"
-                      style={{ width: `${Math.min(item.volume, 100)}%` }}
-                    />
+
+                  <div className="rounded-[24px] border border-white/10 bg-black/20 px-4 py-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                          当前焦点
+                        </div>
+                        <div className="mt-1 text-lg font-semibold text-stone-50">
+                          {activeSpreadPlaces?.from?.name ?? "未知"} → {activeSpreadPlaces?.to?.name ?? "未知"}
+                        </div>
+                      </div>
+                      {activeSpread ? (
+                        <div className="rounded-full bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
+                          流量 {activeSpread.volume}
+                        </div>
+                      ) : null}
+                    </div>
+
+                    {activeSpread ? (
+                      <div className="mt-4 space-y-3">
+                        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-sm font-medium text-stone-50">
+                              传播时间
+                            </span>
+                            <span className="text-xs text-stone-400">
+                              {activeSpread.startYear} - {activeSpread.endYear}
+                            </span>
+                          </div>
+                          <div className="mt-3 h-2 rounded-full bg-white/5">
+                            <div
+                              className="h-2 rounded-full bg-[linear-gradient(90deg,#67e8f9,#34d399)]"
+                              style={{ width: `${Math.min(activeSpread.volume, 100)}%` }}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid gap-3 md:grid-cols-2">
+                          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                              起点
+                            </div>
+                            <div className="mt-2 text-base font-semibold text-stone-50">
+                              {activeSpreadPlaces?.from?.name ?? "未知地点"}
+                            </div>
+                            <p className="mt-2 text-sm leading-6 text-stone-300">
+                              {activeSpreadPlaces?.from?.note ?? "暂无地点说明。"}
+                            </p>
+                          </div>
+                          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                              终点
+                            </div>
+                            <div className="mt-2 text-base font-semibold text-stone-50">
+                              {activeSpreadPlaces?.to?.name ?? "未知地点"}
+                            </div>
+                            <p className="mt-2 text-sm leading-6 text-stone-300">
+                              {activeSpreadPlaces?.to?.note ?? "暂无地点说明。"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
-              );
-            })
+              </div>
+
+              <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,17,16,0.92),rgba(3,9,8,0.96))] px-4 py-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                      传播节点地图
+                    </div>
+                    <div className="mt-1 text-sm text-stone-300">
+                      用位置投影模拟 3D 地球上的传播落点与航线
+                    </div>
+                  </div>
+                  <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
+                    {detail.places.length} 个地点
+                  </div>
+                </div>
+
+                <div className="relative mt-4 overflow-hidden rounded-[24px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.12),rgba(6,12,12,0.95))]">
+                  <div className="absolute inset-0 bg-[linear-gradient(transparent_24px,rgba(255,255,255,0.04)_25px),linear-gradient(90deg,transparent_24px,rgba(255,255,255,0.04)_25px)] bg-[length:100%_25%,25%_100%] opacity-40" />
+                  <div className="relative h-[320px]">
+                    <svg viewBox="0 0 100 100" className="h-full w-full">
+                      {detail.spread.map((item) => {
+                        const fromPlace = detail.places.find((place) => place.id === item.fromPlaceId);
+                        const toPlace = detail.places.find((place) => place.id === item.toPlaceId);
+                        if (!fromPlace || !toPlace) {
+                          return null;
+                        }
+
+                        const fromX = ((fromPlace.lng + 180) / 360) * 100;
+                        const fromY = ((90 - fromPlace.lat) / 180) * 100;
+                        const toX = ((toPlace.lng + 180) / 360) * 100;
+                        const toY = ((90 - toPlace.lat) / 180) * 100;
+                        const midX = (fromX + toX) / 2;
+                        const midY = Math.min(fromY, toY) - 10;
+                        const isActive = activeSpread?.id === item.id;
+
+                        return (
+                          <g key={item.id} onClick={() => setSelectedSpreadId(item.id)} className="cursor-pointer">
+                            <path
+                              d={`M ${fromX} ${fromY} Q ${midX} ${midY} ${toX} ${toY}`}
+                              fill="none"
+                              stroke={isActive ? "#67e8f9" : "rgba(255,255,255,0.28)"}
+                              strokeWidth={isActive ? 1.2 : 0.6}
+                              strokeDasharray={isActive ? "0" : "2 2"}
+                            />
+                          </g>
+                        );
+                      })}
+
+                      {detail.places.map((place) => {
+                        const x = ((place.lng + 180) / 360) * 100;
+                        const y = ((90 - place.lat) / 180) * 100;
+                        const isActive =
+                          place.id === activeSpreadPlaces?.from?.id || place.id === activeSpreadPlaces?.to?.id;
+
+                        return (
+                          <g key={place.id}>
+                            <circle
+                              cx={x}
+                              cy={y}
+                              r={isActive ? 2.2 : 1.35}
+                              fill={isActive ? "#fcd34d" : "#d6fff6"}
+                            />
+                            <text
+                              x={x + 1.8}
+                              y={y - 1.8}
+                              fill={isActive ? "#fde68a" : "#e7e5e4"}
+                              fontSize="3.1"
+                            >
+                              {place.name}
+                            </text>
+                          </g>
+                        );
+                      })}
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
           <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
-            这一视图后续会接入 3D 地球与历史地名坐标。当前先用“航线卡片 + 流量条”稳定表达传播方向、时间和规模。
+            当前传播视图已经具备“航线聚焦 + 地点投影 + 阶段切换”的中观交互骨架，后续再把这套坐标映射接入真正的 3D 地球即可。
           </div>
           {detail.realWorldSignals?.venueSamples?.length ? (
             <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
