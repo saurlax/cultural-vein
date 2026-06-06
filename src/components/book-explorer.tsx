@@ -391,6 +391,9 @@ export function BookExplorer({
     visibleVersions.find((item) => item.id === resolvedVersionId) ?? visibleVersions[0];
   const activeTimelineItem =
     visibleTimeline.find((item) => item.id === resolvedTimelineId) ?? visibleTimeline[0];
+  const activeTimelineIndex = activeTimelineItem
+    ? visibleTimeline.findIndex((item) => item.id === activeTimelineItem.id)
+    : -1;
   const activeSpreadPlaces = useMemo(() => {
     if (!activeSpread) {
       return null;
@@ -2043,6 +2046,46 @@ export function BookExplorer({
                           ) : null}
                         </div>
                       </div>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const previous = visibleTimeline[activeTimelineIndex - 1];
+                            if (previous) {
+                              setSelectedTimelineId(previous.id);
+                            }
+                          }}
+                          disabled={activeTimelineIndex <= 0}
+                          className={`rounded-full px-3 py-1.5 text-xs transition ${
+                            activeTimelineIndex > 0
+                              ? "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                              : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                          }`}
+                        >
+                          前一事
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const next = visibleTimeline[activeTimelineIndex + 1];
+                            if (next) {
+                              setSelectedTimelineId(next.id);
+                            }
+                          }}
+                          disabled={
+                            activeTimelineIndex < 0 ||
+                            activeTimelineIndex >= visibleTimeline.length - 1
+                          }
+                          className={`rounded-full px-3 py-1.5 text-xs transition ${
+                            activeTimelineIndex >= 0 &&
+                            activeTimelineIndex < visibleTimeline.length - 1
+                              ? "border border-amber-300/25 bg-amber-300/15 text-amber-50 hover:bg-amber-300/20"
+                              : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                          }`}
+                        >
+                          后一事
+                        </button>
+                      </div>
                       <p className="mt-4 text-sm leading-7 text-stone-300">
                         {activeTimelineItem.detail}
                       </p>
@@ -2070,15 +2113,17 @@ export function BookExplorer({
                             const isActive = item.id === activeTimelineItem.id;
                             return (
                               <div key={item.id} className="flex min-w-max items-center gap-3">
-                                <div
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedTimelineId(item.id)}
                                   className={`rounded-full px-3 py-2 text-xs ${
                                     isActive
                                       ? "bg-amber-300 text-stone-950"
-                                      : "border border-white/10 bg-white/5 text-stone-300"
+                                      : "border border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
                                   }`}
                                 >
                                   {item.year}
-                                </div>
+                                </button>
                                 {item.id !== visibleTimeline[visibleTimeline.length - 1]?.id ? (
                                   <div className="h-px w-8 bg-gradient-to-r from-amber-300/35 to-transparent" />
                                 ) : null}
