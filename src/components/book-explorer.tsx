@@ -1356,8 +1356,13 @@ export function BookExplorer({
                     <p className="mt-3 text-sm leading-6 text-stone-300">
                       {item.summary}
                     </p>
-                    <div className="mt-2 text-xs leading-6 text-amber-100/75">
-                      {item.traceNote}
+                    <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-amber-100/80">
+                      <span className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1">
+                        路径摘要
+                      </span>
+                      <span className="rounded-full border border-white/10 bg-black/15 px-3 py-1 text-stone-300">
+                        {item.traceNote}
+                      </span>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
@@ -1438,8 +1443,11 @@ export function BookExplorer({
                       <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
                         回查入口
                       </div>
-                      <div className="mt-2 text-sm leading-6 text-stone-300">
-                        {activeSourceEvidence.traceNote}
+                      <div className="mt-2 flex flex-wrap gap-2 text-sm leading-6 text-stone-300">
+                        <span className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
+                          回查路径
+                        </span>
+                        <span>{activeSourceEvidence.traceNote}</span>
                       </div>
                       <div className="mt-3 flex flex-wrap gap-2">
                         {activeSourceEvidence.samples.slice(0, 2).map((sample) => (
@@ -3146,6 +3154,28 @@ export function BookExplorer({
                                   {item.institution}
                                   {item.category ? ` · ${item.category}` : ""}
                                   {item.year ? ` · ${item.year}` : ""}
+                                </div>
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      setTab("people");
+                                    }}
+                                    className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-stone-300 transition hover:bg-white/10"
+                                  >
+                                    转看人物关系
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      setTab("passages");
+                                    }}
+                                    className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                                  >
+                                    转看文本溯源
+                                  </button>
                                 </div>
                               </button>
                             ))}
