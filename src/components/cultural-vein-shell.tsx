@@ -426,10 +426,10 @@ export function CulturalVeinShell() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">
-                    河道控制
+                    长卷侧注
                   </div>
                   <div className="mt-1 text-base font-medium text-[#fbf3da]">
-                    河流总控
+                    河上题签
                   </div>
                 </div>
                 {viewMode === "book" ? (
@@ -438,7 +438,7 @@ export function CulturalVeinShell() {
                     onClick={handleReturnToRiver}
                     className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-2 text-xs text-amber-100 transition hover:bg-amber-300/15"
                   >
-                    返回总览
+                    归河
                   </button>
                 ) : null}
               </div>
@@ -482,7 +482,7 @@ export function CulturalVeinShell() {
                           </span>
                         </span>
                         <span className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">
-                          {isActive ? "展开中" : "查看"}
+                          {isActive ? "已展开" : "展开"}
                         </span>
                       </button>
 
@@ -533,7 +533,7 @@ export function CulturalVeinShell() {
                             </div>
                           ) : resolvedSearchResult?.query && !searchPending ? (
                             <div className="mt-3 text-sm text-[#d8c9a3]">
-                              当前检索词没有命中文脉节点。
+                              暂未照见相关文脉节点。
                             </div>
                           ) : null}
                         </div>
@@ -594,7 +594,7 @@ export function CulturalVeinShell() {
                             ))}
                           </div>
                           <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-sm text-[#eadfbc]">
-                            当前显现 {eras[0]} 至 {activeEra}，门类筛选为 {categoryFilter}。
+                            当前河段显现自 {eras[0]} 至 {activeEra}，门类为 {categoryFilter}。
                           </div>
                         </div>
                       ) : null}
@@ -612,7 +612,7 @@ export function CulturalVeinShell() {
                             </>
                           ) : (
                             <div className="text-sm text-[#d8c9a3]">
-                              当前处于主河道视角，可从河面节点直接钻入。
+                              此刻正停在主河道，可顺着河面节点入卷。
                             </div>
                           )}
                           {viewMode === "river" && visibleNodePreview.length ? (
@@ -731,7 +731,7 @@ export function CulturalVeinShell() {
                             ? `${traceFocus.progress}/${traceFocus.total}`
                             : sceneFocus?.active
                               ? sceneFocus.contextLabel
-                              : "就绪"}
+                              : "静观"}
                         </div>
                       </div>
                     </div>
@@ -744,7 +744,7 @@ export function CulturalVeinShell() {
                           卷内细览
                         </div>
                         <div className="mt-1 text-sm font-medium text-[#5b3a11]">
-                          沿河查看传播、人物、版本与溯源
+                          沿卷细看传播、人物、版本与溯源
                         </div>
                       </div>
                     </div>
@@ -788,8 +788,8 @@ export function CulturalVeinShell() {
             <div className={`pointer-events-auto max-h-[56vh] overflow-auto p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">河道控制</div>
-                  <div className="mt-1 text-base font-medium text-[#fbf3da]">筛选与状态</div>
+                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">长卷侧注</div>
+                  <div className="mt-1 text-base font-medium text-[#fbf3da]">河上题签</div>
                 </div>
                 <button
                   type="button"
@@ -821,7 +821,7 @@ export function CulturalVeinShell() {
                       ? "检索中"
                       : resolvedSearchResult?.query
                         ? `命中 ${resolvedSearchResult.total} 本`
-                        : "常用概念"}
+                        : "常见概念"}
                   </div>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
