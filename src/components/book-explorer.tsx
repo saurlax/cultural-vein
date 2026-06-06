@@ -1900,9 +1900,19 @@ export function BookExplorer({
               </div>
               <div className="mt-3 grid gap-2">
                 {detail.realWorldSignals.venueSamples.map((venue) => (
-                  <div
+                  <button
                     key={venue.name}
-                    className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm"
+                    type="button"
+                    onClick={() => {
+                      const linkedSpread = linkedVenueSpreadMap.get(venue.name);
+
+                      if (linkedSpread?.id) {
+                        setSelectedSpreadId(linkedSpread.id);
+                      }
+
+                      setSelectedSourceEvidenceId("venue-samples");
+                    }}
+                    className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-left text-sm transition hover:bg-white/10"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <span className="text-stone-200">{venue.name}</span>
@@ -1961,7 +1971,7 @@ export function BookExplorer({
                         已挂接 {linkedVenueEventMap.get(venue.name)!.length} 条活动事件，可继续回查时间线。
                       </div>
                     ) : null}
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -3626,8 +3636,17 @@ export function BookExplorer({
                     </div>
                     <div className="mt-3 space-y-2">
                       {activePassage.links.map((link) => (
-                        <div
+                        <button
                           key={link.id}
+                          type="button"
+                          onClick={() => {
+                            if (activeLinkId === link.id) {
+                              handleOpenSpecificLinkedBook(link.sourceBookId);
+                              return;
+                            }
+
+                            handleSelectLink(link.id);
+                          }}
                           className={`w-full rounded-2xl border px-3 py-3 text-left text-sm transition ${
                             activeLinkId === link.id
                               ? "border-amber-300/35 bg-amber-300/10"
@@ -3668,7 +3687,7 @@ export function BookExplorer({
                           </div>
                           <div className="mt-2 text-stone-200">{link.quote}</div>
                           <p className="mt-2 text-stone-300">{link.evidence}</p>
-                        </div>
+                        </button>
                       ))}
                     </div>
 
@@ -3792,8 +3811,8 @@ export function BookExplorer({
                         </div>
                       </div>
                     ) : (
-                      <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
-                        <div className="text-sm text-stone-200">这一段还没有接出更早上游链路。</div>
+                        <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                        <div className="text-sm text-stone-200">这一段暂时没有更早上游链路时，先回到当前证据或切去版本、时间继续补足源头叙事。</div>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {activeLink ? (
                             <button
@@ -3906,7 +3925,7 @@ export function BookExplorer({
                       </div>
                     ) : (
                       <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
-                        <div className="text-sm text-stone-200">这一段还没有接出更晚下游承接。</div>
+                        <div className="text-sm text-stone-200">这一段暂时没有更晚下游承接时，先折回当前证据，或者切到人物、传播层继续追扩散回声。</div>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {activeLink ? (
                             <button
