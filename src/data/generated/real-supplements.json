@@ -2187,5 +2187,33 @@
         "sourceText": "来自《近代上海城市文化》专题片数据介绍文档。"
       }
     ]
+  },
+  "shenzhenLibrarySample": {
+    "available": true,
+    "institution": "深圳图书馆",
+    "collectionTitle": "深圳专题文化接口样本",
+    "summary": "深圳记忆专题库可提供题名、类别、区域、时间、作者、相关人物与活动等专题记忆字段。城市景观雕塑数据库可提供位置、经纬度、作品时间、材质与城市空间描述等字段。",
+    "sampleTitles": [
+      "深圳记忆专题库 API",
+      "深圳城市景观雕塑数据库 API"
+    ],
+    "sampleRecords": [
+      {
+        "institution": "深圳图书馆",
+        "title": "深圳记忆专题库 API",
+        "category": "专题影像 / 图片 / 视频",
+        "year": "2024",
+        "imageRef": "",
+        "sourceText": "支持题名、类别、区域、作品时间、作者、相关人物、相关活动等字段抽取。"
+      },
+      {
+        "institution": "深圳图书馆",
+        "title": "深圳城市景观雕塑数据库 API",
+        "category": "城市景观 / 雕塑知识",
+        "year": "2024",
+        "imageRef": "",
+        "sourceText": "支持题名、作品时间、雕塑位置、经纬度、作品类型、材质、所在城市等字段抽取。"
+      }
+    ]
   }
 }

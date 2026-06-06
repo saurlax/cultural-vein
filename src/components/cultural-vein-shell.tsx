@@ -349,6 +349,14 @@ export function CulturalVeinShell() {
         : insights?.videoTopicSample?.collectionTitle ?? "影像专题样本",
       detail: "城市文化专题片、非遗与民俗影像资源样本，强化公共传播叙事。",
     },
+    {
+      name: "深圳图书馆 2024",
+      status: insights?.shenzhenLibrarySample?.available ? "已接入" : "待补充",
+      scale: insights?.shenzhenLibrarySample?.sampleTitles?.length
+        ? `${insights.shenzhenLibrarySample.sampleTitles.length} 组专题接口样本`
+        : insights?.shenzhenLibrarySample?.collectionTitle ?? "专题接口样本",
+      detail: "深圳记忆专题库与城市景观雕塑数据库字段样本，可支撑专题记忆、空间位置与相关人物叙事扩展。",
+    },
   ];
   const visibleBranchAnnotations = branchAnnotations.filter((annotation) => {
     const targetBook = riverDataset.books.find((book) => book.slug === annotation.targetSlug);

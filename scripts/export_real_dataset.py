@@ -31,6 +31,7 @@ NJ_ZIP = DATA_DIR / "南京图书馆2024.zip"
 FUDAN_ZIP = DATA_DIR / "复旦大学图书馆.zip"
 NANHU_RAR = DATA_DIR / "南湖文献数据.rar"
 VIDEO_TOPIC_RAR = DATA_DIR / "专题片数据.rar"
+SZ_ZIP = DATA_DIR / "深圳图书馆2024.zip"
 
 DEMO_BOOKS = [
     {
@@ -1935,6 +1936,79 @@ def fetch_video_topic_sample() -> dict[str, object]:
     }
 
 
+def fetch_shenzhen_library_sample() -> dict[str, object]:
+    if not SZ_ZIP.exists():
+        return {"available": False, "reason": "zip missing"}
+
+    import io
+    from xml.etree import ElementTree
+
+    def read_docx_text(blob: bytes) -> str:
+        with zipfile.ZipFile(io.BytesIO(blob)) as docx_archive:
+            xml = docx_archive.read("word/document.xml")
+        root = ElementTree.fromstring(xml)
+        texts = []
+        for elem in root.iter():
+            if elem.tag.endswith("}t") and elem.text:
+                texts.append(elem.text)
+        return "".join(texts)
+
+    with zipfile.ZipFile(SZ_ZIP) as archive:
+        memory_doc = None
+        sculpture_doc = None
+        for name in archive.namelist():
+            if "深圳记忆专题库" in name and name.lower().endswith(".docx"):
+                memory_doc = archive.read(name)
+            if "深圳城市景观雕塑数据库" in name and name.lower().endswith(".docx"):
+                sculpture_doc = archive.read(name)
+
+    if not memory_doc and not sculpture_doc:
+        return {"available": False, "reason": "docx missing"}
+
+    memory_text = read_docx_text(memory_doc) if memory_doc else ""
+    sculpture_text = read_docx_text(sculpture_doc) if sculpture_doc else ""
+
+    sample_records = []
+    if memory_text:
+        sample_records.append(
+            {
+                "institution": "深圳图书馆",
+                "title": "深圳记忆专题库 API",
+                "category": "专题影像 / 图片 / 视频",
+                "year": "2024",
+                "imageRef": "",
+                "sourceText": "支持题名、类别、区域、作品时间、作者、相关人物、相关活动等字段抽取。",
+            }
+        )
+    if sculpture_text:
+        sample_records.append(
+            {
+                "institution": "深圳图书馆",
+                "title": "深圳城市景观雕塑数据库 API",
+                "category": "城市景观 / 雕塑知识",
+                "year": "2024",
+                "imageRef": "",
+                "sourceText": "支持题名、作品时间、雕塑位置、经纬度、作品类型、材质、所在城市等字段抽取。",
+            }
+        )
+
+    sample_titles = [record["title"] for record in sample_records]
+    summary_parts = []
+    if memory_text:
+        summary_parts.append("深圳记忆专题库可提供题名、类别、区域、时间、作者、相关人物与活动等专题记忆字段。")
+    if sculpture_text:
+        summary_parts.append("城市景观雕塑数据库可提供位置、经纬度、作品时间、材质与城市空间描述等字段。")
+
+    return {
+        "available": True,
+        "institution": "深圳图书馆",
+        "collectionTitle": "深圳专题文化接口样本",
+        "summary": "".join(summary_parts)[:260],
+        "sampleTitles": sample_titles,
+        "sampleRecords": sample_records,
+    }
+
+
 def main() -> None:
     ensure_out_dir()
     cbdb_people = fetch_cbdb_people()
@@ -1970,6 +2044,7 @@ def main() -> None:
         "fudanArchiveSample": fetch_fudan_archive_sample(),
         "nanhuArchiveSample": fetch_nanhu_archive_sample(),
         "videoTopicSample": fetch_video_topic_sample(),
+        "shenzhenLibrarySample": fetch_shenzhen_library_sample(),
     }
     OUT_FILE.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2),

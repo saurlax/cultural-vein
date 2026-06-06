@@ -51,6 +51,14 @@ export function GET() {
           sampleTitles: realSupplements.videoTopicSample.sampleTitles,
         }
       : undefined,
+    shenzhenLibrarySample: realSupplements.shenzhenLibrarySample
+      ? {
+          available: realSupplements.shenzhenLibrarySample.available,
+          institution: realSupplements.shenzhenLibrarySample.institution,
+          collectionTitle: realSupplements.shenzhenLibrarySample.collectionTitle,
+          sampleTitles: realSupplements.shenzhenLibrarySample.sampleTitles,
+        }
+      : undefined,
   };
 
   return NextResponse.json(payload);
