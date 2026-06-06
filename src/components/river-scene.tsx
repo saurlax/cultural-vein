@@ -263,12 +263,14 @@ function BookMarkers({
   selectedBookSlug,
   onSelectBook,
   activeEra,
+  viewMode,
   traceFocus,
 }: {
   books: BookNode[];
   selectedBookSlug: string;
   onSelectBook: (slug: string) => void;
   activeEra: RiverEra;
+  viewMode: ViewMode;
   traceFocus?: TraceFocusState | null;
 }) {
   const eraOrder: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
@@ -298,6 +300,11 @@ function BookMarkers({
         const isNewestVisible = bookEraIndex === activeIndex;
         const isTraceLinked = traceTitleSet.has(book.title);
         const isTraceCurrent = traceFocus?.currentTitle === book.title;
+        const shouldDim =
+          (viewMode === "book" || Boolean(traceFocus?.active)) &&
+          !isSelected &&
+          !isTraceLinked &&
+          !isNewestVisible;
         const markerColor = isTraceCurrent
           ? "#67e8f9"
           : isSelected
@@ -322,7 +329,9 @@ function BookMarkers({
               ? 0.19
               : isNewestVisible
                 ? 0.18
-                : 0.16;
+                : shouldDim
+                  ? 0.12
+                  : 0.16;
 
         return (
           <group key={book.id} position={book.coordinates}>
@@ -330,6 +339,8 @@ function BookMarkers({
               <sphereGeometry args={[markerSize, 24, 24]} />
               <meshStandardMaterial
                 color={markerColor}
+                transparent
+                opacity={shouldDim ? 0.4 : 1}
                 emissive={new THREE.Color(emissive)}
                 emissiveIntensity={isTraceCurrent ? 1.7 : isTraceLinked ? 1.1 : isNewestVisible ? 1 : 0.8}
               />
@@ -356,6 +367,8 @@ function BookMarkers({
                     ? "#fde68a"
                     : isTraceLinked
                       ? "#dcfce7"
+                      : shouldDim
+                        ? "#78716c"
                       : "#e7e5e4"
               }
               anchorX="center"
@@ -379,13 +392,21 @@ function BookMarkers({
 function CitationArcs({
   books,
   citations,
+  selectedBookSlug,
+  traceFocus,
 }: {
   books: BookNode[];
   citations: CitationEdge[];
+  selectedBookSlug: string;
+  traceFocus?: TraceFocusState | null;
 }) {
   const bookMap = useMemo(
     () => new Map(books.map((book) => [book.id, book])),
     [books],
+  );
+  const traceTitleSet = useMemo(
+    () => new Set(traceFocus?.titles ?? []),
+    [traceFocus?.titles],
   );
 
   return (
@@ -406,6 +427,10 @@ function CitationArcs({
           .add(new THREE.Vector3(0, 0.5 + citation.confidence * 0.35, 0));
         const curve = new THREE.CatmullRomCurve3([start, middle, end]);
         const points = curve.getPoints(32);
+        const sourceSelected = source.slug === selectedBookSlug;
+        const targetSelected = target.slug === selectedBookSlug;
+        const traceLinked = traceTitleSet.has(source.title) || traceTitleSet.has(target.title);
+        const isFocusedArc = sourceSelected || targetSelected || traceLinked;
         const color =
           citation.layer === "metadata"
             ? "#f8fafc"
@@ -421,12 +446,50 @@ function CitationArcs({
             points={points}
             color={color}
             transparent
-            opacity={0.65}
-            lineWidth={1.2}
+            opacity={isFocusedArc ? 0.92 : selectedBookSlug ? 0.18 : 0.65}
+            lineWidth={isFocusedArc ? 1.8 : 1.1}
           />
         );
       })}
     </>
+  );
+}
+
+function FocusHalo({
+  selectedBookPosition,
+  traceFocus,
+}: {
+  selectedBookPosition: THREE.Vector3 | null;
+  traceFocus?: TraceFocusState | null;
+}) {
+  const haloRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state) => {
+    if (!haloRef.current || !selectedBookPosition) {
+      return;
+    }
+
+    const pulse = 1 + Math.sin(state.clock.elapsedTime * 1.6) * 0.08;
+    haloRef.current.scale.set(pulse, pulse, pulse);
+    const material = haloRef.current.material;
+    if (material instanceof THREE.MeshBasicMaterial) {
+      material.opacity = traceFocus?.active ? 0.24 : 0.16;
+    }
+  });
+
+  if (!selectedBookPosition) {
+    return null;
+  }
+
+  return (
+    <mesh
+      ref={haloRef}
+      rotation={[-Math.PI / 2, 0, 0]}
+      position={[selectedBookPosition.x, selectedBookPosition.y - 0.05, selectedBookPosition.z]}
+    >
+      <ringGeometry args={[0.36, 0.62, 48]} />
+      <meshBasicMaterial color={traceFocus?.active ? "#67e8f9" : "#fcd34d"} transparent opacity={0.16} />
+    </mesh>
   );
 }
 
@@ -685,7 +748,13 @@ function RiverWorld({
         </group>
       ) : null}
 
-      <CitationArcs books={books} citations={citations} />
+      <CitationArcs
+        books={books}
+        citations={citations}
+        selectedBookSlug={selectedBookSlug}
+        traceFocus={traceFocus}
+      />
+      <FocusHalo selectedBookPosition={selectedBookPosition} traceFocus={traceFocus} />
       <BranchMarkers
         annotations={branchAnnotations}
         selectedBookSlug={selectedBookSlug}
@@ -698,6 +767,7 @@ function RiverWorld({
         selectedBookSlug={selectedBookSlug}
         onSelectBook={onSelectBook}
         activeEra={activeEra}
+        viewMode={viewMode}
         traceFocus={traceFocus}
       />
       <OrbitControls

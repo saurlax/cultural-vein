@@ -292,14 +292,14 @@ export function CulturalVeinShell() {
         <div className="absolute inset-x-0 top-[108px] z-20 px-4 sm:px-6 lg:px-8">
           <div className="grid gap-4 xl:grid-cols-[280px_minmax(0,1fr)_420px]">
             <aside className="pointer-events-auto xl:pt-2">
-              <div className="rounded-[30px] border border-white/10 bg-black/24 p-5 shadow-2xl shadow-black/35 backdrop-blur-xl">
+              <div className="rounded-[30px] border border-white/10 bg-black/24 p-4 shadow-2xl shadow-black/35 backdrop-blur-xl">
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-[11px] uppercase tracking-[0.28em] text-stone-400">
-                      River Control
+                      River Console
                     </div>
-                    <div className="mt-1 text-lg font-medium text-stone-50">
-                      河流筛选
+                    <div className="mt-1 text-base font-medium text-stone-50">
+                      河流仪表盘
                     </div>
                   </div>
                   {viewMode === "book" ? (
@@ -313,9 +313,30 @@ export function CulturalVeinShell() {
                   ) : null}
                 </div>
 
+                <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-stone-300">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+                    <div className="text-stone-500">典籍</div>
+                    <div className="mt-1 text-sm font-medium text-stone-100">
+                      {filteredBooks.length}
+                    </div>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+                    <div className="text-stone-500">关系</div>
+                    <div className="mt-1 text-sm font-medium text-stone-100">
+                      {visibleCitations.length}
+                    </div>
+                  </div>
+                  <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-3 py-3">
+                    <div className="text-cyan-100/70">来源</div>
+                    <div className="mt-1 text-sm font-medium text-cyan-50">
+                      {connectedSourceCount || "--"}
+                    </div>
+                  </div>
+                </div>
+
                 <label className="mt-4 block">
                   <span className="text-xs uppercase tracking-[0.22em] text-stone-400">
-                    检索典籍 / 观念 / 学派
+                    检索关键词
                   </span>
                   <input
                     value={searchTerm}
@@ -325,9 +346,9 @@ export function CulturalVeinShell() {
                   />
                 </label>
 
-                <div className="mt-4">
-                  <div className="flex items-center justify-between gap-3 text-xs uppercase tracking-[0.22em] text-stone-400">
-                    <span>时代推进</span>
+                <div className="mt-4 rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
+                  <div className="flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-stone-400">
+                    <span>时代水位</span>
                     <span className="text-amber-100">{activeEra}</span>
                   </div>
                   <input
@@ -359,10 +380,7 @@ export function CulturalVeinShell() {
                   </div>
                 </div>
 
-                <div className="mt-4">
-                  <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
-                    四部分类
-                  </div>
+                <div className="mt-4 flex flex-wrap gap-2">
                   <div className="mt-3 flex flex-wrap gap-2">
                     {categories.map((category) => (
                       <button
@@ -383,13 +401,13 @@ export function CulturalVeinShell() {
 
                 <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
                   <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                    <div className="text-stone-400">主河段上限</div>
+                    <div className="text-stone-400">显现上限</div>
                     <div className="mt-1 font-medium text-stone-50">
                       {eras[0]}至{activeEra}
                     </div>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                    <div className="text-stone-400">当前视野</div>
+                    <div className="text-stone-400">运行模式</div>
                     <div className="mt-1 font-medium text-stone-50">
                       {viewMode === "river" ? "河流总览" : "典籍钻入"}
                     </div>
