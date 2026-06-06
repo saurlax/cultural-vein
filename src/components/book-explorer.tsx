@@ -262,6 +262,10 @@ export function BookExplorer({
   const [selectedPersonId, setSelectedPersonId] = useState<string | null>(null);
   const [selectedPassageId, setSelectedPassageId] = useState<string | null>(null);
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null);
+  const [selectedSourceEvidenceId, setSelectedSourceEvidenceId] = useState<string | null>(null);
+  const [selectedInstitutionRecordId, setSelectedInstitutionRecordId] = useState<string | null>(
+    null,
+  );
   const [traceStep, setTraceStep] = useState<number>(0);
   const [tracePlaying, setTracePlaying] = useState(false);
   const [showSecondaryPeople, setShowSecondaryPeople] = useState(false);
@@ -538,9 +542,10 @@ export function BookExplorer({
     ? detail.realWorldSignals.sourceLabel.split("+").map((item) => item.trim()).filter(Boolean)
     : [];
   const sourceEvidence = useMemo(() => buildSourceEvidence(detail), [detail]);
+  const institutionRecords = detail.realWorldSignals?.institutionSamples ?? [];
   const venuePreview = detail.realWorldSignals?.venueSamples?.slice(0, 3) ?? [];
   const eventPreview = detail.realWorldSignals?.eventSamples?.slice(0, 3) ?? [];
-  const institutionPreview = detail.realWorldSignals?.institutionSamples?.slice(0, 3) ?? [];
+  const institutionPreview = institutionRecords.slice(0, 3);
   const eraLinkedSummary = {
     spread: visibleSpread.length,
     people: visiblePeople.length,
@@ -603,6 +608,16 @@ export function BookExplorer({
   const activeTimelineMeta = activeTimelineItem
     ? timelineSourceMeta(activeTimelineItem.source)
     : null;
+  const activeSourceEvidence =
+    sourceEvidence.find((item) => item.id === selectedSourceEvidenceId) ?? sourceEvidence[0] ?? null;
+  const activeInstitutionRecord =
+    institutionRecords.find(
+      (item) =>
+        `${item.institution}-${item.title}-${item.imageRef ?? item.sourceText ?? "trace"}` ===
+        selectedInstitutionRecordId,
+    ) ??
+    institutionRecords[0] ??
+    null;
   const activeVersionParent = activeVersion?.parentId
     ? visibleVersions.find((version) => version.id === activeVersion.parentId) ?? null
     : null;
@@ -797,8 +812,8 @@ export function BookExplorer({
               </div>
             </div>
           </div>
-          <div className="mt-4 grid gap-3 xl:grid-cols-3">
-            <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
+              <div className="mt-4 grid gap-3 xl:grid-cols-3">
+                <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-xs tracking-[0.2em] text-amber-100/75">
                   场馆来源
@@ -867,10 +882,20 @@ export function BookExplorer({
               </div>
               <div className="mt-3 space-y-2">
                 {institutionPreview.length ? (
-                  institutionPreview.map((item) => (
-                    <div
+                  institutionPreview.map((item) => {
+                    const recordId = `${item.institution}-${item.title}-${item.imageRef ?? item.sourceText ?? "trace"}`;
+                    const isActive = activeInstitutionRecord === item;
+
+                    return (
+                    <button
                       key={`${item.institution}-${item.title}-${item.imageRef}`}
-                      className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-sm"
+                      type="button"
+                      onClick={() => setSelectedInstitutionRecordId(recordId)}
+                      className={`w-full rounded-2xl border px-3 py-3 text-left text-sm transition ${
+                        isActive
+                          ? "border-amber-300/35 bg-amber-300/10"
+                          : "border-white/10 bg-white/5 hover:bg-white/10"
+                      }`}
                     >
                       <div className="font-medium text-stone-100">{item.title}</div>
                       <div className="mt-1 text-xs text-stone-400">
@@ -882,8 +907,9 @@ export function BookExplorer({
                           {item.imageRef ?? item.sourceText}
                         </div>
                       ) : null}
-                    </div>
-                  ))
+                    </button>
+                  );
+                  })
                 ) : (
                   <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4 text-sm text-stone-400">
                     当前没有挂接机构资源资料。
@@ -892,6 +918,50 @@ export function BookExplorer({
               </div>
             </div>
           </div>
+          {activeInstitutionRecord ? (
+            <div className="mt-4 rounded-2xl border border-amber-300/12 bg-[rgba(255,248,220,0.06)] px-4 py-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <div className="text-xs tracking-[0.2em] text-amber-100/75">
+                    当前资源细览
+                  </div>
+                  <div className="mt-2 text-base font-semibold text-stone-50">
+                    {activeInstitutionRecord.title}
+                  </div>
+                  <div className="mt-2 text-sm text-stone-300">
+                    {activeInstitutionRecord.institution}
+                    {activeInstitutionRecord.category
+                      ? ` · ${activeInstitutionRecord.category}`
+                      : ""}
+                    {activeInstitutionRecord.year ? ` · ${activeInstitutionRecord.year}` : ""}
+                  </div>
+                </div>
+                {activeInstitutionRecord.imageRef ? (
+                  <div className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
+                    影像号 {activeInstitutionRecord.imageRef}
+                  </div>
+                ) : null}
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                  <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                    资源落点
+                  </div>
+                  <div className="mt-2 text-sm leading-6 text-stone-300">
+                    当前条目已经落到机构、题名与年份粒度，可用于现场说明具体资源挂接点。
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                  <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                    出处说明
+                  </div>
+                  <div className="mt-2 text-sm leading-6 text-stone-300">
+                    {activeInstitutionRecord.sourceText ?? "当前条目暂无额外出处说明，但已保留机构与资源编号。 "}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
           {sourceEvidence.length ? (
             <div className="mt-4 rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between gap-3">
@@ -907,11 +977,21 @@ export function BookExplorer({
                   {sourceEvidence.length} 类证据
                 </div>
               </div>
-              <div className="mt-4 grid gap-3">
-                {sourceEvidence.map((item) => (
-                  <div
+              <div className="mt-4 grid gap-3 xl:grid-cols-[0.95fr_1.05fr]">
+                <div className="grid gap-3">
+                  {sourceEvidence.map((item) => {
+                    const isActive = activeSourceEvidence?.id === item.id;
+
+                    return (
+                  <button
                     key={item.id}
-                    className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                    type="button"
+                    onClick={() => setSelectedSourceEvidenceId(item.id)}
+                    className={`rounded-2xl border px-4 py-4 text-left transition ${
+                      isActive
+                        ? "border-amber-300/30 bg-amber-300/10"
+                        : "border-white/10 bg-white/5 hover:bg-white/10"
+                    }`}
                   >
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
@@ -945,8 +1025,56 @@ export function BookExplorer({
                         </div>
                       ))}
                     </div>
+                  </button>
+                );
+                  })}
+                </div>
+                {activeSourceEvidence ? (
+                  <div className="rounded-2xl border border-amber-300/12 bg-[rgba(255,248,220,0.06)] px-4 py-4">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div className="text-xs tracking-[0.2em] text-amber-100/75">
+                          当前证据细览
+                        </div>
+                        <div className="mt-2 text-base font-semibold text-stone-50">
+                          {activeSourceEvidence.source}
+                        </div>
+                        <div className="mt-1 text-sm text-stone-300">
+                          {activeSourceEvidence.category}
+                        </div>
+                      </div>
+                      <div className="rounded-full bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
+                        {activeSourceEvidence.countLabel}
+                      </div>
+                    </div>
+                    <p className="mt-4 text-sm leading-7 text-stone-300">
+                      {activeSourceEvidence.summary}
+                    </p>
+                    <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                      <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                        回查提示
+                      </div>
+                      <div className="mt-2 text-sm leading-6 text-stone-300">
+                        {activeSourceEvidence.traceNote}
+                      </div>
+                    </div>
+                    <div className="mt-3 grid gap-2">
+                      {activeSourceEvidence.samples.map((sample) => (
+                        <div
+                          key={`active-${activeSourceEvidence.id}-${sample.label}-${sample.detail ?? "detail"}`}
+                          className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3"
+                        >
+                          <div className="text-sm text-stone-100">{sample.label}</div>
+                          {sample.detail ? (
+                            <div className="mt-1 text-xs leading-6 text-stone-400">
+                              {sample.detail}
+                            </div>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                ))}
+                ) : null}
               </div>
             </div>
           ) : null}
@@ -961,10 +1089,22 @@ export function BookExplorer({
                 </div>
               </div>
               <div className="mt-3 grid gap-3">
-                {detail.realWorldSignals.institutionSamples.map((item) => (
-                  <div
+                {detail.realWorldSignals.institutionSamples.map((item) => {
+                  const recordId = `${item.institution}-${item.title}-${item.imageRef ?? item.sourceText ?? "trace"}`;
+                  const isActive =
+                    activeInstitutionRecord === item ||
+                    selectedInstitutionRecordId === recordId;
+
+                  return (
+                  <button
                     key={`${item.institution}-${item.title}-${item.imageRef}`}
-                    className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                    type="button"
+                    onClick={() => setSelectedInstitutionRecordId(recordId)}
+                    className={`rounded-2xl border px-4 py-4 text-left transition ${
+                      isActive
+                        ? "border-amber-300/35 bg-amber-300/10"
+                        : "border-white/10 bg-white/5 hover:bg-white/10"
+                    }`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -986,8 +1126,9 @@ export function BookExplorer({
                         图像出处：{item.sourceText}
                       </p>
                     ) : null}
-                  </div>
-                ))}
+                  </button>
+                );
+                })}
               </div>
             </div>
           ) : null}
