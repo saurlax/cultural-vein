@@ -496,7 +496,7 @@ export function CulturalVeinShell() {
           </div>
         </div>
 
-        <div className="absolute left-4 top-[104px] z-20 hidden w-[240px] sm:left-6 md:block lg:left-8 lg:w-[252px]">
+        <div className="absolute left-4 top-[104px] z-20 hidden w-[228px] sm:left-6 md:block lg:left-8 lg:w-[236px]">
           <aside className="pointer-events-auto xl:pt-2">
             <div className={`p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
@@ -552,219 +552,216 @@ export function CulturalVeinShell() {
                 </div>
               </div>
 
-              <div className="mt-4 space-y-3">
-                {desktopPanels.map((panel) => {
-                  const isActive = activeDesktopPanel === panel.id;
-
-                  return (
-                    <section
-                      key={panel.id}
-                      className={`overflow-hidden rounded-[24px] border transition ${
-                        isActive
-                          ? "border-[#ead8a6]/26 bg-[rgba(255,248,220,0.07)]"
-                          : "border-[#ead8a6]/14 bg-[rgba(27,17,7,0.18)]"
-                      }`}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => setActiveDesktopPanel(panel.id)}
-                        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
-                      >
-                        <span>
-                          <span className="block text-[11px] tracking-[0.24em] text-[#d8c9a3]">
-                            {panel.label}
-                          </span>
-                          <span className="mt-1 block text-sm text-[#fbf3da]">
-                            {panel.summary}
-                          </span>
-                        </span>
-                        <span className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">
-                          {isActive ? "已展开" : "展开"}
-                        </span>
-                      </button>
-
-                      {isActive && panel.id === "search" ? (
-                        <div className="border-t border-[#ead8a6]/12 px-4 pb-4 pt-3">
-                          <label className="block">
-                            <span className="text-xs tracking-[0.22em] text-[#d8c9a3]">
-                              概念检索
-                            </span>
-                            <input
-                              value={searchTerm}
-                              onChange={(event) => handleSearchTermChange(event.target.value)}
-                              placeholder="例如 仁、礼、诗教、朱熹"
-                              className="mt-2 w-full rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-4 py-3 text-sm text-[#fbf3da] outline-none placeholder:text-[#c9b68a] focus:border-[#f0cf75]/40"
-                            />
-                          </label>
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            {searchSuggestionChips.slice(0, 8).map((concept) => (
-                              <button
-                                key={concept}
-                                type="button"
-                                onClick={() => handleSearchTermChange(concept)}
-                                className={`rounded-full border px-3 py-1.5 text-xs transition ${
-                                  searchTerm.trim() === concept
-                                    ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
-                                    : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
-                                }`}
-                              >
-                                {concept}
-                              </button>
-                            ))}
-                          </div>
-                          {resolvedSearchResult?.hits.length ? (
-                            <div className="mt-3 space-y-2">
-                              {resolvedSearchResult.hits.slice(0, 3).map((hit) => (
-                                <button
-                                  key={hit.slug}
-                                  type="button"
-                                  onClick={() => handleDiveToBook(hit.slug)}
-                                  className="w-full rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
-                                >
-                                  <div className="font-medium text-[#fbf3da]">{hit.title}</div>
-                                  <div className="mt-1 text-xs text-[#d8c9a3]">
-                                    {hit.dynasty} · {hit.category} · {hit.school}
-                                  </div>
-                                </button>
-                              ))}
-                            </div>
-                          ) : resolvedSearchResult?.query && !searchPending ? (
-                            <div className="mt-3 text-sm text-[#d8c9a3]">
-                              暂未照见相关文脉节点。
-                            </div>
-                          ) : null}
-                        </div>
-                      ) : null}
-
-                      {isActive && panel.id === "era" ? (
-                        <div className="border-t border-[#ead8a6]/12 px-4 pb-4 pt-3">
-                          <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-[#d8c9a3]">
-                            <span>时代水位</span>
-                            <span className="text-amber-100">{activeEra}</span>
-                          </div>
-                          <input
-                            type="range"
-                            min={0}
-                            max={eras.length - 1}
-                            step={1}
-                            value={activeEraIndex}
-                            onChange={(event) =>
-                              setActiveEra(eras[Number(event.target.value)] ?? eras[0])
-                            }
-                            className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
-                          />
-                          <div className="mt-3 grid grid-cols-4 gap-2 text-[11px] text-[#c9b68a]">
-                            {eras.map((era) => (
-                              <button
-                                key={era}
-                                type="button"
-                                onClick={() => setActiveEra(era)}
-                                className={`rounded-full px-2 py-1 transition ${
-                                  activeEra === era
-                                    ? "bg-amber-300/14 text-amber-100"
-                                    : "bg-white/0 text-[#c9b68a] hover:bg-[rgba(255,248,220,0.05)] hover:text-[#eadfbc]"
-                                }`}
-                              >
-                                {era}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      ) : null}
-
-                      {isActive && panel.id === "category" ? (
-                        <div className="border-t border-[#ead8a6]/12 px-4 pb-4 pt-3">
-                          <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
-                            四部门类
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            {categories.map((category) => (
-                              <button
-                                key={category}
-                                type="button"
-                                onClick={() => setCategoryFilter(category)}
-                                className={`rounded-full px-3 py-2 text-xs transition ${
-                                  categoryFilter === category
-                                    ? "bg-[#f3dfab] text-[#42290a]"
-                                    : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
-                                }`}
-                              >
-                                {category}
-                              </button>
-                            ))}
-                          </div>
-                          <div className="mt-4 text-[11px] tracking-[0.24em] text-[#d8c9a3]">
-                            {schoolLabel}
-                          </div>
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {schools.map((school) => (
-                              <button
-                                key={school}
-                                type="button"
-                                onClick={() => setSchoolFilter(school)}
-                                className={`rounded-full px-3 py-2 text-xs transition ${
-                                  schoolFilter === school
-                                    ? "bg-[#f3dfab] text-[#42290a]"
-                                    : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
-                                }`}
-                              >
-                                {school}
-                              </button>
-                            ))}
-                          </div>
-                          <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-sm text-[#eadfbc]">
-                            当前河段显现自 {eras[0]} 至 {activeEra}，门类为
-                            {categoryFilter}，学派为 {schoolFilter}。
-                          </div>
-                        </div>
-                      ) : null}
-
-                      {isActive && panel.id === "branch" ? (
-                        <div className="border-t border-[#ead8a6]/12 px-4 pb-4 pt-3">
-                          {activeBranchAnnotation ? (
-                            <>
-                              <div className="text-sm font-medium text-[#fbf3da]">
-                                {activeBranchAnnotation.label}
-                              </div>
-                              <p className="mt-2 text-sm leading-6 text-[#f4e8c4]">
-                                {activeBranchAnnotation.description}
-                              </p>
-                            </>
-                          ) : (
-                            <div className="text-sm text-[#d8c9a3]">
-                              此刻正停在主河道，可顺着河面节点入卷。
-                            </div>
-                          )}
-                          {viewMode === "river" && visibleNodePreview.length ? (
-                            <div className="mt-3 flex flex-wrap gap-2">
-                              {visibleNodePreview.map((book) => (
-                                <button
-                                  key={book.id}
-                                  type="button"
-                                  onClick={() => handleDiveToBook(book.slug)}
-                                  className={`rounded-full border px-3 py-1.5 text-xs transition ${
-                                    selectedBookSlug === book.slug
-                                      ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
-                                      : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
-                                  }`}
-                                >
-                                  {book.shortTitle}
-                                </button>
-                              ))}
-                            </div>
-                          ) : null}
-                        </div>
-                      ) : null}
-                    </section>
-                  );
-                })}
+              <div className="mt-4 flex flex-wrap gap-2">
+                {desktopPanels.map((panel) => (
+                  <button
+                    key={panel.id}
+                    type="button"
+                    onClick={() => setActiveDesktopPanel(panel.id)}
+                    className={`rounded-full px-3 py-2 text-[11px] transition ${
+                      activeDesktopPanel === panel.id
+                        ? "bg-[#f3dfab] text-[#42290a]"
+                        : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                    }`}
+                  >
+                    {panel.label}
+                  </button>
+                ))}
               </div>
+
+              <section className="mt-4 rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(27,17,7,0.22)] px-4 py-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
+                      {activeDesktopPanelConfig.label}
+                    </div>
+                    <div className="mt-1 text-sm text-[#fbf3da]">
+                      {activeDesktopPanelConfig.summary}
+                    </div>
+                  </div>
+                  <div className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">
+                    当前题签
+                  </div>
+                </div>
+
+                {activeDesktopPanel === "search" ? (
+                  <div className="mt-4">
+                    <label className="block">
+                      <span className="text-xs tracking-[0.22em] text-[#d8c9a3]">
+                        概念检索
+                      </span>
+                      <input
+                        value={searchTerm}
+                        onChange={(event) => handleSearchTermChange(event.target.value)}
+                        placeholder="例如 仁、礼、诗教、朱熹"
+                        className="mt-2 w-full rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-4 py-3 text-sm text-[#fbf3da] outline-none placeholder:text-[#c9b68a] focus:border-[#f0cf75]/40"
+                      />
+                    </label>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {searchSuggestionChips.slice(0, 8).map((concept) => (
+                        <button
+                          key={concept}
+                          type="button"
+                          onClick={() => handleSearchTermChange(concept)}
+                          className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                            searchTerm.trim() === concept
+                              ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
+                              : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                          }`}
+                        >
+                          {concept}
+                        </button>
+                      ))}
+                    </div>
+                    {resolvedSearchResult?.hits.length ? (
+                      <div className="mt-3 space-y-2">
+                        {resolvedSearchResult.hits.slice(0, 3).map((hit) => (
+                          <button
+                            key={hit.slug}
+                            type="button"
+                            onClick={() => handleDiveToBook(hit.slug)}
+                            className="w-full rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                          >
+                            <div className="font-medium text-[#fbf3da]">{hit.title}</div>
+                            <div className="mt-1 text-xs text-[#d8c9a3]">
+                              {hit.dynasty} · {hit.category} · {hit.school}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    ) : resolvedSearchResult?.query && !searchPending ? (
+                      <div className="mt-3 text-sm text-[#d8c9a3]">
+                        暂未照见相关文脉节点。
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+
+                {activeDesktopPanel === "era" ? (
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-[#d8c9a3]">
+                      <span>时代水位</span>
+                      <span className="text-amber-100">{activeEra}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={eras.length - 1}
+                      step={1}
+                      value={activeEraIndex}
+                      onChange={(event) =>
+                        setActiveEra(eras[Number(event.target.value)] ?? eras[0])
+                      }
+                      className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
+                    />
+                    <div className="mt-3 grid grid-cols-4 gap-2 text-[11px] text-[#c9b68a]">
+                      {eras.map((era) => (
+                        <button
+                          key={era}
+                          type="button"
+                          onClick={() => setActiveEra(era)}
+                          className={`rounded-full px-2 py-1 transition ${
+                            activeEra === era
+                              ? "bg-amber-300/14 text-amber-100"
+                              : "bg-white/0 text-[#c9b68a] hover:bg-[rgba(255,248,220,0.05)] hover:text-[#eadfbc]"
+                          }`}
+                        >
+                          {era}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                {activeDesktopPanel === "category" ? (
+                  <div className="mt-4">
+                    <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
+                      四部门类
+                    </div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          type="button"
+                          onClick={() => setCategoryFilter(category)}
+                          className={`rounded-full px-3 py-2 text-xs transition ${
+                            categoryFilter === category
+                              ? "bg-[#f3dfab] text-[#42290a]"
+                              : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                          }`}
+                        >
+                          {category}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="mt-4 text-[11px] tracking-[0.24em] text-[#d8c9a3]">
+                      {schoolLabel}
+                    </div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {schools.map((school) => (
+                        <button
+                          key={school}
+                          type="button"
+                          onClick={() => setSchoolFilter(school)}
+                          className={`rounded-full px-3 py-2 text-xs transition ${
+                            schoolFilter === school
+                              ? "bg-[#f3dfab] text-[#42290a]"
+                              : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                          }`}
+                        >
+                          {school}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-sm text-[#eadfbc]">
+                      当前河段显现自 {eras[0]} 至 {activeEra}，门类为 {categoryFilter}，学派为 {schoolFilter}。
+                    </div>
+                  </div>
+                ) : null}
+
+                {activeDesktopPanel === "branch" ? (
+                  <div className="mt-4">
+                    {activeBranchAnnotation ? (
+                      <>
+                        <div className="text-sm font-medium text-[#fbf3da]">
+                          {activeBranchAnnotation.label}
+                        </div>
+                        <p className="mt-2 text-sm leading-6 text-[#f4e8c4]">
+                          {activeBranchAnnotation.description}
+                        </p>
+                      </>
+                    ) : (
+                      <div className="text-sm text-[#d8c9a3]">
+                        此刻正停在主河道，可顺着河面节点入卷。
+                      </div>
+                    )}
+                    {viewMode === "river" && visibleNodePreview.length ? (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {visibleNodePreview.map((book) => (
+                          <button
+                            key={book.id}
+                            type="button"
+                            onClick={() => handleDiveToBook(book.slug)}
+                            className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                              selectedBookSlug === book.slug
+                                ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
+                                : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                            }`}
+                          >
+                            {book.shortTitle}
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+              </section>
             </div>
           </aside>
         </div>
 
         {showDesktopDossier && selectedBook && selectedDetail ? (
-          <div className="absolute right-4 top-[104px] z-20 hidden w-[min(408px,calc(100vw-22rem))] sm:right-6 lg:right-8 xl:block">
+          <div className="absolute right-4 top-[104px] z-20 hidden w-[min(400px,calc(100vw-20rem))] sm:right-6 lg:right-8 xl:block">
             <aside className="pointer-events-auto xl:pt-2">
               <div className={`overflow-hidden p-4 ${panelBaseClass}`}>
                 <div
