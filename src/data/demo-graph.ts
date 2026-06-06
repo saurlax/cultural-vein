@@ -296,6 +296,42 @@ const details: Record<string, BookDetail> = {
             evidence: "后世礼学引用《诗》阐释教化次序。",
           },
         ],
+        tracePath: [
+          {
+            id: "trace-sj-1",
+            title: "诗经",
+            relation: "源头",
+            note: "原始诗教文本，提供“兴观群怨”的经典母题。",
+          },
+          {
+            id: "trace-sj-2",
+            title: "礼记",
+            relation: "引述",
+            note: "将《诗》纳入礼乐教化秩序，形成显式引用链。",
+          },
+          {
+            id: "trace-sj-3",
+            title: "四书章句集注",
+            relation: "再诠释",
+            note: "理学语境下继续把诗教内化为修身工夫。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-sj-1",
+            targetTitle: "礼记",
+            relation: "显式引用",
+            note: "以《诗》证明礼乐教化的先后次序。",
+            confidenceLabel: "高",
+          },
+          {
+            id: "down-sj-2",
+            targetTitle: "人间词话",
+            relation: "诗学影响",
+            note: "“境界”理论回收比兴与审美感发传统。",
+            confidenceLabel: "低",
+          },
+        ],
       },
       {
         id: "passage-sj-2",
@@ -310,6 +346,29 @@ const details: Record<string, BookDetail> = {
             layer: "semantic",
             confidenceLabel: "中",
             evidence: "理学语境中对“维新”精神作义理化继承。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-sj-4",
+            title: "诗经",
+            relation: "源头",
+            note: "保留“维新”这一经典政治修辞母题。",
+          },
+          {
+            id: "trace-sj-5",
+            title: "四书章句集注",
+            relation: "义理化",
+            note: "将经典政治修辞改写为修身进德的话语资源。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-sj-3",
+            targetTitle: "四书章句集注",
+            relation: "语义关联",
+            note: "“维新”被重新编码为理学修身路径。",
+            confidenceLabel: "中",
           },
         ],
       },
@@ -375,6 +434,29 @@ const details: Record<string, BookDetail> = {
             evidence: "直接承接《礼记》篇目并加章句诠释。",
           },
         ],
+        tracePath: [
+          {
+            id: "trace-ss-1",
+            title: "礼记",
+            relation: "原篇",
+            note: "《大学》原属《礼记》，提供直接文本源头。",
+          },
+          {
+            id: "trace-ss-2",
+            title: "四书章句集注",
+            relation: "章句重构",
+            note: "朱熹将其转化为科举与理学学习的核心入口。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-ss-1",
+            targetTitle: "明内府本四书章句",
+            relation: "版本扩散",
+            note: "随着重刊进入更广的教学体系。",
+            confidenceLabel: "高",
+          },
+        ],
       },
       {
         id: "passage-ss-2",
@@ -389,6 +471,29 @@ const details: Record<string, BookDetail> = {
             layer: "semantic",
             confidenceLabel: "中",
             evidence: "由论语义理延伸出系统化心性论表达。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-ss-3",
+            title: "论语集注",
+            relation: "义理基础",
+            note: "提供关于仁与心性的解释框架。",
+          },
+          {
+            id: "trace-ss-4",
+            title: "四书章句集注",
+            relation: "体系整合",
+            note: "把原本分散的义理整合为统一学习路径。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-ss-2",
+            targetTitle: "日知录",
+            relation: "批评性承继",
+            note: "清代学者沿着理学框架展开反思与修正。",
+            confidenceLabel: "中",
           },
         ],
       },

@@ -94,6 +94,19 @@ export interface TextPassage {
   section: string;
   original: string;
   links: PassageLink[];
+  tracePath?: Array<{
+    id: string;
+    title: string;
+    relation: string;
+    note: string;
+  }>;
+  downstreamInfluence?: Array<{
+    id: string;
+    targetTitle: string;
+    relation: string;
+    note: string;
+    confidenceLabel: string;
+  }>;
 }
 
 export interface BookDetail {

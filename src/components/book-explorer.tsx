@@ -41,6 +41,18 @@ function confidenceClass(label: string) {
   return "border-white/10 bg-white/10 text-stone-200";
 }
 
+function inlineConfidenceClass(label: string) {
+  if (label === "高") {
+    return "rounded bg-emerald-300/18 px-1.5 py-0.5 text-emerald-100";
+  }
+
+  if (label === "中") {
+    return "rounded bg-amber-300/18 px-1.5 py-0.5 text-amber-100";
+  }
+
+  return "rounded border border-dashed border-white/15 px-1.5 py-0.5 text-stone-300";
+}
+
 export function BookExplorer({
   book,
   detail,
@@ -437,25 +449,126 @@ export function BookExplorer({
                 <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
                   {passage.section}
                 </div>
-                <p className="mt-3 text-sm leading-7 text-stone-200">{passage.original}</p>
-                <div className="mt-4 space-y-2">
-                  {passage.links.map((link) => (
-                    <div
-                      key={link.id}
-                      className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm"
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="font-medium text-stone-50">{link.sourceTitle}</span>
-                        <span
-                          className={`rounded-full border px-2 py-1 text-xs ${confidenceClass(link.confidenceLabel)}`}
-                        >
-                          {link.confidenceLabel}置信度
-                        </span>
-                      </div>
-                      <div className="mt-2 text-stone-200">{link.quote}</div>
-                      <p className="mt-2 text-stone-300">{link.evidence}</p>
+                <div className="mt-4 grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+                  <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                    <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                      原文对读
                     </div>
-                  ))}
+                    <p className="mt-3 text-sm leading-8 text-stone-100">
+                      {passage.original}
+                    </p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {passage.links.map((link) => (
+                        <span
+                          key={link.id}
+                          className={`text-xs ${inlineConfidenceClass(link.confidenceLabel)}`}
+                        >
+                          {link.sourceTitle} · {link.confidenceLabel}置信度
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                    <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                      引用证据
+                    </div>
+                    <div className="mt-3 space-y-2">
+                      {passage.links.map((link) => (
+                        <div
+                          key={link.id}
+                          className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-sm"
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="font-medium text-stone-50">
+                              {link.sourceTitle}
+                            </span>
+                            <span
+                              className={`rounded-full border px-2 py-1 text-xs ${confidenceClass(link.confidenceLabel)}`}
+                            >
+                              {link.confidenceLabel}置信度
+                            </span>
+                          </div>
+                          <div className="mt-2 text-stone-200">{link.quote}</div>
+                          <p className="mt-2 text-stone-300">{link.evidence}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid gap-4 xl:grid-cols-2">
+                  <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm font-medium text-cyan-50">溯源光线链路</h4>
+                      <span className="text-xs text-cyan-100/70">上游追踪</span>
+                    </div>
+                    {passage.tracePath?.length ? (
+                      <div className="mt-3 space-y-3">
+                        {passage.tracePath.map((trace, index) => (
+                          <div key={trace.id} className="flex gap-3">
+                            <div className="flex w-8 flex-col items-center pt-1">
+                              <div className="h-3 w-3 rounded-full bg-cyan-300" />
+                              {index < passage.tracePath!.length - 1 ? (
+                                <div className="mt-1 h-full w-px bg-cyan-300/25" />
+                              ) : null}
+                            </div>
+                            <div className="flex-1 rounded-2xl bg-black/15 px-3 py-3">
+                              <div className="flex items-center justify-between gap-3">
+                                <span className="font-medium text-stone-50">
+                                  {trace.title}
+                                </span>
+                                <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-xs text-cyan-100">
+                                  {trace.relation}
+                                </span>
+                              </div>
+                              <p className="mt-2 text-sm leading-6 text-stone-300">
+                                {trace.note}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="mt-3 text-sm text-stone-400">暂无溯源链路样例。</div>
+                    )}
+                  </div>
+
+                  <div className="rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm font-medium text-amber-50">下游影响追踪</h4>
+                      <span className="text-xs text-amber-100/70">反向查看</span>
+                    </div>
+                    {passage.downstreamInfluence?.length ? (
+                      <div className="mt-3 space-y-2">
+                        {passage.downstreamInfluence.map((item) => (
+                          <div
+                            key={item.id}
+                            className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3"
+                          >
+                            <div className="flex items-center justify-between gap-3">
+                              <span className="font-medium text-stone-50">
+                                {item.targetTitle}
+                              </span>
+                              <span
+                                className={`rounded-full border px-2 py-1 text-xs ${confidenceClass(item.confidenceLabel)}`}
+                              >
+                                {item.confidenceLabel}置信度
+                              </span>
+                            </div>
+                            <div className="mt-2 text-xs uppercase tracking-[0.2em] text-stone-400">
+                              {item.relation}
+                            </div>
+                            <p className="mt-2 text-sm leading-6 text-stone-300">
+                              {item.note}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="mt-3 text-sm text-stone-400">暂无下游影响样例。</div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))
