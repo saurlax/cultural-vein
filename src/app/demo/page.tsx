@@ -8,14 +8,14 @@ const narrativeSteps = [
     label: "01",
     title: "飞越文脉",
     detail:
-      "从《诗经》《礼记》到《四书章句集注》，先把典籍传承看成会随时代生长的知识长河，而不是难以阅读的节点团。",
+      "从《诗经》《论语》《礼记》到《四书章句集注》，先把典籍传承看成会随时代生长的知识长河，而不是难以阅读的节点团。",
   },
   {
     id: "meso",
     label: "02",
     title: "钻入典籍",
     detail:
-      "以《四书章句集注》为主案例，向评审展示传播路径、人物关联、版本流变和时间线如何形成一套完整中观叙事。",
+      "以《四书章句集注》为主案例，并补充《论语》《大学》《中庸》这些新增节点，向评审展示传播路径、人物关联、版本流变和时间线如何形成完整中观叙事。",
   },
   {
     id: "micro",
@@ -29,7 +29,7 @@ const narrativeSteps = [
     label: "04",
     title: "真实数据接入",
     detail:
-      "强调 CBDB、上海图书馆、南京图书馆、复旦大学图书馆样本已经被接到人物、活动、机构与时间线模块里。",
+      "强调 CBDB、上海图书馆、南京图书馆、复旦大学图书馆，以及搜韵等接口样本已经被接到人物、活动、机构与时间线模块里。",
   },
   {
     id: "future",
@@ -65,9 +65,55 @@ const targetDatasets = [
   "家谱 / 红色文献 / 诗词",
 ] as const;
 
+const fourBooksHighlights = [
+  {
+    title: "论语",
+    era: "先秦",
+    role: "四书源头节点",
+    detail: "补上孔门语录源头，使四书主干不再只从宋代理学解释层开始讲述。",
+    sources: ["CBDB", "上海图书馆活动样本", "搜韵知识图谱 API"],
+  },
+  {
+    title: "大学",
+    era: "两汉",
+    role: "礼记析出节点",
+    detail: "把《礼记》篇章如何独立成书并进入四书教材体系讲得更清楚。",
+    sources: ["CBDB", "上海图书馆活动样本"],
+  },
+  {
+    title: "中庸",
+    era: "两汉",
+    role: "义理枢纽节点",
+    detail: "把诚、中和、性命论这一层心性义理从抽象描述落到明确节点上。",
+    sources: ["CBDB", "上海图书馆活动样本", "搜韵知识图谱 API"],
+  },
+] as const;
+
+const sourceShowcase = [
+  {
+    name: "CBDB",
+    detail: "人物命中、活动地点和时间线信号已经接入四书主干与史学支流。",
+  },
+  {
+    name: "上海图书馆开放数据",
+    detail: "活动场馆与活动事件样本作为传播现场信号，已接到四书主干节点。",
+  },
+  {
+    name: "搜韵知识图谱 API",
+    detail: "已扩展到《论语》《大学》《中庸》《孟子》《四书章句集注》等节点，强化文本与知识图谱方向的扩展叙事。",
+  },
+  {
+    name: "南京 / 复旦等机构样本",
+    detail: "图像资源、馆藏样例和手稿诗笺继续承担“机构来源”和“可扩展数据生态”的答辩证明。",
+  },
+] as const;
+
 const topBooks = [...riverDataset.books]
   .sort((left, right) => right.influence - left.influence)
   .slice(0, 4);
+const fourBooksCore = riverDataset.books.filter((book) =>
+  ["lunyu", "daxue", "zhongyong", "sishu-zhangju"].includes(book.slug),
+);
 
 const citationLayerSummary = riverDataset.citations.reduce(
   (summary, citation) => {
@@ -241,6 +287,54 @@ export default function DemoPage() {
           </section>
         </div>
 
+        <section className="rounded-[32px] border border-cyan-300/12 bg-[linear-gradient(135deg,rgba(16,40,40,0.94),rgba(7,13,13,0.98))] px-6 py-6">
+          <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+            <div className="max-w-3xl">
+              <div className="text-xs uppercase tracking-[0.24em] text-cyan-100/75">
+                Expanded Domain
+              </div>
+              <h2 className="mt-2 text-2xl font-semibold text-stone-50">
+                四书主干现在已经能讲完整链路
+              </h2>
+              <p className="mt-3 text-sm leading-7 text-stone-300">
+                这一轮不只是补了书名，而是把《论语》《大学》《中庸》接进河流节点、关系边、传播、人物、版本、时间线和文本溯源里。评审现在能看到“四书体系如何长出来”，而不只是看到宋代理学结果层。
+              </p>
+            </div>
+            <div className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-100">
+              四书核心节点 {fourBooksCore.length} / 4 已就位
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-4 xl:grid-cols-4">
+            {fourBooksHighlights.map((item) => (
+              <div
+                key={item.title}
+                className="rounded-[24px] border border-white/10 bg-black/15 px-4 py-4"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="text-lg font-semibold text-stone-50">{item.title}</div>
+                    <div className="mt-1 text-xs uppercase tracking-[0.18em] text-stone-400">
+                      {item.era} · {item.role}
+                    </div>
+                  </div>
+                </div>
+                <p className="mt-3 text-sm leading-7 text-stone-300">{item.detail}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {item.sources.map((source) => (
+                    <span
+                      key={`${item.title}-${source}`}
+                      className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-[11px] text-cyan-100"
+                    >
+                      {source}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
           <section className="rounded-[32px] border border-white/10 bg-black/20 px-6 py-6">
             <div className="text-xs uppercase tracking-[0.24em] text-stone-400">
@@ -331,6 +425,20 @@ export default function DemoPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+            <div className="mt-5 rounded-[24px] border border-white/10 bg-black/15 px-4 py-4">
+              <div className="text-sm font-medium text-stone-50">当前最值得点名的真实来源</div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                {sourceShowcase.map((item) => (
+                  <div
+                    key={item.name}
+                    className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                  >
+                    <div className="font-medium text-stone-50">{item.name}</div>
+                    <p className="mt-2 text-sm leading-7 text-stone-300">{item.detail}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </section>
