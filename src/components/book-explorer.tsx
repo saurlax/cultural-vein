@@ -2829,17 +2829,31 @@ export function BookExplorer({
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                        交互说明
+                        微观导引
                       </div>
                       <p className="mt-3 text-sm leading-7 text-amber-50/90">
-                        先选中文本片段与证据卡，再点击“启动溯源”，链路会沿当前文本逆流而上，并逐步停留在中间转引节点。
+                        这组快捷入口会把当前片段直接推进到证据聚焦、上游溯源或下游影响，适合现场连贯演示。
                       </p>
                     </div>
+                    <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
+                      当前片段 {activePassage.section}
+                    </div>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {activeLink ? (
+                      <button
+                        type="button"
+                        onClick={handleOpenLinkedBook}
+                        className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                      >
+                        打开当前证据源典
+                      </button>
+                    ) : null}
                     <button
                       type="button"
                       onClick={handleStartTrace}
                       disabled={!activePassage?.tracePath?.length || tracePlaying}
-                      className={`rounded-full px-4 py-2 text-xs transition ${
+                      className={`rounded-full px-3 py-1.5 text-xs transition ${
                         !activePassage?.tracePath?.length
                           ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
                           : tracePlaying
@@ -2849,6 +2863,34 @@ export function BookExplorer({
                     >
                       {tracePlaying ? "溯源进行中" : "启动溯源"}
                     </button>
+                    {activePassage.tracePath?.[0] ? (
+                      <button
+                        type="button"
+                        onClick={() => handleOpenTraceBook(activePassage.tracePath![0]!.title)}
+                        disabled={!bookSlugByTitle.has(activePassage.tracePath[0].title)}
+                        className={`rounded-full px-3 py-1.5 text-xs transition ${
+                          bookSlugByTitle.has(activePassage.tracePath[0].title)
+                            ? "border border-amber-300/25 bg-amber-300/15 text-amber-50 hover:bg-amber-300/20"
+                            : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                        }`}
+                      >
+                        钻入最早上游典籍
+                      </button>
+                    ) : null}
+                    {activePassage.downstreamInfluence?.[0] ? (
+                      <button
+                        type="button"
+                        onClick={() => handleOpenDownstreamBook(activePassage.downstreamInfluence![0]!.targetTitle)}
+                        disabled={!bookSlugByTitle.has(activePassage.downstreamInfluence[0].targetTitle)}
+                        className={`rounded-full px-3 py-1.5 text-xs transition ${
+                          bookSlugByTitle.has(activePassage.downstreamInfluence[0].targetTitle)
+                            ? "border border-emerald-300/20 bg-emerald-300/10 text-emerald-100 hover:bg-emerald-300/15"
+                            : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                        }`}
+                      >
+                        继续进入下游典籍
+                      </button>
+                    ) : null}
                   </div>
                 </div>
               </div>
