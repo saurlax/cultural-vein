@@ -479,6 +479,8 @@ export function CulturalVeinShell() {
             hoveredBranchId={hoveredBranchId}
             onHoverBranch={setHoveredBranchId}
             traceFocus={traceFocus}
+            visibleNodeCount={filteredBooks.length}
+            totalNodeCount={riverDataset.books.length}
           />
         </main>
 

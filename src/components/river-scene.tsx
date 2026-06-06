@@ -32,6 +32,8 @@ interface RiverSceneProps {
   hoveredBranchId?: string | null;
   onHoverBranch?: (branchId: string | null) => void;
   traceFocus?: TraceFocusState | null;
+  visibleNodeCount?: number;
+  totalNodeCount?: number;
 }
 
 interface RiverRibbonProps {
@@ -210,6 +212,52 @@ function RiverParticleStream({
   );
 }
 
+function FlowBeacons({
+  books,
+  activeEra,
+}: {
+  books: BookNode[];
+  activeEra: RiverEra;
+}) {
+  const beaconRef = useRef<THREE.Group>(null);
+  const eraOrder: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
+  const activeIndex = eraOrder.indexOf(activeEra);
+  const latestBooks = books
+    .filter((book) => eraOrder.indexOf(book.dynasty) === activeIndex)
+    .slice(0, 4);
+
+  useFrame((state) => {
+    if (!beaconRef.current) {
+      return;
+    }
+
+    beaconRef.current.children.forEach((child, index) => {
+      const mesh = child as THREE.Mesh;
+      const pulse = 1 + Math.sin(state.clock.elapsedTime * 1.4 + index * 0.85) * 0.18;
+      mesh.scale.setScalar(pulse);
+      const material = mesh.material;
+      if (material instanceof THREE.MeshBasicMaterial) {
+        material.opacity = 0.18 + Math.max(0, Math.sin(state.clock.elapsedTime * 1.4 + index * 0.85)) * 0.18;
+      }
+    });
+  });
+
+  return (
+    <group ref={beaconRef}>
+      {latestBooks.map((book) => (
+        <mesh
+          key={`beacon-${book.id}`}
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[book.coordinates[0], book.coordinates[1] - 0.03, book.coordinates[2]]}
+        >
+          <ringGeometry args={[0.26, 0.4, 40]} />
+          <meshBasicMaterial color="#a7f3d0" transparent opacity={0.24} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function BookMarkers({
   books,
   selectedBookSlug,
@@ -229,9 +277,21 @@ function BookMarkers({
     () => new Set(traceFocus?.titles ?? []),
     [traceFocus?.titles],
   );
+  const markerRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (!markerRef.current) {
+      return;
+    }
+
+    markerRef.current.children.forEach((child, index) => {
+      const group = child as THREE.Group;
+      group.position.y = books[index]?.coordinates[1] + Math.sin(state.clock.elapsedTime * 0.8 + index * 0.35) * 0.02;
+    });
+  });
 
   return (
-    <>
+    <group ref={markerRef}>
       {books.map((book) => {
         const isSelected = book.slug === selectedBookSlug;
         const bookEraIndex = eraOrder.indexOf(book.dynasty);
@@ -287,8 +347,8 @@ function BookMarkers({
               </mesh>
             ) : null}
             <Text
-              position={[0, 0.38, 0]}
-              fontSize={0.17}
+              position={[0, isTraceLinked ? 0.44 : 0.38, 0]}
+              fontSize={isTraceCurrent ? 0.19 : 0.17}
               color={
                 isTraceCurrent
                   ? "#cffafe"
@@ -312,7 +372,7 @@ function BookMarkers({
           </group>
         );
       })}
-    </>
+    </group>
   );
 }
 
@@ -383,8 +443,21 @@ function BranchMarkers({
   hoveredBranchId?: string | null;
   onHoverBranch?: (branchId: string | null) => void;
 }) {
+  const branchRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (!branchRef.current) {
+      return;
+    }
+
+    branchRef.current.children.forEach((child, index) => {
+      const group = child as THREE.Group;
+      group.position.y = annotations[index]!.position[1] + Math.sin(state.clock.elapsedTime * 1.1 + index * 0.65) * 0.03;
+    });
+  });
+
   return (
-    <>
+    <group ref={branchRef}>
       {annotations.map((annotation) => {
         const isHovered = hoveredBranchId === annotation.id;
         const isSelected = selectedBookSlug === annotation.targetSlug;
@@ -415,7 +488,7 @@ function BranchMarkers({
               position={[0, 0.3, 0]}
               fontSize={0.12}
               maxWidth={1.6}
-              color={isHovered || isSelected ? "#fef3c7" : "#e7e5e4"}
+              color={isHovered || isSelected ? "#fef3c7" : "#cbd5e1"}
               anchorX="center"
               anchorY="middle"
             >
@@ -424,7 +497,7 @@ function BranchMarkers({
           </group>
         );
       })}
-    </>
+    </group>
   );
 }
 
@@ -493,7 +566,6 @@ function RiverWorld({
         .map((book) => new THREE.Vector3(...book.coordinates)),
     );
   }, [books]);
-
   useEffect(() => {
     const focusPoint = traceFocus?.active
       ? cameraTarget.clone()
@@ -593,6 +665,7 @@ function RiverWorld({
         ) : null,
       )}
 
+      <FlowBeacons books={books} activeEra={activeEra} />
       {tracePathPoints.length >= 2 ? (
         <group>
           <Line
@@ -642,6 +715,14 @@ function RiverWorld({
 }
 
 export function RiverScene(props: RiverSceneProps) {
+  const eraProgress = props.activeEra
+    ? ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"].indexOf(props.activeEra) / 6
+    : 0;
+  const visibilityRatio =
+    props.totalNodeCount && props.totalNodeCount > 0
+      ? (props.visibleNodeCount ?? 0) / props.totalNodeCount
+      : 0;
+
   return (
     <div className="relative h-full min-h-screen overflow-hidden rounded-[32px] border border-white/10 bg-[#091110] shadow-[0_0_80px_rgba(0,0,0,0.42)]">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(3,8,8,0.72),rgba(3,8,8,0))]" />
@@ -670,6 +751,53 @@ export function RiverScene(props: RiverSceneProps) {
               : props.cinematicState === "returning"
                 ? "镜头正在回到整条河流的总览。"
                 : "拖拽旋转河流，点击节点或支流标注即可进入细部。"}
+        </div>
+        <div className="mt-3 space-y-2">
+          <div>
+            <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-stone-500">
+              <span>Era Fill</span>
+              <span>{Math.round(eraProgress * 100)}%</span>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div
+                className="h-full rounded-full bg-[linear-gradient(90deg,#f59e0b,#67e8f9)]"
+                style={{ width: `${Math.max(10, eraProgress * 100)}%` }}
+              />
+            </div>
+          </div>
+          <div>
+            <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-stone-500">
+              <span>Visible Basin</span>
+              <span>{Math.round(visibilityRatio * 100)}%</span>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div
+                className="h-full rounded-full bg-[linear-gradient(90deg,#34d399,#bbf7d0)]"
+                style={{ width: `${Math.max(8, visibilityRatio * 100)}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="pointer-events-none absolute left-5 bottom-5 z-10 rounded-[24px] border border-white/10 bg-black/18 px-4 py-3 text-[11px] text-stone-300 backdrop-blur-md">
+        <div className="text-[10px] uppercase tracking-[0.24em] text-stone-500">
+          Basin Scan
+        </div>
+        <div className="mt-2 grid grid-cols-3 gap-3">
+          <div>
+            <div className="text-stone-500">节点</div>
+            <div className="mt-1 text-sm text-stone-100">{props.visibleNodeCount ?? 0}</div>
+          </div>
+          <div>
+            <div className="text-stone-500">总量</div>
+            <div className="mt-1 text-sm text-stone-100">{props.totalNodeCount ?? 0}</div>
+          </div>
+          <div>
+            <div className="text-stone-500">模式</div>
+            <div className="mt-1 text-sm text-stone-100">
+              {props.traceFocus?.active ? "逆流" : props.viewMode === "book" ? "钻入" : "巡航"}
+            </div>
+          </div>
         </div>
       </div>
       <div className="pointer-events-none absolute right-5 bottom-5 z-10 flex max-w-[520px] flex-wrap justify-end gap-2 text-[11px] text-stone-300">
