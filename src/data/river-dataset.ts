@@ -2045,6 +2045,17 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         editionType: "重刊本",
         note: "以注释方式强化公羊义例与微言大义的阐释路线。",
       },
+      {
+        id: "version-gyz-3",
+        label: "宋刊《公羊传注疏》本",
+        year: 1050,
+        place: "开封",
+        library: "国子监",
+        status: "存世",
+        parentId: "version-gyz-2",
+        editionType: "刻本",
+        note: "宋代将公羊学重新纳入经义教学与校勘系统，使其不止停留在汉代旧注层。",
+      },
     ],
     timeline: [
       {
@@ -2058,6 +2069,12 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         year: 180,
         title: "何休《公羊解诂》成型",
         detail: "东汉注释传统进一步把公羊学稳定为一条可讲授、可辩论的春秋支流。",
+      },
+      {
+        id: "tl-gyz-3",
+        year: 1050,
+        title: "宋刊注疏再度激活公羊学",
+        detail: "两宋经义教育与校勘传统重新回看公羊义例，使其在春秋学内部继续保持可讨论性。",
       },
     ],
     passages: [
@@ -2096,6 +2113,51 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
             targetTitle: "日知录",
             relation: "经世回响",
             note: "经世议论对春秋大义的回看，仍能追溯到公羊学的制度判断传统。",
+            confidenceLabel: "低",
+          },
+        ],
+      },
+      {
+        id: "passage-gyz-2",
+        section: "解诂例义",
+        original: "大一统与王道褒贬之说，使春秋不只是记事之书，更成为制度与政治判断之书。",
+        links: [
+          {
+            id: "passage-gyz-2-link-1",
+            quote: "治道判断的经义化",
+            sourceBookId: "book-shangshu",
+            sourceTitle: "尚书",
+            layer: "semantic",
+            confidenceLabel: "中",
+            evidence: "《尚书》的政教话语与《公羊传》的王道义例在两汉经世讨论中长期互相借力。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-gyz-3",
+            title: "尚书",
+            relation: "政教背景",
+            note: "上古政教经典提供王道与制度讨论的语言资源。",
+          },
+          {
+            id: "trace-gyz-4",
+            title: "春秋公羊传",
+            relation: "义例转写",
+            note: "把政治判断压缩到春秋笔法与义例结构之中。",
+          },
+          {
+            id: "trace-gyz-5",
+            title: "日知录",
+            relation: "经世回看",
+            note: "后世经世论述继续从春秋大义与制度判断中寻找资源。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-gyz-2",
+            targetTitle: "日知录",
+            relation: "制度回响",
+            note: "经世议论持续回看春秋大义，把义例判断转入现实制度讨论。",
             confidenceLabel: "低",
           },
         ],
@@ -2369,6 +2431,17 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         editionType: "刻本",
         note: "宋代刊本使骚体注释重新进入更广泛的诗学阅读网络。",
       },
+      {
+        id: "version-cczj-3",
+        label: "明刊《楚辞章句》评点本",
+        year: 1580,
+        place: "杭州",
+        library: "诗文评点系统",
+        status: "存世",
+        parentId: "version-cczj-2",
+        editionType: "重刊本",
+        note: "明清评点把骚体传统继续带入选本阅读、诗学批评与案头讲习环境。",
+      },
     ],
     timeline: [
       {
@@ -2382,6 +2455,12 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         year: 1100,
         title: "宋刻本继续放大骚体影响",
         detail: "诗学批评、总集阅读与书院刊刻共同延续《楚辞》传统。",
+      },
+      {
+        id: "tl-cczj-3",
+        year: 1580,
+        title: "明清评点延长骚体生命",
+        detail: "评点与重刊使《楚辞》不只作为古注保存，更作为持续可讨论的诗学资源被重新激活。",
       },
     ],
     passages: [
@@ -2427,6 +2506,51 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
             relation: "总集承接",
             note: "《文选》把骚体重新接入更广阔的诗文阅读与批评环境。",
             confidenceLabel: "高",
+          },
+        ],
+      },
+      {
+        id: "passage-cczj-2",
+        section: "骚体义脉",
+        original: "章句之功，不止释词句，更在把抒情、象征与历史怨愤整理为后世可继承的诗学结构。",
+        links: [
+          {
+            id: "passage-cczj-2-link-1",
+            quote: "文论系统继续接手骚体资源",
+            sourceBookId: "book-wenxin-diaolong",
+            sourceTitle: "文心雕龙",
+            layer: "semantic",
+            confidenceLabel: "中",
+            evidence: "《文心雕龙》把《楚辞》中的风骨、辞采与抒情结构进一步纳入系统文论。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-cczj-4",
+            title: "楚辞章句",
+            relation: "注释定型",
+            note: "先把骚体资源整理成稳定注释层。",
+          },
+          {
+            id: "trace-cczj-5",
+            title: "文心雕龙",
+            relation: "理论接手",
+            note: "文论进一步把骚体资源转译为风格、风骨与辞采问题。",
+          },
+          {
+            id: "trace-cczj-6",
+            title: "昭明文选",
+            relation: "总集扩散",
+            note: "骚体资源随后进入更广的选本传播与公共阅读环境。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-cczj-2",
+            targetTitle: "文心雕龙",
+            relation: "理论回收",
+            note: "骚体注释系统为六朝文论提供了可抽象化的诗学对象。",
+            confidenceLabel: "中",
           },
         ],
       },
@@ -2547,6 +2671,17 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         editionType: "重刊本",
         note: "明清重刊使《文心雕龙》重新进入诗文批评与学术整理主线。",
       },
+      {
+        id: "version-wxdl-3",
+        label: "清校《文心雕龙》评注本",
+        year: 1750,
+        place: "杭州",
+        library: "学术整理系统",
+        status: "存世",
+        parentId: "version-wxdl-2",
+        editionType: "整理本",
+        note: "清代校勘与评注进一步把《文心雕龙》推入文章学、诗学与目录学整理链路。",
+      },
     ],
     timeline: [
       {
@@ -2560,6 +2695,12 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
         year: 1550,
         title: "明清重刊推动再传播",
         detail: "《文心雕龙》继续被用于文体论、风格论和古典审美重估。",
+      },
+      {
+        id: "tl-wxdl-3",
+        year: 1750,
+        title: "清校评注本进入学术整理主线",
+        detail: "校勘、评注与目录学整理使《文心雕龙》从案头文论资源转为更稳定的学术经典。",
       },
     ],
     passages: [
@@ -2620,6 +2761,57 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
             relation: "审美回响",
             note: "近代词学批评对境界、风格和抒情问题的思考，仍与六朝文论保持隐性对话。",
             confidenceLabel: "低",
+          },
+        ],
+      },
+      {
+        id: "passage-wxdl-2",
+        section: "辨骚",
+        original: "骚体之能，在于以风骨、辞采与抒情结构打开古典诗文的另一条高张支路。",
+        links: [
+          {
+            id: "passage-wxdl-2-link-1",
+            quote: "总集编排继续放大文论影响",
+            sourceBookId: "book-wenxuan",
+            sourceTitle: "昭明文选",
+            layer: "semantic",
+            confidenceLabel: "中",
+            evidence: "《昭明文选》把《文心雕龙》所讨论的体类与风格问题继续沉到选本阅读与公共传播环境中。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-wxdl-5",
+            title: "楚辞章句",
+            relation: "对象形成",
+            note: "骚体先在注释系统中被稳定下来。",
+          },
+          {
+            id: "trace-wxdl-6",
+            title: "文心雕龙",
+            relation: "理论升格",
+            note: "将骚体资源上升为可反复调用的文论范畴。",
+          },
+          {
+            id: "trace-wxdl-7",
+            title: "昭明文选",
+            relation: "阅读扩散",
+            note: "总集编排把文论背后的体类秩序扩散到更大阅读共同体中。",
+          },
+          {
+            id: "trace-wxdl-8",
+            title: "人间词话",
+            relation: "近代回响",
+            note: "近代审美继续从古典文论问题中提炼境界与风格判断。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-wxdl-2",
+            targetTitle: "昭明文选",
+            relation: "选本放大",
+            note: "文论中抽象出的体类与风格判断，最终被选本系统带入更广泛的阅读传播中。",
+            confidenceLabel: "中",
           },
         ],
       },
@@ -2987,7 +3179,7 @@ if (shanghaiLibraryActivity.available) {
 
 if (nanjingLibrarySample.available) {
   const institutionSamples = (nanjingLibrarySample.sampleRecords ?? []).slice(0, 4);
-  for (const slug of ["ren-jian-ci-hua", "ri-zhi-lu"] as const) {
+  for (const slug of ["ren-jian-ci-hua", "ri-zhi-lu", "shangshu-zhengyi"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -3001,59 +3193,65 @@ if (nanjingLibrarySample.available) {
 
 if (fudanArchiveSample.available) {
   const institutionSamples = (fudanArchiveSample.sampleRecords ?? []).slice(0, 2);
-  const detail = details["ren-jian-ci-hua"];
-  detail.realWorldSignals = {
-    ...detail.realWorldSignals,
-    sourceLabel: detail.realWorldSignals?.sourceLabel
-      ? `${detail.realWorldSignals.sourceLabel} + 复旦馆藏资料`
-      : "复旦大学图书馆馆藏资料",
-    institutionSamples: [
-      ...(detail.realWorldSignals?.institutionSamples ?? []),
-      ...institutionSamples,
-    ],
-    venueSummary:
-      detail.realWorldSignals?.venueSummary ??
-      fudanArchiveSample.summary ??
-      "已接入复旦大学图书馆馆藏资料。",
-  };
+  for (const slug of ["ren-jian-ci-hua", "shuowen"] as const) {
+    const detail = details[slug];
+    detail.realWorldSignals = {
+      ...detail.realWorldSignals,
+      sourceLabel: detail.realWorldSignals?.sourceLabel
+        ? `${detail.realWorldSignals.sourceLabel} + 复旦馆藏资料`
+        : "复旦大学图书馆馆藏资料",
+      institutionSamples: [
+        ...(detail.realWorldSignals?.institutionSamples ?? []),
+        ...institutionSamples,
+      ],
+      venueSummary:
+        detail.realWorldSignals?.venueSummary ??
+        fudanArchiveSample.summary ??
+        "已接入复旦大学图书馆馆藏资料。",
+    };
+  }
 }
 
 if (nanhuArchiveSample.available) {
   const institutionSamples = (nanhuArchiveSample.sampleRecords ?? []).slice(0, 3);
-  const detail = details["zi-zhi-tong-jian"];
-  detail.realWorldSignals = {
-    ...detail.realWorldSignals,
-    sourceLabel: detail.realWorldSignals?.sourceLabel
-      ? `${detail.realWorldSignals.sourceLabel} + 南湖专题文献资料`
-      : "南湖专题文献资料",
-    institutionSamples: [
-      ...(detail.realWorldSignals?.institutionSamples ?? []),
-      ...institutionSamples,
-    ],
-    venueSummary:
-      detail.realWorldSignals?.venueSummary ??
-      nanhuArchiveSample.summary ??
-      "已接入南湖文献数据库专题资料。",
-  };
+  for (const slug of ["zi-zhi-tong-jian", "chuci-zhangju", "wenxuan"] as const) {
+    const detail = details[slug];
+    detail.realWorldSignals = {
+      ...detail.realWorldSignals,
+      sourceLabel: detail.realWorldSignals?.sourceLabel
+        ? `${detail.realWorldSignals.sourceLabel} + 南湖专题文献资料`
+        : "南湖专题文献资料",
+      institutionSamples: [
+        ...(detail.realWorldSignals?.institutionSamples ?? []),
+        ...institutionSamples,
+      ],
+      venueSummary:
+        detail.realWorldSignals?.venueSummary ??
+        nanhuArchiveSample.summary ??
+        "已接入南湖文献数据库专题资料。",
+    };
+  }
 }
 
 if (videoTopicSample.available) {
   const institutionSamples = (videoTopicSample.sampleRecords ?? []).slice(0, 4);
-  const detail = details["ren-jian-ci-hua"];
-  detail.realWorldSignals = {
-    ...detail.realWorldSignals,
-    sourceLabel: detail.realWorldSignals?.sourceLabel
-      ? `${detail.realWorldSignals.sourceLabel} + 近代上海城市文化专题片`
-      : "近代上海城市文化专题片",
-    institutionSamples: [
-      ...(detail.realWorldSignals?.institutionSamples ?? []),
-      ...institutionSamples,
-    ],
-    venueSummary:
-      detail.realWorldSignals?.venueSummary ??
-      videoTopicSample.summary ??
-      "已接入近代上海城市文化专题片资料。",
-  };
+  for (const slug of ["ren-jian-ci-hua", "wenxuan"] as const) {
+    const detail = details[slug];
+    detail.realWorldSignals = {
+      ...detail.realWorldSignals,
+      sourceLabel: detail.realWorldSignals?.sourceLabel
+        ? `${detail.realWorldSignals.sourceLabel} + 近代上海城市文化专题片`
+        : "近代上海城市文化专题片",
+      institutionSamples: [
+        ...(detail.realWorldSignals?.institutionSamples ?? []),
+        ...institutionSamples,
+      ],
+      venueSummary:
+        detail.realWorldSignals?.venueSummary ??
+        videoTopicSample.summary ??
+        "已接入近代上海城市文化专题片资料。",
+    };
+  }
 }
 
 if (shenzhenLibrarySample.available) {
@@ -3121,7 +3319,7 @@ if (soongLiteratureSample.available) {
 
 if (souyunKnowledgeGraphSample.available) {
   const institutionSamples = (souyunKnowledgeGraphSample.sampleRecords ?? []).slice(0, 3);
-  for (const slug of ["shijing", "lunyu", "daxue", "zhongyong", "zhouyi", "mengzi", "sishu-zhangju", "ren-jian-ci-hua"] as const) {
+  for (const slug of ["shijing", "lunyu", "daxue", "zhongyong", "zhouyi", "mengzi", "sishu-zhangju", "ren-jian-ci-hua", "chuci-zhangju"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -3142,7 +3340,7 @@ if (souyunKnowledgeGraphSample.available) {
 
 if (periodicalIndexSample.available) {
   const institutionSamples = (periodicalIndexSample.sampleRecords ?? []).slice(0, 3);
-  for (const slug of ["ren-jian-ci-hua", "ri-zhi-lu"] as const) {
+  for (const slug of ["ren-jian-ci-hua", "ri-zhi-lu", "wenxin-diaolong"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -3170,15 +3368,21 @@ if (cbdbSummary.available) {
   for (const slug of [
     "shijing",
     "shangshu",
+    "shangshu-zhengyi",
     "lunyu",
     "daxue",
     "zhongyong",
     "zhouyi",
     "xiaojing",
     "mengzi",
+    "gongyang-zhuan",
+    "shuowen",
     "sishu-zhangju",
     "shiji",
     "zi-zhi-tong-jian",
+    "chuci-zhangju",
+    "wenxin-diaolong",
+    "wenxuan",
   ] as const) {
     const detail = details[slug];
     const matchedCount = detail.people.filter((person) => person.source === "cbdb").length;
