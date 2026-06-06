@@ -25,10 +25,13 @@
 │  /api/graph                首页图谱数据                     │
 │  /api/books/[slug]         单书详情                         │
 │  /api/insights             真实数据覆盖与统计               │
+│  /api/search               概念搜索与命中排序               │
 │                                                             │
 │  src/data/river-dataset.ts 运行时图谱合并与增强             │
 │  src/data/generated/real-supplements.json                   │
 │                           由脚本生成的真实资料数据          │
+│  src/lib/concept-search.ts 概念搜索排序逻辑                 │
+│  src/lib/source-evidence.ts 单书来源证据归并                │
 └──────────────────────────────┬──────────────────────────────┘
                                │ generated from
 ┌──────────────────────────────┴──────────────────────────────┐
@@ -60,9 +63,11 @@
   - `src/components/cultural-vein-shell.tsx`
   - `src/components/river-scene.tsx`
   - 已实现：时间轴、概念搜索、类别筛选、河流节点选择、关系图例、证据层级说明
+  - 概念搜索已包含搜索 API、概念联想、命中结果排序与直接钻入
 - 中观层
   - `src/components/book-explorer.tsx`
   - 已实现：地理传播、人物关系、版本流变、关联时间线
+  - 当前已补入统一“场景联动焦点”，可把传播、人物、版本、时间事件反向驱动河流镜头与节点高亮
 - 微观层
   - `src/components/book-explorer.tsx`
   - 已实现：文本对读、横排/竖排切换、证据卡切换、溯源链、下游影响
@@ -89,8 +94,10 @@
    - 真实人物与地点信号
    - 馆藏 / 活动 / 机构资料
    - 关系层级与证据文本
-5. /api/* 路由返回图谱、单书和统计信息
-6. React 组件消费这些数据，驱动：
+5. src/lib/concept-search.ts 对典籍题名、概念、学派与摘要做概念搜索排序
+6. src/lib/source-evidence.ts 将单书中的人物、场馆、事件、机构资料归并为来源证据总表
+7. /api/* 路由返回图谱、单书、搜索和统计信息
+8. React 组件消费这些数据，驱动：
    - 河流总览
    - 典籍钻入
    - 文本溯源
@@ -106,20 +113,25 @@
   - 图谱数据接口
 - `src/app/api/books/[slug]/route.ts`
   - 单书详情接口
+  - 返回结构化 `sourceEvidence`
 - `src/app/api/insights/route.ts`
   - 数据覆盖与统计接口
+- `src/app/api/search/route.ts`
+  - 概念搜索接口
 
 ### 交互组件
 
 - `src/components/cultural-vein-shell.tsx`
   - 首页主容器
-  - 数据规模与证据面板
+  - 数据规模、概念搜索与证据面板
 - `src/components/river-scene.tsx`
   - 3D 河流总览
   - 关系弧线
   - 节点选择
+  - 与中观层的镜头联动
 - `src/components/book-explorer.tsx`
   - 中观与微观统一面板
+  - 单书来源证据板与来源证据总表
 
 ### 数据与状态
 
@@ -128,6 +140,10 @@
   - 输出 `riverDataset`
 - `src/data/generated/real-supplements.json`
   - 由脚本生成的真实数据中间层
+- `src/lib/concept-search.ts`
+  - 概念搜索与排序逻辑
+- `src/lib/source-evidence.ts`
+  - 结构化来源证据归并
 - `src/store/app-store.ts`
   - 首页筛选与选书状态
 - `src/types/domain.ts`
