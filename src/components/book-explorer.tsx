@@ -2243,7 +2243,14 @@ export function BookExplorer({
                             <button
                               key={`${activePassage.id}-${segment.link.id}`}
                               type="button"
-                              onClick={() => handleSelectLink(segment.link!.id)}
+                              onClick={() => {
+                                if (isActive && segment.link?.sourceBookId) {
+                                  handleOpenSpecificLinkedBook(segment.link.sourceBookId);
+                                  return;
+                                }
+
+                                handleSelectLink(segment.link!.id);
+                              }}
                               className={`rounded-xl border px-2 py-1 text-left transition ${
                                 passageHighlightClass(
                                   segment.link.confidenceLabel,
@@ -2273,7 +2280,7 @@ export function BookExplorer({
                         灰色虚线：间接影响 / 低置信度
                       </span>
                       <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-stone-300">
-                        点击高亮可聚焦对应证据
+                        首次点击聚焦证据，再点一次直达源典籍
                       </span>
                     </div>
                     <div className="mt-4 flex flex-wrap gap-2">
