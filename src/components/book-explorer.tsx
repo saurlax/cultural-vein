@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { PersonNetwork3D } from "@/components/person-network-3d";
 import { SpreadGlobe } from "@/components/spread-globe";
+import { TraceLightField } from "@/components/trace-light-field";
 import { VersionTree } from "@/components/version-tree";
 import { buildSourceEvidence } from "@/lib/source-evidence";
 import type { BookDetail, BookNode, RiverEra } from "@/types/domain";
@@ -1707,94 +1708,16 @@ export function BookExplorer({
                               逆流回溯
                             </div>
                           </div>
-                          <div className="relative mt-4 h-[180px] rounded-[20px] border border-white/10 bg-[linear-gradient(180deg,rgba(28,18,7,0.92),rgba(12,7,3,0.98))]">
-                            <div className="absolute inset-0 bg-[linear-gradient(transparent_39px,rgba(255,255,255,0.04)_40px),linear-gradient(90deg,transparent_39px,rgba(255,255,255,0.04)_40px)] bg-[length:100%_40px,40px_100%] opacity-20" />
-                            <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full">
-                              <defs>
-                                <linearGradient id="trace-line" x1="0%" x2="100%" y1="0%" y2="0%">
-                                  <stop offset="0%" stopColor="rgba(245,158,11,0.9)" />
-                                  <stop offset="55%" stopColor="rgba(252,211,77,0.95)" />
-                                  <stop offset="100%" stopColor="rgba(254,243,199,0.9)" />
-                                </linearGradient>
-                                <filter id="trace-glow">
-                                  <feGaussianBlur stdDeviation="1.6" result="coloredBlur" />
-                                  <feMerge>
-                                    <feMergeNode in="coloredBlur" />
-                                    <feMergeNode in="SourceGraphic" />
-                                  </feMerge>
-                                </filter>
-                              </defs>
-                              {activePassage.tracePath.map((trace, index) => {
-                                const total = Math.max(activePassage.tracePath!.length - 1, 1);
-                                const x = 12 + (index / total) * 76;
-                                const y = 62 - Math.sin((index / total) * Math.PI) * 22;
-                                const isActive = tracePlaying && index <= traceStep;
-                                const next = activePassage.tracePath?.[index + 1];
-                                const nextX = next ? 12 + ((index + 1) / total) * 76 : null;
-                                const nextY = next
-                                  ? 62 - Math.sin(((index + 1) / total) * Math.PI) * 22
-                                  : null;
-
-                                return (
-                                  <g key={trace.id}>
-                                    {nextX !== null && nextY !== null ? (
-                                      <>
-                                        <path
-                                          d={`M ${x} ${y} C ${x + 7} ${y - 12}, ${nextX - 7} ${nextY + 12}, ${nextX} ${nextY}`}
-                                          fill="none"
-                                          stroke="rgba(255,255,255,0.12)"
-                                          strokeWidth="1.2"
-                                        />
-                                        <path
-                                          d={`M ${x} ${y} C ${x + 7} ${y - 12}, ${nextX - 7} ${nextY + 12}, ${nextX} ${nextY}`}
-                                          fill="none"
-                                          stroke="url(#trace-line)"
-                                          strokeWidth={isActive ? "2.4" : "0"}
-                                          filter={isActive ? "url(#trace-glow)" : undefined}
-                                          strokeLinecap="round"
-                                        />
-                                      </>
-                                    ) : null}
-                                    <circle
-                                      cx={x}
-                                      cy={y}
-                                      r={isActive ? 3.6 : 2.4}
-                                      fill={isActive ? "#fcd34d" : "rgba(255,255,255,0.22)"}
-                                      filter={isActive ? "url(#trace-glow)" : undefined}
-                                    />
-                                    <text
-                                      x={x}
-                                      y={y - 7}
-                                      textAnchor="middle"
-                                      fill={isActive ? "#fef3c7" : "rgba(231,229,228,0.72)"}
-                                      fontSize="4"
-                                    >
-                                      {trace.title}
-                                    </text>
-                                  </g>
-                                );
-                              })}
-                              {tracePlaying && activePassage.tracePath[traceStep] ? (() => {
-                                const total = Math.max(activePassage.tracePath!.length - 1, 1);
-                                const x = 12 + (traceStep / total) * 76;
-                                const y = 62 - Math.sin((traceStep / total) * Math.PI) * 22;
-                                return (
-                                  <circle
-                                    cx={x}
-                                    cy={y}
-                                    r="6"
-                                    fill="rgba(252,211,77,0.18)"
-                                    stroke="rgba(252,211,77,0.92)"
-                                    strokeWidth="0.8"
-                                  />
-                                );
-                              })() : null}
-                            </svg>
-                            <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-stone-400">
-                              <span>当前文本</span>
-                              <span>中间转引</span>
-                              <span>源头典籍</span>
-                            </div>
+                          <div className="mt-4">
+                            <TraceLightField
+                              traces={activePassage.tracePath}
+                              activeIndex={
+                                tracePlaying
+                                  ? Math.min(traceStep, activePassage.tracePath.length - 1)
+                                  : 0
+                              }
+                              playing={tracePlaying}
+                            />
                           </div>
                         </div>
 
