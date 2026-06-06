@@ -2364,15 +2364,65 @@ export function BookExplorer({
               </div>
 
               <div className="grid gap-3 md:grid-cols-3">
-                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-sm leading-7 text-[#eadfbc]">
-                  版本链按“祖本 → 抄本/刻本 → 重刊/整理本”的方式组织，更接近方案中的版本流变树表达。
-                </div>
-                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-sm leading-7 text-[#eadfbc]">
-                  存世状态与版本类型同时编码，既能看传播链，也能看哪些层次已经失传或仅能间接复原。
-                </div>
-                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-sm leading-7 text-[#eadfbc]">
-                  当前版本卡已补入传承链和影像馆藏线索，现场既能讲版本演化，也能顺手展示可追溯的资料落点。
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const rootVersion = activeVersionTrail[0];
+
+                    if (rootVersion?.id) {
+                      setSelectedVersionId(rootVersion.id);
+                    }
+                  }}
+                  className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                >
+                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">祖本入口</div>
+                  <div className="mt-2 text-sm font-medium text-[#fbf3da]">
+                    {activeVersionTrail[0]?.label ?? "当前祖本"}
+                  </div>
+                  <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
+                    直接回到版本链起点，看这部典籍最早显现的版本源头。
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const targetRecord = versionEvidenceSamples[0] ?? institutionPreview[0];
+
+                    if (targetRecord) {
+                      handleSelectInstitutionRecord(targetRecord);
+                    }
+                  }}
+                  className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                >
+                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">馆藏入口</div>
+                  <div className="mt-2 text-sm font-medium text-[#fbf3da]">
+                    {versionEvidenceSamples[0]?.title ?? institutionPreview[0]?.title ?? "当前版本馆藏线索"}
+                  </div>
+                  <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
+                    直接打开当前版本最贴近的一条馆藏或影像资源，顺手讲清资料落点。
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const nextVersion = activeVersionChildren[0];
+
+                    if (nextVersion?.id) {
+                      setSelectedVersionId(nextVersion.id);
+                    }
+                  }}
+                  className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                >
+                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">下游入口</div>
+                  <div className="mt-2 text-sm font-medium text-[#fbf3da]">
+                    {activeVersionChildren[0]?.label ?? "当前时代未分化更晚版本"}
+                  </div>
+                  <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
+                    {activeVersionChildren.length
+                      ? "顺着当前版本继续进入下一层分化版本，直接演示版本流变向后推进。"
+                      : "当前时代层下还没有更晚分化版本，可停留在此节点讲清版本位置。"}
+                  </div>
+                </button>
               </div>
             </>
           )}
