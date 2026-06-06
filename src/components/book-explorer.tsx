@@ -576,6 +576,15 @@ export function BookExplorer({
   const handleSelectLink = (linkId: string) => {
     setSelectedLinkId(linkId);
   };
+  const handleFocusFirstLinkByConfidence = (confidenceLabel: "高" | "中" | "低") => {
+    const targetLink = activePassage?.links.find((link) => link.confidenceLabel === confidenceLabel);
+
+    if (!targetLink) {
+      return;
+    }
+
+    handleSelectLink(targetLink.id);
+  };
   const handleOpenLinkedBook = () => {
     if (!activeLink?.sourceBookId) {
       return;
@@ -2962,18 +2971,62 @@ export function BookExplorer({
                       </div>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-stone-400">
-                      <span className="rounded-full border border-emerald-300/18 bg-emerald-300/10 px-3 py-1 text-emerald-100">
-                        绿色：显式引用 / 高置信度
-                      </span>
-                      <span className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-amber-100">
-                        黄色：语义关联 / 中置信度
-                      </span>
-                      <span className="rounded-full border border-dashed border-white/14 bg-white/5 px-3 py-1 text-stone-300">
-                        灰色虚线：间接影响 / 低置信度
-                      </span>
-                      <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-stone-300">
-                        首次点击聚焦证据，再点一次直达源典籍
-                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleFocusFirstLinkByConfidence("高")}
+                        disabled={!activePassage.links.some((link) => link.confidenceLabel === "高")}
+                        className={`rounded-full px-3 py-1 text-left transition ${
+                          activePassage.links.some((link) => link.confidenceLabel === "高")
+                            ? "border border-emerald-300/18 bg-emerald-300/10 text-emerald-100 hover:bg-emerald-300/16"
+                            : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                        }`}
+                      >
+                        聚焦高置信证据
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleFocusFirstLinkByConfidence("中")}
+                        disabled={!activePassage.links.some((link) => link.confidenceLabel === "中")}
+                        className={`rounded-full px-3 py-1 text-left transition ${
+                          activePassage.links.some((link) => link.confidenceLabel === "中")
+                            ? "border border-amber-300/18 bg-amber-300/10 text-amber-100 hover:bg-amber-300/16"
+                            : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                        }`}
+                      >
+                        聚焦中置信证据
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleFocusFirstLinkByConfidence("低")}
+                        disabled={!activePassage.links.some((link) => link.confidenceLabel === "低")}
+                        className={`rounded-full px-3 py-1 text-left transition ${
+                          activePassage.links.some((link) => link.confidenceLabel === "低")
+                            ? "border border-dashed border-white/14 bg-white/5 text-stone-300 hover:bg-white/10"
+                            : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                        }`}
+                      >
+                        聚焦低置信回声
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const firstLink = activePassage.links[0];
+
+                          if (!firstLink) {
+                            return;
+                          }
+
+                          handleSelectLink(firstLink.id);
+                        }}
+                        disabled={!activePassage.links.length}
+                        className={`rounded-full px-3 py-1 text-left transition ${
+                          activePassage.links.length
+                            ? "border border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                            : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                        }`}
+                      >
+                        先看当前首条证据
+                      </button>
                     </div>
                     <div className="mt-4 flex flex-wrap gap-2">
                       {activePassage.links.map((link) => (
@@ -3172,7 +3225,34 @@ export function BookExplorer({
                         </div>
                       </div>
                     ) : (
-                      <div className="mt-3 text-sm text-stone-400">暂无溯源链路记录。</div>
+                      <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                        <div className="text-sm text-stone-200">这段暂未录入更早上游链路。</div>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {activeLink ? (
+                            <button
+                              type="button"
+                              onClick={() => handleSelectLink(activeLink.id)}
+                              className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                            >
+                              回到当前证据
+                            </button>
+                          ) : null}
+                          <button
+                            type="button"
+                            onClick={() => setTab("versions")}
+                            className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                          >
+                            转看版本承接
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setTab("timeline")}
+                            className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                          >
+                            转看时间回声
+                          </button>
+                        </div>
+                      </div>
                     )}
                   </div>
 
@@ -3216,8 +3296,26 @@ export function BookExplorer({
                               {item.note}
                             </p>
                             {item.confidenceLabel === "低" ? (
-                              <div className="mt-3 rounded-2xl border border-dashed border-white/14 bg-white/5 px-3 py-3 text-xs leading-6 text-stone-400">
-                                此链路表示参考性间接影响，适合用于展示文脉回声，不宜等同于显式引述。
+                              <div className="mt-3 rounded-2xl border border-dashed border-white/14 bg-white/5 px-3 py-3">
+                                <div className="text-xs tracking-[0.2em] text-stone-400">回声入口</div>
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                  {activeLink ? (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleSelectLink(activeLink.id)}
+                                      className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                                    >
+                                      查看当前证据
+                                    </button>
+                                  ) : null}
+                                  <button
+                                    type="button"
+                                    onClick={() => setTab("timeline")}
+                                    className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                                  >
+                                    转到时间回声
+                                  </button>
+                                </div>
                               </div>
                             ) : null}
                             <div className="mt-3 flex flex-wrap gap-2">
@@ -3240,7 +3338,34 @@ export function BookExplorer({
                         ))}
                       </div>
                     ) : (
-                      <div className="mt-3 text-sm text-stone-400">暂无下游影响记录。</div>
+                      <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                        <div className="text-sm text-stone-200">这段暂未出现更晚下游承接。</div>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {activeLink ? (
+                            <button
+                              type="button"
+                              onClick={() => handleSelectLink(activeLink.id)}
+                              className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                            >
+                              回到当前证据
+                            </button>
+                          ) : null}
+                          <button
+                            type="button"
+                            onClick={() => setTab("people")}
+                            className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                          >
+                            转看人物传播
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setTab("spread")}
+                            className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                          >
+                            转看传播航段
+                          </button>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
