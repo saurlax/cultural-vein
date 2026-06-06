@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 文脉溯源
 
-## Getting Started
+“文脉溯源”是一个面向上海图书馆开放数据竞赛的 Web 交互作品原型。它把典籍之间的引用、注疏和影响关系组织成一条可探索的“文脉河流”，并提供典籍钻入后的地理传播、人物关系、版本流变、时间线和文本溯源视图。
 
-First, run the development server:
+当前仓库已经实现了可演示的 MVP：
+
+- 三维河流总览场景，支持时间轴、概念搜索、类别筛选和节点选择
+- 典籍领域模型、示范数据集与本地 API
+- 典籍探索面板，覆盖中观与微观视图骨架
+
+## 技术栈
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- React Three Fiber / Three.js
+- Zustand
+
+## 运行方式
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+打开 `http://localhost:3000` 查看页面。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 当前目录
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```text
+src/
+  app/
+    api/              # 本地 mock API
+  components/         # 首页、3D 河流、典籍探索面板
+  data/               # 示例图谱数据
+  store/              # 全局状态
+  types/              # 领域类型
+scripts/
+  downloadAll.py      # 竞赛数据下载脚本
+```
 
-## Learn More
+## 数据说明
 
-To learn more about Next.js, take a look at the following resources:
+`/data` 目录下已经放入部分竞赛原始数据包，但当前前端 MVP 仍以 `src/data/demo-graph.ts` 的示范域数据驱动。下一步会把压缩包中的书目、人物、地名、版本信息清洗后接入正式数据管线。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 下一步
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 解析本地数据集，生成可持续扩展的图谱 JSON
+- 把 3D 河流场景和真实关系网络绑定
+- 增加文本溯源动画与影响追踪
+- 增加部署配置与演示素材

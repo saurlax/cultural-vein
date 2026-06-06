@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 
+import { BookExplorer } from "@/components/book-explorer";
 import { RiverScene } from "@/components/river-scene";
 import { riverDataset } from "@/data/demo-graph";
 import { useCulturalVeinStore } from "@/store/app-store";
@@ -266,103 +267,7 @@ export function CulturalVeinShell() {
 
         <aside className="space-y-4 rounded-[28px] border border-white/10 bg-black/20 p-5 shadow-2xl shadow-black/20 backdrop-blur">
           {selectedBook && selectedDetail ? (
-            <>
-              <section>
-                <p className="text-xs uppercase tracking-[0.25em] text-stone-400">
-                  典籍钻入
-                </p>
-                <h2 className="mt-2 text-3xl font-semibold">{selectedBook.title}</h2>
-                <p className="mt-3 text-sm leading-7 text-stone-300">
-                  {selectedBook.summary}
-                </p>
-              </section>
-
-              <section className="grid grid-cols-3 gap-3 text-center text-sm">
-                <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                  <div className="text-stone-400">直接引用</div>
-                  <div className="mt-2 text-xl font-semibold text-stone-50">
-                    {selectedDetail.heroMetric.directCitations}
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                  <div className="text-stone-400">下游影响</div>
-                  <div className="mt-2 text-xl font-semibold text-stone-50">
-                    {selectedDetail.heroMetric.downstreamInfluence}
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                  <div className="text-stone-400">传播区域</div>
-                  <div className="mt-2 text-xl font-semibold text-stone-50">
-                    {selectedDetail.heroMetric.coveredRegions}
-                  </div>
-                </div>
-              </section>
-
-              <section className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium">时间线</h3>
-                  <span className="text-xs text-stone-400">中观视图占位</span>
-                </div>
-                <div className="space-y-3">
-                  {selectedDetail.timeline.map((item) => (
-                    <div
-                      key={item.id}
-                      className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3"
-                    >
-                      <div className="text-sm text-amber-100">{item.year}</div>
-                      <div className="mt-1 font-medium text-stone-50">{item.title}</div>
-                      <p className="mt-2 text-sm leading-6 text-stone-300">{item.detail}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              <section className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium">文本溯源预览</h3>
-                  <span className="text-xs text-stone-400">微观视图占位</span>
-                </div>
-                <div className="space-y-3">
-                  {selectedDetail.passages.length === 0 ? (
-                    <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
-                      当前典籍尚未补充逐字对读样例，后续阶段会接入显式引用与语义关联证据。
-                    </div>
-                  ) : (
-                    selectedDetail.passages.map((passage) => (
-                      <div
-                        key={passage.id}
-                        className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
-                      >
-                        <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                          {passage.section}
-                        </div>
-                        <p className="mt-3 text-sm leading-7 text-stone-200">
-                          {passage.original}
-                        </p>
-                        <div className="mt-4 space-y-2">
-                          {passage.links.map((link) => (
-                            <div
-                              key={link.id}
-                              className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm"
-                            >
-                              <div className="flex items-center justify-between gap-3">
-                                <span className="font-medium text-stone-50">
-                                  {link.sourceTitle}
-                                </span>
-                                <span className="rounded-full bg-amber-300/15 px-2 py-1 text-xs text-amber-100">
-                                  {link.confidenceLabel}置信度
-                                </span>
-                              </div>
-                              <p className="mt-2 text-stone-300">{link.evidence}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </section>
-            </>
+            <BookExplorer book={selectedBook} detail={selectedDetail} />
           ) : null}
         </aside>
       </div>

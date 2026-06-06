@@ -1,0 +1,279 @@
+"use client";
+
+import { useState } from "react";
+
+import type { BookDetail, BookNode } from "@/types/domain";
+
+const tabs = [
+  { id: "spread", label: "地理传播" },
+  { id: "people", label: "人物关系" },
+  { id: "versions", label: "版本流变" },
+  { id: "timeline", label: "关联时间线" },
+  { id: "passages", label: "文本溯源" },
+] as const;
+
+type ExplorerTab = (typeof tabs)[number]["id"];
+
+function confidenceClass(label: string) {
+  if (label === "高") {
+    return "border-emerald-300/30 bg-emerald-300/10 text-emerald-100";
+  }
+
+  if (label === "中") {
+    return "border-amber-300/30 bg-amber-300/10 text-amber-100";
+  }
+
+  return "border-white/10 bg-white/10 text-stone-200";
+}
+
+export function BookExplorer({
+  book,
+  detail,
+}: {
+  book: BookNode;
+  detail: BookDetail;
+}) {
+  const [tab, setTab] = useState<ExplorerTab>("spread");
+
+  return (
+    <div className="space-y-4">
+      <section>
+        <p className="text-xs uppercase tracking-[0.25em] text-stone-400">
+          典籍钻入
+        </p>
+        <h2 className="mt-2 text-3xl font-semibold">{book.title}</h2>
+        <p className="mt-3 text-sm leading-7 text-stone-300">{book.summary}</p>
+      </section>
+
+      <section className="grid grid-cols-3 gap-3 text-center text-sm">
+        <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+          <div className="text-stone-400">直接引用</div>
+          <div className="mt-2 text-xl font-semibold text-stone-50">
+            {detail.heroMetric.directCitations}
+          </div>
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+          <div className="text-stone-400">下游影响</div>
+          <div className="mt-2 text-xl font-semibold text-stone-50">
+            {detail.heroMetric.downstreamInfluence}
+          </div>
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+          <div className="text-stone-400">传播区域</div>
+          <div className="mt-2 text-xl font-semibold text-stone-50">
+            {detail.heroMetric.coveredRegions}
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div className="flex flex-wrap gap-2">
+          {tabs.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => setTab(item.id)}
+              className={`rounded-full px-3 py-2 text-xs transition ${
+                tab === item.id
+                  ? "bg-amber-300 text-stone-950"
+                  : "border border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {tab === "spread" ? (
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-medium">地理传播图</h3>
+            <span className="text-xs text-stone-400">中观视图</span>
+          </div>
+          {detail.spread.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
+              该典籍尚未补充传播路径样例。
+            </div>
+          ) : (
+            detail.spread.map((item) => {
+              const fromPlace = detail.places.find((place) => place.id === item.fromPlaceId);
+              const toPlace = detail.places.find((place) => place.id === item.toPlaceId);
+
+              return (
+                <div
+                  key={item.id}
+                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-sm font-medium text-stone-50">
+                      {fromPlace?.name ?? "未知"} → {toPlace?.name ?? "未知"}
+                    </div>
+                    <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                      流量 {item.volume}
+                    </div>
+                  </div>
+                  <div className="mt-2 text-sm text-stone-300">
+                    {item.startYear} - {item.endYear}
+                  </div>
+                  <div className="mt-3 h-2 rounded-full bg-white/5">
+                    <div
+                      className="h-2 rounded-full bg-[linear-gradient(90deg,#67e8f9,#34d399)]"
+                      style={{ width: `${Math.min(item.volume, 100)}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })
+          )}
+          <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+            这一视图后续会接入 3D 地球与历史地名坐标。当前先用“航线卡片 + 流量条”稳定表达传播方向、时间和规模。
+          </div>
+        </section>
+      ) : null}
+
+      {tab === "people" ? (
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-medium">人物关系网</h3>
+            <span className="text-xs text-stone-400">中观视图</span>
+          </div>
+          {detail.people.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
+              该典籍尚未补充关联人物样例。
+            </div>
+          ) : (
+            detail.people.map((person) => (
+              <div
+                key={person.id}
+                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-lg font-semibold text-stone-50">{person.name}</div>
+                    <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone-400">
+                      {person.role} · {person.era}
+                    </div>
+                  </div>
+                  <div className="rounded-full bg-violet-300/10 px-3 py-1 text-xs text-violet-100">
+                    {person.birthYear} - {person.deathYear}
+                  </div>
+                </div>
+                <p className="mt-3 text-sm leading-7 text-stone-300">{person.bio}</p>
+              </div>
+            ))
+          )}
+        </section>
+      ) : null}
+
+      {tab === "versions" ? (
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-medium">版本流变树</h3>
+            <span className="text-xs text-stone-400">中观视图</span>
+          </div>
+          {detail.versions.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
+              该典籍尚未补充版本链路样例。
+            </div>
+          ) : (
+            detail.versions.map((version, index) => (
+              <div key={version.id} className="flex gap-3">
+                <div className="flex w-8 flex-col items-center pt-2">
+                  <div className="h-3 w-3 rounded-full bg-amber-300" />
+                  {index < detail.versions.length - 1 ? (
+                    <div className="mt-1 h-full w-px bg-white/15" />
+                  ) : null}
+                </div>
+                <div className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="font-medium text-stone-50">{version.label}</div>
+                    <div
+                      className={`rounded-full px-3 py-1 text-xs ${
+                        version.status === "存世"
+                          ? "bg-emerald-300/10 text-emerald-100"
+                          : "bg-white/10 text-stone-300"
+                      }`}
+                    >
+                      {version.status}
+                    </div>
+                  </div>
+                  <div className="mt-2 text-sm text-stone-300">
+                    {version.year} · {version.place} · {version.library}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </section>
+      ) : null}
+
+      {tab === "timeline" ? (
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-medium">关联时间线</h3>
+            <span className="text-xs text-stone-400">中观视图</span>
+          </div>
+          {detail.timeline.map((item) => (
+            <div
+              key={item.id}
+              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3"
+            >
+              <div className="text-sm text-amber-100">{item.year}</div>
+              <div className="mt-1 font-medium text-stone-50">{item.title}</div>
+              <p className="mt-2 text-sm leading-6 text-stone-300">{item.detail}</p>
+            </div>
+          ))}
+        </section>
+      ) : null}
+
+      {tab === "passages" ? (
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-medium">文本对读与溯源</h3>
+            <span className="text-xs text-stone-400">微观视图</span>
+          </div>
+          {detail.passages.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
+              当前典籍尚未补充逐字对读样例，后续阶段会接入显式引用与语义关联证据。
+            </div>
+          ) : (
+            detail.passages.map((passage) => (
+              <div
+                key={passage.id}
+                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+              >
+                <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                  {passage.section}
+                </div>
+                <p className="mt-3 text-sm leading-7 text-stone-200">{passage.original}</p>
+                <div className="mt-4 space-y-2">
+                  {passage.links.map((link) => (
+                    <div
+                      key={link.id}
+                      className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="font-medium text-stone-50">{link.sourceTitle}</span>
+                        <span
+                          className={`rounded-full border px-2 py-1 text-xs ${confidenceClass(link.confidenceLabel)}`}
+                        >
+                          {link.confidenceLabel}置信度
+                        </span>
+                      </div>
+                      <div className="mt-2 text-stone-200">{link.quote}</div>
+                      <p className="mt-2 text-stone-300">{link.evidence}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          )}
+          <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4 text-sm leading-7 text-cyan-50">
+            “溯源光线动画”和“影响追踪”下一步会从这些 passages 和 citations 数据直接生成。
+          </div>
+        </section>
+      ) : null}
+    </div>
+  );
+}
