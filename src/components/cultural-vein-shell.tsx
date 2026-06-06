@@ -644,98 +644,111 @@ export function CulturalVeinShell() {
         </div>
 
         {showDesktopDossier && selectedBook && selectedDetail ? (
-          <div className="absolute right-4 top-[108px] z-20 hidden w-[min(420px,calc(100vw-22rem))] sm:right-6 lg:right-8 xl:block">
+          <div className="absolute right-4 top-[104px] z-20 hidden w-[min(408px,calc(100vw-22rem))] sm:right-6 lg:right-8 xl:block">
             <aside className="pointer-events-auto xl:pt-2">
-              <div className={`p-4 ${panelBaseClass}`}>
-                <div className="mb-4 flex items-center justify-between gap-3">
-                  <div>
-                    <div className="text-[11px] tracking-[0.24em] text-amber-100/75">
-                      文卷展开
+              <div className={`overflow-hidden p-4 ${panelBaseClass}`}>
+                <div
+                  className={`rounded-[30px] border border-[#ead8a6]/20 bg-[linear-gradient(180deg,rgba(245,231,188,0.14),rgba(104,72,25,0.14))] p-3 ${
+                    traceFocus?.active
+                      ? "shadow-[0_0_28px_rgba(245,158,11,0.12)]"
+                      : transitionState === "diving" || transitionState === "settling"
+                        ? "shadow-[0_0_24px_rgba(245,158,11,0.1)]"
+                        : ""
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3 rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(61,40,11,0.45)] px-4 py-3">
+                    <div className="min-w-0">
+                      <div className="text-[11px] tracking-[0.28em] text-[#f2dfab]/80">
+                        河上文卷
+                      </div>
+                      <div className="mt-2 flex items-center gap-3">
+                        <div className="rounded-full border border-[#ead8a6]/24 bg-[rgba(255,248,220,0.08)] px-3 py-1 text-[11px] text-[#eadfbc]">
+                          焦点典籍
+                        </div>
+                        <div className="text-sm text-[#d8c9a3]">{selectedBook.dynasty}</div>
+                      </div>
                     </div>
-                    <div className="mt-1 text-base font-medium text-stone-50">
-                      焦点典籍细览
+                    <button
+                      type="button"
+                      onClick={() => setShowDesktopDossier(false)}
+                      className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-xs text-[#eadfbc]"
+                    >
+                      收卷
+                    </button>
+                  </div>
+
+                  <div
+                    className={`mt-3 rounded-[28px] px-5 py-5 transition-all duration-500 ${dossierToneClass}`}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <div className="text-[11px] tracking-[0.24em] text-[#f2dfab]/80">
+                          卷首题签
+                        </div>
+                        <div className="mt-2 text-[1.35rem] font-semibold leading-tight text-[#fbf3da]">
+                          {selectedBook.title}
+                        </div>
+                        <div className="mt-2 text-sm text-[#eadfbc]">
+                          {selectedBook.category} · {selectedBook.school}
+                        </div>
+                      </div>
+                      <div className="writing-mode-vertical-rl rounded-full border border-[#ead8a6]/20 bg-[rgba(255,248,220,0.08)] px-2 py-3 text-[10px] tracking-[0.24em] text-[#f2dfab] [writing-mode:vertical-rl]">
+                        文脉
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap gap-2 text-xs">
+                      <span className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.08)] px-3 py-1.5 text-[#fbf3da]">
+                        {focusModeLabel}
+                      </span>
+                      <span className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.08)] px-3 py-1.5 text-[#eadfbc]">
+                        关联 {selectedBookCitations.length} 条
+                      </span>
+                      {selectedSources.length ? (
+                        <span className="rounded-full border border-[#ead8a6]/18 bg-[rgba(233,191,86,0.1)] px-3 py-1.5 text-[#fbf3da]">
+                          来源 {selectedSources.length} 类
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-[#eadfbc]">
+                      <div className="rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                        <div className="text-[#c9b68a]">朝代</div>
+                        <div className="mt-1 text-sm font-medium text-[#fbf3da]">
+                          {selectedBook.dynasty}
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                        <div className="text-[#c9b68a]">模式</div>
+                        <div className="mt-1 text-sm font-medium text-[#fbf3da]">
+                          {focusModeLabel}
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                        <div className="text-[#c9b68a]">联动</div>
+                        <div className="mt-1 text-sm font-medium text-[#fbf3da]">
+                          {traceFocus?.active
+                            ? `${traceFocus.progress}/${traceFocus.total}`
+                            : sceneFocus?.active
+                              ? sceneFocus.contextLabel
+                              : "就绪"}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowDesktopDossier(false)}
-                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200"
-                  >
-                    收起
-                  </button>
-                </div>
-                <div className="max-h-[calc(100vh-240px)] overflow-hidden">
-                    <div
-                      className={`mb-4 rounded-[24px] px-4 py-4 transition-all duration-500 ${dossierToneClass} ${
-                        traceFocus?.active
-                          ? "shadow-[0_0_28px_rgba(34,211,238,0.12)]"
-                          : transitionState === "diving" || transitionState === "settling"
-                            ? "shadow-[0_0_24px_rgba(245,158,11,0.1)]"
-                            : ""
-                      }`}
-                    >
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                          <div
-                            className={`text-[11px] tracking-[0.24em] ${
-                              traceFocus?.active ? "text-amber-100/75" : "text-amber-100/75"
-                            }`}
-                          >
-                            焦点文卷
-                          </div>
-                          <div className="mt-1 text-lg font-medium text-stone-50">
-                            {selectedBook.title}
-                          </div>
-                          <div className="mt-1 text-sm text-stone-400">
-                            {selectedBook.dynasty} · {selectedBook.category} · {selectedBook.school}
-                          </div>
+
+                  <div className="mt-3 rounded-[28px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(244,230,188,0.96),rgba(224,200,146,0.92))] px-4 py-4 text-[#42290a] shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
+                    <div className="mb-3 flex items-center justify-between gap-3 border-b border-[#b89247]/20 pb-3">
+                      <div>
+                        <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">
+                          卷内细览
                         </div>
-                        <div className="grid gap-2 text-xs text-stone-300">
-                          <div className="rounded-full border border-white/10 bg-black/20 px-3 py-1">
-                            关联 {selectedBookCitations.length} 条
-                          </div>
-                          <div
-                            className={`rounded-full px-3 py-1 ${
-                              traceFocus?.active
-                                ? "border border-amber-300/20 bg-amber-300/10 text-amber-100"
-                                : "border border-amber-300/20 bg-amber-300/10 text-amber-100"
-                            }`}
-                          >
-                            {focusModeLabel}
-                          </div>
-                          {selectedSources.length ? (
-                            <div className="rounded-full border border-amber-300/15 bg-amber-300/10 px-3 py-1 text-amber-100">
-                              {selectedSources.length} 类来源
-                            </div>
-                          ) : null}
-                        </div>
-                      </div>
-                      <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-stone-300">
-                        <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
-                          <div className="text-stone-500">焦点朝代</div>
-                          <div className="mt-1 text-sm font-medium text-stone-100">
-                            {selectedBook.dynasty}
-                          </div>
-                        </div>
-                        <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
-                          <div className="text-stone-500">当前模式</div>
-                          <div className="mt-1 text-sm font-medium text-stone-100">
-                            {focusModeLabel}
-                          </div>
-                        </div>
-                        <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
-                          <div className="text-stone-500">河流联动</div>
-                          <div className="mt-1 text-sm font-medium text-stone-100">
-                            {traceFocus?.active
-                              ? `${traceFocus.progress}/${traceFocus.total}`
-                              : sceneFocus?.active
-                                ? sceneFocus.contextLabel
-                                : "就绪"}
-                          </div>
+                        <div className="mt-1 text-sm font-medium text-[#5b3a11]">
+                          沿河查看传播、人物、版本与溯源
                         </div>
                       </div>
                     </div>
-                    <div className="max-h-[calc(100vh-300px)] overflow-auto pr-1">
+                    <div className="max-h-[calc(100vh-368px)] overflow-auto pr-1">
                       <BookExplorer
                         book={selectedBook}
                         detail={selectedDetail}
@@ -744,6 +757,7 @@ export function CulturalVeinShell() {
                         onSceneFocusChange={setSceneFocus}
                       />
                     </div>
+                  </div>
                 </div>
               </div>
             </aside>
@@ -880,27 +894,44 @@ export function CulturalVeinShell() {
 
         {showMobileDossier && selectedBook && selectedDetail ? (
           <div className="absolute inset-x-4 bottom-20 z-40 xl:hidden">
-            <div className={`pointer-events-auto max-h-[62vh] overflow-hidden p-4 ${panelBaseClass}`}>
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <div>
-                  <div className="text-[11px] tracking-[0.24em] text-amber-100/75">焦点文卷</div>
-                  <div className="mt-1 text-lg font-medium text-stone-50">{selectedBook.title}</div>
+            <div className={`pointer-events-auto overflow-hidden p-3 ${panelBaseClass}`}>
+              <div className="rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(245,231,188,0.16),rgba(104,72,25,0.14))] p-3">
+                <div className="flex items-start justify-between gap-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(61,40,11,0.42)] px-4 py-3">
+                  <div>
+                    <div className="text-[11px] tracking-[0.24em] text-[#f2dfab]/80">焦点文卷</div>
+                    <div className="mt-1 text-lg font-medium text-[#fbf3da]">{selectedBook.title}</div>
+                    <div className="mt-1 text-xs text-[#eadfbc]">
+                      {selectedBook.dynasty} · {focusModeLabel}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowMobileDossier(false)}
+                    className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-xs text-[#eadfbc]"
+                  >
+                    收卷
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setShowMobileDossier(false)}
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200"
-                >
-                  收起
-                </button>
-              </div>
-              <div className="max-h-[calc(62vh-72px)] overflow-auto pr-1">
-                <BookExplorer
-                  book={selectedBook}
-                  detail={selectedDetail}
-                  activeEra={activeEra}
-                  onTraceFocusChange={setTraceFocus}
-                />
+                <div className="mt-3 rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(244,230,188,0.96),rgba(224,200,146,0.92))] px-4 py-4 text-[#42290a]">
+                  <div className="mb-3 flex flex-wrap gap-2 text-xs">
+                    <span className="rounded-full border border-[#b89247]/20 bg-[rgba(255,255,255,0.24)] px-3 py-1 text-[#5b3a11]">
+                      关联 {selectedBookCitations.length} 条
+                    </span>
+                    {selectedSources.length ? (
+                      <span className="rounded-full border border-[#b89247]/20 bg-[rgba(255,255,255,0.24)] px-3 py-1 text-[#5b3a11]">
+                        来源 {selectedSources.length} 类
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="max-h-[calc(62vh-140px)] overflow-auto pr-1">
+                    <BookExplorer
+                      book={selectedBook}
+                      detail={selectedDetail}
+                      activeEra={activeEra}
+                      onTraceFocusChange={setTraceFocus}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
