@@ -451,6 +451,9 @@ export function BookExplorer({
 
     onOpenBook?.(activeLink.sourceBookId);
   };
+  const handleOpenSpecificLinkedBook = (sourceBookId: string) => {
+    onOpenBook?.(sourceBookId);
+  };
   const handleStartTrace = () => {
     if (!activePassage?.tracePath?.length) {
       return;
@@ -1642,7 +1645,14 @@ export function BookExplorer({
                         <button
                           key={link.id}
                           type="button"
-                          onClick={() => handleSelectLink(link.id)}
+                          onClick={() => {
+                            if (activeLinkId === link.id) {
+                              handleOpenSpecificLinkedBook(link.sourceBookId);
+                              return;
+                            }
+
+                            handleSelectLink(link.id);
+                          }}
                           className={`text-xs transition ${
                             activeLinkId === link.id
                               ? "rounded bg-amber-300 px-2 py-1 text-stone-950"
@@ -1661,20 +1671,40 @@ export function BookExplorer({
                     </div>
                     <div className="mt-3 space-y-2">
                       {activePassage.links.map((link) => (
-                        <button
+                        <div
                           key={link.id}
-                          type="button"
-                          onClick={() => handleSelectLink(link.id)}
                           className={`w-full rounded-2xl border px-3 py-3 text-left text-sm transition ${
                             activeLinkId === link.id
                               ? "border-amber-300/35 bg-amber-300/10"
                               : "border-white/10 bg-white/5 hover:bg-white/10"
                           }`}
                         >
-                          <div className="flex items-center justify-between gap-3">
-                            <span className="font-medium text-stone-50">
-                              {link.sourceTitle}
-                            </span>
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <span className="font-medium text-stone-50">
+                                {link.sourceTitle}
+                              </span>
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => handleSelectLink(link.id)}
+                                  className={`rounded-full px-3 py-1.5 text-xs transition ${
+                                    activeLinkId === link.id
+                                      ? "bg-amber-300 text-stone-950"
+                                      : "border border-white/10 bg-black/15 text-stone-300 hover:bg-white/10"
+                                  }`}
+                                >
+                                  {activeLinkId === link.id ? "当前聚焦" : "聚焦证据"}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenSpecificLinkedBook(link.sourceBookId)}
+                                  className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                                >
+                                  跳转源典籍
+                                </button>
+                              </div>
+                            </div>
                             <span
                               className={`rounded-full border px-2 py-1 text-xs ${confidenceClass(link.confidenceLabel)}`}
                             >
@@ -1683,7 +1713,7 @@ export function BookExplorer({
                           </div>
                           <div className="mt-2 text-stone-200">{link.quote}</div>
                           <p className="mt-2 text-stone-300">{link.evidence}</p>
-                        </button>
+                        </div>
                       ))}
                     </div>
 
