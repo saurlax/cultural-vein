@@ -2182,15 +2182,10 @@ export function BookExplorer({
                           </div>
                         ) : null}
                         <div className="mt-4 rounded-2xl border border-amber-300/12 bg-amber-300/6 px-4 py-4">
-                          <div className="flex flex-wrap items-center justify-between gap-3">
-                            <div>
-                              <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                                人物回查路径
-                              </div>
-                              <div className="mt-2 text-sm leading-6 text-stone-300">
-                                可从当前人物直接回到纪传证据总表，也可顺着人物活动地点折返到传播航段。
-                              </div>
-                            </div>
+                          <div className="text-xs tracking-[0.2em] text-amber-100/75">
+                            人物回查入口
+                          </div>
+                          <div className="mt-3 flex flex-wrap gap-2">
                             <button
                               type="button"
                               onClick={() => {
@@ -2200,6 +2195,15 @@ export function BookExplorer({
                             >
                               打开证据总表
                             </button>
+                            {activePerson.activityPlaces?.[0] ? (
+                              <button
+                                type="button"
+                                onClick={() => setTab("spread")}
+                                className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                              >
+                                转看人物传播
+                              </button>
+                            ) : null}
                           </div>
                         </div>
                       </>
@@ -2355,12 +2359,34 @@ export function BookExplorer({
                         ) : null}
                         {activeVersionStatusMeta ? (
                           <div className="mt-4 rounded-2xl border border-slate-300/10 bg-slate-300/5 px-4 py-4">
-                            <div className="text-xs tracking-[0.2em] text-slate-200/80">
-                              存佚判断
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="text-xs tracking-[0.2em] text-slate-200/80">
+                                存佚入口
+                              </span>
+                              <span
+                                className={`rounded-full border px-3 py-1 text-xs ${activeVersionStatusMeta.badgeClass}`}
+                              >
+                                {activeVersionStatusMeta.badge}
+                              </span>
                             </div>
                             <p className="mt-2 text-sm leading-7 text-stone-300">
                               {activeVersionStatusMeta.detail}
                             </p>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const rootVersion = activeVersionTrail[0];
+
+                                  if (rootVersion?.id) {
+                                    setSelectedVersionId(rootVersion.id);
+                                  }
+                                }}
+                                className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                              >
+                                回到祖本
+                              </button>
+                            </div>
                           </div>
                         ) : null}
                         {activeVersionMeta ? (
@@ -2374,6 +2400,15 @@ export function BookExplorer({
                               <span className="text-sm text-stone-300">
                                 {activeVersionMeta.detail}
                               </span>
+                            </div>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => handleOpenSourceEvidence("institution-samples")}
+                                className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                              >
+                                打开机构总表
+                              </button>
                             </div>
                           </div>
                         ) : null}
@@ -2762,7 +2797,7 @@ export function BookExplorer({
                   {activeTimelineItem ? (
                     <>
                       <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
-                        当前事件焦点
+                        事件焦点
                       </div>
                       <div className="mt-2 flex items-center justify-between gap-3">
                         <div className="text-2xl font-semibold text-[#fbf3da]">
@@ -2834,6 +2869,15 @@ export function BookExplorer({
                               {activeTimelineMeta.detail}
                             </span>
                           </div>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setTab("passages")}
+                              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                            >
+                              转看文本溯源
+                            </button>
+                          </div>
                         </div>
                       ) : null}
                       {activeTimelineEventEchoes.length || activeTimelineInstitutionEchoes.length ? (
@@ -2843,7 +2887,7 @@ export function BookExplorer({
                               现实回声
                             </div>
                             <div className="text-[10px] text-amber-100/70">
-                              与当前年份直接贴近
+                              与此年最贴近
                             </div>
                           </div>
                           <div className="mt-3 grid gap-3">
@@ -2864,7 +2908,7 @@ export function BookExplorer({
                                   {event.venue} · {event.startTime}
                                 </div>
                                 <div className="mt-2 text-sm text-stone-300">
-                                  状态：{event.status}
+                                  {event.status}
                                 </div>
                               </button>
                             ))}
@@ -2901,7 +2945,7 @@ export function BookExplorer({
                             <div className="text-xs tracking-[0.2em] text-stone-400">
                               现实回声
                             </div>
-                            <div className="text-[10px] text-stone-500">当前典籍资料预览</div>
+                            <div className="text-[10px] text-stone-500">典籍资料预览</div>
                           </div>
                           <div className="mt-3 grid gap-3">
                             {fallbackTimelineInstitutionEchoes.map((item) => (
