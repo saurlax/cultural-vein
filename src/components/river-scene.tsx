@@ -1921,11 +1921,11 @@ export function RiverScene(props: RiverSceneProps) {
   };
 
   return (
-    <div className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#e8cb86]/40 bg-[#2a1805] shadow-[0_0_80px_rgba(0,0,0,0.42)] [touch-action:none]">
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(93,62,18,0.42),rgba(52,34,10,0))]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(29,18,6,0.72),rgba(29,18,6,0))]" />
-      <div className="pointer-events-none absolute left-4 top-4 z-10 flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#ead8a6]/26 bg-[rgba(89,60,19,0.64)] px-4 py-2 text-[10px] text-[#f7edd1] sm:left-5 sm:top-5 sm:max-w-none sm:text-[11px]">
-        <span className="tracking-[0.28em] text-[#f6e8bf]">黄河文脉长卷</span>
+    <div className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#edd08a]/45 bg-[#3a2208] shadow-[0_0_80px_rgba(0,0,0,0.42)] [touch-action:none]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(146,102,36,0.4),rgba(78,51,15,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(44,26,8,0.74),rgba(44,26,8,0))]" />
+      <div className="pointer-events-none absolute left-4 top-4 z-10 flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#ead8a6]/26 bg-[rgba(113,75,24,0.64)] px-4 py-2 text-[10px] text-[#f7edd1] sm:left-5 sm:top-5 sm:max-w-none sm:text-[11px]">
+        <span className="tracking-[0.28em] text-[#fff0c2]">黄河文脉长卷</span>
         <span className="hidden h-3 w-px bg-[#ead8a6]/24 sm:block" />
         <span className="truncate text-[#f1e3bd]">
           {props.traceFocus?.active
@@ -1940,11 +1940,11 @@ export function RiverScene(props: RiverSceneProps) {
         </span>
       </div>
       <div className="pointer-events-none absolute left-1/2 top-16 z-10 w-[min(520px,calc(100vw-2.5rem))] -translate-x-1/2 px-3 sm:top-20">
-        <div className="rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(54,36,12,0.72)] px-4 py-3 text-center text-[11px] leading-6 text-[#f1e3bd] shadow-lg shadow-black/20 backdrop-blur-md sm:text-xs">
+        <div className="rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(79,52,16,0.74)] px-4 py-3 text-center text-[11px] leading-6 text-[#f7e9c0] shadow-lg shadow-black/20 backdrop-blur-md sm:text-xs">
           {sceneHint}
         </div>
       </div>
-      <div className="pointer-events-none absolute left-5 bottom-5 z-10 hidden rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(54,36,12,0.6)] px-4 py-3 text-[11px] text-[#eadfbc] backdrop-blur-md xl:block">
+      <div className="pointer-events-none absolute left-5 bottom-5 z-10 hidden rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.58)] px-4 py-3 text-[11px] text-[#f0e0b8] backdrop-blur-md xl:block">
         <div className="text-[10px] tracking-[0.24em] text-stone-500">
           河面扫描
         </div>
@@ -1991,12 +1991,12 @@ export function RiverScene(props: RiverSceneProps) {
           </div>
         </div>
       </div>
-      <div className="pointer-events-none absolute right-4 top-4 z-10 hidden rounded-full border border-[#ead8a6]/16 bg-[rgba(54,36,12,0.58)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#eadfbc] backdrop-blur-md lg:flex">
-        {isInteracting ? "正在巡看河面" : "左键平移 · 右键旋转 · 滚轮缩放"}
+      <div className="pointer-events-none absolute right-4 top-4 z-10 hidden rounded-full border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.58)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md lg:flex">
+        {isInteracting ? "正在拖动画卷" : "按住左键拖动画卷 · 右键旋转 · 滚轮缩放"}
       </div>
       {canCruise ? (
         <div className="absolute bottom-4 left-1/2 z-20 w-[min(280px,calc(100vw-2rem))] -translate-x-1/2 sm:bottom-5 sm:left-auto sm:right-5 sm:w-[min(320px,calc(100vw-2.5rem))] sm:translate-x-0">
-          <div className="pointer-events-auto rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(54,36,12,0.78)] px-4 py-4 text-[#eadfbc] shadow-xl shadow-black/20 backdrop-blur-md">
+          <div className="pointer-events-auto rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(79,52,16,0.78)] px-4 py-4 text-[#f1e2bb] shadow-xl shadow-black/20 backdrop-blur-md">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[10px] tracking-[0.24em] text-[#d8c9a3]">
@@ -2043,7 +2043,7 @@ export function RiverScene(props: RiverSceneProps) {
           </div>
         </div>
       ) : null}
-      <Canvas dpr={[1, 1.8]} className={isInteracting ? "cursor-grabbing" : "cursor-grab"}>
+      <Canvas dpr={[1, 1.8]} className={isInteracting ? "cursor-grabbing touch-none" : "cursor-grab touch-none"}>
         <RiverWorld
           {...props}
           cruiseProgress={cruiseProgress}
