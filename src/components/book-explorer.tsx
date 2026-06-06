@@ -1067,7 +1067,7 @@ export function BookExplorer({
                 纪传库对照 {detail.realWorldSignals.cbdbMatchedPeople ?? 0} 人
               </div>
               <div className="mt-1 text-xs text-stone-400">
-                整理人物 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
+                待续人物 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
               </div>
             </button>
             <button
@@ -1081,7 +1081,7 @@ export function BookExplorer({
               <div className="mt-2 text-sm text-stone-100">
                 {detail.realWorldSignals.venueSamples?.length
                   ? `上图场馆资料 ${detail.realWorldSignals.venueSamples.length} 组`
-                  : "暂无场馆资料"}
+                  : "场馆样本待补"}
               </div>
               <div className="mt-1 text-xs text-stone-400">
                 活动事件资料 {detail.realWorldSignals.eventSamples?.length ?? 0} 条
@@ -1119,8 +1119,17 @@ export function BookExplorer({
                     </button>
                   ))
                 ) : (
-                  <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4 text-sm text-stone-400">
-                    当前没有挂接场馆资料。
+                  <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4">
+                    <div className="text-sm text-stone-200">这一层还没有落到场馆样本。</div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setTab("timeline")}
+                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                      >
+                        转看时间回声
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1153,8 +1162,17 @@ export function BookExplorer({
                     </button>
                   ))
                 ) : (
-                  <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4 text-sm text-stone-400">
-                    当前没有挂接活动事件资料。
+                  <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4">
+                    <div className="text-sm text-stone-200">这一层还没有落到活动事件样本。</div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setTab("spread")}
+                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                      >
+                        转看传播航段
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1199,8 +1217,17 @@ export function BookExplorer({
                   );
                   })
                 ) : (
-                  <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4 text-sm text-stone-400">
-                    当前没有挂接机构资源资料。
+                  <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4">
+                    <div className="text-sm text-stone-200">这一层还没有落到机构资源样本。</div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setTab("versions")}
+                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                      >
+                        转看版本流变
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1273,7 +1300,7 @@ export function BookExplorer({
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
                   <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                    出处说明
+                    资源线索
                   </div>
                   <div className="mt-2 text-sm leading-6 text-stone-300">
                     {activeInstitutionRecord.sourceText ?? activeInstitutionRecord.imageRef ?? "已落到馆藏条目，可直接作为当前版本的资源挂接点。"}
@@ -1536,7 +1563,7 @@ export function BookExplorer({
                           传播航线总览
                         </div>
                         <div className="mt-1 text-sm text-[#eadfbc]">
-                          点击任意航段可聚焦当前传播阶段
+                          点任一航段即可落到对应传播阶段
                         </div>
                       </div>
                       <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
@@ -2034,12 +2061,12 @@ export function BookExplorer({
                               数据来源
                             </div>
                             <div className="mt-2 text-base font-semibold text-stone-50">
-                              {activePerson.source === "cbdb" ? "纪传库已对照" : "整理人物"}
+                              {activePerson.source === "cbdb" ? "纪传库已对照" : "馆内人物整理"}
                             </div>
                             <div className="mt-2 text-sm text-stone-300">
                               {activePerson.source === "cbdb"
                                 ? `当前人物已接入真实人物纪传数据${activePerson.matchedAlias ? `，匹配别名为 ${activePerson.matchedAlias}` : ""}。`
-                                : "当前仍为整理人物，后续可继续补入更完整的真实人物图谱记录。"}
+                                : "这一人物先作为关系节点入网，可顺着传播与证据继续补全人物轨迹。"}
                             </div>
                             <div className="mt-3 flex flex-wrap gap-2">
                               <button
@@ -2187,7 +2214,7 @@ export function BookExplorer({
                     {visiblePeople.find((person) => person.source === "cbdb")?.name ?? "打开人物证据总表"}
                   </div>
                   <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
-                    直接回到纪传对照证据，核对已匹配人物与整理人物，再折返到当前网络继续讲。
+                    直接回到纪传对照证据，核对已匹配人物与馆内整理人物，再折返到当前网络继续讲。
                   </div>
                 </button>
               </div>
@@ -2236,10 +2263,10 @@ export function BookExplorer({
                     {activeVersion ? (
                       <>
                         <div className="flex flex-wrap items-center justify-between gap-3">
-                          <div>
-                            <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
-                              当前版本焦点
-                            </div>
+                            <div>
+                              <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
+                              版本焦点
+                              </div>
                             <div className="mt-2 text-xl font-semibold text-[#fbf3da]">
                               {activeVersion.label}
                             </div>
@@ -2325,7 +2352,7 @@ export function BookExplorer({
                             </div>
                             <div className="mt-2 text-sm text-stone-300">
                               {activeVersion.parentId
-                                ? "当前节点位于版本链中段或后段，继续承接前一层文字流传。"
+                                ? "这层版本位于链路中段或后段，继续承接前一层文字流传。"
                                 : "该节点作为版本流变链的起点，承担源头层标记。"}
                             </div>
                           </div>
@@ -2378,6 +2405,7 @@ export function BookExplorer({
                             ) : (
                               <div className="mt-3 rounded-2xl border border-amber-300/15 bg-amber-300/8 px-3 py-3">
                                 <div className="text-sm text-amber-100">当前节点已经是版本源头。</div>
+                                <div className="text-sm text-amber-100">这层版本已经抵达源头。</div>
                                 <div className="mt-3 flex flex-wrap gap-2">
                                   <button
                                     type="button"
@@ -2426,7 +2454,7 @@ export function BookExplorer({
                                 </div>
                               ) : (
                                 <div className="mt-2 rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
-                                  <div className="text-sm text-stone-200">当前时代层下还没有更晚分化版本。</div>
+                                  <div className="text-sm text-stone-200">这一时代河段里还没有更晚分化版本。</div>
                                   <div className="mt-3 flex flex-wrap gap-2">
                                     <button
                                       type="button"
@@ -2450,14 +2478,14 @@ export function BookExplorer({
 
                           <div className="rounded-2xl border border-amber-300/12 bg-amber-300/6 px-4 py-4">
                             <div className="flex items-center justify-between gap-3">
-                              <div>
-                                <div className="text-xs uppercase tracking-[0.2em] text-amber-100/75">
-                                  影像与馆藏线索
+                                <div>
+                                  <div className="text-xs uppercase tracking-[0.2em] text-amber-100/75">
+                                    影像与馆藏线索
+                                  </div>
+                                  <div className="mt-1 text-sm text-stone-200">
+                                  顺着这一层版本继续展开馆藏与影像线索。
+                                  </div>
                                 </div>
-                                <div className="mt-1 text-sm text-stone-200">
-                                  结合当前版本节点，展开可直接讲述的馆藏与图像证据。
-                                </div>
-                              </div>
                               <div className="rounded-full bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
                                 {versionEvidenceSamples.length || institutionPreview.length} 条线索
                               </div>
@@ -2492,14 +2520,14 @@ export function BookExplorer({
                                   </div>
                                   {item.sourceText ? (
                                     <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm leading-6 text-stone-300">
-                                      图像出处：{item.sourceText}
+                                      线索字段：{item.sourceText}
                                     </div>
                                   ) : null}
                                 </button>
                               ))}
                               {!versionEvidenceSamples.length && !institutionPreview.length ? (
                                 <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4">
-                                  <div className="text-sm text-stone-200">当前版本还没有挂到更细的影像或馆藏样本。</div>
+                                  <div className="text-sm text-stone-200">这一层版本还没有挂到更细的影像或馆藏样本。</div>
                                   <div className="mt-3 flex flex-wrap gap-2">
                                     <button
                                       type="button"
@@ -2539,7 +2567,7 @@ export function BookExplorer({
                               存佚状态：{activeVersion.status}
                             </div>
                             <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                              版本说明：{activeVersion.note ?? "当前节点用于说明版本流变位置。"}
+                              版本记载：{activeVersion.note ?? "这一层版本用来标记流变位置。"}
                             </div>
                           </div>
                         </div>
@@ -2603,12 +2631,12 @@ export function BookExplorer({
                 >
                   <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">下游入口</div>
                   <div className="mt-2 text-sm font-medium text-[#fbf3da]">
-                    {activeVersionChildren[0]?.label ?? "当前时代未分化更晚版本"}
+                    {activeVersionChildren[0]?.label ?? "这一时代未再分化更晚版本"}
                   </div>
                   <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
                     {activeVersionChildren.length
                       ? "顺着当前版本继续进入下一层分化版本，直接演示版本流变向后推进。"
-                      : "当前时代层下还没有更晚分化版本，可停留在此节点讲清版本位置。"}
+                      : "这一时代河段里还没有更晚分化版本，可停留在此处讲清版本位置。"}
                   </div>
                 </button>
               </div>
@@ -3410,7 +3438,7 @@ export function BookExplorer({
                                     >
                                       {bookSlugByTitle.has(trace.title)
                                         ? "钻入此上游典籍"
-                                        : "暂无典籍入口"}
+                                        : "暂未挂出典籍入口"}
                                     </button>
                                   </div>
                                 </div>
@@ -3421,7 +3449,7 @@ export function BookExplorer({
                       </div>
                     ) : (
                       <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
-                        <div className="text-sm text-stone-200">这段暂未录入更早上游链路。</div>
+                        <div className="text-sm text-stone-200">这一段还没有接出更早上游链路。</div>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {activeLink ? (
                             <button
@@ -3534,7 +3562,7 @@ export function BookExplorer({
                       </div>
                     ) : (
                       <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
-                        <div className="text-sm text-stone-200">这段暂未出现更晚下游承接。</div>
+                        <div className="text-sm text-stone-200">这一段还没有接出更晚下游承接。</div>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {activeLink ? (
                             <button
