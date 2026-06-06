@@ -40,6 +40,50 @@ interface SearchPayload {
   relatedConcepts: string[];
 }
 
+function inferEraFromYearText(yearText?: string) {
+  if (!yearText) {
+    return null;
+  }
+
+  const matched = yearText.match(/-?\d{3,4}/);
+
+  if (!matched) {
+    return null;
+  }
+
+  const year = Number(matched[0]);
+
+  if (Number.isNaN(year)) {
+    return null;
+  }
+
+  if (year <= -221) {
+    return "先秦" as const;
+  }
+
+  if (year <= 220) {
+    return "两汉" as const;
+  }
+
+  if (year <= 589) {
+    return "魏晋" as const;
+  }
+
+  if (year <= 907) {
+    return "隋唐" as const;
+  }
+
+  if (year <= 1368) {
+    return "宋元" as const;
+  }
+
+  if (year <= 1911) {
+    return "明清" as const;
+  }
+
+  return "近现代" as const;
+}
+
 const relationLayerMeta = {
   metadata: {
     label: "书目关联",
@@ -365,21 +409,36 @@ export function CulturalVeinShell() {
     insights?.souyunKnowledgeGraphSample?.available,
     insights?.periodicalIndexSample?.available,
   ].filter(Boolean).length;
-  const sourceAtlasEntries = useMemo(
-    () => (insights?.sourceAtlas ?? []).slice(0, 6),
-    [insights?.sourceAtlas],
-  );
-  const activeSourceAtlasEntry = useMemo(() => {
-    if (!sourceAtlasEntries.length) {
-      return null;
+  const sourceAtlasEntries = (insights?.sourceAtlas ?? []).slice(0, 6);
+  const inferSourceAtlasEra = (entry: NonNullable<typeof sourceAtlasEntries>[number]) => {
+    const inferredEra =
+      entry.sampleRecords
+        ?.map((record) => inferEraFromYearText(record.year))
+        .find((era): era is (typeof eras)[number] => Boolean(era)) ?? null;
+
+    if (inferredEra) {
+      return inferredEra;
     }
 
-    return (
-      sourceAtlasEntries.find((entry) => entry.id === activeSourceAtlasId) ??
-      sourceAtlasEntries[0]
-    );
-  }, [activeSourceAtlasId, sourceAtlasEntries]);
-  const sourceAtlasDockMarkers = useMemo<RiverDockMarker[]>(() => {
+    if (
+      entry.name.includes("报刊") ||
+      entry.name.includes("专题片") ||
+      entry.name.includes("图书馆") ||
+      entry.name.includes("纪念馆")
+    ) {
+      return "近现代" as const;
+    }
+
+    return null;
+  };
+  const activeSourceAtlasEntry =
+    sourceAtlasEntries.find((entry) => entry.id === activeSourceAtlasId) ??
+    sourceAtlasEntries[0] ??
+    null;
+  const sourceAtlasSuggestedEra = activeSourceAtlasEntry
+    ? inferSourceAtlasEra(activeSourceAtlasEntry) ?? activeEra
+    : null;
+  const sourceAtlasDockMarkers: RiverDockMarker[] = (() => {
     if (!activeSourceAtlasEntry?.sampleRecords?.length) {
       return [];
     }
@@ -419,22 +478,65 @@ export function CulturalVeinShell() {
         ],
       };
     });
-  }, [activeSourceAtlasEntry, filteredBooks]);
-  const sourceAtlasPathPoints = useMemo(
-    () =>
-      sourceAtlasDockMarkers.map((dock) => [
-        dock.position[0],
-        dock.position[1] + 0.06,
-        dock.position[2],
-      ] as [number, number, number]),
-    [sourceAtlasDockMarkers],
+  })();
+  const sourceAtlasPathPoints = sourceAtlasDockMarkers.map(
+    (dock) => [dock.position[0], dock.position[1] + 0.06, dock.position[2]] as [number, number, number],
   );
   const mergedDockMarkers = selectedBook ? riverDockMarkers : sourceAtlasDockMarkers;
+  const sourceAtlasHighlightedBookSlugs = (() => {
+    if (!activeSourceAtlasEntry || selectedBook) {
+      return [];
+    }
+
+    const focusCandidates = filteredBooks
+      .filter((book) => {
+        if (sourceAtlasSuggestedEra && book.dynasty !== sourceAtlasSuggestedEra) {
+          return false;
+        }
+
+        if (activeSourceAtlasEntry.name.includes("搜韵")) {
+          return book.category === "集" || book.school.includes("诗");
+        }
+
+        if (activeSourceAtlasEntry.name.includes("报刊")) {
+          return book.dynasty === "近现代";
+        }
+
+        if (activeSourceAtlasEntry.name.includes("专题片")) {
+          return book.dynasty === "近现代" || book.dynasty === "明清";
+        }
+
+        if (activeSourceAtlasEntry.name.includes("CBDB")) {
+          return book.category === "史" || book.category === "经";
+        }
+
+        return true;
+      })
+      .sort((left, right) => right.influence - left.influence)
+      .slice(0, 5)
+      .map((book) => book.slug);
+
+    return focusCandidates;
+  })();
+  const mergedHighlightedBookSlugs = Array.from(
+    new Set([...searchHighlightedSlugs, ...sourceAtlasHighlightedBookSlugs]),
+  );
   const sourceAtlasMass =
     (insights?.cbdbSummary?.personCount ?? 0) +
     (insights?.nanjingLibrarySample?.recordCount ?? 0) +
     (insights?.nanhuArchiveSample?.documentCount ?? 0) +
     (insights?.nanhuArchiveSample?.imageCount ?? 0);
+  const handleSourceAtlasSelect = (entryId: string) => {
+    setActiveSourceAtlasId(entryId);
+
+    const selectedEntry = sourceAtlasEntries.find((entry) => entry.id === entryId);
+    if (!selectedBook && selectedEntry) {
+      const inferredEra = inferSourceAtlasEra(selectedEntry);
+      if (inferredEra && inferredEra !== activeEra) {
+        setActiveEra(inferredEra);
+      }
+    }
+  };
   const focusModeLabel = traceFocus?.active
     ? "逆流溯源"
     : sceneFocus?.active
@@ -636,7 +738,7 @@ export function CulturalVeinShell() {
                       <button
                         key={entry.id}
                         type="button"
-                        onClick={() => setActiveSourceAtlasId(entry.id)}
+                        onClick={() => handleSourceAtlasSelect(entry.id)}
                         className={`rounded-full px-3 py-1.5 text-[11px] transition ${
                           activeSourceAtlasEntry?.id === entry.id
                             ? "bg-[#f3dfab] text-[#42290a]"
@@ -1039,7 +1141,7 @@ export function CulturalVeinShell() {
             sourceAtlasPathPoints={!selectedBook ? sourceAtlasPathPoints : []}
             visibleNodeCount={filteredBooks.length}
             totalNodeCount={riverDataset.books.length}
-            highlightedBookSlugs={searchHighlightedSlugs}
+            highlightedBookSlugs={mergedHighlightedBookSlugs}
           />
         </main>
 
@@ -1077,7 +1179,7 @@ export function CulturalVeinShell() {
                       <button
                         key={`mobile-source-${entry.id}`}
                         type="button"
-                        onClick={() => setActiveSourceAtlasId(entry.id)}
+                        onClick={() => handleSourceAtlasSelect(entry.id)}
                         className={`rounded-full px-3 py-1.5 text-[11px] transition ${
                           activeSourceAtlasEntry?.id === entry.id
                             ? "bg-[#f3dfab] text-[#42290a]"
