@@ -1424,10 +1424,22 @@ export function BookExplorer({
                     </p>
                     <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
                       <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                        回查提示
+                        回查入口
                       </div>
                       <div className="mt-2 text-sm leading-6 text-stone-300">
                         {activeSourceEvidence.traceNote}
+                      </div>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {activeSourceEvidence.samples.slice(0, 2).map((sample) => (
+                          <button
+                            key={`trace-entry-${activeSourceEvidence.id}-${sample.label}`}
+                            type="button"
+                            onClick={() => handleOpenSourceSample(activeSourceEvidence.id, sample)}
+                            className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                          >
+                            回查 {sample.label}
+                          </button>
+                        ))}
                       </div>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -1783,11 +1795,46 @@ export function BookExplorer({
               </div>
             </>
           )}
-          <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-sm leading-7 text-[#eadfbc]">
-            传播视图当前以 3D 地球、抬升航线与传播落点来呈现典籍在不同历史节点之间的空间流动，可直接对应方案中的地理传播层。
-          </div>
-          <div className="rounded-[24px] border border-amber-300/14 bg-[linear-gradient(180deg,rgba(191,140,40,0.16),rgba(56,35,11,0.24))] px-4 py-4 text-sm leading-7 text-amber-50/90">
-            传播层当前采用“传播关系建模 + 上图活动场馆信号补强”的混合组织，既保持叙事连续，也明确区分真实接入与结构性补足。
+          <div className="grid gap-3 md:grid-cols-2">
+            <button
+              type="button"
+              onClick={() => {
+                if (activeSpread?.id) {
+                  setSelectedSpreadId(activeSpread.id);
+                }
+              }}
+              className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+            >
+              <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">航段入口</div>
+              <div className="mt-2 text-sm font-medium text-[#fbf3da]">
+                {activeSpreadPlaces?.from?.name ?? "起点"} → {activeSpreadPlaces?.to?.name ?? "终点"}
+              </div>
+              <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
+                回到正在查看的传播航段，顺着城市与年份继续追看知识南迁、北上与分流路径。
+              </div>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (detail.realWorldSignals?.venueSamples?.length) {
+                  setSelectedSourceEvidenceId("venue-samples");
+                  return;
+                }
+
+                setTab("timeline");
+              }}
+              className="rounded-[24px] border border-amber-300/14 bg-[linear-gradient(180deg,rgba(191,140,40,0.16),rgba(56,35,11,0.24))] px-4 py-4 text-left transition hover:bg-[linear-gradient(180deg,rgba(191,140,40,0.22),rgba(56,35,11,0.3))]"
+            >
+              <div className="text-xs tracking-[0.2em] text-amber-100/75">场馆入口</div>
+              <div className="mt-2 text-sm font-medium text-amber-50">
+                {detail.realWorldSignals?.venueSamples?.length ? "上图场馆样本" : "转看时间回声"}
+              </div>
+              <div className="mt-2 text-sm leading-7 text-amber-50/90">
+                {detail.realWorldSignals?.venueSamples?.length
+                  ? "沿着上图场馆与活动信号继续回查传播落点，让结构航段和真实样本在同一层合流。"
+                  : "这一层暂时没有场馆样本时，直接转看时间回声继续顺着传播事件走。"}
+              </div>
+            </button>
           </div>
           {detail.realWorldSignals?.venueSamples?.length ? (
             <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4">
