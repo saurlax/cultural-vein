@@ -1983,9 +1983,11 @@ export function BookExplorer({
                                 ? versionEvidenceSamples
                                 : institutionPreview
                               ).map((item) => (
-                                <div
+                                <button
                                   key={`version-evidence-${item.institution}-${item.title}-${item.imageRef ?? item.sourceText ?? "trace"}`}
-                                  className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4"
+                                  type="button"
+                                  onClick={() => handleSelectInstitutionRecord(item)}
+                                  className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4 text-left transition hover:bg-[rgba(255,255,255,0.08)]"
                                 >
                                   <div className="flex items-start justify-between gap-3">
                                     <div>
@@ -2009,7 +2011,7 @@ export function BookExplorer({
                                       图像出处：{item.sourceText}
                                     </div>
                                   ) : null}
-                                </div>
+                                </button>
                               ))}
                               {!versionEvidenceSamples.length && !institutionPreview.length ? (
                                 <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-stone-400">
