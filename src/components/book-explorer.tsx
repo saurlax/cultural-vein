@@ -231,6 +231,47 @@ export function BookExplorer({
               </div>
             </div>
           </div>
+          {detail.realWorldSignals.institutionSamples?.length ? (
+            <div className="mt-4 rounded-2xl border border-cyan-300/10 bg-black/15 px-4 py-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                  机构图像资源样本
+                </div>
+                <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                  {detail.realWorldSignals.institutionSamples.length} 条
+                </div>
+              </div>
+              <div className="mt-3 grid gap-3">
+                {detail.realWorldSignals.institutionSamples.map((item) => (
+                  <div
+                    key={`${item.institution}-${item.title}-${item.imageRef}`}
+                    className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="text-sm font-medium text-stone-50">{item.title}</div>
+                        <div className="mt-1 text-xs text-stone-400">
+                          {item.institution}
+                          {item.category ? ` · ${item.category}` : ""}
+                          {item.year ? ` · ${item.year}` : ""}
+                        </div>
+                      </div>
+                      {item.imageRef ? (
+                        <div className="rounded-full bg-white/10 px-3 py-1 text-[10px] text-stone-300">
+                          {item.imageRef}
+                        </div>
+                      ) : null}
+                    </div>
+                    {item.sourceText ? (
+                      <p className="mt-2 text-sm leading-6 text-stone-300">
+                        图像出处：{item.sourceText}
+                      </p>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </section>
       ) : null}
 

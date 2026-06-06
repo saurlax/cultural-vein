@@ -152,6 +152,14 @@ export interface BookDetail {
       status: string;
       startTime: string;
     }>;
+    institutionSamples?: Array<{
+      institution: string;
+      title: string;
+      category?: string;
+      year?: string;
+      imageRef?: string;
+      sourceText?: string;
+    }>;
     cbdbMatchedPeople?: number;
     cbdbFallbackPeople?: number;
   };
@@ -179,6 +187,12 @@ export interface DatasetInsight {
       name: string;
       sampleCount: number;
     }>;
+  };
+  nanjingLibrarySample?: {
+    available?: boolean;
+    institution?: string;
+    recordCount?: number;
+    sampleTitles?: string[];
   };
 }
 

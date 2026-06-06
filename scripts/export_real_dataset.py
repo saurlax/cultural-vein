@@ -27,6 +27,7 @@ WORK_DIR = ROOT / "tmp_generated"
 
 CBDB_DB = TMP_DIR / "CBDB_20240208.db"
 SL_ZIP = DATA_DIR / "上海图书馆开放数据2026.zip"
+NJ_ZIP = DATA_DIR / "南京图书馆2024.zip"
 
 DEMO_BOOKS = [
     {
@@ -1109,6 +1110,67 @@ def fetch_shanghai_activity_sample() -> dict[str, object]:
     }
 
 
+def parse_tagged_records(text: str) -> list[dict[str, str]]:
+    records: list[dict[str, str]] = []
+    current: dict[str, str] = {}
+
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        if line.startswith("<REC>"):
+            if current:
+                records.append(current)
+                current = {}
+            continue
+        if line.startswith("<") and ">" in line:
+            key, _, value = line.partition(">")
+            current[key[1:]] = value.strip().lstrip("=")
+
+    if current:
+        records.append(current)
+
+    return records
+
+
+def fetch_nanjing_library_sample() -> dict[str, object]:
+    if not NJ_ZIP.exists():
+        return {"available": False, "reason": "zip missing"}
+
+    with zipfile.ZipFile(NJ_ZIP) as archive:
+        txt_names = [
+            name for name in archive.namelist() if name.endswith(".txt") and "URL" not in name
+        ]
+        if not txt_names:
+            return {"available": False, "reason": "no txt files"}
+
+        records: list[dict[str, str]] = []
+        for name in txt_names:
+            content = archive.read(name).decode("gb18030", errors="ignore")
+            records.extend(parse_tagged_records(content)[:3])
+
+    sample_records = []
+    for record in records[:6]:
+        sample_records.append(
+            {
+                "institution": "南京图书馆",
+                "title": record.get("题名", ""),
+                "category": record.get("分类名", ""),
+                "year": record.get("作品日期", "") or record.get("出版日期", ""),
+                "imageRef": record.get("图像", ""),
+                "sourceText": record.get("图像出处", ""),
+            }
+        )
+
+    return {
+        "available": True,
+        "institution": "南京图书馆",
+        "recordCount": len(records),
+        "sampleTitles": [item["title"] for item in sample_records[:4] if item["title"]],
+        "sampleRecords": sample_records,
+    }
+
+
 def main() -> None:
     ensure_out_dir()
     cbdb_people = fetch_cbdb_people()
@@ -1140,6 +1202,7 @@ def main() -> None:
         "cbdbPeople": cbdb_people,
         "cbdbSummary": fetch_cbdb_summary(),
         "shanghaiLibraryActivity": fetch_shanghai_activity_sample(),
+        "nanjingLibrarySample": fetch_nanjing_library_sample(),
     }
     OUT_FILE.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2),

@@ -1276,5 +1276,66 @@
         "活动名称": "上图发布（总第189期）——讲好海派故事，上海优秀主题文学作品影视化创作分享会暨《长街行》有声剧开播仪式"
       }
     ]
+  },
+  "nanjingLibrarySample": {
+    "available": true,
+    "institution": "南京图书馆",
+    "recordCount": 9,
+    "sampleTitles": [
+      "唐紹儀內閣",
+      "迎袁世凱專使合影",
+      "嘉禾勳章",
+      "日軍在上海里弄搶掠"
+    ],
+    "sampleRecords": [
+      {
+        "institution": "南京图书馆",
+        "title": "唐紹儀內閣",
+        "category": "政治",
+        "year": "1912.03",
+        "imageRef": "yuan/75-1.jpg",
+        "sourceText": "袁世凱與北洋軍閥"
+      },
+      {
+        "institution": "南京图书馆",
+        "title": "迎袁世凱專使合影",
+        "category": "政治;人物",
+        "year": "1912.03",
+        "imageRef": "yuan/74-1.jpg",
+        "sourceText": "袁世凱與北洋軍閥"
+      },
+      {
+        "institution": "南京图书馆",
+        "title": "嘉禾勳章",
+        "category": "政治",
+        "year": "1912.07",
+        "imageRef": "yuan/102.jpg",
+        "sourceText": "袁世凱與北洋軍閥"
+      },
+      {
+        "institution": "南京图书馆",
+        "title": "日軍在上海里弄搶掠",
+        "category": "全面抗戰",
+        "year": "1937",
+        "imageRef": "njdts/21-003.jpg",
+        "sourceText": "南京大屠殺圖証"
+      },
+      {
+        "institution": "南京图书馆",
+        "title": "日軍登上白茆口江岸",
+        "category": "全面抗戰",
+        "year": "1937",
+        "imageRef": "njdts/21-004.jpg",
+        "sourceText": "南京大屠殺圖証"
+      },
+      {
+        "institution": "南京图书馆",
+        "title": "上海市民逃避戰火",
+        "category": "全面抗戰",
+        "year": "1995.07",
+        "imageRef": "njdts/22-001.jpg",
+        "sourceText": "南京大屠殺圖証"
+      }
+    ]
   }
 }

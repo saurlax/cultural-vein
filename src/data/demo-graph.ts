@@ -67,6 +67,21 @@ interface RealSupplementActivity {
   }>;
 }
 
+interface RealSupplementInstitutionSample {
+  available?: boolean;
+  institution?: string;
+  recordCount?: number;
+  sampleTitles?: string[];
+  sampleRecords?: Array<{
+    institution: string;
+    title: string;
+    category?: string;
+    year?: string;
+    imageRef?: string;
+    sourceText?: string;
+  }>;
+}
+
 interface RealSupplementCbdbSummary {
   available?: boolean;
   personCount?: number;
@@ -139,6 +154,8 @@ const cbdbPeople = (realSupplements.cbdbPeople ?? []) as RealSupplementPerson[];
 const cbdbSummary = (realSupplements.cbdbSummary ?? {}) as RealSupplementCbdbSummary;
 const shanghaiLibraryActivity = (realSupplements.shanghaiLibraryActivity ??
   {}) as RealSupplementActivity;
+const nanjingLibrarySample = (realSupplements.nanjingLibrarySample ??
+  {}) as RealSupplementInstitutionSample;
 
 const personByName = new Map(cbdbPeople.map((person) => [person.name, person]));
 
@@ -214,6 +231,20 @@ if (shanghaiLibraryActivity.available) {
           : "已接入上海图书馆活动样本。",
       venueSamples,
       eventSamples: eventSamples.slice(0, 3),
+    };
+  }
+}
+
+if (nanjingLibrarySample.available) {
+  const institutionSamples = (nanjingLibrarySample.sampleRecords ?? []).slice(0, 4);
+  for (const slug of ["ren-jian-ci-hua", "ri-zhi-lu"] as const) {
+    const detail = details[slug];
+    detail.realWorldSignals = {
+      ...detail.realWorldSignals,
+      sourceLabel: detail.realWorldSignals?.sourceLabel
+        ? `${detail.realWorldSignals.sourceLabel} + 南京图书馆图像样本`
+        : "CBDB + 南京图书馆图像样本",
+      institutionSamples,
     };
   }
 }
