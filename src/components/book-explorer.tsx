@@ -662,23 +662,26 @@ export function BookExplorer({
   const secondaryPeopleExpanded =
     showSecondaryPeople || (activePerson?.relationTier ?? 2) === 2;
   const visibleSecondaryPeople = secondaryPeopleExpanded ? secondaryPeople : [];
+  const activeTabMeta = tabs.find((item) => item.id === activeTab) ?? tabs[0];
 
   return (
     <div className="space-y-4">
-      <section>
+      <section className="overflow-hidden rounded-[28px] border border-[#caa45b]/24 bg-[linear-gradient(180deg,rgba(246,232,191,0.94),rgba(224,197,138,0.92))] px-5 py-5 text-[#4a2c08] shadow-[inset_0_1px_0_rgba(255,255,255,0.24)]">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <p className="text-xs tracking-[0.25em] text-stone-400">
-              典籍焦点
+            <p className="text-[11px] tracking-[0.3em] text-[#8d6a2c]">
+              卷首题签
             </p>
-            <h2 className="mt-2 text-3xl font-semibold">{book.title}</h2>
-            <p className="mt-3 text-sm leading-7 text-stone-300">{book.summary}</p>
+            <h2 className="mt-2 text-[clamp(1.7rem,3vw,2.5rem)] font-semibold text-[#4a2c08]">
+              {book.title}
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-[#6b4b1d]">{book.summary}</p>
           </div>
-          <div className="grid gap-2 text-xs text-stone-300">
-            <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+          <div className="grid gap-2 text-xs text-[#6b4b1d]">
+            <div className="rounded-full border border-[#caa45b]/24 bg-white/30 px-3 py-1">
               {book.dynasty} · {book.category}
             </div>
-            <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+            <div className="rounded-full border border-[#caa45b]/24 bg-white/30 px-3 py-1">
               {book.school}
             </div>
           </div>
@@ -686,27 +689,27 @@ export function BookExplorer({
       </section>
 
       <section className="grid grid-cols-3 gap-3 text-center text-sm">
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-          <div className="text-stone-400">直接引用</div>
-          <div className="mt-2 text-xl font-semibold text-stone-50">
+        <div className="rounded-[24px] border border-[#caa45b]/18 bg-[rgba(248,237,206,0.12)] px-3 py-3">
+          <div className="text-[#c9b68a]">直接引用</div>
+          <div className="mt-2 text-xl font-semibold text-[#fbf3da]">
             {detail.heroMetric.directCitations}
           </div>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-          <div className="text-stone-400">下游影响</div>
-          <div className="mt-2 text-xl font-semibold text-stone-50">
+        <div className="rounded-[24px] border border-[#caa45b]/18 bg-[rgba(248,237,206,0.12)] px-3 py-3">
+          <div className="text-[#c9b68a]">下游影响</div>
+          <div className="mt-2 text-xl font-semibold text-[#fbf3da]">
             {detail.heroMetric.downstreamInfluence}
           </div>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-          <div className="text-stone-400">传播区域</div>
-          <div className="mt-2 text-xl font-semibold text-stone-50">
+        <div className="rounded-[24px] border border-[#caa45b]/18 bg-[rgba(248,237,206,0.12)] px-3 py-3">
+          <div className="text-[#c9b68a]">传播区域</div>
+          <div className="mt-2 text-xl font-semibold text-[#fbf3da]">
             {detail.heroMetric.coveredRegions}
           </div>
         </div>
       </section>
 
-      <section className="rounded-2xl border border-amber-300/15 bg-amber-300/6 px-4 py-4">
+      <section className="rounded-[24px] border border-[#e1bd6e]/18 bg-[linear-gradient(180deg,rgba(194,140,42,0.16),rgba(78,50,14,0.2))] px-4 py-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="text-xs tracking-[0.2em] text-amber-100/75">
@@ -737,8 +740,18 @@ export function BookExplorer({
         <div className="mt-2 text-xs text-amber-100/75">微观文本当前显现 {eraLinkedSummary.passages} 个片段。</div>
       </section>
 
-      <section>
-        <div className="flex flex-wrap gap-2">
+      <section className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(27,17,7,0.2)] px-4 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
+              卷内分栏
+            </div>
+            <div className="mt-1 text-sm text-[#fbf3da]">
+              当前停在 {activeTabMeta.label}
+            </div>
+          </div>
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
           {tabs.map((item) => (
             <button
               key={item.id}
@@ -746,8 +759,8 @@ export function BookExplorer({
               onClick={() => setTab(item.id)}
               className={`rounded-full px-3 py-2 text-xs transition ${
                 activeTab === item.id
-                  ? "bg-amber-300 text-stone-950"
-                  : "border border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                  ? "bg-[#f3dfab] text-[#42290a]"
+                  : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
               }`}
             >
               {item.label}
@@ -2108,14 +2121,14 @@ export function BookExplorer({
             </div>
           ) : activePassage ? (
             <>
-              <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_240px]">
-                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+              <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_248px]">
+                <div className="rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.06)] px-4 py-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                      <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
                         当前文本片段
                       </div>
-                      <div className="mt-1 text-lg font-semibold text-stone-50">
+                      <div className="mt-1 text-lg font-semibold text-[#fbf3da]">
                         {activePassage.section}
                       </div>
                     </div>
@@ -2125,8 +2138,8 @@ export function BookExplorer({
                         onClick={() => setPassageLayout("horizontal")}
                         className={`rounded-full px-3 py-2 text-xs transition ${
                           passageLayout === "horizontal"
-                            ? "bg-amber-300 text-stone-950"
-                            : "border border-white/10 bg-white/5 text-stone-300"
+                            ? "bg-[#f3dfab] text-[#42290a]"
+                            : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc]"
                         }`}
                       >
                         横排
@@ -2136,8 +2149,8 @@ export function BookExplorer({
                         onClick={() => setPassageLayout("vertical")}
                         className={`rounded-full px-3 py-2 text-xs transition ${
                           passageLayout === "vertical"
-                            ? "bg-amber-300 text-stone-950"
-                            : "border border-white/10 bg-white/5 text-stone-300"
+                            ? "bg-[#f3dfab] text-[#42290a]"
+                            : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc]"
                         }`}
                       >
                         竖排
@@ -2152,8 +2165,8 @@ export function BookExplorer({
                         onClick={() => handleSelectPassage(passage.id)}
                         className={`rounded-full px-3 py-2 text-xs transition ${
                           activePassageId === passage.id
-                            ? "bg-amber-300 text-stone-950"
-                            : "border border-white/10 bg-black/15 text-stone-300 hover:bg-white/10"
+                            ? "bg-[#f3dfab] text-[#42290a]"
+                            : "border border-[#ead8a6]/18 bg-[rgba(27,17,7,0.18)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.08)]"
                         }`}
                       >
                         {passage.section}
@@ -2162,7 +2175,7 @@ export function BookExplorer({
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-amber-300/15 bg-amber-300/5 px-4 py-4">
+                <div className="rounded-[24px] border border-amber-300/15 bg-[linear-gradient(180deg,rgba(191,140,40,0.16),rgba(56,35,11,0.24))] px-4 py-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <div className="text-xs tracking-[0.2em] text-amber-100/75">
@@ -2190,19 +2203,19 @@ export function BookExplorer({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+              <div className="rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.06)] px-4 py-4">
                 <div className="mt-1 grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
-                  <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                  <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(36,22,8,0.42)] px-4 py-4">
                     <div className="flex items-center justify-between gap-3">
-                      <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                      <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
                         原文对读
                       </div>
-                      <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-stone-300">
+                      <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.06)] px-3 py-1 text-xs text-[#eadfbc]">
                         {passageLayout === "vertical" ? "竖排模式" : "横排模式"}
                       </span>
                     </div>
                     <div
-                      className={`mt-4 rounded-2xl border border-white/10 bg-[#090f0f] px-5 py-5 text-stone-100 ${
+                      className={`mt-4 rounded-[24px] border border-[#d9bd79]/14 bg-[linear-gradient(180deg,rgba(243,228,186,0.96),rgba(226,201,146,0.92))] px-5 py-5 text-[#4a2c08] shadow-[inset_0_1px_0_rgba(255,255,255,0.24)] ${
                         passageLayout === "vertical"
                           ? "max-h-[320px] overflow-x-auto [writing-mode:vertical-rl] text-lg leading-10 tracking-[0.25em]"
                           : "text-sm leading-9"
@@ -2288,8 +2301,8 @@ export function BookExplorer({
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
-                    <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                  <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(36,22,8,0.42)] px-4 py-4">
+                    <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
                       引用证据
                     </div>
                     <div className="mt-3 space-y-2">
