@@ -1284,7 +1284,11 @@ export function BookExplorer({
                 ) : null}
               </div>
               <div className="mt-4 grid gap-3 md:grid-cols-2">
-                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                <button
+                  type="button"
+                  onClick={() => handleOpenSourceEvidence("institution-samples")}
+                  className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-left transition hover:bg-white/10"
+                >
                   <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
                     资源落点
                   </div>
@@ -1297,15 +1301,25 @@ export function BookExplorer({
                       .filter(Boolean)
                       .join(" · ")}
                   </div>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                  <div className="mt-3 text-xs text-amber-100/80">
+                    回到机构总表，继续沿馆藏与版本资源线追看。
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTab("versions")}
+                  className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-left transition hover:bg-white/10"
+                >
                   <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
                     资源线索
                   </div>
                   <div className="mt-2 text-sm leading-6 text-stone-300">
                     {activeInstitutionRecord.sourceText ?? activeInstitutionRecord.imageRef ?? "已落到馆藏条目，可直接作为当前版本的资源挂接点。"}
                   </div>
-                </div>
+                  <div className="mt-3 text-xs text-amber-100/80">
+                    转看版本流变，把这条资源线索重新挂回当前版本节点。
+                  </div>
+                </button>
               </div>
             </div>
           ) : null}
@@ -1549,6 +1563,28 @@ export function BookExplorer({
                         图像出处：{item.sourceText}
                       </p>
                     ) : null}
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleOpenSourceEvidence("institution-samples");
+                        }}
+                        className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                      >
+                        回到机构总表
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setTab("versions");
+                        }}
+                        className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-stone-300 transition hover:bg-white/10"
+                      >
+                        转看版本流变
+                      </button>
+                    </div>
                   </button>
                 );
                 })}
@@ -3225,9 +3261,11 @@ export function BookExplorer({
               </div>
               <div className="mt-3 space-y-2">
                 {detail.realWorldSignals.eventSamples.map((event) => (
-                  <div
+                  <button
                     key={`${event.venue}-${event.title}-${event.startTime}`}
-                    className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3"
+                    type="button"
+                    onClick={() => handleSelectEventSample(event)}
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left transition hover:bg-white/10"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <span className="text-sm font-medium text-stone-100">
@@ -3273,7 +3311,7 @@ export function BookExplorer({
                         对应场馆传播
                       </button>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
