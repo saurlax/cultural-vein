@@ -151,6 +151,32 @@ export function BookExplorer({
               {detail.realWorldSignals.venueSummary}
             </p>
           ) : null}
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <div className="rounded-2xl border border-cyan-300/10 bg-black/15 px-3 py-3">
+              <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/70">
+                人物命中
+              </div>
+              <div className="mt-2 text-sm text-stone-100">
+                CBDB 命中 {detail.realWorldSignals.cbdbMatchedPeople ?? 0} 人
+              </div>
+              <div className="mt-1 text-xs text-stone-400">
+                示范补全 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
+              </div>
+            </div>
+            <div className="rounded-2xl border border-cyan-300/10 bg-black/15 px-3 py-3">
+              <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/70">
+                传播信号
+              </div>
+              <div className="mt-2 text-sm text-stone-100">
+                {detail.realWorldSignals.venueSamples?.length
+                  ? `上图场馆样本 ${detail.realWorldSignals.venueSamples.length} 组`
+                  : "暂无场馆样本"}
+              </div>
+              <div className="mt-1 text-xs text-stone-400">
+                活动事件样本 {detail.realWorldSignals.eventSamples?.length ?? 0} 条
+              </div>
+            </div>
+          </div>
         </section>
       ) : null}
 

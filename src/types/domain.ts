@@ -144,6 +144,33 @@ export interface BookDetail {
       status: string;
       startTime: string;
     }>;
+    cbdbMatchedPeople?: number;
+    cbdbFallbackPeople?: number;
+  };
+}
+
+export interface DatasetInsight {
+  cbdbSummary?: {
+    available?: boolean;
+    personCount?: number;
+    topDynasties?: Array<{
+      name: string;
+      count: number;
+    }>;
+  };
+  cbdbPeople?: Array<{
+    name: string;
+    foundInCbdb?: boolean;
+    matchedAlias?: string;
+  }>;
+  shanghaiLibraryActivity?: {
+    available?: boolean;
+    sourceWorkbook?: string;
+    sheetName?: string;
+    topVenues?: Array<{
+      name: string;
+      sampleCount: number;
+    }>;
   };
 }
 

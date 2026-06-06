@@ -992,12 +992,16 @@ if (cbdbSummary.available) {
 
   for (const slug of ["shijing", "sishu-zhangju", "shiji", "zi-zhi-tong-jian"] as const) {
     const detail = details[slug];
+    const matchedCount = detail.people.filter((person) => person.source === "cbdb").length;
+    const fallbackCount = detail.people.filter((person) => person.source !== "cbdb").length;
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
       sourceLabel: detail.realWorldSignals?.sourceLabel ?? "CBDB + 上图数据",
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         `CBDB 当前可用人物 ${cbdbSummary.personCount?.toLocaleString() ?? "未知"} 条；高频朝代样本为 ${topDynastyLine}。`,
+      cbdbMatchedPeople: matchedCount,
+      cbdbFallbackPeople: fallbackCount,
     };
   }
 }
