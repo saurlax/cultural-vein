@@ -545,10 +545,19 @@ export function BookExplorer({
     ? detail.realWorldSignals.sourceLabel.split("+").map((item) => item.trim()).filter(Boolean)
     : [];
   const sourceEvidence = useMemo(() => buildSourceEvidence(detail), [detail]);
-  const institutionRecords = detail.realWorldSignals?.institutionSamples ?? [];
-  const venuePreview = detail.realWorldSignals?.venueSamples?.slice(0, 3) ?? [];
-  const eventPreview = detail.realWorldSignals?.eventSamples?.slice(0, 3) ?? [];
-  const institutionPreview = institutionRecords.slice(0, 3);
+  const institutionRecords = useMemo(
+    () => detail.realWorldSignals?.institutionSamples ?? [],
+    [detail.realWorldSignals?.institutionSamples],
+  );
+  const venuePreview = useMemo(
+    () => detail.realWorldSignals?.venueSamples?.slice(0, 3) ?? [],
+    [detail.realWorldSignals?.venueSamples],
+  );
+  const eventPreview = useMemo(
+    () => detail.realWorldSignals?.eventSamples?.slice(0, 3) ?? [],
+    [detail.realWorldSignals?.eventSamples],
+  );
+  const institutionPreview = useMemo(() => institutionRecords.slice(0, 3), [institutionRecords]);
   const eraLinkedSummary = {
     spread: visibleSpread.length,
     people: visiblePeople.length,
@@ -607,6 +616,13 @@ export function BookExplorer({
   };
   const handleFocusEventEvidence = () => {
     setSelectedSourceEvidenceId("event-samples");
+  };
+  const handleFocusCbdbEvidence = (personId?: string | null) => {
+    setSelectedSourceEvidenceId("cbdb-people");
+
+    if (personId) {
+      setSelectedPersonId(personId);
+    }
   };
   const handleOpenSourceEvidence = (evidenceId: string) => {
     setSelectedSourceEvidenceId(evidenceId);
@@ -763,6 +779,57 @@ export function BookExplorer({
         }
 
         return activeInstitutionRecord.year.includes(String(item.year));
+      }) ?? null
+    : null;
+  const linkedVenueEventMap = useMemo(() => {
+    const events = detail.realWorldSignals?.eventSamples ?? [];
+
+    return new Map(
+      venuePreview.map((venue) => {
+        const matchedEvents = events.filter((event) => event.venue === venue.name);
+        return [venue.name, matchedEvents] as const;
+      }),
+    );
+  }, [detail.realWorldSignals?.eventSamples, venuePreview]);
+  const linkedVenueSpreadMap = useMemo(() => {
+    return new Map(
+      venuePreview.map((venue) => {
+        const matchedSpread =
+          visibleSpread.find((item) => {
+            const fromPlace = detail.places.find((place) => place.id === item.fromPlaceId);
+            const toPlace = detail.places.find((place) => place.id === item.toPlaceId);
+            const target = venue.name.toLowerCase();
+
+            return (
+              fromPlace?.name.toLowerCase().includes(target) ||
+              toPlace?.name.toLowerCase().includes(target) ||
+              fromPlace?.note.toLowerCase().includes(target) ||
+              toPlace?.note.toLowerCase().includes(target)
+            );
+          }) ??
+          activeSpread ??
+          visibleSpread[0] ??
+          null;
+
+        return [venue.name, matchedSpread] as const;
+      }),
+    );
+  }, [activeSpread, detail.places, venuePreview, visibleSpread]);
+  const linkedPersonSpread = activePerson?.activityPlaces?.length
+    ? visibleSpread.find((item) => {
+        const fromPlace = detail.places.find((place) => place.id === item.fromPlaceId);
+        const toPlace = detail.places.find((place) => place.id === item.toPlaceId);
+
+        return activePerson.activityPlaces?.some((place) => {
+          const placeName = place.name.toLowerCase();
+
+          return (
+            fromPlace?.name.toLowerCase().includes(placeName) ||
+            toPlace?.name.toLowerCase().includes(placeName) ||
+            fromPlace?.note.toLowerCase().includes(placeName) ||
+            toPlace?.note.toLowerCase().includes(placeName)
+          );
+        });
       }) ?? null
     : null;
   const secondaryPeopleExpanded =
@@ -1586,12 +1653,65 @@ export function BookExplorer({
                 {detail.realWorldSignals.venueSamples.map((venue) => (
                   <div
                     key={venue.name}
-                    className="flex items-center justify-between rounded-2xl bg-black/15 px-3 py-3 text-sm"
+                    className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm"
                   >
-                    <span className="text-stone-200">{venue.name}</span>
-                    <span className="rounded-full bg-amber-300/10 px-2 py-1 text-xs text-amber-100">
-                      采样 {venue.sampleCount}
-                    </span>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-stone-200">{venue.name}</span>
+                      <span className="rounded-full bg-amber-300/10 px-2 py-1 text-xs text-amber-100">
+                        采样 {venue.sampleCount}
+                      </span>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const linkedSpread = linkedVenueSpreadMap.get(venue.name);
+
+                          if (linkedSpread?.id) {
+                            setSelectedSpreadId(linkedSpread.id);
+                          }
+                        }}
+                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-300 transition hover:bg-white/10"
+                      >
+                        对应当前航段
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const linkedEvent = linkedVenueEventMap.get(venue.name)?.[0];
+
+                          if (linkedEvent) {
+                            const matchedTimeline = visibleTimeline.find((item) =>
+                              linkedEvent.startTime.includes(String(item.year)),
+                            );
+
+                            if (matchedTimeline?.id) {
+                              setSelectedTimelineId(matchedTimeline.id);
+                            }
+                          }
+
+                          handleFocusEventEvidence();
+                          setTab("timeline");
+                        }}
+                        className="rounded-full border border-amber-300/25 bg-amber-300/12 px-3 py-1.5 text-xs text-amber-100 transition hover:bg-amber-300/18"
+                      >
+                        回查活动事件
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedSourceEvidenceId("venue-samples");
+                        }}
+                        className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
+                      >
+                        打开场馆证据
+                      </button>
+                    </div>
+                    {linkedVenueEventMap.get(venue.name)?.length ? (
+                      <div className="mt-3 text-xs leading-6 text-stone-400">
+                        已挂接 {linkedVenueEventMap.get(venue.name)!.length} 条活动事件，可继续回查时间线。
+                      </div>
+                    ) : null}
                   </div>
                 ))}
               </div>
@@ -1768,6 +1888,27 @@ export function BookExplorer({
                                 ? `当前人物已接入真实人物纪传数据${activePerson.matchedAlias ? `，匹配别名为 ${activePerson.matchedAlias}` : ""}。`
                                 : "当前仍为整理人物，后续可继续补入更完整的真实人物图谱记录。"}
                             </div>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => handleFocusCbdbEvidence(activePerson.id)}
+                                className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
+                              >
+                                回查纪传证据
+                              </button>
+                              {linkedPersonSpread ? (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedSpreadId(linkedPersonSpread.id);
+                                    setTab("spread");
+                                  }}
+                                  className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-xs text-amber-100 transition hover:bg-amber-300/15"
+                                >
+                                  对应传播航段
+                                </button>
+                              ) : null}
+                            </div>
                           </div>
                         </div>
 
@@ -1813,6 +1954,27 @@ export function BookExplorer({
                             纪传库匹配别名：{activePerson.matchedAlias}
                           </div>
                         ) : null}
+                        <div className="mt-4 rounded-2xl border border-amber-300/12 bg-amber-300/6 px-4 py-4">
+                          <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                              <div className="text-xs tracking-[0.2em] text-amber-100/75">
+                                人物回查路径
+                              </div>
+                              <div className="mt-2 text-sm leading-6 text-stone-300">
+                                可从当前人物直接回到纪传证据总表，也可顺着人物活动地点折返到传播航段。
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                handleFocusCbdbEvidence(activePerson.id);
+                              }}
+                              className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                            >
+                              打开证据总表
+                            </button>
+                          </div>
+                        </div>
                       </>
                     ) : null}
                   </div>
