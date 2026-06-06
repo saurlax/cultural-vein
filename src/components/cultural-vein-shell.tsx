@@ -416,11 +416,13 @@ export function CulturalVeinShell() {
       summary: activeBranchAnnotation?.label ?? "主河道",
     },
   ];
+  const activeDesktopPanelConfig =
+    desktopPanels.find((panel) => panel.id === activeDesktopPanel) ?? desktopPanels[0];
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#201508] text-stone-100">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(245,210,107,0.2),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(196,134,35,0.15),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(160,117,43,0.14),transparent_38%),linear-gradient(180deg,#5a4019_0%,#2f1f0b_44%,#140c05_100%)]" />
-      <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,243,204,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,243,204,0.05)_1px,transparent_1px)] [background-size:72px_72px]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(245,210,107,0.18),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(196,134,35,0.14),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(160,117,43,0.12),transparent_38%),linear-gradient(180deg,#6a4a1a_0%,#342109_42%,#140c05_100%)]" />
+      <div className="absolute inset-0 opacity-15 [background-image:linear-gradient(rgba(255,243,204,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,243,204,0.04)_1px,transparent_1px)] [background-size:96px_96px]" />
 
       {showDiveOverlay ? (
         <div className="pointer-events-none absolute inset-0 z-40 overflow-hidden">
@@ -437,8 +439,8 @@ export function CulturalVeinShell() {
       ) : null}
 
       <div className="relative z-10 min-h-screen">
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-          <div className={`pointer-events-auto max-w-[300px] px-5 py-4 ${panelBaseClass}`}>
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
+          <div className={`pointer-events-auto max-w-[260px] px-4 py-3 sm:max-w-[300px] sm:px-5 sm:py-4 ${panelBaseClass}`}>
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[11px] tracking-[0.32em] text-[#f2dfab]/80">
@@ -452,8 +454,8 @@ export function CulturalVeinShell() {
                 {viewMode === "river" ? "总览" : "钻入"}
               </div>
             </div>
-            <p className="mt-3 text-sm leading-6 text-[#eadfbc]">
-              整页以黄河文脉为主景，筛选与文卷只在需要时出现。
+            <p className="mt-3 text-xs leading-6 text-[#eadfbc] sm:text-sm">
+              整页以黄河文脉为主景，题签与文卷只在需要时轻轻展开。
             </p>
           </div>
 
@@ -465,9 +467,9 @@ export function CulturalVeinShell() {
                 setShowMobileDossier(false);
                 setShowMobileControls((current) => !current);
               }}
-              className="rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl xl:hidden"
+              className="rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-3 py-2 text-xs text-amber-50 backdrop-blur-xl md:hidden"
             >
-              筛选
+              {showMobileControls ? "收起题签" : "展开题签"}
             </button>
             {selectedBook ? (
               <button
@@ -477,16 +479,16 @@ export function CulturalVeinShell() {
                   setShowDesktopDossier(false);
                   setShowMobileDossier((current) => !current);
                 }}
-                className="rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl xl:hidden"
+                className="rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-3 py-2 text-xs text-amber-50 backdrop-blur-xl md:hidden"
               >
-                文卷
+                {showMobileDossier ? "收起文卷" : "展开文卷"}
               </button>
             ) : null}
             {selectedBook ? (
               <button
                 type="button"
                 onClick={() => setShowDesktopDossier((current) => !current)}
-                className="hidden rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl xl:inline-flex"
+                className="hidden rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl md:inline-flex"
               >
                 {showDesktopDossier ? "收起文卷" : "展开文卷"}
               </button>
@@ -494,7 +496,7 @@ export function CulturalVeinShell() {
           </div>
         </div>
 
-        <div className="absolute left-4 top-[108px] z-20 hidden w-[262px] sm:left-6 lg:left-8 xl:block">
+        <div className="absolute left-4 top-[104px] z-20 hidden w-[240px] sm:left-6 md:block lg:left-8 lg:w-[252px]">
           <aside className="pointer-events-auto xl:pt-2">
             <div className={`p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
@@ -905,12 +907,14 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileControls ? (
-          <div className="absolute inset-x-4 bottom-20 z-40 xl:hidden">
-            <div className={`pointer-events-auto max-h-[56vh] overflow-auto p-4 ${panelBaseClass}`}>
+          <div className="absolute inset-x-3 bottom-[5.2rem] z-40 md:hidden">
+            <div className={`pointer-events-auto max-h-[48vh] overflow-auto p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">长卷侧注</div>
-                  <div className="mt-1 text-base font-medium text-[#fbf3da]">河上题签</div>
+                  <div className="mt-1 text-sm font-medium text-[#fbf3da]">
+                    {activeDesktopPanelConfig.label}题签
+                  </div>
                 </div>
                 <button
                   type="button"
@@ -925,137 +929,169 @@ export function CulturalVeinShell() {
                 <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-3">关系 {visibleCitations.length}</div>
                 <div className="rounded-2xl border border-[#ead8a6]/20 bg-[rgba(233,191,86,0.08)] px-3 py-3 text-[#fbf3da]">来源 {connectedSourceCount || "--"}</div>
               </div>
-              <div className="mt-4 rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(27,17,7,0.18)] px-4 py-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">关系层级</div>
-                  <div className="text-[11px] text-[#c9b68a]">置信度说明</div>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {relationSummary.map(({ layer, count }) => (
-                    <span
-                      key={`mobile-layer-${layer}`}
-                      className={`rounded-full border px-3 py-1.5 text-[11px] ${relationLayerMeta[layer].tone}`}
-                    >
-                      {relationLayerMeta[layer].label} {count}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <label className="mt-4 block">
-                <span className="text-xs tracking-[0.22em] text-[#d8c9a3]">概念检索</span>
-                <input
-                  value={searchTerm}
-                  onChange={(event) => handleSearchTermChange(event.target.value)}
-                  placeholder="例如 仁、礼、诗教、朱熹"
-                  className="mt-2 w-full rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-4 py-3 text-sm text-[#fbf3da] outline-none placeholder:text-[#c9b68a] focus:border-[#f0cf75]/40"
-                />
-              </label>
-              <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(27,17,7,0.24)] px-4 py-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">概念联想</div>
-                  <div className="text-[11px] text-[#c9b68a]">
-                    {searchPending
-                      ? "检索中"
-                      : resolvedSearchResult?.query
-                        ? `命中 ${resolvedSearchResult.total} 本`
-                        : "常见概念"}
-                  </div>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {searchSuggestionChips.slice(0, 8).map((concept) => (
-                    <button
-                      key={`mobile-${concept}`}
-                      type="button"
-                      onClick={() => handleSearchTermChange(concept)}
-                      className={`rounded-full border px-3 py-1.5 text-xs transition ${
-                        searchTerm.trim() === concept
-                          ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
-                          : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
-                      }`}
-                    >
-                      {concept}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-4 py-4">
-                <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-[#d8c9a3]">
-                  <span>时代水位</span>
-                  <span className="text-amber-100">{activeEra}</span>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={eras.length - 1}
-                  step={1}
-                  value={activeEraIndex}
-                  onChange={(event) => setActiveEra(eras[Number(event.target.value)] ?? eras[0])}
-                  className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
-                />
-                <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-[#c9b68a]">
-                  {eras.map((era) => (
-                    <button
-                      key={era}
-                      type="button"
-                      onClick={() => setActiveEra(era)}
-                      className={`rounded-full px-2 py-1 transition ${
-                        activeEra === era
-                          ? "bg-amber-300/14 text-amber-100"
-                          : "bg-white/0 text-[#c9b68a] hover:bg-[rgba(255,248,220,0.05)] hover:text-[#eadfbc]"
-                      }`}
-                    >
-                      {era}
-                    </button>
-                  ))}
-                </div>
-              </div>
               <div className="mt-4 flex flex-wrap gap-2">
-                {categories.map((category) => (
+                {desktopPanels.map((panel) => (
                   <button
-                    key={category}
+                    key={`mobile-tab-${panel.id}`}
                     type="button"
-                    onClick={() => setCategoryFilter(category)}
+                    onClick={() => setActiveDesktopPanel(panel.id)}
                     className={`rounded-full px-3 py-2 text-xs transition ${
-                      categoryFilter === category
+                      activeDesktopPanel === panel.id
                         ? "bg-[#f3dfab] text-[#42290a]"
-                        : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                        : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc]"
                     }`}
                   >
-                    {category}
+                    {panel.label}
                   </button>
                 ))}
               </div>
-              <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-4 py-4">
-                <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
-                  {schoolLabel}
+              {activeDesktopPanel === "search" ? (
+                <>
+                  <label className="mt-4 block">
+                    <span className="text-xs tracking-[0.22em] text-[#d8c9a3]">概念检索</span>
+                    <input
+                      value={searchTerm}
+                      onChange={(event) => handleSearchTermChange(event.target.value)}
+                      placeholder="例如 仁、礼、诗教、朱熹"
+                      className="mt-2 w-full rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-4 py-3 text-sm text-[#fbf3da] outline-none placeholder:text-[#c9b68a] focus:border-[#f0cf75]/40"
+                    />
+                  </label>
+                  <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(27,17,7,0.24)] px-4 py-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">概念联想</div>
+                      <div className="text-[11px] text-[#c9b68a]">
+                        {searchPending
+                          ? "检索中"
+                          : resolvedSearchResult?.query
+                            ? `命中 ${resolvedSearchResult.total} 本`
+                            : "常见概念"}
+                      </div>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {searchSuggestionChips.slice(0, 8).map((concept) => (
+                        <button
+                          key={`mobile-${concept}`}
+                          type="button"
+                          onClick={() => handleSearchTermChange(concept)}
+                          className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                            searchTerm.trim() === concept
+                              ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
+                              : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                          }`}
+                        >
+                          {concept}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ) : null}
+              {activeDesktopPanel === "era" ? (
+                <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-4 py-4">
+                  <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-[#d8c9a3]">
+                    <span>时代水位</span>
+                    <span className="text-amber-100">{activeEra}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={eras.length - 1}
+                    step={1}
+                    value={activeEraIndex}
+                    onChange={(event) => setActiveEra(eras[Number(event.target.value)] ?? eras[0])}
+                    className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
+                  />
+                  <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-[#c9b68a]">
+                    {eras.map((era) => (
+                      <button
+                        key={era}
+                        type="button"
+                        onClick={() => setActiveEra(era)}
+                        className={`rounded-full px-2 py-1 transition ${
+                          activeEra === era
+                            ? "bg-amber-300/14 text-amber-100"
+                            : "bg-white/0 text-[#c9b68a] hover:bg-[rgba(255,248,220,0.05)] hover:text-[#eadfbc]"
+                        }`}
+                      >
+                        {era}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {schools.map((school) => (
-                    <button
-                      key={`mobile-school-${school}`}
-                      type="button"
-                      onClick={() => setSchoolFilter(school)}
-                      className={`rounded-full px-3 py-2 text-xs transition ${
-                        schoolFilter === school
-                          ? "bg-[#f3dfab] text-[#42290a]"
-                          : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
-                      }`}
-                    >
-                      {school}
-                    </button>
-                  ))}
-                </div>
-                <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(27,17,7,0.18)] px-3 py-3 text-sm text-[#eadfbc]">
-                  当前河段显现自 {eras[0]} 至 {activeEra}，门类为 {categoryFilter}，学派为{" "}
-                  {schoolFilter}。
-                </div>
+              ) : null}
+              {activeDesktopPanel === "category" ? (
+                <>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {categories.map((category) => (
+                      <button
+                        key={category}
+                        type="button"
+                        onClick={() => setCategoryFilter(category)}
+                        className={`rounded-full px-3 py-2 text-xs transition ${
+                          categoryFilter === category
+                            ? "bg-[#f3dfab] text-[#42290a]"
+                            : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                        }`}
+                      >
+                        {category}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-4 py-4">
+                    <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
+                      {schoolLabel}
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {schools.map((school) => (
+                        <button
+                          key={`mobile-school-${school}`}
+                          type="button"
+                          onClick={() => setSchoolFilter(school)}
+                          className={`rounded-full px-3 py-2 text-xs transition ${
+                            schoolFilter === school
+                              ? "bg-[#f3dfab] text-[#42290a]"
+                              : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                          }`}
+                        >
+                          {school}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ) : null}
+              {activeDesktopPanel === "branch" ? (
+                <>
+                  <div className="mt-4 rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(27,17,7,0.18)] px-4 py-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">关系层级</div>
+                      <div className="text-[11px] text-[#c9b68a]">置信度说明</div>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {relationSummary.map(({ layer, count }) => (
+                        <span
+                          key={`mobile-layer-${layer}`}
+                          className={`rounded-full border px-3 py-1.5 text-[11px] ${relationLayerMeta[layer].tone}`}
+                        >
+                          {relationLayerMeta[layer].label} {count}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-4 py-4 text-sm text-[#eadfbc]">
+                    {activeBranchAnnotation ? activeBranchAnnotation.description : "当前停留在主河道，可点河上节点入卷细看。"}
+                  </div>
+                </>
+              ) : null}
+              <div className="mt-4 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(27,17,7,0.18)] px-3 py-3 text-sm text-[#eadfbc]">
+                当前河段显现自 {eras[0]} 至 {activeEra}，门类为 {categoryFilter}，学派为 {schoolFilter}。
               </div>
             </div>
           </div>
         ) : null}
 
         {showMobileDossier && selectedBook && selectedDetail ? (
-          <div className="absolute inset-x-4 bottom-20 z-40 xl:hidden">
+          <div className="absolute inset-x-3 bottom-[5.2rem] z-40 md:hidden">
             <div className={`pointer-events-auto overflow-hidden p-3 ${panelBaseClass}`}>
               <div className="rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(245,231,188,0.16),rgba(104,72,25,0.14))] p-3">
                 <div className="flex items-start justify-between gap-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(61,40,11,0.42)] px-4 py-3">
@@ -1085,12 +1121,13 @@ export function CulturalVeinShell() {
                       </span>
                     ) : null}
                   </div>
-                  <div className="max-h-[calc(62vh-140px)] overflow-auto pr-1">
+                  <div className="max-h-[calc(56vh-140px)] overflow-auto pr-1">
                     <BookExplorer
                       book={selectedBook}
                       detail={selectedDetail}
                       activeEra={activeEra}
                       onTraceFocusChange={setTraceFocus}
+                      onSceneFocusChange={setSceneFocus}
                       onOpenBook={handleDiveToBook}
                     />
                   </div>
@@ -1099,6 +1136,43 @@ export function CulturalVeinShell() {
             </div>
           </div>
         ) : null}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex justify-center px-3 pb-3 md:hidden">
+          <div className="pointer-events-auto flex items-center gap-2 rounded-full border border-[#ead8a6]/22 bg-[rgba(65,43,15,0.82)] px-2 py-2 shadow-xl shadow-black/25 backdrop-blur-xl">
+            <button
+              type="button"
+              onClick={() => {
+                setShowMobileDossier(false);
+                setShowMobileControls((current) => !current);
+              }}
+              className={`rounded-full px-3 py-2 text-xs transition ${
+                showMobileControls ? "bg-[#f3dfab] text-[#42290a]" : "text-[#f7edd1]"
+              }`}
+            >
+              题签
+            </button>
+            <button
+              type="button"
+              onClick={handleReturnToRiver}
+              className="rounded-full px-3 py-2 text-xs text-[#f7edd1]"
+            >
+              归河
+            </button>
+            {selectedBook ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMobileControls(false);
+                  setShowMobileDossier((current) => !current);
+                }}
+                className={`rounded-full px-3 py-2 text-xs transition ${
+                  showMobileDossier ? "bg-[#f3dfab] text-[#42290a]" : "text-[#f7edd1]"
+                }`}
+              >
+                文卷
+              </button>
+            ) : null}
+          </div>
+        </div>
       </div>
     </div>
   );

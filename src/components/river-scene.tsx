@@ -107,8 +107,27 @@ function RiverRibbon({
   );
 }
 
-function AtmosphereField() {
+function AtmosphereField({
+  activeEra,
+  traceFocus,
+  sceneFocus,
+}: Pick<RiverSceneProps, "activeEra" | "traceFocus" | "sceneFocus">) {
   const fieldRef = useRef<THREE.Group>(null);
+  const eraIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
+  const warmth = eraIndex / Math.max(RIVER_ERA_ORDER.length - 1, 1);
+  const focusBoost = traceFocus?.active ? 0.16 : sceneFocus?.active ? 0.09 : 0;
+  const primaryOpacity = 0.08 + warmth * 0.04 + focusBoost;
+  const secondaryOpacity = 0.06 + warmth * 0.035 + focusBoost * 0.72;
+  const tertiaryOpacity = 0.04 + warmth * 0.03 + focusBoost * 0.6;
+  const primaryColor = traceFocus?.active
+    ? "#f59e0b"
+    : sceneFocus?.active
+      ? "#fde68a"
+      : warmth > 0.68
+        ? "#facc15"
+        : "#d97706";
+  const secondaryColor = warmth > 0.5 ? "#f6c453" : "#d6a33d";
+  const tertiaryColor = warmth > 0.72 ? "#fef3c7" : "#b7791f";
 
   useFrame((state) => {
     if (!fieldRef.current) {
@@ -123,15 +142,15 @@ function AtmosphereField() {
     <group ref={fieldRef}>
       <mesh position={[2.8, 3.6, -7]} scale={[9.5, 4.2, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color="#a16207" transparent opacity={0.09} />
+        <meshBasicMaterial color={primaryColor} transparent opacity={primaryOpacity} />
       </mesh>
       <mesh position={[8.7, 2.5, -6.5]} scale={[7.4, 3.4, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color="#facc15" transparent opacity={0.07} />
+        <meshBasicMaterial color={secondaryColor} transparent opacity={secondaryOpacity} />
       </mesh>
       <mesh position={[-1.8, 2.4, -5.8]} scale={[5.8, 2.6, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color="#d97706" transparent opacity={0.05} />
+        <meshBasicMaterial color={tertiaryColor} transparent opacity={tertiaryOpacity} />
       </mesh>
     </group>
   );
@@ -1167,6 +1186,21 @@ function RiverWorld({
       : sceneFocus?.active
         ? "#fde68a"
         : "#fcd34d";
+  const eraIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
+  const eraWarmth = eraIndex / Math.max(RIVER_ERA_ORDER.length - 1, 1);
+  const scenePulse = traceFocus?.active ? 1 : sceneFocus?.active ? 0.72 : 0;
+  const fogColor = traceFocus?.active
+    ? "#2b1806"
+    : sceneFocus?.active
+      ? "#3c250a"
+      : eraWarmth > 0.68
+        ? "#38210b"
+        : "#201408";
+  const backgroundColor = traceFocus?.active
+    ? "#150d05"
+    : eraWarmth > 0.68
+      ? "#261708"
+      : "#1a1108";
 
   const branchStreams = useMemo(() => {
     return [1, 2].map((branchLevel) =>
@@ -1327,22 +1361,38 @@ function RiverWorld({
 
   return (
     <>
-      <color attach="background" args={["#1b1209"]} />
-      <fog attach="fog" args={["#1b1209", 8, 22]} />
+      <color attach="background" args={[backgroundColor]} />
+      <fog attach="fog" args={[fogColor, 7.5 - scenePulse * 0.35, 22 - scenePulse * 2.4]} />
       <PerspectiveCamera ref={cameraRef} makeDefault position={[3.5, 3.8, 11]} fov={42} />
-      <ambientLight intensity={1.25} />
-      <directionalLight position={[4, 8, 6]} intensity={1.8} color="#fff7d6" />
-      <pointLight position={[-6, 4, -2]} intensity={1.3} color="#fcd34d" />
-      <pointLight position={[9, 3, -4]} intensity={1.3} color="#d97706" />
+      <ambientLight intensity={1.08 + eraWarmth * 0.3 + scenePulse * 0.18} color={eraWarmth > 0.55 ? "#fff4cf" : "#f3e3b2"} />
+      <directionalLight
+        position={[4, 8, 6]}
+        intensity={1.45 + eraWarmth * 0.42 + scenePulse * 0.34}
+        color={traceFocus?.active ? "#ffe7b0" : "#fff5d9"}
+      />
+      <pointLight
+        position={[-6, 4, -2]}
+        intensity={1 + eraWarmth * 0.42 + scenePulse * 0.26}
+        color={sceneFocus?.active ? "#fde68a" : "#f6c453"}
+      />
+      <pointLight
+        position={[9, 3, -4]}
+        intensity={1.02 + eraWarmth * 0.5 + scenePulse * 0.22}
+        color={traceFocus?.active ? "#f59e0b" : "#d97706"}
+      />
       <spotLight
         position={[2.5, 8, 8]}
         angle={0.38}
         penumbra={0.7}
-        intensity={2.4}
-        color="#fde68a"
+        intensity={1.95 + eraWarmth * 0.48 + scenePulse * 0.42}
+        color={traceFocus?.active ? "#ffd27a" : "#fde68a"}
       />
 
-      <AtmosphereField />
+      <AtmosphereField
+        activeEra={activeEra}
+        traceFocus={traceFocus}
+        sceneFocus={sceneFocus}
+      />
       <RiverBed />
       <EraRiverZones books={books} />
 
@@ -1528,13 +1578,13 @@ export function RiverScene(props: RiverSceneProps) {
   };
 
   return (
-    <div className="relative h-full min-h-screen overflow-hidden rounded-[32px] border border-[#e4c98a]/18 bg-[#1f1408] shadow-[0_0_80px_rgba(0,0,0,0.42)] touch-none">
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(52,34,10,0.6),rgba(52,34,10,0))]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(29,18,6,0.8),rgba(29,18,6,0))]" />
-      <div className="pointer-events-none absolute left-5 top-5 z-10 rounded-full border border-[#ead8a6]/30 bg-[rgba(83,58,21,0.7)] px-4 py-2 text-[11px] tracking-[0.32em] text-[#f7edd1]">
+    <div className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#ead09a]/22 bg-[#201306] shadow-[0_0_80px_rgba(0,0,0,0.42)] [touch-action:none]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(93,62,18,0.42),rgba(52,34,10,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(29,18,6,0.72),rgba(29,18,6,0))]" />
+      <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-full border border-[#ead8a6]/26 bg-[rgba(89,60,19,0.66)] px-4 py-2 text-[10px] tracking-[0.28em] text-[#f7edd1] sm:left-5 sm:top-5 sm:text-[11px]">
         黄河文脉长卷
       </div>
-      <div className="pointer-events-none absolute right-5 top-5 z-10 rounded-full border border-[#ead8a6]/24 bg-[rgba(83,58,21,0.7)] px-4 py-2 text-[11px] text-[#eadfbc]">
+      <div className="pointer-events-none absolute right-4 top-4 z-10 rounded-full border border-[#ead8a6]/22 bg-[rgba(89,60,19,0.6)] px-3 py-2 text-[10px] text-[#f1e3bd] sm:right-5 sm:top-5 sm:px-4 sm:text-[11px]">
         {props.traceFocus?.active
           ? `溯源联动 ${props.traceFocus.progress}/${props.traceFocus.total}`
           : props.sceneFocus?.active
@@ -1545,7 +1595,7 @@ export function RiverScene(props: RiverSceneProps) {
               ? "镜头拉回中"
               : `${props.activeEra} 水位`}
       </div>
-      <div className="pointer-events-none absolute left-5 bottom-5 z-10 hidden rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(54,36,12,0.72)] px-4 py-3 text-[11px] text-[#eadfbc] backdrop-blur-md lg:block">
+      <div className="pointer-events-none absolute left-5 bottom-5 z-10 hidden rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(54,36,12,0.6)] px-4 py-3 text-[11px] text-[#eadfbc] backdrop-blur-md xl:block">
         <div className="text-[10px] tracking-[0.24em] text-stone-500">
           河面扫描
         </div>
@@ -1593,14 +1643,14 @@ export function RiverScene(props: RiverSceneProps) {
         </div>
       </div>
       {canCruise ? (
-        <div className="absolute right-5 bottom-5 z-20 w-[min(320px,calc(100vw-2.5rem))]">
+        <div className="absolute bottom-4 left-1/2 z-20 w-[min(280px,calc(100vw-2rem))] -translate-x-1/2 sm:bottom-5 sm:left-auto sm:right-5 sm:w-[min(320px,calc(100vw-2.5rem))] sm:translate-x-0">
           <div className="pointer-events-auto rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(54,36,12,0.78)] px-4 py-4 text-[#eadfbc] shadow-xl shadow-black/20 backdrop-blur-md">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[10px] tracking-[0.24em] text-[#d8c9a3]">
                   沿河巡航
                 </div>
-                <div className="mt-1 text-sm text-[#fbf3da]">
+                <div className="mt-1 text-xs text-[#fbf3da] sm:text-sm">
                   顺着主河道前后飞看文脉起伏
                 </div>
               </div>
