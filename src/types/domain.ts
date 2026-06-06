@@ -50,6 +50,8 @@ export interface PersonNode {
   bio: string;
   source?: "demo" | "cbdb";
   sourceStatus?: "matched" | "fallback";
+  relationTier?: 1 | 2;
+  relationType?: "著" | "注" | "校" | "藏" | "引" | "评" | "承";
 }
 
 export interface PlaceNode {

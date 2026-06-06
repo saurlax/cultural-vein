@@ -397,6 +397,70 @@ const details: Record<string, BookDetail> = {
       sourceLabel: "CBDB 人物 + 上图活动样本",
     },
   },
+  shiji: {
+    bookId: "book-shiji",
+    heroMetric: {
+      directCitations: 82,
+      downstreamInfluence: 236,
+      coveredRegions: 5,
+    },
+    spread: [],
+    people: [],
+    places: [],
+    versions: [],
+    timeline: [
+      { id: "tl-shiji-1", year: -91, title: "《史记》定稿", detail: "司马迁完成纪传体通史的历史叙述框架。" },
+    ],
+    passages: [],
+  },
+  "zi-zhi-tong-jian": {
+    bookId: "book-zi-zhi-tong-jian",
+    heroMetric: {
+      directCitations: 90,
+      downstreamInfluence: 260,
+      coveredRegions: 6,
+    },
+    spread: [],
+    people: [],
+    places: [],
+    versions: [],
+    timeline: [
+      { id: "tl-zz-1", year: 1084, title: "《资治通鉴》成书", detail: "编年体通史完成，形成治道鉴戒的核心文本。" },
+    ],
+    passages: [],
+  },
+  "ri-zhi-lu": {
+    bookId: "book-ri-zhi-lu",
+    heroMetric: {
+      directCitations: 61,
+      downstreamInfluence: 154,
+      coveredRegions: 4,
+    },
+    spread: [],
+    people: [],
+    places: [],
+    versions: [],
+    timeline: [
+      { id: "tl-rzl-1", year: 1670, title: "《日知录》成书", detail: "顾炎武以札记体展开经世与考据思考。" },
+    ],
+    passages: [],
+  },
+  "ren-jian-ci-hua": {
+    bookId: "book-ren-jian-ci-hua",
+    heroMetric: {
+      directCitations: 48,
+      downstreamInfluence: 118,
+      coveredRegions: 3,
+    },
+    spread: [],
+    people: [],
+    places: [],
+    versions: [],
+    timeline: [
+      { id: "tl-rjch-1", year: 1908, title: "《人间词话》问世", detail: "以境界说重塑近代诗词批评话语。" },
+    ],
+    passages: [],
+  },
 };
 
 const placeholderDetail = (book: BookNode): BookDetail => ({
@@ -448,6 +512,15 @@ function mergePeople(
         bio: person.bio ?? "",
         source: person.foundInCbdb ? "cbdb" : "demo",
         sourceStatus: person.foundInCbdb ? "matched" : "fallback",
+        relationTier: 1,
+        relationType:
+          person.role === "作者"
+            ? "著"
+            : person.role === "注者"
+              ? "注"
+              : person.role === "评论者"
+                ? "评"
+                : "引",
       } satisfies PersonNode;
     })
     .filter((person): person is NonNullable<typeof person> => Boolean(person));
@@ -466,6 +539,8 @@ details.shijing.people = mergePeople(["孔颖达", "朱熹", "王国维"], [
     bio: "奉诏撰《毛诗正义》，奠定经学义疏传统。",
     source: "demo",
     sourceStatus: "fallback",
+    relationTier: 1,
+    relationType: "注",
   },
   {
     id: "person-zhuxi",
@@ -477,6 +552,8 @@ details.shijing.people = mergePeople(["孔颖达", "朱熹", "王国维"], [
     bio: "以理学视角重新解释诗教，强化修身与教化内核。",
     source: "demo",
     sourceStatus: "fallback",
+    relationTier: 2,
+    relationType: "引",
   },
   {
     id: "person-wangguowei",
@@ -488,6 +565,8 @@ details.shijing.people = mergePeople(["孔颖达", "朱熹", "王国维"], [
     bio: "近代诗学家，以境界论回接《诗经》传统。",
     source: "demo",
     sourceStatus: "fallback",
+    relationTier: 2,
+    relationType: "评",
   },
 ]);
 
@@ -502,6 +581,8 @@ details["sishu-zhangju"].people = mergePeople(["朱熹"], [
     bio: "以四书为核心重新组织儒学经典秩序。",
     source: "demo",
     sourceStatus: "fallback",
+    relationTier: 1,
+    relationType: "著",
   },
   {
     id: "person-huxian",
@@ -513,8 +594,87 @@ details["sishu-zhangju"].people = mergePeople(["朱熹"], [
     bio: "参与元代学宫刻本的校勘整理。",
     source: "demo",
     sourceStatus: "fallback",
+    relationTier: 2,
+    relationType: "校",
   },
 ]);
+
+details.shiji.people = [
+  {
+    id: "person-simaqian",
+    name: "司马迁",
+    role: "作者",
+    birthYear: -145,
+    deathYear: -86,
+    era: "西汉",
+    bio: "纪传体史学奠基者，以人物书写重构历史叙述。",
+    source: "demo",
+    sourceStatus: "fallback",
+    relationTier: 1,
+    relationType: "著",
+  },
+];
+
+details["zi-zhi-tong-jian"].people = [
+  {
+    id: "person-simaguang",
+    name: "司马光",
+    role: "作者",
+    birthYear: 1019,
+    deathYear: 1086,
+    era: "宋",
+    bio: "主持编纂《资治通鉴》，以编年体方式重塑治道叙事。",
+    source: "demo",
+    sourceStatus: "fallback",
+    relationTier: 1,
+    relationType: "著",
+  },
+  {
+    id: "person-liushu",
+    name: "刘恕",
+    role: "编纂者",
+    birthYear: 1032,
+    deathYear: 1078,
+    era: "宋",
+    bio: "通鉴局重要助手，负责资料搜辑与校勘。",
+    source: "demo",
+    sourceStatus: "fallback",
+    relationTier: 2,
+    relationType: "校",
+  },
+];
+
+details["ri-zhi-lu"].people = [
+  {
+    id: "person-guyanwu",
+    name: "顾炎武",
+    role: "作者",
+    birthYear: 1613,
+    deathYear: 1682,
+    era: "明清",
+    bio: "以考据与经世之学贯通经史，开启清代朴学风气。",
+    source: "demo",
+    sourceStatus: "fallback",
+    relationTier: 1,
+    relationType: "著",
+  },
+];
+
+details["ren-jian-ci-hua"].people = [
+  {
+    id: "person-wangguowei-main",
+    name: "王国维",
+    role: "作者",
+    birthYear: 1877,
+    deathYear: 1927,
+    era: "清末民初",
+    bio: "以境界论重释古典诗学，连接近代审美与经史传统。",
+    source: "demo",
+    sourceStatus: "fallback",
+    relationTier: 1,
+    relationType: "著",
+  },
+];
 
 if (shanghaiLibraryActivity.available) {
   const venueSamples = shanghaiLibraryActivity.topVenues ?? [];

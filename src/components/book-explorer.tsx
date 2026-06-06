@@ -14,6 +14,21 @@ const tabs = [
 
 type ExplorerTab = (typeof tabs)[number]["id"];
 
+function relationTypeClass(type?: string) {
+  switch (type) {
+    case "著":
+      return "bg-emerald-300/12 text-emerald-100";
+    case "注":
+      return "bg-sky-300/12 text-sky-100";
+    case "校":
+      return "bg-violet-300/12 text-violet-100";
+    case "评":
+      return "bg-amber-300/12 text-amber-100";
+    default:
+      return "bg-white/10 text-stone-200";
+  }
+}
+
 function confidenceClass(label: string) {
   if (label === "高") {
     return "border-emerald-300/30 bg-emerald-300/10 text-emerald-100";
@@ -34,6 +49,8 @@ export function BookExplorer({
   detail: BookDetail;
 }) {
   const [tab, setTab] = useState<ExplorerTab>("spread");
+  const primaryPeople = detail.people.filter((person) => (person.relationTier ?? 2) === 1);
+  const secondaryPeople = detail.people.filter((person) => (person.relationTier ?? 2) === 2);
 
   return (
     <div className="space-y-4">
@@ -187,36 +204,127 @@ export function BookExplorer({
               该典籍尚未补充关联人物样例。
             </div>
           ) : (
-            detail.people.map((person) => (
-              <div
-                key={person.id}
-                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <div className="text-lg font-semibold text-stone-50">{person.name}</div>
-                    <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone-400">
-                      {person.role} · {person.era}
+            <>
+              <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-4">
+                <div className="grid gap-4 lg:grid-cols-[1fr_220px_1fr] lg:items-start">
+                  <div className="space-y-3">
+                    <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                      一级关联
+                    </div>
+                    {primaryPeople.map((person) => (
+                      <div
+                        key={person.id}
+                        className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <div className="text-lg font-semibold text-stone-50">
+                              {person.name}
+                            </div>
+                            <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone-400">
+                              {person.role} · {person.era}
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-end gap-2">
+                            <div
+                              className={`rounded-full px-3 py-1 text-xs ${relationTypeClass(person.relationType)}`}
+                            >
+                              {person.relationType ?? "引"}
+                            </div>
+                            <div className="rounded-full bg-violet-300/10 px-3 py-1 text-xs text-violet-100">
+                              {person.birthYear ?? "?"} - {person.deathYear ?? "?"}
+                            </div>
+                          </div>
+                        </div>
+                        <p className="mt-3 text-sm leading-7 text-stone-300">{person.bio}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-col items-center gap-4 py-2">
+                    <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                      中心典籍
+                    </div>
+                    <div className="w-full rounded-[28px] border border-amber-300/25 bg-amber-300/10 px-5 py-6 text-center shadow-lg shadow-amber-500/10">
+                      <div className="text-xs uppercase tracking-[0.22em] text-amber-100/80">
+                        {book.dynasty} · {book.category}
+                      </div>
+                      <div className="mt-3 text-2xl font-semibold text-stone-50">
+                        {book.title}
+                      </div>
+                      <div className="mt-3 text-sm leading-7 text-stone-300">
+                        {book.school}
+                      </div>
+                    </div>
+                    <div className="flex w-full items-center justify-center gap-2 text-stone-500">
+                      <div className="h-px flex-1 bg-white/10" />
+                      <span className="text-[10px] uppercase tracking-[0.24em]">
+                        注 / 引 / 评
+                      </span>
+                      <div className="h-px flex-1 bg-white/10" />
                     </div>
                   </div>
-                  <div className="flex flex-col items-end gap-2">
-                    <div className="rounded-full bg-violet-300/10 px-3 py-1 text-xs text-violet-100">
-                      {person.birthYear ?? "?"} - {person.deathYear ?? "?"}
+
+                  <div className="space-y-3">
+                    <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                      二级关联
                     </div>
-                    <div
-                      className={`rounded-full px-3 py-1 text-xs ${
-                        person.source === "cbdb"
-                          ? "bg-emerald-300/10 text-emerald-100"
-                          : "bg-white/10 text-stone-300"
-                      }`}
-                    >
-                      {person.source === "cbdb" ? "CBDB 已命中" : "示范补全"}
-                    </div>
+                    {secondaryPeople.length === 0 ? (
+                      <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
+                        暂未补充二级关系人物。
+                      </div>
+                    ) : (
+                      secondaryPeople.map((person) => (
+                        <div
+                          key={person.id}
+                          className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <div className="text-lg font-semibold text-stone-50">
+                                {person.name}
+                              </div>
+                              <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone-400">
+                                {person.role} · {person.era}
+                              </div>
+                            </div>
+                            <div className="flex flex-col items-end gap-2">
+                              <div
+                                className={`rounded-full px-3 py-1 text-xs ${relationTypeClass(person.relationType)}`}
+                              >
+                                {person.relationType ?? "引"}
+                              </div>
+                              <div
+                                className={`rounded-full px-3 py-1 text-xs ${
+                                  person.source === "cbdb"
+                                    ? "bg-emerald-300/10 text-emerald-100"
+                                    : "bg-white/10 text-stone-300"
+                                }`}
+                              >
+                                {person.source === "cbdb" ? "CBDB 已命中" : "示范补全"}
+                              </div>
+                            </div>
+                          </div>
+                          <p className="mt-3 text-sm leading-7 text-stone-300">{person.bio}</p>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
-                <p className="mt-3 text-sm leading-7 text-stone-300">{person.bio}</p>
               </div>
-            ))
+
+              <div className="grid gap-3 md:grid-cols-3">
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+                  一级关联优先表示作者、注者、核心编纂者，对应方案中的“中心为典籍，一级关联为作者/注者/编者”。
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+                  二级关联承载引用者、评论者、校勘者等辅助角色，帮助用户理解文脉在后世如何扩散和再解释。
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
+                  绿色来源标记说明人物已从 CBDB 命中，灰色说明当前仍由示范域补全，便于后续逐步替换成真实图谱。
+                </div>
+              </div>
+            </>
           )}
         </section>
       ) : null}
