@@ -429,9 +429,9 @@ export function CulturalVeinShell() {
     desktopPanels.find((panel) => panel.id === activeDesktopPanel) ?? desktopPanels[0];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#201508] text-stone-100">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(245,210,107,0.18),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(196,134,35,0.14),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(160,117,43,0.12),transparent_38%),linear-gradient(180deg,#6a4a1a_0%,#342109_42%,#140c05_100%)]" />
-      <div className="absolute inset-0 opacity-15 [background-image:linear-gradient(rgba(255,243,204,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,243,204,0.04)_1px,transparent_1px)] [background-size:96px_96px]" />
+    <div className="relative min-h-screen overflow-hidden bg-[#241405] text-stone-100">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(244,208,110,0.22),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(214,164,68,0.18),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(196,146,52,0.12),transparent_38%),linear-gradient(180deg,#8d6324_0%,#4a2f0e_38%,#1b0f04_100%)]" />
+      <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,243,204,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,243,204,0.05)_1px,transparent_1px)] [background-size:96px_96px]" />
 
       {showDiveOverlay ? (
         <div className="pointer-events-none absolute inset-0 z-40 overflow-hidden">
@@ -458,11 +458,11 @@ export function CulturalVeinShell() {
 
       <div className="relative z-10 min-h-screen">
         <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-3 px-4 py-4 sm:px-6 lg:px-8">
-          <div className={`pointer-events-auto max-w-[260px] px-4 py-3 sm:max-w-[300px] sm:px-5 sm:py-4 ${panelBaseClass}`}>
+          <div className={`pointer-events-auto max-w-[240px] px-4 py-3 sm:max-w-[300px] sm:px-5 sm:py-4 ${panelBaseClass}`}>
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[11px] tracking-[0.32em] text-[#f2dfab]/80">
-                  中华文脉可视长卷
+                  中华文脉长卷
                 </div>
                 <h1 className="mt-2 text-[clamp(1.45rem,2.5vw,2rem)] font-semibold text-[#fbf3da]">
                   文脉溯源
@@ -478,30 +478,6 @@ export function CulturalVeinShell() {
           </div>
 
           <div className="pointer-events-auto flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setShowDesktopDossier(false);
-                setShowMobileDossier(false);
-                setShowMobileControls((current) => !current);
-              }}
-              className="rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-3 py-2 text-xs text-amber-50 backdrop-blur-xl md:hidden"
-            >
-              {showMobileControls ? "收起题签" : "展开题签"}
-            </button>
-            {selectedBook ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setShowMobileControls(false);
-                  setShowDesktopDossier(false);
-                  setShowMobileDossier((current) => !current);
-                }}
-                className="rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-3 py-2 text-xs text-amber-50 backdrop-blur-xl md:hidden"
-              >
-                {showMobileDossier ? "收起文卷" : "展开文卷"}
-              </button>
-            ) : null}
             {selectedBook ? (
               <button
                 type="button"
@@ -924,8 +900,8 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileControls ? (
-          <div className="absolute inset-x-3 bottom-[5.2rem] z-40 md:hidden">
-            <div className={`pointer-events-auto max-h-[48vh] overflow-auto p-4 ${panelBaseClass}`}>
+          <div className="absolute inset-x-3 bottom-[4.9rem] z-40 md:hidden">
+            <div className={`pointer-events-auto max-h-[38vh] overflow-auto p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">长卷侧注</div>
@@ -942,9 +918,9 @@ export function CulturalVeinShell() {
                 </button>
               </div>
               <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-[#eadfbc]">
-                <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-3">典籍 {filteredBooks.length}</div>
-                <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-3">关系 {visibleCitations.length}</div>
-                <div className="rounded-2xl border border-[#ead8a6]/20 bg-[rgba(233,191,86,0.08)] px-3 py-3 text-[#fbf3da]">来源 {connectedSourceCount || "--"}</div>
+                <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-2.5">典籍 {filteredBooks.length}</div>
+                <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-2.5">关系 {visibleCitations.length}</div>
+                <div className="rounded-2xl border border-[#ead8a6]/20 bg-[rgba(233,191,86,0.08)] px-3 py-2.5 text-[#fbf3da]">来源 {connectedSourceCount || "--"}</div>
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
                 {desktopPanels.map((panel) => (
@@ -1108,7 +1084,7 @@ export function CulturalVeinShell() {
         ) : null}
 
         {showMobileDossier && selectedBook && selectedDetail ? (
-          <div className="absolute inset-x-3 bottom-[5.2rem] z-40 md:hidden">
+          <div className="absolute inset-x-3 bottom-[4.9rem] z-40 md:hidden">
             <div className={`pointer-events-auto overflow-hidden p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
               <div className="rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(245,231,188,0.16),rgba(104,72,25,0.14))] p-3">
                 <div className="flex items-start justify-between gap-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(61,40,11,0.42)] px-4 py-3">
@@ -1127,7 +1103,7 @@ export function CulturalVeinShell() {
                     收卷
                   </button>
                 </div>
-                <div className="mt-3 rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(244,230,188,0.96),rgba(224,200,146,0.92))] px-4 py-4 text-[#42290a]">
+                <div className="mt-3 rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(247,237,206,0.98),rgba(230,204,140,0.94))] px-4 py-4 text-[#42290a]">
                   <div className="mb-3 flex flex-wrap gap-2 text-xs">
                     <span className="rounded-full border border-[#b89247]/20 bg-[rgba(255,255,255,0.24)] px-3 py-1 text-[#5b3a11]">
                       关联 {selectedBookCitations.length} 条
@@ -1138,7 +1114,7 @@ export function CulturalVeinShell() {
                       </span>
                     ) : null}
                   </div>
-                  <div className="max-h-[calc(56vh-140px)] overflow-auto pr-1">
+                  <div className="max-h-[calc(44vh-124px)] overflow-auto pr-1">
                     <BookExplorer
                       book={selectedBook}
                       detail={selectedDetail}
@@ -1154,7 +1130,7 @@ export function CulturalVeinShell() {
           </div>
         ) : null}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex justify-center px-3 pb-3 md:hidden">
-          <div className="pointer-events-auto flex items-center gap-2 rounded-full border border-[#ead8a6]/22 bg-[rgba(65,43,15,0.82)] px-2 py-2 shadow-xl shadow-black/25 backdrop-blur-xl">
+          <div className="pointer-events-auto flex items-center gap-2 rounded-full border border-[#ead8a6]/26 bg-[rgba(78,52,18,0.9)] px-2 py-2 shadow-xl shadow-black/25 backdrop-blur-xl">
             <button
               type="button"
               onClick={() => {

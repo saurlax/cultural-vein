@@ -1690,8 +1690,14 @@ function RiverWorld({
       />
       <OrbitControls
         ref={controlsRef}
+        makeDefault
         enablePan
         screenSpacePanning
+        enableDamping
+        dampingFactor={0.08}
+        panSpeed={1.1}
+        rotateSpeed={0.72}
+        zoomSpeed={0.9}
         maxDistance={16}
         minDistance={6}
         maxPolarAngle={Math.PI / 2.1}
@@ -1763,25 +1769,26 @@ export function RiverScene(props: RiverSceneProps) {
   };
 
   return (
-    <div className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#ead09a]/22 bg-[#201306] shadow-[0_0_80px_rgba(0,0,0,0.42)] [touch-action:none]">
+    <div className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#e8cb86]/40 bg-[#2a1805] shadow-[0_0_80px_rgba(0,0,0,0.42)] [touch-action:none]">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(93,62,18,0.42),rgba(52,34,10,0))]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(29,18,6,0.72),rgba(29,18,6,0))]" />
-      <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-full border border-[#ead8a6]/26 bg-[rgba(89,60,19,0.66)] px-4 py-2 text-[10px] tracking-[0.28em] text-[#f7edd1] sm:left-5 sm:top-5 sm:text-[11px]">
-        黄河文脉长卷
+      <div className="pointer-events-none absolute left-4 top-4 z-10 flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#ead8a6]/26 bg-[rgba(89,60,19,0.64)] px-4 py-2 text-[10px] text-[#f7edd1] sm:left-5 sm:top-5 sm:max-w-none sm:text-[11px]">
+        <span className="tracking-[0.28em] text-[#f6e8bf]">黄河文脉长卷</span>
+        <span className="hidden h-3 w-px bg-[#ead8a6]/24 sm:block" />
+        <span className="truncate text-[#f1e3bd]">
+          {props.traceFocus?.active
+            ? `溯源联动 ${props.traceFocus.progress}/${props.traceFocus.total}`
+            : props.sceneFocus?.active
+              ? props.sceneFocus.contextLabel
+              : props.cinematicState === "diving"
+                ? "镜头俯冲中"
+                : props.cinematicState === "returning"
+                  ? "镜头拉回中"
+                  : `${props.activeEra} 水位`}
+        </span>
       </div>
-      <div className="pointer-events-none absolute right-4 top-4 z-10 rounded-full border border-[#ead8a6]/22 bg-[rgba(89,60,19,0.6)] px-3 py-2 text-[10px] text-[#f1e3bd] sm:right-5 sm:top-5 sm:px-4 sm:text-[11px]">
-        {props.traceFocus?.active
-          ? `溯源联动 ${props.traceFocus.progress}/${props.traceFocus.total}`
-          : props.sceneFocus?.active
-            ? props.sceneFocus.contextLabel
-            : props.cinematicState === "diving"
-            ? "镜头俯冲中"
-            : props.cinematicState === "returning"
-              ? "镜头拉回中"
-              : `${props.activeEra} 水位`}
-      </div>
-      <div className="pointer-events-none absolute left-1/2 top-16 z-10 w-[min(540px,calc(100vw-2.5rem))] -translate-x-1/2 px-3 sm:top-20">
-        <div className="rounded-full border border-[#ead8a6]/16 bg-[rgba(54,36,12,0.56)] px-4 py-2 text-center text-[11px] text-[#f1e3bd] shadow-lg shadow-black/20 backdrop-blur-md sm:text-xs">
+      <div className="pointer-events-none absolute left-1/2 top-16 z-10 w-[min(520px,calc(100vw-2.5rem))] -translate-x-1/2 px-3 sm:top-20">
+        <div className="rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(54,36,12,0.72)] px-4 py-3 text-center text-[11px] leading-6 text-[#f1e3bd] shadow-lg shadow-black/20 backdrop-blur-md sm:text-xs">
           {sceneHint}
         </div>
       </div>
