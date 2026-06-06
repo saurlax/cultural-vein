@@ -3243,7 +3243,7 @@ if (shanghaiLibraryActivity.available) {
 
 if (nanjingLibrarySample.available) {
   const institutionSamples = (nanjingLibrarySample.sampleRecords ?? []).slice(0, 4);
-  for (const slug of ["ren-jian-ci-hua", "ri-zhi-lu", "shangshu-zhengyi"] as const) {
+  for (const slug of ["ren-jian-ci-hua", "ri-zhi-lu", "shangshu-zhengyi", "wenxuan"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -3299,7 +3299,7 @@ if (nanhuArchiveSample.available) {
 
 if (videoTopicSample.available) {
   const institutionSamples = (videoTopicSample.sampleRecords ?? []).slice(0, 4);
-  for (const slug of ["ren-jian-ci-hua", "wenxuan"] as const) {
+  for (const slug of ["ren-jian-ci-hua", "wenxuan", "wenxin-diaolong"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -3320,7 +3320,7 @@ if (videoTopicSample.available) {
 
 if (shenzhenLibrarySample.available) {
   const institutionSamples = (shenzhenLibrarySample.sampleRecords ?? []).slice(0, 2);
-  for (const slug of ["ren-jian-ci-hua", "zi-zhi-tong-jian"] as const) {
+  for (const slug of ["ren-jian-ci-hua", "zi-zhi-tong-jian", "shangshu-zhengyi"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -3362,7 +3362,7 @@ if (taofenMuseumSample.available) {
 
 if (soongLiteratureSample.available) {
   const institutionSamples = (soongLiteratureSample.sampleRecords ?? []).slice(0, 3);
-  for (const slug of ["ren-jian-ci-hua", "shiji"] as const) {
+  for (const slug of ["ren-jian-ci-hua", "shiji", "wenxuan"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -3383,7 +3383,7 @@ if (soongLiteratureSample.available) {
 
 if (souyunKnowledgeGraphSample.available) {
   const institutionSamples = (souyunKnowledgeGraphSample.sampleRecords ?? []).slice(0, 3);
-  for (const slug of ["shijing", "lunyu", "daxue", "zhongyong", "zhouyi", "mengzi", "sishu-zhangju", "ren-jian-ci-hua", "chuci-zhangju", "wenxin-diaolong"] as const) {
+  for (const slug of ["shijing", "lunyu", "daxue", "zhongyong", "zhouyi", "mengzi", "sishu-zhangju", "ren-jian-ci-hua", "chuci-zhangju", "wenxin-diaolong", "wenxuan"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
