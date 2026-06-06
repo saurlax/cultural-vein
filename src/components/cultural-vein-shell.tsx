@@ -1223,19 +1223,39 @@ export function CulturalVeinShell() {
                     </div>
 
                     <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-[#eadfbc]">
-                      <div className="rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                      <button
+                        type="button"
+                        onClick={handleReturnToRiver}
+                        className="rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                      >
                         <div className="text-[#c9b68a]">朝代</div>
                         <div className="mt-1 text-sm font-medium text-[#fbf3da]">
                           {selectedBook.dynasty}
                         </div>
-                      </div>
-                      <div className="rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                        <div className="mt-2 text-[11px] text-[#e7d5a8]">归河重看这段时代水位</div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowDesktopDossier(true)}
+                        className="rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                      >
                         <div className="text-[#c9b68a]">模式</div>
                         <div className="mt-1 text-sm font-medium text-[#fbf3da]">
                           {focusModeLabel}
                         </div>
-                      </div>
-                      <div className="rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                        <div className="mt-2 text-[11px] text-[#e7d5a8]">继续沿卷细看中观与微观联动</div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (traceFocus?.active || sceneFocus?.active) {
+                            return;
+                          }
+
+                          setShowDesktopDossier(true);
+                        }}
+                        className="rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                      >
                         <div className="text-[#c9b68a]">联动</div>
                         <div className="mt-1 text-sm font-medium text-[#fbf3da]">
                           {traceFocus?.active
@@ -1244,7 +1264,10 @@ export function CulturalVeinShell() {
                               ? sceneFocus.contextLabel
                               : "待入卷"}
                         </div>
-                      </div>
+                        <div className="mt-2 text-[11px] text-[#e7d5a8]">
+                          {traceFocus?.active || sceneFocus?.active ? "当前镜头已联动到主河道" : "展开文卷后继续触发主河道联动"}
+                        </div>
+                      </button>
                     </div>
                   </div>
 
