@@ -1262,7 +1262,13 @@ export function BookExplorer({
                     资源落点
                   </div>
                   <div className="mt-2 text-sm leading-6 text-stone-300">
-                    当前条目已经落到机构、题名与年份粒度，可用于现场说明具体资源挂接点。
+                    {[
+                      activeInstitutionRecord.institution,
+                      activeInstitutionRecord.title,
+                      activeInstitutionRecord.year,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
                   </div>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
@@ -1270,7 +1276,7 @@ export function BookExplorer({
                     出处说明
                   </div>
                   <div className="mt-2 text-sm leading-6 text-stone-300">
-                    {activeInstitutionRecord.sourceText ?? "当前条目暂无额外出处说明，但已保留机构与资源编号。 "}
+                    {activeInstitutionRecord.sourceText ?? activeInstitutionRecord.imageRef ?? "已落到馆藏条目，可直接作为当前版本的资源挂接点。"}
                   </div>
                 </div>
               </div>
@@ -1679,25 +1685,25 @@ export function BookExplorer({
                             <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
                               起点
                             </div>
-                            <div className="mt-2 text-base font-semibold text-stone-50">
-                              {activeSpreadPlaces?.from?.name ?? "未知地点"}
-                            </div>
-                            <p className="mt-2 text-sm leading-6 text-stone-300">
-                              {activeSpreadPlaces?.from?.note ?? "暂无地点说明。"}
-                            </p>
+                          <div className="mt-2 text-base font-semibold text-stone-50">
+                            {activeSpreadPlaces?.from?.name ?? "未知地点"}
                           </div>
-                          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                              终点
-                            </div>
-                            <div className="mt-2 text-base font-semibold text-stone-50">
-                              {activeSpreadPlaces?.to?.name ?? "未知地点"}
-                            </div>
-                            <p className="mt-2 text-sm leading-6 text-stone-300">
-                              {activeSpreadPlaces?.to?.note ?? "暂无地点说明。"}
-                            </p>
-                          </div>
+                          <p className="mt-2 text-sm leading-6 text-stone-300">
+                              {activeSpreadPlaces?.from?.note ?? "当前航段已落到这座城市，可结合年份与航线继续追看传播落点。"}
+                          </p>
                         </div>
+                        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                          <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                            终点
+                            </div>
+                          <div className="mt-2 text-base font-semibold text-stone-50">
+                            {activeSpreadPlaces?.to?.name ?? "未知地点"}
+                          </div>
+                          <p className="mt-2 text-sm leading-6 text-stone-300">
+                              {activeSpreadPlaces?.to?.note ?? "这座终点城市承接当前航段，可继续回到时间线或人物网络追看扩散回声。"}
+                          </p>
+                        </div>
+                      </div>
                       </div>
                     ) : null}
                   </div>
@@ -1903,7 +1909,25 @@ export function BookExplorer({
                         </div>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {secondaryPeople.length === 0 ? (
-                            <div className="text-sm text-stone-400">暂未补充二级关系人物。</div>
+                            <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
+                              <div className="text-sm text-stone-200">当前人物关系先停在核心人物层。</div>
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => handleFocusCbdbEvidence(activePerson?.id)}
+                                  className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                                >
+                                  打开人物证据
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setTab("spread")}
+                                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                                >
+                                  转看传播航段
+                                </button>
+                              </div>
+                            </div>
                           ) : secondaryPeopleExpanded ? (
                             secondaryPeople.map((person) => (
                               <button
@@ -2258,8 +2282,35 @@ export function BookExplorer({
                                 上游承接：{activeVersionParent.label}
                               </button>
                             ) : (
-                              <div className="mt-3 rounded-2xl border border-amber-300/15 bg-amber-300/8 px-3 py-3 text-sm text-amber-100">
-                                当前节点即版本源头，暂无更早父节点。
+                              <div className="mt-3 rounded-2xl border border-amber-300/15 bg-amber-300/8 px-3 py-3">
+                                <div className="text-sm text-amber-100">当前节点已经是版本源头。</div>
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const targetRecord = versionEvidenceSamples[0] ?? institutionPreview[0];
+
+                                      if (targetRecord) {
+                                        handleSelectInstitutionRecord(targetRecord);
+                                      }
+                                    }}
+                                    disabled={!versionEvidenceSamples.length && !institutionPreview.length}
+                                    className={`rounded-full px-3 py-1.5 text-xs transition ${
+                                      versionEvidenceSamples.length || institutionPreview.length
+                                        ? "border border-amber-300/25 bg-amber-300/15 text-amber-50 hover:bg-amber-300/20"
+                                        : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                                    }`}
+                                  >
+                                    打开馆藏线索
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setTab("passages")}
+                                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                                  >
+                                    转看原文证据
+                                  </button>
+                                </div>
                               </div>
                             )}
                             <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
@@ -2280,8 +2331,24 @@ export function BookExplorer({
                                   ))}
                                 </div>
                               ) : (
-                                <div className="mt-2 text-sm text-stone-400">
-                                  当前时代层下未继续分化出更晚版本。
+                                <div className="mt-2 rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
+                                  <div className="text-sm text-stone-200">当前时代层下还没有更晚分化版本。</div>
+                                  <div className="mt-3 flex flex-wrap gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => setTab("timeline")}
+                                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                                    >
+                                      转看时间回声
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => setTab("people")}
+                                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                                    >
+                                      转看人物承接
+                                    </button>
+                                  </div>
                                 </div>
                               )}
                             </div>
@@ -2337,8 +2404,24 @@ export function BookExplorer({
                                 </button>
                               ))}
                               {!versionEvidenceSamples.length && !institutionPreview.length ? (
-                                <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4 text-sm text-stone-400">
-                                  当前版本尚未匹配到可直接展示的馆藏影像线索，但版本链与馆藏系统名称已可作为演示证据。
+                                <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4">
+                                  <div className="text-sm text-stone-200">当前版本还没有挂到更细的影像或馆藏样本。</div>
+                                  <div className="mt-3 flex flex-wrap gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleOpenSourceEvidence("institution-samples")}
+                                      className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                                    >
+                                      打开机构总表
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => setTab("spread")}
+                                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                                    >
+                                      转看传播航段
+                                    </button>
+                                  </div>
                                 </div>
                               ) : null}
                             </div>
@@ -2408,7 +2491,9 @@ export function BookExplorer({
                     {versionEvidenceSamples[0]?.title ?? institutionPreview[0]?.title ?? "当前版本馆藏线索"}
                   </div>
                   <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
-                    直接打开当前版本最贴近的一条馆藏或影像资源，顺手讲清资料落点。
+                    {versionEvidenceSamples.length || institutionPreview.length
+                      ? "直接打开当前版本最贴近的一条馆藏或影像资源，顺手讲清资料落点。"
+                      : "这层暂时没有更细样本时，先回机构总表继续顺着馆藏线索走。"}
                   </div>
                 </button>
                 <button
