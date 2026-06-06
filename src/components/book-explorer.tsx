@@ -100,6 +100,23 @@ export function BookExplorer({
   const [selectedPassageId, setSelectedPassageId] = useState<string | null>(null);
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null);
   const [traceStep, setTraceStep] = useState<number>(0);
+  const bookEraByTitle = useMemo(() => {
+    return new Map<string, RiverEra>([
+      ["诗经", "先秦"],
+      ["尚书", "先秦"],
+      ["礼记", "两汉"],
+      ["史记", "两汉"],
+      ["春秋左传", "先秦"],
+      ["左传", "先秦"],
+      ["论语集注", "宋元"],
+      ["四书章句集注", "宋元"],
+      ["孟子", "先秦"],
+      ["资治通鉴", "宋元"],
+      ["日知录", "明清"],
+      ["人间词话", "近现代"],
+      ["明内府本四书章句", "明清"],
+    ]);
+  }, []);
   const activeEraIndex = eraOrder.indexOf(activeEra);
   const activeEraRange = eraYearRange[activeEra];
   const visibleSpread = useMemo(
@@ -124,6 +141,35 @@ export function BookExplorer({
     () => detail.timeline.filter((item) => item.year <= activeEraRange.end),
     [activeEraRange.end, detail.timeline],
   );
+  const visiblePassages = useMemo(() => {
+    return detail.passages
+      .map((passage) => {
+        const links = passage.links.filter((link) => {
+          const sourceEra = bookEraByTitle.get(link.sourceTitle);
+          return sourceEra ? eraOrder.indexOf(sourceEra) <= activeEraIndex : true;
+        });
+        const tracePath = passage.tracePath?.filter((trace) => {
+          const traceEra = bookEraByTitle.get(trace.title);
+          return traceEra ? eraOrder.indexOf(traceEra) <= activeEraIndex : true;
+        });
+        const downstreamInfluence = passage.downstreamInfluence?.filter((item) => {
+          const targetEra = bookEraByTitle.get(item.targetTitle);
+          return targetEra ? eraOrder.indexOf(targetEra) <= activeEraIndex : true;
+        });
+
+        if (links.length === 0 && (tracePath?.length ?? 0) === 0 && (downstreamInfluence?.length ?? 0) === 0) {
+          return null;
+        }
+
+        return {
+          ...passage,
+          links,
+          tracePath,
+          downstreamInfluence,
+        };
+      })
+      .filter((passage): passage is NonNullable<typeof passage> => Boolean(passage));
+  }, [activeEraIndex, bookEraByTitle, detail.passages]);
   const primaryPeople = visiblePeople.filter((person) => (person.relationTier ?? 2) === 1);
   const secondaryPeople = visiblePeople.filter((person) => (person.relationTier ?? 2) === 2);
   const resolvedSpreadId =
@@ -157,8 +203,8 @@ export function BookExplorer({
       }
     : null;
   const activePassage = useMemo(() => {
-    return detail.passages.find((passage) => passage.id === selectedPassageId) ?? detail.passages[0];
-  }, [detail.passages, selectedPassageId]);
+    return visiblePassages.find((passage) => passage.id === selectedPassageId) ?? visiblePassages[0];
+  }, [selectedPassageId, visiblePassages]);
   const activePassageId = activePassage?.id ?? null;
   const activeLink = useMemo(() => {
     return activePassage?.links.find((link) => link.id === selectedLinkId) ?? activePassage?.links[0];
@@ -188,6 +234,7 @@ export function BookExplorer({
     people: visiblePeople.length,
     versions: visibleVersions.length,
     timeline: visibleTimeline.length,
+    passages: visiblePassages.length,
   };
 
   const handleSelectPassage = (passageId: string) => {
@@ -290,6 +337,9 @@ export function BookExplorer({
           <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm text-stone-200">
             事件 {eraLinkedSummary.timeline} 条
           </div>
+        </div>
+        <div className="mt-2 text-xs text-amber-100/75">
+          微观文本当前显现 {eraLinkedSummary.passages} 个片段。
         </div>
       </section>
 
@@ -1259,9 +1309,9 @@ export function BookExplorer({
             <h3 className="text-lg font-medium">文本对读与溯源</h3>
             <span className="text-xs text-stone-400">微观视图</span>
           </div>
-          {detail.passages.length === 0 ? (
+          {visiblePassages.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
-              当前典籍尚未补充逐字对读样例，后续阶段会接入显式引用与语义关联证据。
+              当前时代层下尚未显现逐字对读样例或相关证据链。
             </div>
           ) : activePassage ? (
             <>
@@ -1302,7 +1352,7 @@ export function BookExplorer({
                     </div>
                   </div>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {detail.passages.map((passage) => (
+                    {visiblePassages.map((passage) => (
                       <button
                         key={passage.id}
                         type="button"
@@ -1324,7 +1374,7 @@ export function BookExplorer({
                     交互说明
                   </div>
                   <p className="mt-3 text-sm leading-7 text-cyan-50/90">
-                    点击证据卡可切换当前引文焦点；溯源链会按节奏逐步点亮，模拟方案中的“逆流而上”。
+                    点击证据卡可切换当前引文焦点；当前时代以前已显现的证据链、溯源路径和下游影响会逐步点亮，模拟方案中的“逆流而上”。
                   </p>
                 </div>
               </div>
@@ -1512,7 +1562,7 @@ export function BookExplorer({
             </>
           ) : null}
           <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4 text-sm leading-7 text-cyan-50">
-            微观层现在已经支持横排/竖排切换、证据焦点切换、自动推进式溯源链路和下游影响追踪，更接近方案里的“逐字探源”交互。
+            微观层现在已经支持横排/竖排切换、证据焦点切换、自动推进式溯源链路、下游影响追踪，并跟随当前时代层逐步显现证据，更接近方案里的“逐字探源”交互。
           </div>
         </section>
       ) : null}
