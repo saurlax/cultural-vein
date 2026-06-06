@@ -14,6 +14,26 @@ import type { CitationEdge, DatasetInsight } from "@/types/domain";
 
 const eras = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"] as const;
 const categories = ["全部", "经", "史", "子", "集"] as const;
+const defaultConceptSuggestions = Array.from(
+  new Set(riverDataset.books.flatMap((book) => book.concepts)),
+).slice(0, 10);
+
+interface SearchPayload {
+  query: string;
+  total: number;
+  hits: Array<{
+    slug: string;
+    title: string;
+    shortTitle: string;
+    dynasty: string;
+    category: string;
+    school: string;
+    score: number;
+    matchedConcepts: string[];
+    matchedFields: string[];
+  }>;
+  relatedConcepts: string[];
+}
 
 const relationLayerMeta: Record<
   CitationEdge["layer"],
@@ -93,6 +113,8 @@ export function CulturalVeinShell() {
     resetSelection,
   } = useCulturalVeinStore();
   const [insights, setInsights] = useState<DatasetInsight | null>(null);
+  const [searchResult, setSearchResult] = useState<SearchPayload | null>(null);
+  const [searchPending, setSearchPending] = useState(false);
   const [hoveredBranchId, setHoveredBranchId] = useState<string | null>(null);
   const [traceFocus, setTraceFocus] = useState<TraceFocusState | null>(null);
   const [sceneFocus, setSceneFocus] = useState<SceneFocusState | null>(null);
@@ -105,18 +127,70 @@ export function CulturalVeinShell() {
 
   const activeEraIndex = eras.indexOf(activeEra);
 
+  useEffect(() => {
+    const trimmed = searchTerm.trim();
+
+    if (!trimmed) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const timer = window.setTimeout(() => {
+      const loadSearch = async () => {
+        try {
+          const response = await fetch(`/api/search?q=${encodeURIComponent(trimmed)}`);
+
+          if (!response.ok) {
+            return;
+          }
+
+          const payload = (await response.json()) as SearchPayload;
+          if (!cancelled) {
+            setSearchResult(payload);
+          }
+        } catch {
+          if (!cancelled) {
+            setSearchResult(null);
+          }
+        } finally {
+          if (!cancelled) {
+            setSearchPending(false);
+          }
+        }
+      };
+
+      void loadSearch();
+    }, 180);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [searchTerm]);
+
+  const handleSearchTermChange = (value: string) => {
+    setSearchPending(value.trim().length > 0);
+    setSearchTerm(value);
+  };
+
   const filteredBooks = useMemo(() => {
+    const normalizedSearch = searchTerm.trim();
+    const searchHitSlugs =
+      normalizedSearch.length > 0 && searchResult?.query.trim() === normalizedSearch
+        ? new Set(searchResult?.hits.map((hit) => hit.slug) ?? [])
+        : null;
+
     return riverDataset.books.filter((book) => {
       const matchesEra = eras.indexOf(book.dynasty) <= activeEraIndex;
       const matchesCategory =
         categoryFilter === "全部" || book.category === categoryFilter;
-      const normalized = `${book.title}${book.summary}${book.concepts.join("")}${book.school}`;
       const matchesSearch =
-        searchTerm.trim().length === 0 || normalized.includes(searchTerm.trim());
+        !searchHitSlugs || searchHitSlugs.has(book.slug);
 
       return matchesEra && matchesCategory && matchesSearch;
     });
-  }, [activeEraIndex, categoryFilter, searchTerm]);
+  }, [activeEraIndex, categoryFilter, searchResult?.hits, searchResult?.query, searchTerm]);
 
   const visibleCitations = useMemo(() => {
     return riverDataset.citations.filter((citation) => {
@@ -261,6 +335,12 @@ export function CulturalVeinShell() {
       ? "border-amber-300/20 bg-[linear-gradient(135deg,rgba(121,75,14,0.48),rgba(42,26,9,0.9))]"
       : "border-amber-200/18 bg-[linear-gradient(135deg,rgba(97,63,14,0.42),rgba(34,22,8,0.9))]";
   const visibleNodePreview = filteredBooks.slice(0, 5);
+  const resolvedSearchResult =
+    searchResult?.query.trim() === searchTerm.trim() ? searchResult : null;
+  const searchSuggestionChips =
+    resolvedSearchResult?.relatedConcepts.length
+      ? resolvedSearchResult.relatedConcepts
+      : defaultConceptSuggestions;
   const panelBaseClass =
     "rounded-[28px] border border-amber-200/18 bg-[linear-gradient(180deg,rgba(56,39,17,0.88),rgba(23,15,8,0.84))] shadow-2xl shadow-black/30 backdrop-blur-xl";
 
@@ -390,15 +470,84 @@ export function CulturalVeinShell() {
 
               <label className="mt-4 block">
                 <span className="text-xs tracking-[0.22em] text-stone-400">
-                  检索关键词
+                  概念检索
                 </span>
                 <input
                   value={searchTerm}
-                  onChange={(event) => setSearchTerm(event.target.value)}
-                  placeholder="例如 朱熹、礼、诗教"
+                  onChange={(event) => handleSearchTermChange(event.target.value)}
+                  placeholder="例如 仁、礼、诗教、朱熹"
                   className="mt-2 w-full rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-amber-300/30"
                 />
               </label>
+
+              <div className="mt-4 rounded-[24px] border border-white/10 bg-black/18 px-4 py-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-[11px] tracking-[0.24em] text-stone-400">
+                    概念联想
+                  </div>
+                  <div className="text-[11px] text-stone-500">
+                    {searchPending
+                      ? "检索中"
+                      : resolvedSearchResult?.query
+                        ? `命中 ${resolvedSearchResult.total} 本`
+                        : "常用概念"}
+                  </div>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {searchSuggestionChips.map((concept) => (
+                    <button
+                      key={concept}
+                      type="button"
+                      onClick={() => handleSearchTermChange(concept)}
+                      className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                        searchTerm.trim() === concept
+                          ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
+                          : "border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                      }`}
+                    >
+                      {concept}
+                    </button>
+                  ))}
+                </div>
+                {resolvedSearchResult?.hits.length ? (
+                  <div className="mt-4 space-y-2">
+                    {resolvedSearchResult.hits.slice(0, 4).map((hit) => (
+                      <button
+                        key={hit.slug}
+                        type="button"
+                        onClick={() => handleDiveToBook(hit.slug)}
+                        className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left transition hover:bg-white/10"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <div className="font-medium text-stone-50">{hit.title}</div>
+                            <div className="mt-1 text-xs text-stone-400">
+                              {hit.dynasty} · {hit.category} · {hit.school}
+                            </div>
+                          </div>
+                          <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-2 py-1 text-[10px] text-amber-100">
+                            {hit.score}
+                          </div>
+                        </div>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {hit.matchedConcepts.map((concept) => (
+                            <span
+                              key={`${hit.slug}-${concept}`}
+                              className="rounded-full bg-amber-300/10 px-2 py-1 text-[10px] text-amber-100"
+                            >
+                              {concept}
+                            </span>
+                          ))}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : resolvedSearchResult?.query && !searchPending ? (
+                  <div className="mt-4 text-sm text-stone-400">
+                    当前检索词没有命中文脉节点，可以试试更核心的概念词。
+                  </div>
+                ) : null}
+              </div>
 
               <div className="mt-4 rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
                 <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-stone-400">
@@ -708,14 +857,42 @@ export function CulturalVeinShell() {
                 <div className="rounded-2xl border border-amber-300/10 bg-amber-300/5 px-3 py-3 text-amber-50">来源 {connectedSourceCount || "--"}</div>
               </div>
               <label className="mt-4 block">
-                <span className="text-xs tracking-[0.22em] text-stone-400">检索关键词</span>
+                <span className="text-xs tracking-[0.22em] text-stone-400">概念检索</span>
                 <input
                   value={searchTerm}
-                  onChange={(event) => setSearchTerm(event.target.value)}
-                  placeholder="例如 朱熹、礼、诗教"
+                  onChange={(event) => handleSearchTermChange(event.target.value)}
+                  placeholder="例如 仁、礼、诗教、朱熹"
                   className="mt-2 w-full rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-stone-100 outline-none placeholder:text-stone-500 focus:border-amber-300/30"
                 />
               </label>
+              <div className="mt-4 rounded-[24px] border border-white/10 bg-black/18 px-4 py-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-[11px] tracking-[0.24em] text-stone-400">概念联想</div>
+                  <div className="text-[11px] text-stone-500">
+                    {searchPending
+                      ? "检索中"
+                      : resolvedSearchResult?.query
+                        ? `命中 ${resolvedSearchResult.total} 本`
+                        : "常用概念"}
+                  </div>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {searchSuggestionChips.slice(0, 8).map((concept) => (
+                    <button
+                      key={`mobile-${concept}`}
+                      type="button"
+                      onClick={() => handleSearchTermChange(concept)}
+                      className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                        searchTerm.trim() === concept
+                          ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
+                          : "border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                      }`}
+                    >
+                      {concept}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div className="mt-4 rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
                 <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-stone-400">
                   <span>时代水位</span>
