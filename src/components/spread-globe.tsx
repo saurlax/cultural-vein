@@ -206,13 +206,14 @@ function SpreadGlobeScene({
 
 export function SpreadGlobe(props: SpreadGlobeProps) {
   return (
-    <div className="relative h-[360px] overflow-hidden rounded-[24px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.14),rgba(18,11,5,0.96))]">
-      <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-full border border-amber-300/15 bg-[#2d1d0c]/70 px-3 py-1 text-[11px] text-stone-200">
+    <div className="relative h-[360px] overflow-hidden rounded-[24px] border border-[#ead8a6]/16 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.18),rgba(47,29,10,0.9)_34%,rgba(20,12,5,0.98))]">
+      <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-full border border-[#ead8a6]/16 bg-[rgba(73,49,16,0.76)] px-3 py-1 text-[11px] text-[#f5ecd3]">
         3D 地球传播视图
       </div>
-      <div className="pointer-events-none absolute right-4 top-4 z-10 rounded-full border border-amber-300/15 bg-[#2d1d0c]/70 px-3 py-1 text-[11px] text-stone-300">
+      <div className="pointer-events-none absolute right-4 top-4 z-10 rounded-full border border-[#ead8a6]/16 bg-[rgba(73,49,16,0.72)] px-3 py-1 text-[11px] text-[#eadfbc]">
         拖拽旋转 · 点击航线聚焦
       </div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-[linear-gradient(0deg,rgba(28,17,6,0.74),rgba(28,17,6,0))]" />
       <Canvas dpr={[1, 1.8]}>
         <SpreadGlobeScene {...props} />
       </Canvas>
