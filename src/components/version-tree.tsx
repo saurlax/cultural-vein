@@ -12,6 +12,18 @@ interface VersionTreeItem extends VersionNode {
   depth: number;
 }
 
+function verticalConnectorClass(status: VersionNode["status"]) {
+  return status === "佚失"
+    ? "bg-[repeating-linear-gradient(to_bottom,rgba(203,213,225,0.45)_0_6px,transparent_6px_11px)]"
+    : "bg-white/10";
+}
+
+function horizontalConnectorClass(status: VersionNode["status"]) {
+  return status === "佚失"
+    ? "bg-[repeating-linear-gradient(to_right,rgba(203,213,225,0.45)_0_6px,transparent_6px_11px)]"
+    : "bg-white/10";
+}
+
 function buildVersionTree(versions: VersionNode[]) {
   const map = new Map(versions.map((version) => [version.id, version]));
   const roots = versions.filter((version) => !version.parentId || !map.has(version.parentId));
@@ -71,13 +83,13 @@ export function VersionTree({
                   />
                   {index < items.length - 1 ? (
                     <div
-                      className="absolute top-12 h-[calc(100%-2rem)] w-px bg-white/10"
+                      className={`absolute top-12 h-[calc(100%-2rem)] w-px ${verticalConnectorClass(version.status)}`}
                       style={{ left: `calc(50% + ${version.depth * 20}px)` }}
                     />
                   ) : null}
                   {version.depth > 0 ? (
                     <div
-                      className="absolute top-11 h-px bg-white/10"
+                      className={`absolute top-11 h-px ${horizontalConnectorClass(version.status)}`}
                       style={{
                         left: `calc(50% + ${(version.depth - 1) * 20}px)`,
                         width: "20px",
@@ -86,7 +98,7 @@ export function VersionTree({
                   ) : null}
                   {nextDepth > version.depth ? (
                     <div
-                      className="absolute top-11 h-7 w-px bg-white/10"
+                      className={`absolute top-11 h-7 w-px ${verticalConnectorClass(version.status)}`}
                       style={{ left: `calc(50% + ${version.depth * 20}px + 20px)` }}
                     />
                   ) : null}
@@ -139,6 +151,16 @@ export function VersionTree({
             </div>
           );
         })}
+      </div>
+      <div className="mt-4 flex flex-wrap gap-2 text-[10px] text-stone-400">
+        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
+          <span className="h-px w-5 bg-white/20" />
+          存世实线
+        </span>
+        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
+          <span className="h-px w-5 bg-[repeating-linear-gradient(to_right,rgba(203,213,225,0.52)_0_6px,transparent_6px_11px)]" />
+          佚失虚线
+        </span>
       </div>
     </div>
   );
