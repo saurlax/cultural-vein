@@ -220,8 +220,784 @@ interface RealSupplementCbdbSummary {
   }>;
 }
 
-const books = (realSupplements.demoBooks ?? []) as RealSupplementBook[];
-const citations = (realSupplements.demoCitations ?? []) as RealSupplementCitation[];
+const coreClassicExtensions: RealSupplementBook[] = [
+  {
+    id: "book-lunyu",
+    slug: "lunyu",
+    title: "论语",
+    shortTitle: "论语",
+    dynasty: "先秦",
+    year: -450,
+    category: "经",
+    school: "儒家经典",
+    influence: 94,
+    velocity: 0.31,
+    branchLevel: 0,
+    summary: "记录孔门言行与伦理政治核心命题，是四书体系与后世修身论述的源头支柱。",
+    concepts: ["仁", "礼", "君子", "修身"],
+    coordinates: [-1.2, 0.95, 0.25],
+  },
+  {
+    id: "book-daxue",
+    slug: "daxue",
+    title: "大学",
+    shortTitle: "大学",
+    dynasty: "两汉",
+    year: 80,
+    category: "经",
+    school: "儒家经典",
+    influence: 87,
+    velocity: 0.39,
+    branchLevel: 1,
+    summary: "由《礼记》析出的修身治国纲领文本，成为宋代理学组织心性与政治秩序的重要门户。",
+    concepts: ["明明德", "亲民", "格物", "修齐治平"],
+    coordinates: [1.45, 0.75, 0.78],
+  },
+  {
+    id: "book-zhongyong",
+    slug: "zhongyong",
+    title: "中庸",
+    shortTitle: "中庸",
+    dynasty: "两汉",
+    year: 80,
+    category: "经",
+    school: "儒家经典",
+    influence: 86,
+    velocity: 0.37,
+    branchLevel: 1,
+    summary: "由《礼记》析出的义理枢纽文本，把诚、性与天道关系转化为后世理学的关键支点。",
+    concepts: ["中和", "诚", "天命", "性道"],
+    coordinates: [2.55, 0.92, -0.22],
+  },
+];
+
+const coreClassicCitationExtensions: RealSupplementCitation[] = [
+  {
+    id: "edge-lunyu-1",
+    source: "book-lunyu-jizhu",
+    target: "book-lunyu",
+    layer: "metadata",
+    confidence: 1,
+    label: "集注承源",
+    evidence: "《论语集注》直接以《论语》原文为底本组织章句与义理阐释。",
+  },
+  {
+    id: "edge-lunyu-2",
+    source: "book-sishu-zhangju",
+    target: "book-lunyu",
+    layer: "metadata",
+    confidence: 1,
+    label: "四书汇入",
+    evidence: "《论语》作为四书核心之一，被纳入统一教材与解释体系。",
+  },
+  {
+    id: "edge-daxue-1",
+    source: "book-daxue",
+    target: "book-liji",
+    layer: "metadata",
+    confidence: 1,
+    label: "礼记析出",
+    evidence: "《大学》原为《礼记》篇章，后世独立成书并进入四书体系。",
+  },
+  {
+    id: "edge-zhongyong-1",
+    source: "book-zhongyong",
+    target: "book-liji",
+    layer: "metadata",
+    confidence: 1,
+    label: "礼记析出",
+    evidence: "《中庸》原为《礼记》篇章，后世独立成书并成为理学义理中枢。",
+  },
+  {
+    id: "edge-daxue-2",
+    source: "book-sishu-zhangju",
+    target: "book-daxue",
+    layer: "explicit",
+    confidence: 0.95,
+    label: "章句定型",
+    evidence: "朱熹章句将《大学》重写为四书学习路径的起点文本。",
+  },
+  {
+    id: "edge-zhongyong-2",
+    source: "book-sishu-zhangju",
+    target: "book-zhongyong",
+    layer: "explicit",
+    confidence: 0.94,
+    label: "义理定型",
+    evidence: "《四书章句集注》把《中庸》推到心性义理与天道论的核心位置。",
+  },
+  {
+    id: "edge-daxue-3",
+    source: "book-daxue",
+    target: "book-lunyu",
+    layer: "semantic",
+    confidence: 0.78,
+    label: "修身互证",
+    evidence: "《大学》的修身治平路径与《论语》君子修德论高度呼应。",
+  },
+  {
+    id: "edge-zhongyong-3",
+    source: "book-zhongyong",
+    target: "book-mengzi",
+    layer: "semantic",
+    confidence: 0.73,
+    label: "心性互证",
+    evidence: "《中庸》的性命与诚论为《孟子》性善与尽心论提供后世互证框架。",
+  },
+];
+
+const coreClassicDetailExtensions: Record<string, BookDetail> = {
+  lunyu: {
+    bookId: "book-lunyu",
+    heroMetric: {
+      directCitations: 92,
+      downstreamInfluence: 318,
+      coveredRegions: 8,
+    },
+    spread: [
+      {
+        id: "spread-ly-1",
+        fromPlaceId: "place-qufu",
+        toPlaceId: "place-luoyang",
+        startYear: -200,
+        endYear: 100,
+        volume: 82,
+      },
+      {
+        id: "spread-ly-2",
+        fromPlaceId: "place-luoyang",
+        toPlaceId: "place-kaifeng",
+        startYear: 960,
+        endYear: 1127,
+        volume: 90,
+      },
+      {
+        id: "spread-ly-3",
+        fromPlaceId: "place-kaifeng",
+        toPlaceId: "place-wuyishan",
+        startYear: 1130,
+        endYear: 1200,
+        volume: 94,
+      },
+    ],
+    people: [
+      {
+        id: "person-kongzi",
+        name: "孔子",
+        role: "作者",
+        birthYear: -551,
+        deathYear: -479,
+        era: "先秦",
+        bio: "孔门学统核心人物，其言行被后世编纂为《论语》，成为儒家修身与政治伦理的源头文本。",
+        source: "demo",
+        sourceStatus: "fallback",
+        relationTier: 1,
+        relationType: "著",
+      },
+      {
+        id: "person-zhuxi-lunyu",
+        name: "朱熹",
+        role: "注者",
+        birthYear: 1130,
+        deathYear: 1200,
+        era: "宋",
+        bio: "以《论语集注》重整孔门语录的义理结构，把《论语》纳入四书学习主轴。",
+        source: "demo",
+        sourceStatus: "fallback",
+        relationTier: 1,
+        relationType: "注",
+      },
+      {
+        id: "person-chengyi-lunyu",
+        name: "程颐",
+        role: "评论者",
+        birthYear: 1033,
+        deathYear: 1107,
+        era: "宋",
+        bio: "北宋理学家，二程学脉经由《论语》重新组织心性与礼法论述。",
+        source: "demo",
+        sourceStatus: "fallback",
+        relationTier: 2,
+        relationType: "评",
+      },
+    ],
+    places: [
+      {
+        id: "place-qufu",
+        name: "曲阜",
+        lat: 35.6005,
+        lng: 116.9919,
+        note: "孔门学统与鲁地经典记忆的原点。",
+      },
+      {
+        id: "place-luoyang",
+        name: "洛阳",
+        lat: 34.6197,
+        lng: 112.454,
+        note: "汉魏经典传授与注疏汇聚节点。",
+      },
+      {
+        id: "place-kaifeng",
+        name: "开封",
+        lat: 34.7972,
+        lng: 114.3076,
+        note: "北宋经学传播与书院教育中心。",
+      },
+      {
+        id: "place-wuyishan",
+        name: "武夷山",
+        lat: 27.7566,
+        lng: 118.0314,
+        note: "朱熹讲学与理学章句体系成熟的重要空间。",
+      },
+    ],
+    versions: [
+      {
+        id: "version-ly-1",
+        label: "《论语》古传本系",
+        year: -100,
+        place: "鲁地",
+        library: "经学传抄系统",
+        status: "佚失",
+        editionType: "祖本",
+        note: "两汉以前《论语》文本流传复杂，古文今文系统并行。",
+      },
+      {
+        id: "version-ly-2",
+        label: "《论语正义》刻本",
+        year: 653,
+        place: "长安",
+        library: "国子监",
+        status: "存世",
+        parentId: "version-ly-1",
+        editionType: "刻本",
+        note: "唐代正义系统稳定《论语》解释框架。",
+      },
+      {
+        id: "version-ly-3",
+        label: "《论语集注》讲本",
+        year: 1170,
+        place: "武夷山",
+        library: "书院系统",
+        status: "存世",
+        parentId: "version-ly-2",
+        editionType: "重刊本",
+        note: "朱熹集注推动《论语》进入四书化与教材化阶段。",
+      },
+    ],
+    timeline: [
+      {
+        id: "tl-ly-1",
+        year: -450,
+        title: "孔门语录逐步成编",
+        detail: "孔门弟子与再传弟子整理言行，形成《论语》文本雏形。",
+      },
+      {
+        id: "tl-ly-2",
+        year: 653,
+        title: "《论语正义》进入官学体系",
+        detail: "唐代官方义疏系统稳定了《论语》的注释主线。",
+      },
+      {
+        id: "tl-ly-3",
+        year: 1170,
+        title: "《论语集注》流布",
+        detail: "宋代理学将《论语》重新编码为四书学习主轴。",
+      },
+    ],
+    passages: [
+      {
+        id: "passage-ly-1",
+        section: "学而",
+        original: "学而时习之，不亦说乎？有朋自远方来，不亦乐乎？",
+        links: [
+          {
+            id: "passage-ly-1-link-1",
+            quote: "学问工夫由内而外展开",
+            sourceBookId: "book-daxue",
+            sourceTitle: "大学",
+            layer: "semantic",
+            confidenceLabel: "中",
+            evidence: "《大学》把《论语》的学习工夫扩展为明德、亲民、止于至善的路径。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-ly-1",
+            title: "论语",
+            relation: "源头",
+            note: "孔门语录确立后世修身与学习论述的原型。",
+          },
+          {
+            id: "trace-ly-2",
+            title: "大学",
+            relation: "展开",
+            note: "把个人学习工夫转写为修齐治平的结构化纲领。",
+          },
+          {
+            id: "trace-ly-3",
+            title: "四书章句集注",
+            relation: "定型",
+            note: "朱熹将《论语》与《大学》整合为统一教材体系。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-ly-1",
+            targetTitle: "论语集注",
+            relation: "显式注释",
+            note: "直接以《论语》原文为底本建立后世集注框架。",
+            confidenceLabel: "高",
+          },
+        ],
+      },
+      {
+        id: "passage-ly-2",
+        section: "颜渊",
+        original: "克己复礼为仁。一日克己复礼，天下归仁焉。",
+        links: [
+          {
+            id: "passage-ly-2-link-1",
+            quote: "自诚明与礼的内在化",
+            sourceBookId: "book-zhongyong",
+            sourceTitle: "中庸",
+            layer: "semantic",
+            confidenceLabel: "中",
+            evidence: "《中庸》将礼的外在秩序转化为诚与中和的内在工夫。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-ly-4",
+            title: "论语",
+            relation: "源头",
+            note: "提出“克己复礼为仁”的经典命题。",
+          },
+          {
+            id: "trace-ly-5",
+            title: "中庸",
+            relation: "义理化",
+            note: "把仁与礼的实践转换为诚与中和的形上论述。",
+          },
+          {
+            id: "trace-ly-6",
+            title: "论语集注",
+            relation: "再诠释",
+            note: "朱熹将其纳入心性论与工夫论框架中重新解释。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-ly-2",
+            targetTitle: "论语集注",
+            relation: "注疏承继",
+            note: "理学传统围绕“仁”“礼”关系展开更细密解释。",
+            confidenceLabel: "高",
+          },
+        ],
+      },
+    ],
+    realWorldSignals: {
+      sourceLabel: "CBDB 人物 + 上图活动样本 + 搜韵知识图谱 API 样本",
+      venueSummary: "补入《论语》后，四书主干从孔门语录源头一直连到宋代理学教材化阶段，增强“主河道不是单节点”的展示力度。",
+    },
+  },
+  daxue: {
+    bookId: "book-daxue",
+    heroMetric: {
+      directCitations: 84,
+      downstreamInfluence: 246,
+      coveredRegions: 6,
+    },
+    spread: [
+      {
+        id: "spread-dx-1",
+        fromPlaceId: "place-changan",
+        toPlaceId: "place-kaifeng",
+        startYear: 80,
+        endYear: 1000,
+        volume: 72,
+      },
+      {
+        id: "spread-dx-2",
+        fromPlaceId: "place-kaifeng",
+        toPlaceId: "place-wuyishan-dx",
+        startYear: 1030,
+        endYear: 1200,
+        volume: 92,
+      },
+    ],
+    people: [
+      {
+        id: "person-zengzi",
+        name: "曾子",
+        role: "作者",
+        era: "先秦",
+        bio: "后世常将《大学》学脉追溯至曾子系统，是修身治国纲领的重要思想祖线。",
+        source: "demo",
+        sourceStatus: "fallback",
+        relationTier: 1,
+        relationType: "著",
+      },
+      {
+        id: "person-zhuxi-daxue",
+        name: "朱熹",
+        role: "注者",
+        birthYear: 1130,
+        deathYear: 1200,
+        era: "宋",
+        bio: "将《大学》定为四书起首，使格物致知与修齐治平路径标准化。",
+        source: "demo",
+        sourceStatus: "fallback",
+        relationTier: 1,
+        relationType: "注",
+      },
+      {
+        id: "person-chenghao",
+        name: "程颢",
+        role: "评论者",
+        birthYear: 1032,
+        deathYear: 1085,
+        era: "宋",
+        bio: "二程学脉经由《大学》重述德性与政治秩序的连通关系。",
+        source: "demo",
+        sourceStatus: "fallback",
+        relationTier: 2,
+        relationType: "评",
+      },
+    ],
+    places: [
+      {
+        id: "place-changan",
+        name: "长安",
+        lat: 34.3416,
+        lng: 108.9398,
+        note: "汉唐礼学与经典编纂的核心中心。",
+      },
+      {
+        id: "place-kaifeng",
+        name: "开封",
+        lat: 34.7972,
+        lng: 114.3076,
+        note: "北宋理学与学校教育传播枢纽。",
+      },
+      {
+        id: "place-wuyishan-dx",
+        name: "武夷山",
+        lat: 27.7566,
+        lng: 118.0314,
+        note: "朱熹整合《大学》章句与理学工夫论的重要讲学空间。",
+      },
+    ],
+    versions: [
+      {
+        id: "version-dx-1",
+        label: "《礼记》大学篇旧本",
+        year: 80,
+        place: "长安",
+        library: "礼记传抄系统",
+        status: "佚失",
+        editionType: "祖本",
+        note: "作为《礼记》篇章流传的早期文本基础。",
+      },
+      {
+        id: "version-dx-2",
+        label: "北宋《大学章句》写本系",
+        year: 1050,
+        place: "开封",
+        library: "书院系统",
+        status: "佚失",
+        parentId: "version-dx-1",
+        editionType: "抄本",
+        note: "二程以来围绕《大学》重订义理框架的早期传播层。",
+      },
+      {
+        id: "version-dx-3",
+        label: "朱熹《大学章句》刻本",
+        year: 1189,
+        place: "武夷山",
+        library: "书院系统",
+        status: "存世",
+        parentId: "version-dx-2",
+        editionType: "刻本",
+        note: "四书章句体系中的核心定型版本。",
+      },
+    ],
+    timeline: [
+      {
+        id: "tl-dx-1",
+        year: 80,
+        title: "《大学》作为《礼记》篇章流传",
+        detail: "《大学》以礼学文本形式嵌入《礼记》系统。",
+      },
+      {
+        id: "tl-dx-2",
+        year: 1050,
+        title: "北宋理学重提《大学》",
+        detail: "二程学脉开始将《大学》凸显为修身工夫核心文本。",
+      },
+      {
+        id: "tl-dx-3",
+        year: 1189,
+        title: "《大学章句》定型",
+        detail: "朱熹将《大学》置于四书学习路径之首，完成教材化改写。",
+      },
+    ],
+    passages: [
+      {
+        id: "passage-dx-1",
+        section: "三纲领",
+        original: "大学之道，在明明德，在亲民，在止于至善。",
+        links: [
+          {
+            id: "passage-dx-1-link-1",
+            quote: "《礼记》大学篇",
+            sourceBookId: "book-liji",
+            sourceTitle: "礼记",
+            layer: "explicit",
+            confidenceLabel: "高",
+            evidence: "《大学》原为《礼记》篇章，这一表述直接保留礼学根基。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-dx-1",
+            title: "礼记",
+            relation: "母体",
+            note: "《大学》原本嵌在《礼记》系统之中。",
+          },
+          {
+            id: "trace-dx-2",
+            title: "大学",
+            relation: "析出",
+            note: "从礼学篇章转为独立修身治国纲领文本。",
+          },
+          {
+            id: "trace-dx-3",
+            title: "四书章句集注",
+            relation: "教材化",
+            note: "朱熹将其推为四书学习起点，形成标准化学习路径。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-dx-1",
+            targetTitle: "四书章句集注",
+            relation: "显式纳入",
+            note: "成为四书章句体系中起首的纲领性文本。",
+            confidenceLabel: "高",
+          },
+        ],
+      },
+    ],
+    realWorldSignals: {
+      sourceLabel: "CBDB 人物 + 上海图书馆活动样本",
+      venueSummary: "补入《大学》后，可以更清楚地展示《礼记》篇章如何被析出并重组进四书教材体系。",
+    },
+  },
+  zhongyong: {
+    bookId: "book-zhongyong",
+    heroMetric: {
+      directCitations: 82,
+      downstreamInfluence: 238,
+      coveredRegions: 6,
+    },
+    spread: [
+      {
+        id: "spread-zy-1",
+        fromPlaceId: "place-luoyang-zy",
+        toPlaceId: "place-kaifeng-zy",
+        startYear: 80,
+        endYear: 1000,
+        volume: 70,
+      },
+      {
+        id: "spread-zy-2",
+        fromPlaceId: "place-kaifeng-zy",
+        toPlaceId: "place-wuyishan-zy",
+        startYear: 1030,
+        endYear: 1200,
+        volume: 90,
+      },
+    ],
+    people: [
+      {
+        id: "person-zisi",
+        name: "子思",
+        role: "作者",
+        era: "先秦",
+        bio: "后世常将《中庸》义理系谱追溯至子思学脉，是孔门向形上义理展开的关键节点。",
+        source: "demo",
+        sourceStatus: "fallback",
+        relationTier: 1,
+        relationType: "著",
+      },
+      {
+        id: "person-zhuxi-zy",
+        name: "朱熹",
+        role: "注者",
+        birthYear: 1130,
+        deathYear: 1200,
+        era: "宋",
+        bio: "通过章句把《中庸》的诚与中和论推进为理学心性论的关键入口。",
+        source: "demo",
+        sourceStatus: "fallback",
+        relationTier: 1,
+        relationType: "注",
+      },
+      {
+        id: "person-chengyi-zy",
+        name: "程颐",
+        role: "评论者",
+        birthYear: 1033,
+        deathYear: 1107,
+        era: "宋",
+        bio: "北宋理学家，经由《中庸》强化天理与工夫论的连动解释。",
+        source: "demo",
+        sourceStatus: "fallback",
+        relationTier: 2,
+        relationType: "评",
+      },
+    ],
+    places: [
+      {
+        id: "place-luoyang-zy",
+        name: "洛阳",
+        lat: 34.6197,
+        lng: 112.454,
+        note: "汉唐经学体系中《礼记》与相关义理传承的重要据点。",
+      },
+      {
+        id: "place-kaifeng-zy",
+        name: "开封",
+        lat: 34.7972,
+        lng: 114.3076,
+        note: "北宋理学网络推动《中庸》从经学向心性论转型。",
+      },
+      {
+        id: "place-wuyishan-zy",
+        name: "武夷山",
+        lat: 27.7566,
+        lng: 118.0314,
+        note: "朱熹整合《中庸》章句与四书系统的关键讲学空间。",
+      },
+    ],
+    versions: [
+      {
+        id: "version-zy-1",
+        label: "《礼记》中庸篇旧本",
+        year: 80,
+        place: "洛阳",
+        library: "礼记传抄系统",
+        status: "佚失",
+        editionType: "祖本",
+        note: "《中庸》作为《礼记》篇章存在的早期文本层。",
+      },
+      {
+        id: "version-zy-2",
+        label: "北宋《中庸》讲义写本系",
+        year: 1060,
+        place: "开封",
+        library: "书院系统",
+        status: "佚失",
+        parentId: "version-zy-1",
+        editionType: "抄本",
+        note: "理学家围绕诚、中和与性命论展开再解释的过渡层。",
+      },
+      {
+        id: "version-zy-3",
+        label: "朱熹《中庸章句》刻本",
+        year: 1189,
+        place: "武夷山",
+        library: "书院系统",
+        status: "存世",
+        parentId: "version-zy-2",
+        editionType: "刻本",
+        note: "朱熹章句使《中庸》成为四书体系中的义理核心。",
+      },
+    ],
+    timeline: [
+      {
+        id: "tl-zy-1",
+        year: 80,
+        title: "《中庸》作为《礼记》篇章流传",
+        detail: "《中庸》最初作为礼学文本的一部分被保存和传授。",
+      },
+      {
+        id: "tl-zy-2",
+        year: 1060,
+        title: "北宋理学重释《中庸》",
+        detail: "中和、诚与性命关系被重新拉到心性论前台。",
+      },
+      {
+        id: "tl-zy-3",
+        year: 1189,
+        title: "《中庸章句》进入四书体系",
+        detail: "朱熹通过章句系统完成《中庸》的教材化与理学化。",
+      },
+    ],
+    passages: [
+      {
+        id: "passage-zy-1",
+        section: "天命之谓性",
+        original: "天命之谓性，率性之谓道，修道之谓教。",
+        links: [
+          {
+            id: "passage-zy-1-link-1",
+            quote: "尽心知性，以知天",
+            sourceBookId: "book-mengzi",
+            sourceTitle: "孟子",
+            layer: "semantic",
+            confidenceLabel: "中",
+            evidence: "《孟子》的尽心知性论为《中庸》性道论提供后世互证语境。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-zy-1",
+            title: "礼记",
+            relation: "母体",
+            note: "《中庸》原本依附于《礼记》礼学体系。",
+          },
+          {
+            id: "trace-zy-2",
+            title: "中庸",
+            relation: "析出",
+            note: "逐步被后世作为独立义理文本来阅读和讲授。",
+          },
+          {
+            id: "trace-zy-3",
+            title: "四书章句集注",
+            relation: "定型",
+            note: "章句系统将其推到四书义理核心位置。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-zy-1",
+            targetTitle: "四书章句集注",
+            relation: "显式纳入",
+            note: "《中庸》被重写为四书体系中的形上义理支点。",
+            confidenceLabel: "高",
+          },
+        ],
+      },
+    ],
+    realWorldSignals: {
+      sourceLabel: "CBDB 人物 + 上海图书馆活动样本",
+      venueSummary: "补入《中庸》后，四书主干中的心性义理层得到明确落点，不再只停留在《礼记》与《四书章句集注》的跳跃连接。",
+    },
+  },
+};
+
+const books = [
+  ...((realSupplements.demoBooks ?? []) as RealSupplementBook[]),
+  ...coreClassicExtensions,
+] as RealSupplementBook[];
+const citations = [
+  ...((realSupplements.demoCitations ?? []) as RealSupplementCitation[]),
+  ...coreClassicCitationExtensions,
+] as RealSupplementCitation[];
 const generatedDetails = (realSupplements.demoBookDetails ?? {}) as Record<string, BookDetail>;
 
 const cloneDetail = (detail: BookDetail): BookDetail => ({
@@ -250,6 +1026,9 @@ const cloneDetail = (detail: BookDetail): BookDetail => ({
 const details: Record<string, BookDetail> = Object.fromEntries(
   Object.entries(generatedDetails).map(([slug, detail]) => [slug, cloneDetail(detail)]),
 );
+for (const [slug, detail] of Object.entries(coreClassicDetailExtensions)) {
+  details[slug] = cloneDetail(detail);
+}
 
 const placeholderDetail = (book: BookNode): BookDetail => ({
   bookId: book.id,
@@ -343,6 +1122,7 @@ function mergePeople(names: string[], fallback: PersonNode[]): PersonNode[] {
 const peopleMergePlan: Partial<Record<string, string[]>> = {
   shijing: ["孔颖达", "朱熹", "王国维"],
   shangshu: ["孔颖达", "蔡沈"],
+  lunyu: ["朱熹"],
   "sishu-zhangju": ["朱熹"],
   shiji: ["司马迁"],
   mengzi: ["孟子", "朱熹"],
@@ -368,7 +1148,7 @@ if (shanghaiLibraryActivity.available) {
     startTime: record["预约开始时间"] ?? "",
   }));
 
-  for (const slug of ["shijing", "shangshu", "mengzi", "sishu-zhangju"] as const) {
+  for (const slug of ["shijing", "shangshu", "mengzi", "sishu-zhangju", "lunyu", "daxue", "zhongyong"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       sourceLabel: "CBDB 人物 + 上海图书馆活动样本",
@@ -518,7 +1298,7 @@ if (soongLiteratureSample.available) {
 
 if (souyunKnowledgeGraphSample.available) {
   const institutionSamples = (souyunKnowledgeGraphSample.sampleRecords ?? []).slice(0, 3);
-  for (const slug of ["shijing", "ren-jian-ci-hua"] as const) {
+  for (const slug of ["shijing", "ren-jian-ci-hua", "lunyu"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -567,6 +1347,9 @@ if (cbdbSummary.available) {
   for (const slug of [
     "shijing",
     "shangshu",
+    "lunyu",
+    "daxue",
+    "zhongyong",
     "mengzi",
     "sishu-zhangju",
     "shiji",
