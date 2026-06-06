@@ -385,6 +385,9 @@ export function BookExplorer({
       to: detail.places.find((place) => place.id === activeSpread.toPlaceId),
     };
   }, [activeSpread, detail.places]);
+  const activeSpreadIndex = activeSpread
+    ? visibleSpread.findIndex((item) => item.id === activeSpread.id)
+    : -1;
   const activePassage = useMemo(() => {
     return visiblePassages.find((passage) => passage.id === selectedPassageId) ?? visiblePassages[0];
   }, [selectedPassageId, visiblePassages]);
@@ -562,6 +565,15 @@ export function BookExplorer({
     }
 
     onOpenBook?.(targetSlug);
+  };
+  const handleSelectSpreadIndex = (index: number) => {
+    const nextSpread = visibleSpread[index];
+
+    if (!nextSpread) {
+      return;
+    }
+
+    setSelectedSpreadId(nextSpread.id);
   };
   const handleStartTrace = () => {
     if (!activePassage?.tracePath?.length) {
@@ -1041,6 +1053,68 @@ export function BookExplorer({
                         );
                       })}
                     </div>
+                    {visibleSpread.length > 1 ? (
+                      <div className="mt-4 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                        <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-stone-400">
+                          <span>传播阶段巡览</span>
+                          <span className="text-amber-100">
+                            第 {Math.max(activeSpreadIndex + 1, 1)} / {visibleSpread.length} 段
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min={0}
+                          max={visibleSpread.length - 1}
+                          step={1}
+                          value={Math.max(activeSpreadIndex, 0)}
+                          onChange={(event) =>
+                            handleSelectSpreadIndex(Number(event.target.value))
+                          }
+                          className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
+                        />
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleSelectSpreadIndex(
+                                Math.max(Math.max(activeSpreadIndex, 0) - 1, 0),
+                              )
+                            }
+                            disabled={activeSpreadIndex <= 0}
+                            className={`rounded-full px-3 py-2 text-xs transition ${
+                              activeSpreadIndex <= 0
+                                ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                                : "border border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                            }`}
+                          >
+                            回看上一段
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleSelectSpreadIndex(
+                                Math.min(
+                                  Math.max(activeSpreadIndex, 0) + 1,
+                                  visibleSpread.length - 1,
+                                ),
+                              )
+                            }
+                            disabled={
+                              activeSpreadIndex === -1 ||
+                              activeSpreadIndex >= visibleSpread.length - 1
+                            }
+                            className={`rounded-full px-3 py-2 text-xs transition ${
+                              activeSpreadIndex === -1 ||
+                              activeSpreadIndex >= visibleSpread.length - 1
+                                ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                                : "border border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                            }`}
+                          >
+                            进入下一段
+                          </button>
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
 
                   <div className="rounded-[24px] border border-white/10 bg-black/20 px-4 py-4">
