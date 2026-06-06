@@ -595,6 +595,19 @@ export function BookExplorer({
 
     onOpenBook?.(targetSlug);
   };
+  const handleSelectInstitutionRecord = (record: {
+    institution: string;
+    title: string;
+    imageRef?: string;
+    sourceText?: string;
+  }) => {
+    const recordId = `${record.institution}-${record.title}-${record.imageRef ?? record.sourceText ?? "trace"}`;
+    setSelectedInstitutionRecordId(recordId);
+    setSelectedSourceEvidenceId("institution-samples");
+  };
+  const handleFocusEventEvidence = () => {
+    setSelectedSourceEvidenceId("event-samples");
+  };
   const handleSelectSpreadIndex = (index: number) => {
     const nextSpread = visibleSpread[index];
 
@@ -2130,14 +2143,16 @@ export function BookExplorer({
                           </div>
                           <div className="mt-3 grid gap-3">
                             {activeTimelineEventEchoes.map((event) => (
-                              <div
+                              <button
                                 key={`timeline-event-echo-${event.venue}-${event.title}-${event.startTime}`}
-                                className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4"
+                                type="button"
+                                onClick={handleFocusEventEvidence}
+                                className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4 text-left transition hover:bg-[rgba(255,255,255,0.08)]"
                               >
                                 <div className="flex items-center justify-between gap-3">
                                   <div className="text-sm font-medium text-stone-50">{event.title}</div>
                                   <div className="rounded-full bg-amber-300/10 px-2 py-1 text-[10px] text-amber-100">
-                                    活动资料
+                                    回查事件证据
                                   </div>
                                 </div>
                                 <div className="mt-2 text-xs text-stone-400">
@@ -2146,17 +2161,19 @@ export function BookExplorer({
                                 <div className="mt-2 text-sm text-stone-300">
                                   状态：{event.status}
                                 </div>
-                              </div>
+                              </button>
                             ))}
                             {activeTimelineInstitutionEchoes.map((item) => (
-                              <div
+                              <button
                                 key={`timeline-institution-echo-${item.institution}-${item.title}-${item.year ?? "unknown"}`}
-                                className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4"
+                                type="button"
+                                onClick={() => handleSelectInstitutionRecord(item)}
+                                className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4 text-left transition hover:bg-[rgba(255,255,255,0.08)]"
                               >
                                 <div className="flex items-center justify-between gap-3">
                                   <div className="text-sm font-medium text-stone-50">{item.title}</div>
                                   <div className="rounded-full bg-white/10 px-2 py-1 text-[10px] text-stone-300">
-                                    馆藏线索
+                                    定位资源细览
                                   </div>
                                 </div>
                                 <div className="mt-2 text-xs text-stone-400">
@@ -2169,7 +2186,7 @@ export function BookExplorer({
                                     {item.sourceText}
                                   </div>
                                 ) : null}
-                              </div>
+                              </button>
                             ))}
                           </div>
                         </div>
@@ -2183,9 +2200,11 @@ export function BookExplorer({
                           </div>
                           <div className="mt-3 grid gap-3">
                             {fallbackTimelineInstitutionEchoes.map((item) => (
-                              <div
+                              <button
                                 key={`timeline-fallback-echo-${item.institution}-${item.title}-${item.year ?? "unknown"}`}
-                                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                                type="button"
+                                onClick={() => handleSelectInstitutionRecord(item)}
+                                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-left transition hover:bg-white/10"
                               >
                                 <div className="text-sm font-medium text-stone-50">{item.title}</div>
                                 <div className="mt-2 text-xs text-stone-400">
@@ -2193,7 +2212,7 @@ export function BookExplorer({
                                   {item.category ? ` · ${item.category}` : ""}
                                   {item.year ? ` · ${item.year}` : ""}
                                 </div>
-                              </div>
+                              </button>
                             ))}
                           </div>
                         </div>
