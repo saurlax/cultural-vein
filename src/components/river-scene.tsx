@@ -1882,7 +1882,7 @@ export function RiverScene(props: RiverSceneProps) {
     (annotation) => annotation.id === props.hoveredBranchId,
   ) ?? null;
   const sceneHint = props.traceFocus?.active
-    ? `逆流追溯正在经过 ${props.traceFocus.currentTitle ?? "当前节点"}，沿链回看文脉源头。`
+    ? `逆流正经过 ${props.traceFocus.currentTitle ?? "此处节点"}，沿链回看文脉源头。`
     : props.sceneFocus?.active
       ? props.sceneFocus.detail
       : isInteracting
@@ -1898,7 +1898,7 @@ export function RiverScene(props: RiverSceneProps) {
           : props.selectedBookSlug
             ? "焦点典籍已锁定，可继续展开文卷或归河巡看。"
             : cruiseRunning
-              ? "镜头正沿主河道巡航，可暂停后手动拖拽细看节点。"
+              ? "镜头正沿河巡航，可暂停后手动拖拽细看节点。"
               : "拖动河面巡看节点，悬停会提示，点击即可入卷。";
 
   useEffect(() => {
@@ -2003,7 +2003,7 @@ export function RiverScene(props: RiverSceneProps) {
                   沿河巡航
                 </div>
                 <div className="mt-1 text-xs text-[#fbf3da] sm:text-sm">
-                  顺着主河道前后飞看文脉起伏
+                  顺着长河前后巡看文脉起伏
                 </div>
               </div>
               <button

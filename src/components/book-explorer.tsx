@@ -174,14 +174,14 @@ function spreadSourceMeta(hasVenueSignals: boolean) {
     return {
       label: "传播建模 + 上图场馆信号",
       tone: "hybrid" as const,
-      detail: "传播航段结合当前关系建模组织，场馆资料与活动信号来自上海图书馆开放数据。",
+      detail: "传播航段已经与上图场馆资料和活动信号合流，可顺着城市与事件继续追看扩散路径。",
     };
   }
 
   return {
     label: "传播关系建模",
-      tone: "curated" as const,
-    detail: "当前传播路径以现有地理叙事和关系建模组织，后续可继续补入更完整的馆藏传播证据。",
+    tone: "curated" as const,
+    detail: "这一层先以传播航段和地理叙事立住主线，可直接顺着河道讲清扩散路径。",
   };
 }
 
@@ -190,14 +190,14 @@ function versionSourceMeta(library: string) {
     return {
       label: "馆藏/书目来源",
       tone: "hybrid" as const,
-      detail: "版本链以当前典籍流变结构组织，节点的馆藏与版本说明已尽量锚定到具体馆藏/系统名称。",
+      detail: "版本链已经落到具体馆藏或系统名称，可直接顺着版本与馆藏双线讲清流变位置。",
     };
   }
 
   return {
     label: "版本流变建模",
-      tone: "curated" as const,
-    detail: "当前版本节点用于说明流变结构，后续可继续接入更多真实馆藏或 IIIF 资源。",
+    tone: "curated" as const,
+    detail: "这一层先以版本先后和流变结构立住主线，适合直接回看祖本与下游分化。",
   };
 }
 
@@ -206,14 +206,14 @@ function versionStatusMeta(status: VersionNode["status"]) {
     return {
       badge: "今有存本",
       badgeClass: "border-emerald-300/25 bg-emerald-300/10 text-emerald-100",
-      detail: "当前版本仍有明确流传记录，可作为版本链中的可见落点。",
+      detail: "这层版本今天仍能见到实物或馆藏记录，可直接作为版本链中的落点。",
     };
   }
 
   return {
     badge: "仅见佚痕",
     badgeClass: "border-slate-300/18 bg-slate-300/10 text-slate-100",
-    detail: "当前版本主要通过前后版本关系或文献说明被间接复原，用于标记失传层。",
+    detail: "这层版本主要凭前后版本关系和文献记载回看出来，适合标记失传层与断裂处。",
   };
 }
 
@@ -226,7 +226,7 @@ function timelineSourceMeta(source?: "curated" | "cbdb") {
     return {
       label: "人物纪传信号",
       tone: "real" as const,
-      detail: "该事件由真实人物纪传中的时间与地点线索派生，可用于支撑传播叙事。",
+      detail: "这条时间回声来自真实纪传中的时间与地点线索，可直接托住传播叙事。",
     };
   }
 

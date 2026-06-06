@@ -1049,7 +1049,7 @@ export function CulturalVeinShell() {
                         </>
                       ) : (
                         <div className="text-sm text-[#d8c9a3]">
-                          此刻正停在主河道，可顺着河面节点入卷。
+                          河面节点已经浮起，顺着水势入卷细看。
                         </div>
                       )}
                     </div>
@@ -1582,7 +1582,7 @@ export function CulturalVeinShell() {
                     </div>
                   </div>
                   <div className="mt-3 rounded-[22px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-sm text-[#eadfbc]">
-                    {activeBranchAnnotation ? activeBranchAnnotation.description : "当前停留在主河道，可点河上节点入卷细看。"}
+                    {activeBranchAnnotation ? activeBranchAnnotation.description : "河上节点已经浮起，点任一典籍即可入卷细看。"}
                   </div>
                 </>
               ) : null}
