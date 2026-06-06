@@ -171,153 +171,22 @@ function mergePeople(names: string[], fallback: PersonNode[]): PersonNode[] {
   return resolved.length > 0 ? resolved : fallback;
 }
 
-details.shijing.people = mergePeople(["孔颖达", "朱熹", "王国维"], [
-  {
-    id: "person-kongyingda",
-    name: "孔颖达",
-    role: "注者",
-    birthYear: 574,
-    deathYear: 648,
-    era: "唐",
-    bio: "奉诏撰《毛诗正义》，奠定经学义疏传统。",
-    source: "demo",
-    sourceStatus: "fallback",
-    relationTier: 1,
-    relationType: "注",
-  },
-  {
-    id: "person-zhuxi",
-    name: "朱熹",
-    role: "引用者",
-    birthYear: 1130,
-    deathYear: 1200,
-    era: "宋",
-    bio: "以理学视角重新解释诗教，强化修身与教化内核。",
-    source: "demo",
-    sourceStatus: "fallback",
-    relationTier: 2,
-    relationType: "引",
-  },
-  {
-    id: "person-wangguowei",
-    name: "王国维",
-    role: "影响者",
-    birthYear: 1877,
-    deathYear: 1927,
-    era: "清末民初",
-    bio: "近代诗学家，以境界论回接《诗经》传统。",
-    source: "demo",
-    sourceStatus: "fallback",
-    relationTier: 2,
-    relationType: "评",
-  },
-]);
+const peopleMergePlan: Partial<Record<string, string[]>> = {
+  shijing: ["孔颖达", "朱熹", "王国维"],
+  "sishu-zhangju": ["朱熹"],
+  shiji: ["司马迁"],
+  "zi-zhi-tong-jian": ["司马光", "刘恕"],
+  "ri-zhi-lu": ["顾炎武"],
+  "ren-jian-ci-hua": ["王国维"],
+};
 
-details["sishu-zhangju"].people = mergePeople(["朱熹"], [
-  {
-    id: "person-zhuxi-main",
-    name: "朱熹",
-    role: "作者",
-    birthYear: 1130,
-    deathYear: 1200,
-    era: "南宋",
-    bio: "以四书为核心重新组织儒学经典秩序。",
-    source: "demo",
-    sourceStatus: "fallback",
-    relationTier: 1,
-    relationType: "著",
-  },
-  {
-    id: "person-huxian",
-    name: "胡炫",
-    role: "校者",
-    birthYear: 1230,
-    deathYear: 1295,
-    era: "元",
-    bio: "参与元代学宫刻本的校勘整理。",
-    source: "demo",
-    sourceStatus: "fallback",
-    relationTier: 2,
-    relationType: "校",
-  },
-]);
-
-details.shiji.people = [
-  {
-    id: "person-simaqian",
-    name: "司马迁",
-    role: "作者",
-    birthYear: -145,
-    deathYear: -86,
-    era: "西汉",
-    bio: "纪传体史学奠基者，以人物书写重构历史叙述。",
-    source: "demo",
-    sourceStatus: "fallback",
-    relationTier: 1,
-    relationType: "著",
-  },
-];
-
-details["zi-zhi-tong-jian"].people = [
-  {
-    id: "person-simaguang",
-    name: "司马光",
-    role: "作者",
-    birthYear: 1019,
-    deathYear: 1086,
-    era: "宋",
-    bio: "主持编纂《资治通鉴》，以编年体方式重塑治道叙事。",
-    source: "demo",
-    sourceStatus: "fallback",
-    relationTier: 1,
-    relationType: "著",
-  },
-  {
-    id: "person-liushu",
-    name: "刘恕",
-    role: "编纂者",
-    birthYear: 1032,
-    deathYear: 1078,
-    era: "宋",
-    bio: "通鉴局重要助手，负责资料搜辑与校勘。",
-    source: "demo",
-    sourceStatus: "fallback",
-    relationTier: 2,
-    relationType: "校",
-  },
-];
-
-details["ri-zhi-lu"].people = [
-  {
-    id: "person-guyanwu",
-    name: "顾炎武",
-    role: "作者",
-    birthYear: 1613,
-    deathYear: 1682,
-    era: "明清",
-    bio: "以考据与经世之学贯通经史，开启清代朴学风气。",
-    source: "demo",
-    sourceStatus: "fallback",
-    relationTier: 1,
-    relationType: "著",
-  },
-];
-
-details["ren-jian-ci-hua"].people = [
-  {
-    id: "person-wangguowei-main",
-    name: "王国维",
-    role: "作者",
-    birthYear: 1877,
-    deathYear: 1927,
-    era: "清末民初",
-    bio: "以境界论重释古典诗学，连接近代审美与经史传统。",
-    source: "demo",
-    sourceStatus: "fallback",
-    relationTier: 1,
-    relationType: "著",
-  },
-];
+for (const [slug, names] of Object.entries(peopleMergePlan)) {
+  const detail = details[slug];
+  if (!detail) {
+    continue;
+  }
+  detail.people = mergePeople(names ?? [], detail.people);
+}
 
 if (shanghaiLibraryActivity.available) {
   const venueSamples = shanghaiLibraryActivity.topVenues ?? [];

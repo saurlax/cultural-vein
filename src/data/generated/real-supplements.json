@@ -301,7 +301,47 @@
           "volume": 88
         }
       ],
-      "people": [],
+      "people": [
+        {
+          "id": "person-kongyingda",
+          "name": "孔颖达",
+          "role": "注者",
+          "birthYear": 574,
+          "deathYear": 648,
+          "era": "唐",
+          "bio": "奉诏撰《毛诗正义》，奠定经学义疏传统。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 1,
+          "relationType": "注"
+        },
+        {
+          "id": "person-zhuxi",
+          "name": "朱熹",
+          "role": "引用者",
+          "birthYear": 1130,
+          "deathYear": 1200,
+          "era": "宋",
+          "bio": "以理学视角重新解释诗教，强化修身与教化内核。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 2,
+          "relationType": "引"
+        },
+        {
+          "id": "person-wangguowei",
+          "name": "王国维",
+          "role": "影响者",
+          "birthYear": 1877,
+          "deathYear": 1927,
+          "era": "清末民初",
+          "bio": "近代诗学家，以境界论回接《诗经》传统。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 2,
+          "relationType": "评"
+        }
+      ],
       "places": [
         {
           "id": "place-changan",
@@ -508,7 +548,34 @@
           "volume": 96
         }
       ],
-      "people": [],
+      "people": [
+        {
+          "id": "person-zhuxi-main",
+          "name": "朱熹",
+          "role": "作者",
+          "birthYear": 1130,
+          "deathYear": 1200,
+          "era": "南宋",
+          "bio": "以四书为核心重新组织儒学经典秩序。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 1,
+          "relationType": "著"
+        },
+        {
+          "id": "person-huxian",
+          "name": "胡炫",
+          "role": "校者",
+          "birthYear": 1230,
+          "deathYear": 1295,
+          "era": "元",
+          "bio": "参与元代学宫刻本的校勘整理。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 2,
+          "relationType": "校"
+        }
+      ],
       "places": [
         {
           "id": "place-wuyuan",
@@ -678,7 +745,21 @@
         "coveredRegions": 5
       },
       "spread": [],
-      "people": [],
+      "people": [
+        {
+          "id": "person-simaqian",
+          "name": "司马迁",
+          "role": "作者",
+          "birthYear": -145,
+          "deathYear": -86,
+          "era": "西汉",
+          "bio": "纪传体史学奠基者，以人物书写重构历史叙述。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 1,
+          "relationType": "著"
+        }
+      ],
       "places": [],
       "versions": [
         {
@@ -721,7 +802,34 @@
         "coveredRegions": 6
       },
       "spread": [],
-      "people": [],
+      "people": [
+        {
+          "id": "person-simaguang",
+          "name": "司马光",
+          "role": "作者",
+          "birthYear": 1019,
+          "deathYear": 1086,
+          "era": "宋",
+          "bio": "主持编纂《资治通鉴》，以编年体方式重塑治道叙事。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 1,
+          "relationType": "著"
+        },
+        {
+          "id": "person-liushu",
+          "name": "刘恕",
+          "role": "编纂者",
+          "birthYear": 1032,
+          "deathYear": 1078,
+          "era": "宋",
+          "bio": "通鉴局重要助手，负责资料搜辑与校勘。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 2,
+          "relationType": "校"
+        }
+      ],
       "places": [],
       "versions": [
         {
@@ -775,7 +883,21 @@
         "coveredRegions": 4
       },
       "spread": [],
-      "people": [],
+      "people": [
+        {
+          "id": "person-guyanwu",
+          "name": "顾炎武",
+          "role": "作者",
+          "birthYear": 1613,
+          "deathYear": 1682,
+          "era": "明清",
+          "bio": "以考据与经世之学贯通经史，开启清代朴学风气。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 1,
+          "relationType": "著"
+        }
+      ],
       "places": [],
       "versions": [
         {
@@ -829,7 +951,21 @@
         "coveredRegions": 3
       },
       "spread": [],
-      "people": [],
+      "people": [
+        {
+          "id": "person-wangguowei-main",
+          "name": "王国维",
+          "role": "作者",
+          "birthYear": 1877,
+          "deathYear": 1927,
+          "era": "清末民初",
+          "bio": "以境界论重释古典诗学，连接近代审美与经史传统。",
+          "source": "demo",
+          "sourceStatus": "fallback",
+          "relationTier": 1,
+          "relationType": "著"
+        }
+      ],
       "places": [],
       "versions": [
         {
@@ -889,6 +1025,17 @@
       "matchedAlias": "孔穎達"
     },
     {
+      "id": "cbdb-148844",
+      "name": "司馬遷",
+      "role": "作者",
+      "birthYear": null,
+      "deathYear": null,
+      "era": "未詳",
+      "bio": "YP NewEpitaphID=924",
+      "foundInCbdb": true,
+      "matchedAlias": "司馬遷"
+    },
+    {
       "id": "cbdb-1488",
       "name": "司馬光",
       "role": "作者",
@@ -898,6 +1045,17 @@
       "bio": "Sima(2) Guang [1488] Posthumously purged as Yuanyou coalition member. His ancestors were Henei jun Sima(1). Chi's [1486] son, Kang's [7337] father, Hong's [7063",
       "foundInCbdb": true,
       "matchedAlias": "司馬光"
+    },
+    {
+      "id": "cbdb-20419",
+      "name": "劉恕",
+      "role": "编纂者",
+      "birthYear": 1032,
+      "deathYear": 1078,
+      "era": "宋",
+      "bio": "Liu Shu [20419] When Sima Guang [1488] was commissioned to draft the Zizhi tongjian, he requested that Shu be assigned as a collaborator. Shu, according to Fan ",
+      "foundInCbdb": true,
+      "matchedAlias": "劉恕"
     },
     {
       "id": "cbdb-34252",
