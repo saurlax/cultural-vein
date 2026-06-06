@@ -45,6 +45,8 @@ interface RiverSceneProps {
   visibleNodeCount?: number;
   totalNodeCount?: number;
   highlightedBookSlugs?: string[];
+  hoveredBookSlug?: string | null;
+  onHoverBook?: (slug: string | null) => void;
 }
 
 interface CruiseSnapshot {
@@ -646,6 +648,8 @@ function BookMarkers({
   traceFocus,
   sceneFocus,
   highlightedBookSlugs = [],
+  hoveredBookSlug,
+  onHoverBook,
 }: {
   books: BookNode[];
   selectedBookSlug: string;
@@ -655,8 +659,9 @@ function BookMarkers({
   traceFocus?: TraceFocusState | null;
   sceneFocus?: SceneFocusState | null;
   highlightedBookSlugs?: string[];
+  hoveredBookSlug?: string | null;
+  onHoverBook?: (slug: string | null) => void;
 }) {
-  const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
   const activeIndex = RIVER_ERA_ORDER.indexOf(activeEra);
   const traceTitleSet = useMemo(
     () => new Set(traceFocus?.titles ?? []),
@@ -684,7 +689,7 @@ function BookMarkers({
     <group ref={markerRef}>
       {books.map((book) => {
         const isSelected = book.slug === selectedBookSlug;
-        const isHovered = hoveredSlug === book.slug;
+        const isHovered = hoveredBookSlug === book.slug;
         const bookEraIndex = RIVER_ERA_ORDER.indexOf(book.dynasty);
         const isNewestVisible = bookEraIndex === activeIndex;
         const isTraceLinked = traceTitleSet.has(book.title);
@@ -749,8 +754,8 @@ function BookMarkers({
           <group key={book.id} position={book.coordinates}>
             <mesh
               onClick={() => onSelectBook(book.slug)}
-              onPointerOver={() => setHoveredSlug(book.slug)}
-              onPointerOut={() => setHoveredSlug((current) => (current === book.slug ? null : current))}
+              onPointerOver={() => onHoverBook?.(book.slug)}
+              onPointerOut={() => onHoverBook?.(null)}
             >
               <sphereGeometry args={[markerSize, 24, 24]} />
               <meshStandardMaterial
@@ -1246,6 +1251,8 @@ function RiverWorld({
   sceneFocus,
   cruiseProgress,
   highlightedBookSlugs = [],
+  hoveredBookSlug,
+  onHoverBook,
 }: RiverSceneProps & {
   cruiseProgress: number;
 }) {
@@ -1678,6 +1685,8 @@ function RiverWorld({
         traceFocus={traceFocus}
         sceneFocus={sceneFocus}
         highlightedBookSlugs={highlightedBookSlugs}
+        hoveredBookSlug={hoveredBookSlug}
+        onHoverBook={onHoverBook}
       />
       <OrbitControls
         ref={controlsRef}
@@ -1716,6 +1725,23 @@ export function RiverScene(props: RiverSceneProps) {
   const canCruise =
     props.viewMode === "river" && !props.traceFocus?.active && !props.sceneFocus?.active;
   const cruiseRunning = canCruise && autoCruise;
+  const hoveredBook = props.books.find((book) => book.slug === props.hoveredBookSlug) ?? null;
+  const hoveredBranch = props.branchAnnotations?.find(
+    (annotation) => annotation.id === props.hoveredBranchId,
+  ) ?? null;
+  const sceneHint = props.traceFocus?.active
+    ? `逆流追溯正在经过 ${props.traceFocus.currentTitle ?? "当前节点"}，沿链回看文脉源头。`
+    : props.sceneFocus?.active
+      ? props.sceneFocus.detail
+      : hoveredBook
+        ? `${hoveredBook.shortTitle} 已浮起，点击可直接入卷细看。`
+        : hoveredBranch
+          ? `${hoveredBranch.label} 正在显现，顺着支流可进入对应典籍。`
+          : props.selectedBookSlug
+            ? "焦点典籍已锁定，可继续展开文卷或归河巡看。"
+            : cruiseRunning
+              ? "镜头正沿主河道巡航，可暂停后手动拖拽细看节点。"
+              : "拖动河面巡看节点，悬停会提示，点击即可入卷。";
 
   useEffect(() => {
     if (!cruiseRunning) {
@@ -1753,6 +1779,11 @@ export function RiverScene(props: RiverSceneProps) {
             : props.cinematicState === "returning"
               ? "镜头拉回中"
               : `${props.activeEra} 水位`}
+      </div>
+      <div className="pointer-events-none absolute left-1/2 top-16 z-10 w-[min(540px,calc(100vw-2.5rem))] -translate-x-1/2 px-3 sm:top-20">
+        <div className="rounded-full border border-[#ead8a6]/16 bg-[rgba(54,36,12,0.56)] px-4 py-2 text-center text-[11px] text-[#f1e3bd] shadow-lg shadow-black/20 backdrop-blur-md sm:text-xs">
+          {sceneHint}
+        </div>
       </div>
       <div className="pointer-events-none absolute left-5 bottom-5 z-10 hidden rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(54,36,12,0.6)] px-4 py-3 text-[11px] text-[#eadfbc] backdrop-blur-md xl:block">
         <div className="text-[10px] tracking-[0.24em] text-stone-500">

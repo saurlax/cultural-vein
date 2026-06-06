@@ -121,6 +121,7 @@ export function CulturalVeinShell() {
   const [searchResult, setSearchResult] = useState<SearchPayload | null>(null);
   const [searchPending, setSearchPending] = useState(false);
   const [hoveredBranchId, setHoveredBranchId] = useState<string | null>(null);
+  const [hoveredBookSlug, setHoveredBookSlug] = useState<string | null>(null);
   const [traceFocus, setTraceFocus] = useState<TraceFocusState | null>(null);
   const [sceneFocus, setSceneFocus] = useState<SceneFocusState | null>(null);
   const [showMobileControls, setShowMobileControls] = useState(false);
@@ -911,6 +912,8 @@ export function CulturalVeinShell() {
             branchAnnotations={visibleBranchAnnotations}
             hoveredBranchId={hoveredBranchId}
             onHoverBranch={setHoveredBranchId}
+            hoveredBookSlug={hoveredBookSlug}
+            onHoverBook={setHoveredBookSlug}
             traceFocus={traceFocus}
             sceneFocus={sceneFocus}
             dockMarkers={riverDockMarkers}
