@@ -879,6 +879,50 @@ TARGET_PEOPLE = {
 }
 
 
+def fetch_person_activity_places(cur: sqlite3.Cursor, person_id: int) -> list[dict[str, object]]:
+    cur.execute(
+        """
+        SELECT
+          a.c_name_chn,
+          b.c_firstyear,
+          b.c_lastyear,
+          b.c_notes
+        FROM BIOG_ADDR_DATA b
+        LEFT JOIN ADDR_CODES a ON b.c_addr_id = a.c_addr_id
+        WHERE b.c_personid = ?
+          AND a.c_name_chn IS NOT NULL
+          AND a.c_name_chn NOT IN ('[未詳]', '[信息缺乏]')
+        ORDER BY
+          CASE WHEN b.c_firstyear IS NULL OR b.c_firstyear = 0 THEN 1 ELSE 0 END,
+          b.c_firstyear,
+          b.c_lastyear,
+          b.c_sequence
+        LIMIT 4
+        """,
+        (person_id,),
+    )
+    rows = cur.fetchall()
+    results: list[dict[str, object]] = []
+    seen: set[str] = set()
+
+    for row in rows:
+        place_name = row["c_name_chn"]
+        if not place_name or place_name in seen:
+            continue
+        seen.add(place_name)
+        note = (row["c_notes"] or "").replace("\x7f", " ").strip()
+        results.append(
+            {
+                "name": place_name,
+                "firstYear": row["c_firstyear"] or None,
+                "lastYear": row["c_lastyear"] or None,
+                "note": note[:80] if note else "",
+            }
+        )
+
+    return results
+
+
 def ensure_out_dir() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     WORK_DIR.mkdir(parents=True, exist_ok=True)
@@ -942,6 +986,7 @@ def fetch_cbdb_people() -> list[dict[str, object]]:
                 "bio": note[:160] if note else "",
                 "foundInCbdb": True,
                 "matchedAlias": matched_alias,
+                "activityPlaces": fetch_person_activity_places(cur, row["c_personid"]),
             }
         )
 

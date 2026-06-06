@@ -1011,7 +1011,21 @@
       "era": "宋",
       "bio": "Zhu Xi [3257] Shengzheng, p. 2224; Jiangxi TZ, 10.21b; SHY:ZG, 72.33a, 36a. CBD, 1, 587-597.From Hartwell's ACTIVITY table:1181:  Apt. Liangzhe Dong tiju1182:  ",
       "foundInCbdb": true,
-      "matchedAlias": "朱熹"
+      "matchedAlias": "朱熹",
+      "activityPlaces": [
+        {
+          "name": "建州",
+          "firstYear": null,
+          "lastYear": null,
+          "note": "寓建州(宋人傳記資料索引(電子版))。 本貫建州建陽縣羣玉鄉三桂里 （出自《紹興十八年同年小錄》146）"
+        },
+        {
+          "name": "婺源",
+          "firstYear": null,
+          "lastYear": null,
+          "note": "婺源人(宋人傳記資料索引(電子版))。"
+        }
+      ]
     },
     {
       "id": "cbdb-92271",
@@ -1022,7 +1036,15 @@
       "era": "隋",
       "bio": "《唐代人物知識ベース》記其生卒年為：574 - 648.",
       "foundInCbdb": true,
-      "matchedAlias": "孔穎達"
+      "matchedAlias": "孔穎達",
+      "activityPlaces": [
+        {
+          "name": "衡水",
+          "firstYear": null,
+          "lastYear": null,
+          "note": "冀州/衡水(唐代人物知識ベース)。"
+        }
+      ]
     },
     {
       "id": "cbdb-148844",
@@ -1033,7 +1055,8 @@
       "era": "未詳",
       "bio": "YP NewEpitaphID=924",
       "foundInCbdb": true,
-      "matchedAlias": "司馬遷"
+      "matchedAlias": "司馬遷",
+      "activityPlaces": []
     },
     {
       "id": "cbdb-1488",
@@ -1044,7 +1067,21 @@
       "era": "宋",
       "bio": "Sima(2) Guang [1488] Posthumously purged as Yuanyou coalition member. His ancestors were Henei jun Sima(1). Chi's [1486] son, Kang's [7337] father, Hong's [7063",
       "foundInCbdb": true,
-      "matchedAlias": "司馬光"
+      "matchedAlias": "司馬光",
+      "activityPlaces": [
+        {
+          "name": "洛陽",
+          "firstYear": 1071,
+          "lastYear": null,
+          "note": ""
+        },
+        {
+          "name": "夏縣",
+          "firstYear": null,
+          "lastYear": null,
+          "note": "陝州夏縣人(宋人傳記資料索引(電子版))。"
+        }
+      ]
     },
     {
       "id": "cbdb-20419",
@@ -1055,7 +1092,21 @@
       "era": "宋",
       "bio": "Liu Shu [20419] When Sima Guang [1488] was commissioned to draft the Zizhi tongjian, he requested that Shu be assigned as a collaborator. Shu, according to Fan ",
       "foundInCbdb": true,
-      "matchedAlias": "劉恕"
+      "matchedAlias": "劉恕",
+      "activityPlaces": [
+        {
+          "name": "高安",
+          "firstYear": null,
+          "lastYear": null,
+          "note": "筠州高安人(宋人傳記資料索引(電子版)"
+        },
+        {
+          "name": "星子",
+          "firstYear": null,
+          "lastYear": null,
+          "note": ""
+        }
+      ]
     },
     {
       "id": "cbdb-34252",
@@ -1066,7 +1117,21 @@
       "era": "清",
       "bio": "Gu(3) Yanwu [34252] Ancestry in Zhang Mu, Gu, nianpu, 1.1-4. See appendix (fu) for other biographical sources as well as complete text of nianpu. CHECK nianpu f",
       "foundInCbdb": true,
-      "matchedAlias": "顧炎武"
+      "matchedAlias": "顧炎武",
+      "activityPlaces": [
+        {
+          "name": "崑山",
+          "firstYear": null,
+          "lastYear": null,
+          "note": "崑山人"
+        },
+        {
+          "name": "華陰",
+          "firstYear": null,
+          "lastYear": null,
+          "note": "居華陰"
+        }
+      ]
     },
     {
       "id": "cbdb-69333",
@@ -1077,7 +1142,15 @@
       "era": "中華民國",
       "bio": "《清代人物生卒年表》定其生卒年為光緒3年~中華民國16年。 【參考《清代人物生卒年表》#1489.】",
       "foundInCbdb": true,
-      "matchedAlias": "王國維"
+      "matchedAlias": "王國維",
+      "activityPlaces": [
+        {
+          "name": "海寧州",
+          "firstYear": null,
+          "lastYear": null,
+          "note": "浙江省-杭州府-海寧州(中央研究院人名權威資料)。"
+        }
+      ]
     }
   ],
   "cbdbSummary": {

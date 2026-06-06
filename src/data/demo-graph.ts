@@ -18,6 +18,12 @@ interface RealSupplementPerson {
   foundInCbdb?: boolean;
   matchedAlias?: string;
   aliasesTried?: string[];
+  activityPlaces?: Array<{
+    name: string;
+    firstYear?: number | null;
+    lastYear?: number | null;
+    note?: string;
+  }>;
 }
 
 interface RealSupplementBook {
@@ -155,6 +161,7 @@ function mergePeople(names: string[], fallback: PersonNode[]): PersonNode[] {
         source: person.foundInCbdb ? "cbdb" : "demo",
         sourceStatus: person.foundInCbdb ? "matched" : "fallback",
         matchedAlias: person.matchedAlias,
+        activityPlaces: person.activityPlaces?.map((place) => ({ ...place })),
         relationTier: 1,
         relationType:
           person.role === "作者"

@@ -53,6 +53,12 @@ export interface PersonNode {
   matchedAlias?: string;
   relationTier?: 1 | 2;
   relationType?: "著" | "注" | "校" | "藏" | "引" | "评" | "承";
+  activityPlaces?: Array<{
+    name: string;
+    firstYear?: number | null;
+    lastYear?: number | null;
+    note?: string;
+  }>;
 }
 
 export interface PlaceNode {

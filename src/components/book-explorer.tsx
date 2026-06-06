@@ -717,6 +717,43 @@ export function BookExplorer({
                           </div>
                         </div>
 
+                        {activePerson.activityPlaces?.length ? (
+                          <div className="mt-4 rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4">
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                                CBDB 活动地点信号
+                              </div>
+                              <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                                {activePerson.activityPlaces.length} 条地点
+                              </div>
+                            </div>
+                            <div className="mt-3 grid gap-3">
+                              {activePerson.activityPlaces.map((place) => (
+                                <div
+                                  key={`${activePerson.id}-${place.name}`}
+                                  className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4"
+                                >
+                                  <div className="flex items-center justify-between gap-3">
+                                    <div className="text-base font-semibold text-stone-50">
+                                      {place.name}
+                                    </div>
+                                    <div className="text-xs text-stone-400">
+                                      {place.firstYear || place.lastYear
+                                        ? `${place.firstYear ?? "?"} - ${place.lastYear ?? "?"}`
+                                        : "年份未详"}
+                                    </div>
+                                  </div>
+                                  {place.note ? (
+                                    <p className="mt-2 text-sm leading-6 text-stone-300">
+                                      {place.note}
+                                    </p>
+                                  ) : null}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
+
                         {activePerson.source === "cbdb" && activePerson.matchedAlias ? (
                           <div className="mt-4 rounded-full border border-emerald-300/15 bg-emerald-300/8 px-3 py-1 text-xs text-emerald-100">
                             CBDB 匹配别名：{activePerson.matchedAlias}
