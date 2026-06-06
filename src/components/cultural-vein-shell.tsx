@@ -1209,7 +1209,7 @@ export function CulturalVeinShell() {
 
         {showMobileControls ? (
           <div className="absolute inset-x-3 bottom-[4.9rem] z-40 md:hidden">
-            <div className={`pointer-events-auto max-h-[38vh] overflow-auto p-4 ${panelBaseClass}`}>
+            <div className={`pointer-events-auto max-h-[30vh] overflow-auto p-3 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">长卷侧注</div>
@@ -1225,19 +1225,19 @@ export function CulturalVeinShell() {
                   收起
                 </button>
               </div>
-              <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-[#eadfbc]">
+              <div className="mt-3 grid grid-cols-3 gap-2 text-[11px] text-[#eadfbc]">
                 <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-2.5">典籍 {filteredBooks.length}</div>
                 <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-2.5">关系 {visibleCitations.length}</div>
                 <div className="rounded-2xl border border-[#ead8a6]/20 bg-[rgba(233,191,86,0.08)] px-3 py-2.5 text-[#fbf3da]">来源 {connectedSourceCount || "--"}</div>
               </div>
               {sourceAtlasEntries.length ? (
-                <div className="mt-4 rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(93,62,18,0.22)] px-4 py-4">
+                <div className="mt-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(93,62,18,0.22)] px-3 py-3">
                   <div className="flex items-center justify-between gap-3">
                     <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">真实数据版图</div>
                     <div className="text-[11px] text-[#f2dfab]">{sourceAtlasMass.toLocaleString()}</div>
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {sourceAtlasEntries.slice(0, 4).map((entry) => (
+                    {sourceAtlasEntries.slice(0, 3).map((entry) => (
                       <button
                         key={`mobile-source-${entry.id}`}
                         type="button"
@@ -1293,7 +1293,7 @@ export function CulturalVeinShell() {
                   ) : null}
                 </div>
               ) : null}
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-3 flex flex-wrap gap-2">
                 {desktopPanels.map((panel) => (
                   <button
                     key={`mobile-tab-${panel.id}`}
@@ -1311,7 +1311,7 @@ export function CulturalVeinShell() {
               </div>
               {activeDesktopPanel === "search" ? (
                 <>
-                  <label className="mt-4 block">
+                  <label className="mt-3 block">
                     <span className="text-xs tracking-[0.22em] text-[#d8c9a3]">概念检索</span>
                     <input
                       value={searchTerm}
@@ -1320,7 +1320,7 @@ export function CulturalVeinShell() {
                       className="mt-2 w-full rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-4 py-3 text-sm text-[#fbf3da] outline-none placeholder:text-[#c9b68a] focus:border-[#f0cf75]/40"
                     />
                   </label>
-                  <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(27,17,7,0.24)] px-4 py-4">
+                  <div className="mt-3 rounded-[22px] border border-[#ead8a6]/18 bg-[rgba(27,17,7,0.24)] px-3 py-3">
                     <div className="flex items-center justify-between gap-3">
                       <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">概念联想</div>
                       <div className="text-[11px] text-[#c9b68a]">
@@ -1332,7 +1332,7 @@ export function CulturalVeinShell() {
                       </div>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {searchSuggestionChips.slice(0, 8).map((concept) => (
+                      {searchSuggestionChips.slice(0, 6).map((concept) => (
                         <button
                           key={`mobile-${concept}`}
                           type="button"
@@ -1351,7 +1351,7 @@ export function CulturalVeinShell() {
                 </>
               ) : null}
               {activeDesktopPanel === "era" ? (
-                <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-4 py-4">
+                <div className="mt-3 rounded-[22px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-3">
                   <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-[#d8c9a3]">
                     <span>时代水位</span>
                     <span className="text-amber-100">{activeEra}</span>
@@ -1385,7 +1385,7 @@ export function CulturalVeinShell() {
               ) : null}
               {activeDesktopPanel === "category" ? (
                 <>
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="mt-3 flex flex-wrap gap-2">
                     {categories.map((category) => (
                       <button
                         key={category}
@@ -1401,7 +1401,7 @@ export function CulturalVeinShell() {
                       </button>
                     ))}
                   </div>
-                  <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-4 py-4">
+                  <div className="mt-3 rounded-[22px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-3">
                     <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
                       {schoolLabel}
                     </div>
@@ -1426,7 +1426,7 @@ export function CulturalVeinShell() {
               ) : null}
               {activeDesktopPanel === "branch" ? (
                 <>
-                  <div className="mt-4 rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(27,17,7,0.18)] px-4 py-4">
+                  <div className="mt-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(27,17,7,0.18)] px-3 py-3">
                     <div className="flex items-center justify-between gap-3">
                       <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">关系层级</div>
                       <div className="text-[11px] text-[#c9b68a]">置信度说明</div>
@@ -1442,12 +1442,12 @@ export function CulturalVeinShell() {
                       ))}
                     </div>
                   </div>
-                  <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-4 py-4 text-sm text-[#eadfbc]">
+                  <div className="mt-3 rounded-[22px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-sm text-[#eadfbc]">
                     {activeBranchAnnotation ? activeBranchAnnotation.description : "当前停留在主河道，可点河上节点入卷细看。"}
                   </div>
                 </>
               ) : null}
-              <div className="mt-4 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(27,17,7,0.18)] px-3 py-3 text-sm text-[#eadfbc]">
+              <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(27,17,7,0.18)] px-3 py-3 text-sm text-[#eadfbc]">
                 当前河段显现自 {eras[0]} 至 {activeEra}，门类为 {categoryFilter}，学派为 {schoolFilter}。
               </div>
             </div>
@@ -1485,7 +1485,7 @@ export function CulturalVeinShell() {
                       </span>
                     ) : null}
                   </div>
-                  <div className="max-h-[calc(44vh-124px)] overflow-auto pr-1">
+                  <div className="max-h-[calc(34vh-112px)] overflow-auto pr-1">
                     <BookExplorer
                       book={selectedBook}
                       detail={selectedDetail}
@@ -1501,7 +1501,7 @@ export function CulturalVeinShell() {
           </div>
         ) : null}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex justify-center px-3 pb-3 md:hidden">
-          <div className="pointer-events-auto flex items-center gap-2 rounded-full border border-[#ead8a6]/26 bg-[rgba(78,52,18,0.9)] px-2 py-2 shadow-xl shadow-black/25 backdrop-blur-xl">
+          <div className="pointer-events-auto flex items-center gap-2 rounded-full border border-[#ead8a6]/26 bg-[rgba(78,52,18,0.88)] px-2 py-2 shadow-xl shadow-black/25 backdrop-blur-xl">
             <button
               type="button"
               onClick={() => {
@@ -1513,6 +1513,16 @@ export function CulturalVeinShell() {
               }`}
             >
               题签
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowMobileControls(false);
+                setShowMobileDossier(false);
+              }}
+              className="rounded-full px-3 py-2 text-xs text-[#f7edd1]"
+            >
+              净览
             </button>
             <button
               type="button"

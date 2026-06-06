@@ -1314,8 +1314,12 @@ function RiverWorld({
   onSelectDock,
   sourceAtlasLabel,
   sourceAtlasPathPoints = [],
+  onInteractionStart,
+  onInteractionEnd,
 }: RiverSceneProps & {
   cruiseProgress: number;
+  onInteractionStart?: () => void;
+  onInteractionEnd?: () => void;
 }) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
   const controlsRef = useRef<OrbitControlsInstance>(null);
@@ -1788,6 +1792,8 @@ function RiverWorld({
       <OrbitControls
         ref={controlsRef}
         makeDefault
+        onStart={onInteractionStart}
+        onEnd={onInteractionEnd}
         enablePan
         screenSpacePanning
         enableDamping
@@ -1818,6 +1824,7 @@ function RiverWorld({
 export function RiverScene(props: RiverSceneProps) {
   const [cruiseProgress, setCruiseProgress] = useState(0.18);
   const [autoCruise, setAutoCruise] = useState(false);
+  const [isInteracting, setIsInteracting] = useState(false);
   const eraProgress = props.activeEra
     ? ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"].indexOf(props.activeEra) / 6
     : 0;
@@ -1837,6 +1844,8 @@ export function RiverScene(props: RiverSceneProps) {
     ? `逆流追溯正在经过 ${props.traceFocus.currentTitle ?? "当前节点"}，沿链回看文脉源头。`
     : props.sceneFocus?.active
       ? props.sceneFocus.detail
+      : isInteracting
+        ? "正在拖拽河面巡看，可松手后继续点选节点或码头。"
       : hoveredDock
         ? `${hoveredDock.label} 的样本码头已浮起。${hoveredDock.note ? ` ${hoveredDock.note}` : ""}`
       : props.sourceAtlasLabel && props.dockMarkers?.length
@@ -1941,6 +1950,9 @@ export function RiverScene(props: RiverSceneProps) {
           </div>
         </div>
       </div>
+      <div className="pointer-events-none absolute right-4 top-4 z-10 hidden rounded-full border border-[#ead8a6]/16 bg-[rgba(54,36,12,0.58)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#eadfbc] backdrop-blur-md lg:flex">
+        {isInteracting ? "正在巡看河面" : "左键平移 · 右键旋转 · 滚轮缩放"}
+      </div>
       {canCruise ? (
         <div className="absolute bottom-4 left-1/2 z-20 w-[min(280px,calc(100vw-2rem))] -translate-x-1/2 sm:bottom-5 sm:left-auto sm:right-5 sm:w-[min(320px,calc(100vw-2.5rem))] sm:translate-x-0">
           <div className="pointer-events-auto rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(54,36,12,0.78)] px-4 py-4 text-[#eadfbc] shadow-xl shadow-black/20 backdrop-blur-md">
@@ -1990,8 +2002,16 @@ export function RiverScene(props: RiverSceneProps) {
           </div>
         </div>
       ) : null}
-      <Canvas dpr={[1, 1.8]}>
-        <RiverWorld {...props} cruiseProgress={cruiseProgress} />
+      <Canvas dpr={[1, 1.8]} className={isInteracting ? "cursor-grabbing" : "cursor-grab"}>
+        <RiverWorld
+          {...props}
+          cruiseProgress={cruiseProgress}
+          onInteractionStart={() => {
+            setAutoCruise(false);
+            setIsInteracting(true);
+          }}
+          onInteractionEnd={() => setIsInteracting(false)}
+        />
       </Canvas>
     </div>
   );
