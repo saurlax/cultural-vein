@@ -91,7 +91,7 @@ function versionTypeClass(type?: string) {
 
 function sourceBadgeClass(source: "real" | "demo" | "hybrid") {
   if (source === "real") {
-    return "border-cyan-300/25 bg-cyan-300/10 text-cyan-100";
+    return "border-amber-300/25 bg-amber-300/10 text-amber-100";
   }
 
   if (source === "hybrid") {
@@ -136,9 +136,9 @@ function versionSourceMeta(library: string) {
 function timelineSourceMeta(source?: "demo" | "cbdb") {
   if (source === "cbdb") {
     return {
-      label: "CBDB 活动信号",
+      label: "人物纪传信号",
       tone: "real" as const,
-      detail: "该事件由真实人物传记活动地点/时间信号派生，可用于支撑传播叙事。",
+      detail: "该事件由真实人物纪传中的时间与地点线索派生，可用于支撑传播叙事。",
     };
   }
 
@@ -360,7 +360,7 @@ export function BookExplorer({
       <section>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <p className="text-xs uppercase tracking-[0.25em] text-stone-400">
+            <p className="text-xs tracking-[0.25em] text-stone-400">
               典籍焦点
             </p>
             <h2 className="mt-2 text-3xl font-semibold">{book.title}</h2>
@@ -449,49 +449,49 @@ export function BookExplorer({
       </section>
 
       {detail.realWorldSignals ? (
-        <section className="rounded-2xl border border-cyan-300/15 bg-cyan-300/5 px-4 py-4">
+        <section className="rounded-2xl border border-amber-300/15 bg-amber-300/6 px-4 py-4">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <div className="text-xs tracking-[0.2em] text-cyan-100/80">
+              <div className="text-xs tracking-[0.2em] text-amber-100/80">
                 真实来源信号
               </div>
-              <div className="mt-1 text-sm font-medium text-cyan-50">
+              <div className="mt-1 text-sm font-medium text-amber-50">
                 {detail.realWorldSignals.sourceLabel}
               </div>
             </div>
-              <div className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
-              实时样本
+            <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
+              当前采样
             </div>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             {sourceBadges.map((item) => (
               <span
                 key={item}
-                className="rounded-full border border-cyan-300/15 bg-black/15 px-3 py-1 text-xs text-cyan-100"
+                className="rounded-full border border-amber-300/15 bg-black/15 px-3 py-1 text-xs text-amber-100"
               >
                 {item}
               </span>
             ))}
           </div>
           {detail.realWorldSignals.venueSummary ? (
-            <p className="mt-3 text-sm leading-7 text-cyan-50/90">
+            <p className="mt-3 text-sm leading-7 text-amber-50/90">
               {detail.realWorldSignals.venueSummary}
             </p>
           ) : null}
           <div className="mt-4 grid gap-3 md:grid-cols-2">
-            <div className="rounded-2xl border border-cyan-300/10 bg-black/15 px-3 py-3">
-              <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/70">
-                人物命中
+            <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-3 py-3">
+              <div className="text-xs tracking-[0.2em] text-amber-100/70">
+                人物线索
               </div>
               <div className="mt-2 text-sm text-stone-100">
-                CBDB 命中 {detail.realWorldSignals.cbdbMatchedPeople ?? 0} 人
+                纪传库对照 {detail.realWorldSignals.cbdbMatchedPeople ?? 0} 人
               </div>
               <div className="mt-1 text-xs text-stone-400">
-                扩展补全 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
+                待补人物 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
               </div>
             </div>
-            <div className="rounded-2xl border border-cyan-300/10 bg-black/15 px-3 py-3">
-              <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/70">
+            <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-3 py-3">
+              <div className="text-xs tracking-[0.2em] text-amber-100/70">
                 传播信号
               </div>
               <div className="mt-2 text-sm text-stone-100">
@@ -505,12 +505,12 @@ export function BookExplorer({
             </div>
           </div>
           <div className="mt-4 grid gap-3 xl:grid-cols-3">
-            <div className="rounded-2xl border border-cyan-300/10 bg-black/15 px-4 py-4">
+            <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between gap-3">
-                <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                <div className="text-xs tracking-[0.2em] text-amber-100/75">
                   场馆来源
                 </div>
-                <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-[10px] text-cyan-100">
+                <div className="rounded-full bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
                   {detail.realWorldSignals.venueSamples?.length ?? 0} 组
                 </div>
               </div>
@@ -534,12 +534,12 @@ export function BookExplorer({
                 )}
               </div>
             </div>
-            <div className="rounded-2xl border border-cyan-300/10 bg-black/15 px-4 py-4">
+            <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between gap-3">
-                <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                <div className="text-xs tracking-[0.2em] text-amber-100/75">
                   活动事件
                 </div>
-                <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-[10px] text-cyan-100">
+                <div className="rounded-full bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
                   {detail.realWorldSignals.eventSamples?.length ?? 0} 条
                 </div>
               </div>
@@ -563,12 +563,12 @@ export function BookExplorer({
                 )}
               </div>
             </div>
-            <div className="rounded-2xl border border-cyan-300/10 bg-black/15 px-4 py-4">
+            <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between gap-3">
-                <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                <div className="text-xs tracking-[0.2em] text-amber-100/75">
                   机构资源
                 </div>
-                <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-[10px] text-cyan-100">
+                <div className="rounded-full bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
                   {detail.realWorldSignals.institutionSamples?.length ?? 0} 条
                 </div>
               </div>
@@ -585,7 +585,7 @@ export function BookExplorer({
                         {item.year ? ` · ${item.year}` : ""}
                       </div>
                       {item.imageRef || item.sourceText ? (
-                        <div className="mt-2 text-[11px] text-cyan-100/80">
+                        <div className="mt-2 text-[11px] text-amber-100/80">
                           {item.imageRef ?? item.sourceText}
                         </div>
                       ) : null}
@@ -600,12 +600,12 @@ export function BookExplorer({
             </div>
           </div>
           {detail.realWorldSignals.institutionSamples?.length ? (
-            <div className="mt-4 rounded-2xl border border-cyan-300/10 bg-black/15 px-4 py-4">
+            <div className="mt-4 rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between gap-3">
-                <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                <div className="text-xs tracking-[0.2em] text-amber-100/75">
                   机构图像资源样本
                 </div>
-                <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                <div className="rounded-full bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
                   {detail.realWorldSignals.institutionSamples.length} 条
                 </div>
               </div>
@@ -651,13 +651,13 @@ export function BookExplorer({
           </div>
           {visibleSpread.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
-              当前时代层下尚未显现传播路径样例。
+              当前时代层下尚未显现传播路径记录。
             </div>
           ) : (
             <>
-              <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(103,232,249,0.14),rgba(255,255,255,0.03))] p-4">
+              <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.14),rgba(255,255,255,0.03))] p-4">
                 <div className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
-                  <div className="rounded-[24px] border border-white/10 bg-[#081110] px-4 py-4">
+                  <div className="rounded-[24px] border border-white/10 bg-[#1a1208] px-4 py-4">
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
@@ -667,7 +667,7 @@ export function BookExplorer({
                           点击任意航段可聚焦当前传播阶段
                         </div>
                       </div>
-                      <div className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                      <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
                         {visibleSpread.length} 段航线
                       </div>
                     </div>
@@ -685,7 +685,7 @@ export function BookExplorer({
                               onClick={() => setSelectedSpreadId(item.id)}
                               className={`rounded-[22px] border px-4 py-3 text-left transition ${
                                 isActive
-                                  ? "border-cyan-300/35 bg-cyan-300/12 shadow-lg shadow-cyan-500/10"
+                                  ? "border-amber-300/35 bg-amber-300/12 shadow-lg shadow-amber-500/10"
                                   : "border-white/10 bg-white/5 hover:bg-white/10"
                               }`}
                             >
@@ -697,7 +697,7 @@ export function BookExplorer({
                               </div>
                             <div className="mt-2 flex items-center gap-2 text-xs text-stone-400">
                               <span>{item.startYear} - {item.endYear}</span>
-                              <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-cyan-100">
+                              <span className="rounded-full bg-amber-300/10 px-2 py-1 text-amber-100">
                                 流量 {item.volume}
                               </span>
                               <span
@@ -708,7 +708,7 @@ export function BookExplorer({
                             </div>
                           </button>
                             {index < visibleSpread.length - 1 ? (
-                              <div className="h-px w-8 bg-gradient-to-r from-cyan-300/40 to-transparent" />
+                              <div className="h-px w-8 bg-gradient-to-r from-amber-300/40 to-transparent" />
                             ) : null}
                           </div>
                         );
@@ -873,7 +873,7 @@ export function BookExplorer({
           <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
             当前传播视图已经具备“航线聚焦 + 地点投影 + 阶段切换”的中观交互骨架，后续再把这套坐标映射接入真正的 3D 地球即可。
           </div>
-          <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4 text-sm leading-7 text-cyan-50/90">
+          <div className="rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4 text-sm leading-7 text-amber-50/90">
             传播层当前采用“传播关系建模 + 上图活动场馆信号补强”的混合组织，既保持叙事连续，也明确区分真实接入与结构性补足。
           </div>
           {detail.realWorldSignals?.venueSamples?.length ? (
@@ -889,8 +889,8 @@ export function BookExplorer({
                     className="flex items-center justify-between rounded-2xl bg-black/15 px-3 py-3 text-sm"
                   >
                     <span className="text-stone-200">{venue.name}</span>
-                    <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-xs text-cyan-100">
-                      样本 {venue.sampleCount}
+                    <span className="rounded-full bg-amber-300/10 px-2 py-1 text-xs text-amber-100">
+                      采样 {venue.sampleCount}
                     </span>
                   </div>
                 ))}
@@ -908,13 +908,13 @@ export function BookExplorer({
           </div>
           {visiblePeople.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
-              当前时代层下尚未显现关联人物样例。
+              当前时代层下尚未显现关联人物记录。
             </div>
           ) : (
             <>
               <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-4">
                 <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
-                  <div className="rounded-[24px] border border-white/10 bg-[#081110] px-4 py-4">
+                  <div className="rounded-[24px] border border-white/10 bg-[#1a1208] px-4 py-4">
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
@@ -1046,7 +1046,7 @@ export function BookExplorer({
                                   onClick={() => setSelectedPersonId(person.id)}
                                   className={`w-full rounded-2xl border px-4 py-4 text-left transition ${
                                     isActive
-                                      ? "border-cyan-300/30 bg-cyan-300/10 shadow-lg shadow-cyan-500/10"
+                                      ? "border-amber-300/30 bg-amber-300/10 shadow-lg shadow-amber-500/10"
                                       : "border-white/10 bg-white/5 hover:bg-white/10"
                                   }`}
                                 >
@@ -1072,7 +1072,7 @@ export function BookExplorer({
                                             : "bg-white/10 text-stone-300"
                                         }`}
                                       >
-                                        {person.source === "cbdb" ? "CBDB 已命中" : "扩展补全"}
+                                        {person.source === "cbdb" ? "纪传库已对照" : "待补人物"}
                                       </div>
                                     </div>
                                   </div>
@@ -1134,23 +1134,23 @@ export function BookExplorer({
                               数据来源
                             </div>
                             <div className="mt-2 text-base font-semibold text-stone-50">
-                              {activePerson.source === "cbdb" ? "CBDB 已命中" : "扩展补全"}
+                              {activePerson.source === "cbdb" ? "纪传库已对照" : "待补人物"}
                             </div>
                             <div className="mt-2 text-sm text-stone-300">
                               {activePerson.source === "cbdb"
-                                ? `当前人物已接入真实人物传记数据${activePerson.matchedAlias ? `，匹配别名为 ${activePerson.matchedAlias}` : ""}。`
-                                : "当前仍使用扩展人物补全，后续可继续替换为更完整的真实人物图谱记录。"}
+                                ? `当前人物已接入真实人物纪传数据${activePerson.matchedAlias ? `，匹配别名为 ${activePerson.matchedAlias}` : ""}。`
+                                : "当前仍为待补人物，后续可继续替换为更完整的真实人物图谱记录。"}
                             </div>
                           </div>
                         </div>
 
                         {activePerson.activityPlaces?.length ? (
-                          <div className="mt-4 rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4">
+                          <div className="mt-4 rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4">
                             <div className="flex items-center justify-between gap-3">
-                              <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
-                                CBDB 活动地点信号
+                              <div className="text-xs tracking-[0.2em] text-amber-100/75">
+                                人物活动地点信号
                               </div>
-                              <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                              <div className="rounded-full bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
                                 {activePerson.activityPlaces.length} 条地点
                               </div>
                             </div>
@@ -1183,7 +1183,7 @@ export function BookExplorer({
 
                         {activePerson.source === "cbdb" && activePerson.matchedAlias ? (
                           <div className="mt-4 rounded-full border border-emerald-300/15 bg-emerald-300/8 px-3 py-1 text-xs text-emerald-100">
-                            CBDB 匹配别名：{activePerson.matchedAlias}
+                            纪传库匹配别名：{activePerson.matchedAlias}
                           </div>
                         ) : null}
                       </>
@@ -1200,7 +1200,7 @@ export function BookExplorer({
                   二级关联承载引用者、评论者、校勘者等辅助角色，帮助用户理解文脉在后世如何扩散和再解释。
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
-                  绿色来源标记说明人物已从 CBDB 命中，灰色说明当前仍由扩展人物补全，便于后续逐步替换成真实图谱。
+                  亮色来源标记说明人物已与纪传资料对照，灰色说明当前仍待补入，便于后续继续充实真实人物图谱。
                 </div>
               </div>
             </>
@@ -1216,7 +1216,7 @@ export function BookExplorer({
           </div>
           {visibleVersions.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
-              当前时代层下尚未显现版本链路样例。
+              当前时代层下尚未显现版本链路记录。
             </div>
           ) : (
             <>
@@ -1462,7 +1462,7 @@ export function BookExplorer({
                             {activeTimelineItem.year}
                           </div>
                           {activeTimelineItem.source === "cbdb" ? (
-                            <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                            <div className="rounded-full bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
                               真实活动信号
                             </div>
                           ) : null}
@@ -1472,7 +1472,7 @@ export function BookExplorer({
                         {activeTimelineItem.detail}
                       </p>
                       {activeTimelineMeta ? (
-                        <div className="mt-4 rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4">
+                        <div className="mt-4 rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4">
                           <div className="flex flex-wrap items-center gap-2">
                             <span
                               className={`rounded-full border px-3 py-1 text-xs ${sourceBadgeClass(activeTimelineMeta.tone)}`}
@@ -1557,7 +1557,7 @@ export function BookExplorer({
           </div>
           {visiblePassages.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
-              当前时代层下尚未显现逐字对读样例或相关证据链。
+              当前时代层下尚未显现逐字对读片段或相关证据链。
             </div>
           ) : activePassage ? (
             <>
@@ -1605,7 +1605,7 @@ export function BookExplorer({
                         onClick={() => handleSelectPassage(passage.id)}
                         className={`rounded-full px-3 py-2 text-xs transition ${
                           activePassageId === passage.id
-                            ? "bg-cyan-300 text-stone-950"
+                            ? "bg-amber-300 text-stone-950"
                             : "border border-white/10 bg-black/15 text-stone-300 hover:bg-white/10"
                         }`}
                       >
@@ -1615,11 +1615,11 @@ export function BookExplorer({
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-cyan-300/15 bg-cyan-300/5 px-4 py-4">
-                  <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                <div className="rounded-2xl border border-amber-300/15 bg-amber-300/5 px-4 py-4">
+                  <div className="text-xs tracking-[0.2em] text-amber-100/75">
                     交互说明
                   </div>
-                  <p className="mt-3 text-sm leading-7 text-cyan-50/90">
+                  <p className="mt-3 text-sm leading-7 text-amber-50/90">
                     点击证据卡可切换当前引文焦点；当前时代以前已显现的证据链、溯源路径和下游影响会逐步点亮，模拟方案中的“逆流而上”。
                   </p>
                 </div>
@@ -1696,14 +1696,14 @@ export function BookExplorer({
                     </div>
 
                     {activeLink ? (
-                      <div className="mt-4 rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4">
-                        <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                      <div className="mt-4 rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4">
+                        <div className="text-xs tracking-[0.2em] text-amber-100/75">
                           当前聚焦证据
                         </div>
-                        <div className="mt-2 text-sm font-medium text-cyan-50">
+                        <div className="mt-2 text-sm font-medium text-amber-50">
                           {activeLink.sourceTitle}
                         </div>
-                        <p className="mt-2 text-sm leading-7 text-cyan-50/90">
+                        <p className="mt-2 text-sm leading-7 text-amber-50/90">
                           {activeLink.evidence}
                         </p>
                       </div>
@@ -1712,33 +1712,33 @@ export function BookExplorer({
                 </div>
 
                 <div className="mt-4 grid gap-4 xl:grid-cols-2">
-                  <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4">
+                  <div className="rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-medium text-cyan-50">溯源光线链路</h4>
-                      <span className="text-xs text-cyan-100/70">
+                      <h4 className="text-sm font-medium text-amber-50">溯源光线链路</h4>
+                      <span className="text-xs text-amber-100/70">
                         已推进 {Math.min(traceStep + 1, activePassage.tracePath?.length ?? 0)} /
                         {activePassage.tracePath?.length ?? 0}
                       </span>
                     </div>
                     {activePassage.tracePath?.length ? (
                       <div className="mt-3 space-y-4">
-                        <div className="overflow-hidden rounded-[24px] border border-cyan-300/10 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.16),rgba(3,9,8,0.96))] px-4 py-4">
+                        <div className="overflow-hidden rounded-[24px] border border-amber-300/10 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.18),rgba(19,11,4,0.96))] px-4 py-4">
                           <div className="flex items-center justify-between gap-3">
-                            <div className="text-xs tracking-[0.2em] text-cyan-100/70">
+                            <div className="text-xs tracking-[0.2em] text-amber-100/70">
                               溯源场
                             </div>
-                            <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-[10px] text-cyan-100">
+                            <div className="rounded-full border border-amber-300/15 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
                               逆流回溯
                             </div>
                           </div>
-                          <div className="relative mt-4 h-[180px] rounded-[20px] border border-white/10 bg-[linear-gradient(180deg,rgba(5,12,12,0.92),rgba(3,8,8,0.98))]">
+                          <div className="relative mt-4 h-[180px] rounded-[20px] border border-white/10 bg-[linear-gradient(180deg,rgba(28,18,7,0.92),rgba(12,7,3,0.98))]">
                             <div className="absolute inset-0 bg-[linear-gradient(transparent_39px,rgba(255,255,255,0.04)_40px),linear-gradient(90deg,transparent_39px,rgba(255,255,255,0.04)_40px)] bg-[length:100%_40px,40px_100%] opacity-20" />
                             <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full">
                               <defs>
                                 <linearGradient id="trace-line" x1="0%" x2="100%" y1="0%" y2="0%">
                                   <stop offset="0%" stopColor="rgba(245,158,11,0.9)" />
-                                  <stop offset="55%" stopColor="rgba(103,232,249,0.95)" />
-                                  <stop offset="100%" stopColor="rgba(52,211,153,0.9)" />
+                                  <stop offset="55%" stopColor="rgba(252,211,77,0.95)" />
+                                  <stop offset="100%" stopColor="rgba(254,243,199,0.9)" />
                                 </linearGradient>
                                 <filter id="trace-glow">
                                   <feGaussianBlur stdDeviation="1.6" result="coloredBlur" />
@@ -1783,14 +1783,14 @@ export function BookExplorer({
                                       cx={x}
                                       cy={y}
                                       r={isActive ? 3.6 : 2.4}
-                                      fill={isActive ? "#67e8f9" : "rgba(255,255,255,0.22)"}
+                                      fill={isActive ? "#fcd34d" : "rgba(255,255,255,0.22)"}
                                       filter={isActive ? "url(#trace-glow)" : undefined}
                                     />
                                     <text
                                       x={x}
                                       y={y - 7}
                                       textAnchor="middle"
-                                      fill={isActive ? "#cffafe" : "rgba(231,229,228,0.72)"}
+                                      fill={isActive ? "#fef3c7" : "rgba(231,229,228,0.72)"}
                                       fontSize="4"
                                     >
                                       {trace.title}
@@ -1807,8 +1807,8 @@ export function BookExplorer({
                                     cx={x}
                                     cy={y}
                                     r="6"
-                                    fill="rgba(103,232,249,0.15)"
-                                    stroke="rgba(103,232,249,0.9)"
+                                    fill="rgba(252,211,77,0.18)"
+                                    stroke="rgba(252,211,77,0.92)"
                                     strokeWidth="0.8"
                                   />
                                 );
@@ -1830,13 +1830,13 @@ export function BookExplorer({
                                 <div className="flex w-8 flex-col items-center pt-1">
                                   <div
                                     className={`h-3 w-3 rounded-full transition ${
-                                      isActive ? "bg-cyan-300 shadow-[0_0_16px_rgba(103,232,249,0.65)]" : "bg-white/20"
+                                      isActive ? "bg-amber-300 shadow-[0_0_16px_rgba(252,211,77,0.55)]" : "bg-white/20"
                                     }`}
                                   />
                                   {index < activePassage.tracePath!.length - 1 ? (
                                     <div
                                       className={`mt-1 h-full w-px transition ${
-                                        isActive ? "bg-cyan-300/35" : "bg-white/10"
+                                        isActive ? "bg-amber-300/35" : "bg-white/10"
                                       }`}
                                     />
                                   ) : null}
@@ -1844,7 +1844,7 @@ export function BookExplorer({
                                 <div
                                   className={`flex-1 rounded-2xl px-3 py-3 transition ${
                                     isActive
-                                      ? "bg-cyan-300/10 ring-1 ring-cyan-300/15"
+                                      ? "bg-amber-300/10 ring-1 ring-amber-300/15"
                                       : "bg-black/15"
                                   }`}
                                 >
@@ -1852,7 +1852,7 @@ export function BookExplorer({
                                     <span className="font-medium text-stone-50">
                                       {trace.title}
                                     </span>
-                                    <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-xs text-cyan-100">
+                                    <span className="rounded-full bg-amber-300/10 px-2 py-1 text-xs text-amber-100">
                                       {trace.relation}
                                     </span>
                                   </div>
@@ -1866,7 +1866,7 @@ export function BookExplorer({
                         </div>
                       </div>
                     ) : (
-                      <div className="mt-3 text-sm text-stone-400">暂无溯源链路样例。</div>
+                      <div className="mt-3 text-sm text-stone-400">暂无溯源链路记录。</div>
                     )}
                   </div>
 
@@ -1902,7 +1902,7 @@ export function BookExplorer({
                         ))}
                       </div>
                     ) : (
-                      <div className="mt-3 text-sm text-stone-400">暂无下游影响样例。</div>
+                      <div className="mt-3 text-sm text-stone-400">暂无下游影响记录。</div>
                     )}
                   </div>
                 </div>
