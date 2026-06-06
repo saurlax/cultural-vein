@@ -1999,6 +1999,9 @@ export function RiverScene(props: RiverSceneProps) {
             </div>
           </div>
         </div>
+        <div className="mt-3 text-[10px] leading-5 text-[#e8d6aa]">
+          顺着节点密度、时代水位与河段显现继续拖拽巡看，锁定感兴趣的典籍后再入卷细看。
+        </div>
       </div>
       <div className="pointer-events-none absolute right-4 top-4 z-10 hidden rounded-full border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.58)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md lg:flex">
         {isInteracting ? "正在拖动画卷" : "左键拖动画卷 · 右键旋转 · 滚轮缩放"}
@@ -2013,6 +2016,9 @@ export function RiverScene(props: RiverSceneProps) {
                 </div>
                 <div className="mt-1 text-xs text-[#fbf3da] sm:text-sm">
                   顺着长河前后巡看文脉起伏
+                </div>
+                <div className="mt-2 text-[10px] leading-5 text-[#e8d6aa]">
+                  可先自动巡航找节点，再用上下游按钮把镜头停在想讲的河段。
                 </div>
               </div>
               <button

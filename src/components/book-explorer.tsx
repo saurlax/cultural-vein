@@ -2516,6 +2516,13 @@ export function BookExplorer({
                               >
                                 回到祖本
                               </button>
+                              <button
+                                type="button"
+                                onClick={() => setTab("timeline")}
+                                className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                              >
+                                转看时间回声
+                              </button>
                             </div>
                           </div>
                         ) : null}
@@ -2539,12 +2546,23 @@ export function BookExplorer({
                               >
                                 打开机构总表
                               </button>
+                              <button
+                                type="button"
+                                onClick={() => setTab("passages")}
+                                className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                              >
+                                转看原文证据
+                              </button>
                             </div>
                           </div>
                         ) : null}
 
                         <div className="mt-4 grid gap-3 md:grid-cols-2">
-                          <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenSourceEvidence("institution-samples")}
+                            className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-left transition hover:bg-white/10"
+                          >
                             <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
                               版本位置
                             </div>
@@ -2554,8 +2572,21 @@ export function BookExplorer({
                             <div className="mt-2 text-sm text-stone-300">
                               藏馆 / 系统：{activeVersion.library}
                             </div>
-                          </div>
-                          <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                            <div className="mt-3 text-xs text-amber-100/80">
+                              打开机构总表，把这一版的位置重新挂回馆藏与影像线索。
+                            </div>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const rootVersion = activeVersionTrail[0];
+
+                              if (rootVersion?.id) {
+                                setSelectedVersionId(rootVersion.id);
+                              }
+                            }}
+                            className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-left transition hover:bg-white/10"
+                          >
                             <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
                               传承位置
                             </div>
@@ -2567,7 +2598,10 @@ export function BookExplorer({
                                 ? "这层版本位于链路中段或后段，继续承接前一层文字流传。"
                                 : "该节点作为版本流变链的起点，承担源头层标记。"}
                             </div>
-                          </div>
+                            <div className="mt-3 text-xs text-amber-100/80">
+                              回到版本链起点，顺着祖本到当前节点重新讲清传承位置。
+                            </div>
+                          </button>
                         </div>
 
                         <div className="mt-4 grid gap-3 xl:grid-cols-[0.92fr_1.08fr]">
