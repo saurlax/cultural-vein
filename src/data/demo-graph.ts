@@ -82,6 +82,21 @@ interface RealSupplementInstitutionSample {
   }>;
 }
 
+interface RealSupplementArchiveSample {
+  available?: boolean;
+  institution?: string;
+  collectionTitle?: string;
+  summary?: string;
+  sampleRecords?: Array<{
+    institution: string;
+    title: string;
+    category?: string;
+    year?: string;
+    imageRef?: string;
+    sourceText?: string;
+  }>;
+}
+
 interface RealSupplementCbdbSummary {
   available?: boolean;
   personCount?: number;
@@ -156,6 +171,8 @@ const shanghaiLibraryActivity = (realSupplements.shanghaiLibraryActivity ??
   {}) as RealSupplementActivity;
 const nanjingLibrarySample = (realSupplements.nanjingLibrarySample ??
   {}) as RealSupplementInstitutionSample;
+const fudanArchiveSample = (realSupplements.fudanArchiveSample ??
+  {}) as RealSupplementArchiveSample;
 
 const personByName = new Map(cbdbPeople.map((person) => [person.name, person]));
 
@@ -247,6 +264,25 @@ if (nanjingLibrarySample.available) {
       institutionSamples,
     };
   }
+}
+
+if (fudanArchiveSample.available) {
+  const institutionSamples = (fudanArchiveSample.sampleRecords ?? []).slice(0, 2);
+  const detail = details["ren-jian-ci-hua"];
+  detail.realWorldSignals = {
+    ...detail.realWorldSignals,
+    sourceLabel: detail.realWorldSignals?.sourceLabel
+      ? `${detail.realWorldSignals.sourceLabel} + 复旦馆藏样例`
+      : "复旦大学图书馆馆藏样例",
+    institutionSamples: [
+      ...(detail.realWorldSignals?.institutionSamples ?? []),
+      ...institutionSamples,
+    ],
+    venueSummary:
+      detail.realWorldSignals?.venueSummary ??
+      fudanArchiveSample.summary ??
+      "已接入复旦大学图书馆馆藏样例。",
+  };
 }
 
 if (cbdbSummary.available) {

@@ -28,6 +28,7 @@ WORK_DIR = ROOT / "tmp_generated"
 CBDB_DB = TMP_DIR / "CBDB_20240208.db"
 SL_ZIP = DATA_DIR / "上海图书馆开放数据2026.zip"
 NJ_ZIP = DATA_DIR / "南京图书馆2024.zip"
+FUDAN_ZIP = DATA_DIR / "复旦大学图书馆.zip"
 
 DEMO_BOOKS = [
     {
@@ -1171,6 +1172,53 @@ def fetch_nanjing_library_sample() -> dict[str, object]:
     }
 
 
+def fetch_fudan_archive_sample() -> dict[str, object]:
+    if not FUDAN_ZIP.exists():
+        return {"available": False, "reason": "zip missing"}
+
+    with zipfile.ZipFile(FUDAN_ZIP) as archive:
+        intro_doc = next(
+            (name for name in archive.namelist() if name.endswith("介紹.docx")),
+            None,
+        )
+        if not intro_doc:
+            return {"available": False, "reason": "intro doc missing"}
+
+        with archive.open(intro_doc) as src:
+            docx_bytes = src.read()
+
+    from xml.etree import ElementTree
+    import io
+
+    with zipfile.ZipFile(io.BytesIO(docx_bytes)) as docx_archive:
+        xml = docx_archive.read("word/document.xml")
+
+    root = ElementTree.fromstring(xml)
+    texts = []
+    for elem in root.iter():
+        if elem.tag.endswith("}t") and elem.text:
+            texts.append(elem.text)
+
+    text = "".join(texts)
+    summary = text[:260]
+
+    return {
+        "available": True,
+        "institution": "复旦大学图书馆",
+        "collectionTitle": "南社诗笺样例",
+        "summary": summary,
+        "sampleRecords": [
+            {
+                "institution": "复旦大学图书馆",
+                "title": "南社诗笺",
+                "category": "手稿 / 诗笺",
+                "year": "1909",
+                "sourceText": summary,
+            }
+        ],
+    }
+
+
 def main() -> None:
     ensure_out_dir()
     cbdb_people = fetch_cbdb_people()
@@ -1203,6 +1251,7 @@ def main() -> None:
         "cbdbSummary": fetch_cbdb_summary(),
         "shanghaiLibraryActivity": fetch_shanghai_activity_sample(),
         "nanjingLibrarySample": fetch_nanjing_library_sample(),
+        "fudanArchiveSample": fetch_fudan_archive_sample(),
     }
     OUT_FILE.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2),

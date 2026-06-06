@@ -194,6 +194,11 @@ export interface DatasetInsight {
     recordCount?: number;
     sampleTitles?: string[];
   };
+  fudanArchiveSample?: {
+    available?: boolean;
+    institution?: string;
+    collectionTitle?: string;
+  };
 }
 
 export interface RiverDataset {
