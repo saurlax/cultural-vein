@@ -29,6 +29,13 @@ export interface RiverDockMarker {
   position: [number, number, number];
 }
 
+interface SourceAtlasRoute {
+  id: string;
+  label: string;
+  color: string;
+  points: Array<[number, number, number]>;
+}
+
 interface RiverSceneProps {
   books: BookNode[];
   citations: CitationEdge[];
@@ -55,6 +62,7 @@ interface RiverSceneProps {
   sourceAtlasLabel?: string | null;
   sourceAtlasSummary?: string | null;
   sourceAtlasPathPoints?: Array<[number, number, number]>;
+  sourceAtlasRoutes?: SourceAtlasRoute[];
 }
 
 interface CruiseSnapshot {
@@ -1314,6 +1322,7 @@ function RiverWorld({
   onSelectDock,
   sourceAtlasLabel,
   sourceAtlasPathPoints = [],
+  sourceAtlasRoutes = [],
   onInteractionStart,
   onInteractionEnd,
 }: RiverSceneProps & {
@@ -1421,6 +1430,16 @@ function RiverWorld({
   const sourceAtlasFlowPoints = useMemo(
     () => sourceAtlasPathPoints.map((point) => new THREE.Vector3(...point)),
     [sourceAtlasPathPoints],
+  );
+  const sourceAtlasRouteCurves = useMemo(
+    () =>
+      sourceAtlasRoutes
+        .map((route) => ({
+          ...route,
+          points: route.points.map((point) => new THREE.Vector3(...point)),
+        }))
+        .filter((route) => route.points.length >= 2),
+    [sourceAtlasRoutes],
   );
   const eraIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
   const eraWarmth = eraIndex / Math.max(RIVER_ERA_ORDER.length - 1, 1);
@@ -1759,6 +1778,28 @@ function RiverWorld({
             flowSpeed={0.095}
             spread={0.06}
           />
+        </group>
+      ) : null}
+      {!selectedBookSlug && sourceAtlasRouteCurves.length ? (
+        <group>
+          {sourceAtlasRouteCurves.map((route) => (
+            <group key={route.id}>
+              <Line
+                points={route.points}
+                color={route.color}
+                transparent
+                opacity={0.2}
+                lineWidth={1.2}
+              />
+              <Line
+                points={route.points}
+                color="#fef3c7"
+                transparent
+                opacity={0.06}
+                lineWidth={3.4}
+              />
+            </group>
+          ))}
         </group>
       ) : null}
       <FocusCurrentAura focusPosition={selectedBookPosition} color={focusAuraColor} />

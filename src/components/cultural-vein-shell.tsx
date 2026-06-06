@@ -485,6 +485,60 @@ export function CulturalVeinShell() {
   const sourceAtlasPathPoints = sourceAtlasDockMarkers.map(
     (dock) => [dock.position[0], dock.position[1] + 0.06, dock.position[2]] as [number, number, number],
   );
+  const sourceAtlasRoutes = (() => {
+    if (!sourceAtlasEntries.length) {
+      return [];
+    }
+
+    const accentPalette = ["#fbbf24", "#fb923c", "#f59e0b", "#fde68a", "#facc15", "#fdba74"];
+    const anchorPool =
+      filteredBooks.length > 0
+        ? filteredBooks
+        : riverDataset.books.filter((book) => eras.indexOf(book.dynasty) <= activeEraIndex);
+    const fallbackPool = anchorPool.length > 0 ? anchorPool : riverDataset.books;
+
+    return sourceAtlasEntries
+      .map((entry, entryIndex) => {
+        const samples = entry.sampleRecords?.slice(0, 3) ?? [];
+
+        if (samples.length < 2) {
+          return null;
+        }
+
+        const routePoints = samples
+          .map((_, sampleIndex) => {
+            const anchorBook =
+              fallbackPool[(entryIndex * 2 + sampleIndex * 3) % Math.max(fallbackPool.length, 1)];
+
+            if (!anchorBook) {
+              return null;
+            }
+
+            const [baseX, baseY, baseZ] = anchorBook.coordinates;
+            const laneBias = entryIndex - (sourceAtlasEntries.length - 1) / 2;
+            const sway = sampleIndex % 2 === 0 ? 1 : -1;
+
+            return [
+              baseX + laneBias * 0.78 + sampleIndex * 0.18,
+              baseY + 0.03 + entryIndex * 0.01,
+              baseZ + sway * (0.72 + entryIndex * 0.12),
+            ] as [number, number, number];
+          })
+          .filter((point): point is [number, number, number] => Boolean(point));
+
+        if (routePoints.length < 2) {
+          return null;
+        }
+
+        return {
+          id: entry.id,
+          label: entry.name,
+          color: accentPalette[entryIndex % accentPalette.length]!,
+          points: routePoints,
+        };
+      })
+      .filter((route): route is NonNullable<typeof route> => Boolean(route));
+  })();
   const activeSourceDock =
     sourceAtlasDockMarkers.find((dock) => dock.id === selectedDockId) ??
     sourceAtlasDockMarkers.find((dock) => dock.id === hoveredDockId) ??
@@ -1232,6 +1286,7 @@ export function CulturalVeinShell() {
             sourceAtlasLabel={!selectedBook ? activeSourceAtlasEntry?.name ?? null : null}
             sourceAtlasSummary={!selectedBook ? activeSourceAtlasEntry?.summary ?? null : null}
             sourceAtlasPathPoints={!selectedBook ? sourceAtlasPathPoints : []}
+            sourceAtlasRoutes={!selectedBook ? sourceAtlasRoutes : []}
             visibleNodeCount={filteredBooks.length}
             totalNodeCount={riverDataset.books.length}
             highlightedBookSlugs={mergedHighlightedBookSlugs}
