@@ -7,7 +7,11 @@ import {
   type SceneFocusState,
   type TraceFocusState,
 } from "@/components/book-explorer";
-import { RiverScene, type RiverBranchAnnotation } from "@/components/river-scene";
+import {
+  RiverScene,
+  type RiverBranchAnnotation,
+  type RiverDockMarker,
+} from "@/components/river-scene";
 import { riverDataset } from "@/data/river-dataset";
 import { useCulturalVeinStore } from "@/store/app-store";
 import type { DatasetInsight } from "@/types/domain";
@@ -210,6 +214,30 @@ export function CulturalVeinShell() {
     visibleBranchAnnotations.find((annotation) => annotation.targetSlug === selectedBookSlug) ??
     visibleBranchAnnotations[0] ??
     null;
+  const riverDockMarkers = useMemo<RiverDockMarker[]>(() => {
+    if (!selectedBook || !selectedDetail?.places.length) {
+      return [];
+    }
+
+    const [baseX, baseY, baseZ] = selectedBook.coordinates;
+
+    return selectedDetail.places.slice(0, 4).map((place, index) => {
+      const direction = index % 2 === 0 ? 1 : -1;
+      const laneOffset = 0.56 + index * 0.12;
+      const longitudinalOffset = (index - 1.5) * 0.52;
+
+      return {
+        id: `${selectedBook.slug}-dock-${place.id}`,
+        label: place.name,
+        note: place.note,
+        position: [
+          baseX + longitudinalOffset,
+          baseY + 0.03,
+          baseZ + direction * laneOffset,
+        ],
+      };
+    });
+  }, [selectedBook, selectedDetail]);
 
   useEffect(() => {
     let cancelled = false;
@@ -778,6 +806,7 @@ export function CulturalVeinShell() {
             onHoverBranch={setHoveredBranchId}
             traceFocus={traceFocus}
             sceneFocus={sceneFocus}
+            dockMarkers={riverDockMarkers}
             visibleNodeCount={filteredBooks.length}
             totalNodeCount={riverDataset.books.length}
           />

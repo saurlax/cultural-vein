@@ -20,6 +20,13 @@ export interface RiverBranchAnnotation {
   position: [number, number, number];
 }
 
+export interface RiverDockMarker {
+  id: string;
+  label: string;
+  note?: string;
+  position: [number, number, number];
+}
+
 interface RiverSceneProps {
   books: BookNode[];
   citations: CitationEdge[];
@@ -29,6 +36,7 @@ interface RiverSceneProps {
   viewMode: ViewMode;
   cinematicState?: "idle" | "diving" | "settling" | "returning";
   branchAnnotations?: RiverBranchAnnotation[];
+  dockMarkers?: RiverDockMarker[];
   hoveredBranchId?: string | null;
   onHoverBranch?: (branchId: string | null) => void;
   traceFocus?: TraceFocusState | null;
@@ -673,6 +681,62 @@ function BranchMarkers({
   );
 }
 
+function DockMarkers({
+  dockMarkers,
+  activeColor,
+}: {
+  dockMarkers: RiverDockMarker[];
+  activeColor: string;
+}) {
+  const dockRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (!dockRef.current) {
+      return;
+    }
+
+    dockRef.current.children.forEach((child, index) => {
+      const group = child as THREE.Group;
+      group.position.y = dockMarkers[index]!.position[1] + Math.sin(state.clock.elapsedTime * 0.95 + index * 0.55) * 0.02;
+    });
+  });
+
+  if (dockMarkers.length === 0) {
+    return null;
+  }
+
+  return (
+    <group ref={dockRef}>
+      {dockMarkers.map((dock, index) => (
+        <group key={dock.id} position={dock.position}>
+          <mesh position={[0, 0.12, 0]}>
+            <cylinderGeometry args={[0.02, 0.02, 0.28, 12]} />
+            <meshStandardMaterial color="#e7c97c" emissive={new THREE.Color("#d97706")} emissiveIntensity={0.55} />
+          </mesh>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.025, 0]}>
+            <ringGeometry args={[0.08, 0.15, 28]} />
+            <meshBasicMaterial color={activeColor} transparent opacity={0.34 + index * 0.03} />
+          </mesh>
+          <mesh position={[0, 0.31, 0]}>
+            <sphereGeometry args={[0.045, 16, 16]} />
+            <meshStandardMaterial color="#fde68a" emissive={new THREE.Color(activeColor)} emissiveIntensity={1.25} />
+          </mesh>
+          <Text
+            position={[0, 0.48, 0]}
+            fontSize={0.1}
+            maxWidth={1.3}
+            color="#fef3c7"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {dock.label}
+          </Text>
+        </group>
+      ))}
+    </group>
+  );
+}
+
 function RiverWorld({
   books,
   citations,
@@ -682,6 +746,7 @@ function RiverWorld({
   viewMode,
   cinematicState = "idle",
   branchAnnotations = [],
+  dockMarkers = [],
   hoveredBranchId,
   onHoverBranch,
   traceFocus,
@@ -989,6 +1054,7 @@ function RiverWorld({
         </group>
       ) : null}
       <FocusCurrentAura focusPosition={selectedBookPosition} color={focusAuraColor} />
+      <DockMarkers dockMarkers={dockMarkers} activeColor={focusAuraColor} />
       <BranchMarkers
         annotations={branchAnnotations}
         selectedBookSlug={selectedBookSlug}
