@@ -39,6 +39,29 @@ interface SearchPayload {
   relatedConcepts: string[];
 }
 
+const relationLayerMeta = {
+  metadata: {
+    label: "书目关联",
+    tone:
+      "border-white/12 bg-[rgba(255,248,220,0.05)] text-[#eadfbc]",
+  },
+  explicit: {
+    label: "显式引用",
+    tone:
+      "border-emerald-300/24 bg-emerald-300/10 text-emerald-100",
+  },
+  semantic: {
+    label: "语义关联",
+    tone:
+      "border-amber-300/24 bg-amber-300/10 text-amber-100",
+  },
+  influence: {
+    label: "间接影响",
+    tone:
+      "border-slate-300/18 bg-slate-300/10 text-slate-100",
+  },
+} as const;
+
 const branchAnnotations: RiverBranchAnnotation[] = [
   {
     id: "branch-li-xue",
@@ -182,6 +205,14 @@ export function CulturalVeinShell() {
       );
     });
   }, [filteredBooks]);
+  const relationSummary = useMemo(
+    () =>
+      (Object.keys(relationLayerMeta) as Array<keyof typeof relationLayerMeta>).map((layer) => ({
+        layer,
+        count: visibleCitations.filter((citation) => citation.layer === layer).length,
+      })),
+    [visibleCitations],
+  );
 
   const selectedBook = riverDataset.books.find((book) => book.slug === selectedBookSlug);
   const selectedDetail = riverDataset.booksBySlug[selectedBookSlug];
@@ -481,6 +512,27 @@ export function CulturalVeinShell() {
                 <span className="rounded-full border border-[#ead8a6]/20 bg-[rgba(233,191,86,0.08)] px-3 py-1.5 text-[#fbf3da]">
                   来源 {connectedSourceCount || "--"}
                 </span>
+              </div>
+
+              <div className="mt-4 rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(27,17,7,0.18)] px-4 py-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
+                    关系层级
+                  </div>
+                  <div className="text-[11px] text-[#c9b68a]">
+                    置信度说明
+                  </div>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {relationSummary.map(({ layer, count }) => (
+                    <span
+                      key={layer}
+                      className={`rounded-full border px-3 py-1.5 text-[11px] ${relationLayerMeta[layer].tone}`}
+                    >
+                      {relationLayerMeta[layer].label} {count}
+                    </span>
+                  ))}
+                </div>
               </div>
 
               <div className="mt-4 space-y-3">
@@ -832,6 +884,22 @@ export function CulturalVeinShell() {
                 <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-3">典籍 {filteredBooks.length}</div>
                 <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-3">关系 {visibleCitations.length}</div>
                 <div className="rounded-2xl border border-[#ead8a6]/20 bg-[rgba(233,191,86,0.08)] px-3 py-3 text-[#fbf3da]">来源 {connectedSourceCount || "--"}</div>
+              </div>
+              <div className="mt-4 rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(27,17,7,0.18)] px-4 py-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">关系层级</div>
+                  <div className="text-[11px] text-[#c9b68a]">置信度说明</div>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {relationSummary.map(({ layer, count }) => (
+                    <span
+                      key={`mobile-layer-${layer}`}
+                      className={`rounded-full border px-3 py-1.5 text-[11px] ${relationLayerMeta[layer].tone}`}
+                    >
+                      {relationLayerMeta[layer].label} {count}
+                    </span>
+                  ))}
+                </div>
               </div>
               <label className="mt-4 block">
                 <span className="text-xs tracking-[0.22em] text-[#d8c9a3]">概念检索</span>
