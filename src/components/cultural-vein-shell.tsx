@@ -10,6 +10,8 @@ import type { CitationEdge, DatasetInsight } from "@/types/domain";
 
 const eras = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"] as const;
 const categories = ["全部", "经", "史", "子", "集"] as const;
+const hudPanelClass =
+  "rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,15,0.82),rgba(5,10,10,0.72))] shadow-2xl shadow-black/35 backdrop-blur-xl";
 
 const relationLayerMeta: Record<
   CitationEdge["layer"],
@@ -257,7 +259,7 @@ export function CulturalVeinShell() {
 
       <div className="relative z-10 min-h-screen">
         <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-wrap items-start justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-          <div className="pointer-events-auto max-w-[320px] rounded-[28px] border border-white/10 bg-black/24 px-5 py-4 shadow-2xl shadow-black/35 backdrop-blur-xl">
+          <div className={`pointer-events-auto max-w-[320px] px-5 py-4 ${hudPanelClass}`}>
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[11px] uppercase tracking-[0.32em] text-cyan-100/75">
@@ -277,13 +279,13 @@ export function CulturalVeinShell() {
           </div>
 
           <div className="pointer-events-auto flex flex-wrap gap-2">
-            <div className="rounded-full border border-white/10 bg-black/24 px-4 py-2 text-xs text-stone-300 backdrop-blur-xl">
+            <div className="rounded-full border border-white/10 bg-[linear-gradient(180deg,rgba(11,18,18,0.85),rgba(5,10,10,0.72))] px-4 py-2 text-xs text-stone-300 backdrop-blur-xl">
               可见典籍 {filteredBooks.length}
             </div>
-            <div className="rounded-full border border-white/10 bg-black/24 px-4 py-2 text-xs text-stone-300 backdrop-blur-xl">
+            <div className="rounded-full border border-white/10 bg-[linear-gradient(180deg,rgba(11,18,18,0.85),rgba(5,10,10,0.72))] px-4 py-2 text-xs text-stone-300 backdrop-blur-xl">
               可见关系 {visibleCitations.length}
             </div>
-            <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-4 py-2 text-xs text-cyan-100 backdrop-blur-xl">
+            <div className="rounded-full border border-cyan-300/15 bg-[linear-gradient(180deg,rgba(8,35,35,0.88),rgba(4,12,12,0.72))] px-4 py-2 text-xs text-cyan-100 backdrop-blur-xl">
               真实来源 {connectedSourceCount || "--"}
             </div>
           </div>
@@ -292,7 +294,7 @@ export function CulturalVeinShell() {
         <div className="absolute inset-x-0 top-[108px] z-20 px-4 sm:px-6 lg:px-8">
           <div className="grid gap-4 xl:grid-cols-[280px_minmax(0,1fr)_420px]">
             <aside className="pointer-events-auto xl:pt-2">
-              <div className="rounded-[30px] border border-white/10 bg-black/24 p-4 shadow-2xl shadow-black/35 backdrop-blur-xl">
+              <div className={`p-4 ${hudPanelClass}`}>
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-[11px] uppercase tracking-[0.28em] text-stone-400">
@@ -439,30 +441,52 @@ export function CulturalVeinShell() {
                   : "xl:translate-x-6 xl:opacity-70"
               }`}
             >
-              <div className="max-h-[calc(100vh-170px)] overflow-hidden rounded-[30px] border border-white/10 bg-black/26 p-4 shadow-2xl shadow-black/35 backdrop-blur-xl">
+              <div className={`max-h-[calc(100vh-170px)] overflow-hidden p-4 ${hudPanelClass}`}>
                 {selectedBook && selectedDetail ? (
                   <>
-                    <div className="mb-4 flex flex-wrap items-start justify-between gap-3 rounded-[24px] border border-white/10 bg-white/5 px-4 py-4">
-                      <div>
-                        <div className="text-[11px] uppercase tracking-[0.24em] text-stone-400">
-                          Focus
+                    <div className="mb-4 rounded-[24px] border border-amber-300/16 bg-[linear-gradient(135deg,rgba(54,34,12,0.38),rgba(10,16,16,0.78))] px-4 py-4">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <div className="text-[11px] uppercase tracking-[0.24em] text-amber-100/75">
+                            Focus Dossier
+                          </div>
+                          <div className="mt-1 text-lg font-medium text-stone-50">
+                            {selectedBook.title}
+                          </div>
+                          <div className="mt-1 text-sm text-stone-400">
+                            {selectedBook.dynasty} · {selectedBook.category} · {selectedBook.school}
+                          </div>
                         </div>
-                        <div className="mt-1 text-lg font-medium text-stone-50">
-                          {selectedBook.title}
-                        </div>
-                        <div className="mt-1 text-sm text-stone-400">
-                          {selectedBook.dynasty} · {selectedBook.category} · {selectedBook.school}
+                        <div className="grid gap-2 text-xs text-stone-300">
+                          <div className="rounded-full border border-white/10 bg-black/20 px-3 py-1">
+                            关联 {selectedBookCitations.length} 条
+                          </div>
+                          {selectedSources.length ? (
+                            <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-cyan-100">
+                              {selectedSources.length} 类来源
+                            </div>
+                          ) : null}
                         </div>
                       </div>
-                      <div className="grid gap-2 text-xs text-stone-300">
-                        <div className="rounded-full border border-white/10 bg-black/20 px-3 py-1">
-                          关联 {selectedBookCitations.length} 条
-                        </div>
-                        {selectedSources.length ? (
-                          <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-cyan-100">
-                            {selectedSources.length} 类来源
+                      <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-stone-300">
+                        <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
+                          <div className="text-stone-500">焦点朝代</div>
+                          <div className="mt-1 text-sm font-medium text-stone-100">
+                            {selectedBook.dynasty}
                           </div>
-                        ) : null}
+                        </div>
+                        <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
+                          <div className="text-stone-500">当前模式</div>
+                          <div className="mt-1 text-sm font-medium text-stone-100">
+                            {traceFocus?.active ? "逆流检索" : "典籍钻入"}
+                          </div>
+                        </div>
+                        <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
+                          <div className="text-stone-500">河流联动</div>
+                          <div className="mt-1 text-sm font-medium text-stone-100">
+                            {traceFocus?.active ? `${traceFocus.progress}/${traceFocus.total}` : "就绪"}
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div className="max-h-[calc(100vh-300px)] overflow-auto pr-1">
@@ -503,7 +527,7 @@ export function CulturalVeinShell() {
         </main>
 
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 px-4 pb-4 sm:px-6 lg:px-8">
-          <div className="pointer-events-auto rounded-[28px] border border-white/10 bg-black/20 px-4 py-4 shadow-2xl shadow-black/35 backdrop-blur-xl">
+          <div className={`pointer-events-auto px-4 py-4 ${hudPanelClass}`}>
             <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex flex-wrap gap-2">
                 {layerSummary.map(({ layer, count }) => (
@@ -537,7 +561,7 @@ export function CulturalVeinShell() {
 
         {filteredBooks.length > 0 ? (
           <div className="absolute bottom-[94px] left-4 z-20 hidden w-[280px] xl:block sm:left-6 lg:left-8">
-            <div className="max-h-[300px] overflow-auto rounded-[28px] border border-white/10 bg-black/20 p-4 shadow-xl shadow-black/30 backdrop-blur-xl">
+            <div className={`max-h-[300px] overflow-auto p-4 ${hudPanelClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div className="text-[11px] uppercase tracking-[0.24em] text-stone-400">
                   Visible Nodes
