@@ -209,6 +209,7 @@ export function BookExplorer({
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null);
   const [traceStep, setTraceStep] = useState<number>(0);
   const [tracePlaying, setTracePlaying] = useState(false);
+  const [showSecondaryPeople, setShowSecondaryPeople] = useState(false);
   const bookEraByTitle = useMemo(() => {
     return new Map<string, RiverEra>([
       ["诗经", "先秦"],
@@ -561,6 +562,9 @@ export function BookExplorer({
         })
         .slice(0, 4)
     : [];
+  const secondaryPeopleExpanded =
+    showSecondaryPeople || (activePerson?.relationTier ?? 2) === 2;
+  const visibleSecondaryPeople = secondaryPeopleExpanded ? secondaryPeople : [];
 
   return (
     <div className="space-y-4">
@@ -1138,11 +1142,11 @@ export function BookExplorer({
                           人物关系场
                         </div>
                         <div className="mt-1 text-sm text-stone-300">
-                          点击节点切换焦点人物，关系线区分一级 / 二级关联
+                          默认先显现核心人物，按需展开二级支流，避免关系场一次性过载。
                         </div>
                       </div>
                       <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
-                        {visiblePeople.length} 个节点
+                        核心 {primaryPeople.length} · 支流 {secondaryPeople.length}
                       </div>
                     </div>
 
@@ -1150,7 +1154,7 @@ export function BookExplorer({
                       <PersonNetwork3D
                         book={book}
                         primaryPeople={primaryPeople}
-                        secondaryPeople={secondaryPeople}
+                        secondaryPeople={visibleSecondaryPeople}
                         activePersonId={activePerson?.id ?? null}
                         onSelectPerson={setSelectedPersonId}
                       />
@@ -1178,13 +1182,33 @@ export function BookExplorer({
                         </div>
                       </div>
                       <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-                        <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
-                          二级关联
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                            二级关联
+                          </div>
+                          {secondaryPeople.length ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (
+                                  secondaryPeopleExpanded &&
+                                  activePerson &&
+                                  (activePerson.relationTier ?? 2) === 2
+                                ) {
+                                  setSelectedPersonId(primaryPeople[0]?.id ?? null);
+                                }
+                                setShowSecondaryPeople((current) => !current);
+                              }}
+                              className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-[11px] text-amber-100 transition hover:bg-amber-300/15"
+                            >
+                              {secondaryPeopleExpanded ? "收起支流人物" : "展开支流人物"}
+                            </button>
+                          ) : null}
                         </div>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {secondaryPeople.length === 0 ? (
                             <div className="text-sm text-stone-400">暂未补充二级关系人物。</div>
-                          ) : (
+                          ) : secondaryPeopleExpanded ? (
                             secondaryPeople.map((person) => (
                               <button
                                 key={person.id}
@@ -1199,6 +1223,10 @@ export function BookExplorer({
                                 {person.name} · {person.role}
                               </button>
                             ))
+                          ) : (
+                            <div className="rounded-2xl border border-dashed border-white/10 px-3 py-3 text-sm leading-6 text-stone-400">
+                              先查看作者、注者、编者等核心人物，再按需展开引用者、评论者、校勘者等支流角色。
+                            </div>
                           )}
                         </div>
                       </div>
@@ -1317,7 +1345,7 @@ export function BookExplorer({
                   一级关联优先表示作者、注者、核心编纂者，对应方案中的“中心为典籍，一级关联为作者/注者/编者”。
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
-                  二级关联承载引用者、评论者、校勘者等辅助角色，帮助用户理解文脉在后世如何扩散和再解释。
+                  二级关联改为按需展开，先守住核心结构，再逐步放出引用者、评论者、校勘者等支流角色，更贴近“渐进式展开”的方案要求。
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
                   亮色来源标记说明人物已与纪传资料对照，灰色说明当前仍为整理节点，便于后续继续充实真实人物图谱。
