@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { PersonNetwork3D } from "@/components/person-network-3d";
 import { SpreadGlobe } from "@/components/spread-globe";
 import { VersionTree } from "@/components/version-tree";
+import { buildSourceEvidence } from "@/lib/source-evidence";
 import type { BookDetail, BookNode, RiverEra } from "@/types/domain";
 
 const tabs = [
@@ -418,6 +419,7 @@ export function BookExplorer({
   const sourceBadges = detail.realWorldSignals?.sourceLabel
     ? detail.realWorldSignals.sourceLabel.split("+").map((item) => item.trim()).filter(Boolean)
     : [];
+  const sourceEvidence = useMemo(() => buildSourceEvidence(detail), [detail]);
   const venuePreview = detail.realWorldSignals?.venueSamples?.slice(0, 3) ?? [];
   const eventPreview = detail.realWorldSignals?.eventSamples?.slice(0, 3) ?? [];
   const institutionPreview = detail.realWorldSignals?.institutionSamples?.slice(0, 3) ?? [];
@@ -697,6 +699,58 @@ export function BookExplorer({
               </div>
             </div>
           </div>
+          {sourceEvidence.length ? (
+            <div className="mt-4 rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs tracking-[0.2em] text-amber-100/75">
+                    来源证据总表
+                  </div>
+                  <div className="mt-1 text-sm text-stone-300">
+                    将真实来源按人物、场馆、事件与机构资源归并成可核验的证据条目。
+                  </div>
+                </div>
+                <div className="rounded-full bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
+                  {sourceEvidence.length} 类证据
+                </div>
+              </div>
+              <div className="mt-4 grid gap-3">
+                {sourceEvidence.map((item) => (
+                  <div
+                    key={item.id}
+                    className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div className="text-sm font-medium text-stone-50">
+                          {item.source}
+                        </div>
+                        <div className="mt-1 text-xs text-stone-400">
+                          {item.category}
+                        </div>
+                      </div>
+                      <div className="rounded-full bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
+                        {item.countLabel}
+                      </div>
+                    </div>
+                    <p className="mt-3 text-sm leading-6 text-stone-300">
+                      {item.summary}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {item.samples.map((sample) => (
+                        <span
+                          key={`${item.id}-${sample}`}
+                          className="rounded-full border border-white/10 bg-black/15 px-3 py-1 text-[11px] text-stone-300"
+                        >
+                          {sample}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
           {detail.realWorldSignals.institutionSamples?.length ? (
             <div className="mt-4 rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between gap-3">
