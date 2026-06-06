@@ -89,6 +89,66 @@ function versionTypeClass(type?: string) {
   }
 }
 
+function sourceBadgeClass(source: "real" | "demo" | "hybrid") {
+  if (source === "real") {
+    return "border-cyan-300/25 bg-cyan-300/10 text-cyan-100";
+  }
+
+  if (source === "hybrid") {
+    return "border-amber-300/25 bg-amber-300/10 text-amber-100";
+  }
+
+  return "border-white/10 bg-white/10 text-stone-300";
+}
+
+function spreadSourceMeta(hasVenueSignals: boolean) {
+  if (hasVenueSignals) {
+    return {
+      label: "示范路径 + 上图场馆信号",
+      tone: "hybrid" as const,
+      detail: "传播航段为示范域建模，场馆样本与活动信号来自上海图书馆开放数据。",
+    };
+  }
+
+  return {
+    label: "示范传播建模",
+    tone: "demo" as const,
+    detail: "当前传播路径仍以示范域地理叙事建模为主，后续可继续替换为更完整的馆藏传播证据。",
+  };
+}
+
+function versionSourceMeta(library: string) {
+  if (library.includes("上海") || library.includes("图书馆") || library.includes("馆")) {
+    return {
+      label: "馆藏/书目来源",
+      tone: "hybrid" as const,
+      detail: "版本链以示范域组织，当前节点的馆藏与版本说明已尽量锚定到具体馆藏/系统名称。",
+    };
+  }
+
+  return {
+    label: "示范版本建模",
+    tone: "demo" as const,
+    detail: "当前版本节点用于说明流变结构，后续可继续接入更多真实馆藏或 IIIF 资源。",
+  };
+}
+
+function timelineSourceMeta(source?: "demo" | "cbdb") {
+  if (source === "cbdb") {
+    return {
+      label: "CBDB 活动信号",
+      tone: "real" as const,
+      detail: "该事件由真实人物传记活动地点/时间信号派生，可用于支撑传播叙事。",
+    };
+  }
+
+  return {
+    label: "示范时间节点",
+    tone: "demo" as const,
+    detail: "该事件用于补齐典籍叙事主线，目前仍以示范域时间节点组织为主。",
+  };
+}
+
 export function BookExplorer({
   book,
   detail,
@@ -281,6 +341,11 @@ export function BookExplorer({
   const handleSelectLink = (linkId: string) => {
     setSelectedLinkId(linkId);
   };
+  const spreadMeta = spreadSourceMeta(Boolean(detail.realWorldSignals?.venueSamples?.length));
+  const activeVersionMeta = activeVersion ? versionSourceMeta(activeVersion.library) : null;
+  const activeTimelineMeta = activeTimelineItem
+    ? timelineSourceMeta(activeTimelineItem.source)
+    : null;
 
   return (
     <div className="space-y-4">
@@ -539,13 +604,18 @@ export function BookExplorer({
                               <div className="mt-2 text-sm font-medium text-stone-50">
                                 {fromPlace?.name ?? "未知"} → {toPlace?.name ?? "未知"}
                               </div>
-                              <div className="mt-2 flex items-center gap-2 text-xs text-stone-400">
-                                <span>{item.startYear} - {item.endYear}</span>
-                                <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-cyan-100">
-                                  流量 {item.volume}
-                                </span>
-                              </div>
-                            </button>
+                            <div className="mt-2 flex items-center gap-2 text-xs text-stone-400">
+                              <span>{item.startYear} - {item.endYear}</span>
+                              <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-cyan-100">
+                                流量 {item.volume}
+                              </span>
+                              <span
+                                className={`rounded-full border px-2 py-1 ${sourceBadgeClass(spreadMeta.tone)}`}
+                              >
+                                {spreadMeta.label}
+                              </span>
+                            </div>
+                          </button>
                             {index < visibleSpread.length - 1 ? (
                               <div className="h-px w-8 bg-gradient-to-r from-cyan-300/40 to-transparent" />
                             ) : null}
@@ -572,17 +642,27 @@ export function BookExplorer({
                       ) : null}
                     </div>
 
-                    {activeSpread ? (
-                      <div className="mt-4 space-y-3">
-                        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-                          <div className="flex items-center justify-between gap-3">
-                            <span className="text-sm font-medium text-stone-50">
-                              传播时间
-                            </span>
-                            <span className="text-xs text-stone-400">
-                              {activeSpread.startYear} - {activeSpread.endYear}
-                            </span>
-                          </div>
+                      {activeSpread ? (
+                        <div className="mt-4 space-y-3">
+                          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                            <div className="flex items-center justify-between gap-3">
+                              <span className="text-sm font-medium text-stone-50">
+                                传播时间
+                              </span>
+                              <span className="text-xs text-stone-400">
+                                {activeSpread.startYear} - {activeSpread.endYear}
+                              </span>
+                            </div>
+                            <div className="mt-3 flex flex-wrap items-center gap-2">
+                              <span
+                                className={`rounded-full border px-3 py-1 text-xs ${sourceBadgeClass(spreadMeta.tone)}`}
+                              >
+                                {spreadMeta.label}
+                              </span>
+                              <span className="text-xs text-stone-400">
+                                {spreadMeta.detail}
+                              </span>
+                            </div>
                           <div className="mt-3 h-2 rounded-full bg-white/5">
                             <div
                               className="h-2 rounded-full bg-[linear-gradient(90deg,#67e8f9,#34d399)]"
@@ -701,6 +781,9 @@ export function BookExplorer({
           )}
           <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-sm leading-7 text-stone-300">
             当前传播视图已经具备“航线聚焦 + 地点投影 + 阶段切换”的中观交互骨架，后续再把这套坐标映射接入真正的 3D 地球即可。
+          </div>
+          <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4 text-sm leading-7 text-cyan-50/90">
+            传播层当前采用“示范路径建模 + 上图活动场馆信号补强”的混合口径，既保持叙事连续，也明确区分真实接入与演示性结构。
           </div>
           {detail.realWorldSignals?.venueSamples?.length ? (
             <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
@@ -1086,6 +1169,13 @@ export function BookExplorer({
                               <div className="mt-2 text-xs text-stone-400">
                                 {version.year} · {version.place}
                               </div>
+                              <div className="mt-2">
+                                <span
+                                  className={`rounded-full border px-2 py-1 text-[10px] ${sourceBadgeClass(versionSourceMeta(version.library).tone)}`}
+                                >
+                                  {versionSourceMeta(version.library).label}
+                                </span>
+                              </div>
                             </button>
                             {index < visibleVersions.length - 1 ? (
                               <div className="h-px w-8 bg-gradient-to-r from-amber-300/35 to-transparent" />
@@ -1135,6 +1225,20 @@ export function BookExplorer({
                           <p className="mt-4 text-sm leading-7 text-stone-300">
                             {activeVersion.note}
                           </p>
+                        ) : null}
+                        {activeVersionMeta ? (
+                          <div className="mt-4 rounded-2xl border border-amber-300/12 bg-amber-300/6 px-4 py-4">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span
+                                className={`rounded-full border px-3 py-1 text-xs ${sourceBadgeClass(activeVersionMeta.tone)}`}
+                              >
+                                {activeVersionMeta.label}
+                              </span>
+                              <span className="text-sm text-stone-300">
+                                {activeVersionMeta.detail}
+                              </span>
+                            </div>
+                          </div>
                         ) : null}
 
                         <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -1236,11 +1340,13 @@ export function BookExplorer({
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
                               <div className="text-sm text-amber-100">{item.year}</div>
-                              {item.source === "cbdb" ? (
-                                <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-[10px] text-cyan-100">
-                                  CBDB
-                                </span>
-                              ) : null}
+                              <span
+                                className={`rounded-full border px-2 py-1 text-[10px] ${
+                                  sourceBadgeClass(timelineSourceMeta(item.source).tone)
+                                }`}
+                              >
+                                {timelineSourceMeta(item.source).label}
+                              </span>
                             </div>
                             <div className="mt-1 font-medium text-stone-50">{item.title}</div>
                           </div>
@@ -1274,6 +1380,20 @@ export function BookExplorer({
                       <p className="mt-4 text-sm leading-7 text-stone-300">
                         {activeTimelineItem.detail}
                       </p>
+                      {activeTimelineMeta ? (
+                        <div className="mt-4 rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span
+                              className={`rounded-full border px-3 py-1 text-xs ${sourceBadgeClass(activeTimelineMeta.tone)}`}
+                            >
+                              {activeTimelineMeta.label}
+                            </span>
+                            <span className="text-sm text-stone-300">
+                              {activeTimelineMeta.detail}
+                            </span>
+                          </div>
+                        </div>
+                      ) : null}
 
                       <div className="mt-5 rounded-[22px] border border-white/10 bg-black/15 px-4 py-4">
                         <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
