@@ -380,6 +380,75 @@ export function CulturalVeinShell() {
             </div>
           </div>
 
+          <div className="mt-4 rounded-[28px] border border-amber-300/15 bg-[linear-gradient(135deg,rgba(245,158,11,0.12),rgba(8,17,16,0.92))] px-5 py-5">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+              <div className="max-w-3xl">
+                <div className="text-xs uppercase tracking-[0.24em] text-amber-100/75">
+                  Review Mode
+                </div>
+                <h3 className="mt-2 text-2xl font-semibold text-stone-50">
+                  评审视角下的作品亮点
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-stone-300">
+                  当前版本已经把“河流隐喻 + 典籍多维钻入 + 真实数据样本接入”组织成一套完整演示路径，适合用来回答创新性、数据利用深度、学术严谨性和交互体验这四类核心评审问题。
+                </p>
+              </div>
+              <div className="grid gap-2 text-xs text-stone-200 sm:grid-cols-2 xl:w-[360px]">
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-3">
+                  <div className="text-stone-400">创新隐喻</div>
+                  <div className="mt-2 font-medium text-stone-50">文脉 = 水脉</div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-3">
+                  <div className="text-stone-400">真实来源</div>
+                  <div className="mt-2 font-medium text-stone-50">CBDB + 上图 + 馆藏样例</div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-3">
+                  <div className="text-stone-400">关系分层</div>
+                  <div className="mt-2 font-medium text-stone-50">元数据 / 引用 / 语义 / 影响</div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-3">
+                  <div className="text-stone-400">演示路径</div>
+                  <div className="mt-2 font-medium text-stone-50">总览 → 钻入 → 溯源</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-4 xl:grid-cols-4">
+              <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-amber-100/75">
+                  1. 创新性
+                </div>
+                <p className="mt-3 text-sm leading-7 text-stone-300">
+                  用三维河流替代传统知识图谱 hairball，把时间演化、主干支流与影响强弱压进同一视觉语言。
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-amber-100/75">
+                  2. 数据利用
+                </div>
+                <p className="mt-3 text-sm leading-7 text-stone-300">
+                  不只展示示范域，还把 CBDB、上海图书馆、南京图书馆、复旦大学图书馆的样本信号接入到人物、时间线和机构来源里。
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-amber-100/75">
+                  3. 学术严谨性
+                </div>
+                <p className="mt-3 text-sm leading-7 text-stone-300">
+                  关系按置信层级区分，不把推测包装成事实；真实样本统一带来源说明，方便答辩时解释“哪些是权威数据、哪些是示范补全”。
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-amber-100/75">
+                  4. 交互深度
+                </div>
+                <p className="mt-3 text-sm leading-7 text-stone-300">
+                  宏观层负责看谱系，中观层负责找关系，微观层负责看证据，能支撑展览传播和学术研究两类场景。
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredBooks.length === 0 ? (
               <div className="xl:col-span-3 rounded-[26px] border border-dashed border-white/10 bg-black/10 px-5 py-8 text-sm text-stone-400">
