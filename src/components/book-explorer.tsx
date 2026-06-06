@@ -971,7 +971,7 @@ export function BookExplorer({
               时代联动
             </div>
             <div className="mt-1 text-sm font-medium text-amber-50">
-              当前可见内容已联动到 {activeEra}
+              卷内内容已联动到 {activeEra}
             </div>
           </div>
           <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
@@ -992,7 +992,7 @@ export function BookExplorer({
             事件 {eraLinkedSummary.timeline} 条
           </div>
         </div>
-        <div className="mt-2 text-xs text-amber-100/75">微观文本当前显现 {eraLinkedSummary.passages} 个片段。</div>
+        <div className="mt-2 text-xs text-amber-100/75">微观文本已显出 {eraLinkedSummary.passages} 个片段。</div>
       </section>
 
       <section className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(27,17,7,0.2)] px-4 py-4">
@@ -1002,7 +1002,7 @@ export function BookExplorer({
               卷内分栏
             </div>
             <div className="mt-1 text-sm text-[#fbf3da]">
-              当前停在 {activeTabMeta.label}
+              落在 {activeTabMeta.label}
             </div>
           </div>
         </div>
@@ -1036,7 +1036,7 @@ export function BookExplorer({
               </div>
             </div>
             <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
-              当前采样
+              正在映照
             </div>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -1238,7 +1238,7 @@ export function BookExplorer({
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                    当前资源细览
+                    资源细览
                   </div>
                   <div className="mt-2 text-base font-semibold text-stone-50">
                     {activeInstitutionRecord.title}
@@ -1406,7 +1406,7 @@ export function BookExplorer({
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                          当前证据细览
+                          证据细览
                         </div>
                         <div className="mt-2 text-base font-semibold text-stone-50">
                           {activeSourceEvidence.source}
@@ -2018,7 +2018,7 @@ export function BookExplorer({
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div>
                             <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
-                              当前焦点人物
+                              人物焦点
                             </div>
                             <div className="mt-2 text-2xl font-semibold text-[#fbf3da]">
                               {activePerson.name}
@@ -2065,7 +2065,7 @@ export function BookExplorer({
                             </div>
                             <div className="mt-2 text-sm text-stone-300">
                               {activePerson.source === "cbdb"
-                                ? `当前人物已接入真实人物纪传数据${activePerson.matchedAlias ? `，匹配别名为 ${activePerson.matchedAlias}` : ""}。`
+                                ? `这位人物已接入真实人物纪传数据${activePerson.matchedAlias ? `，匹配别名为 ${activePerson.matchedAlias}` : ""}。`
                                 : "这一人物先作为关系节点入网，可顺着传播与证据继续补全人物轨迹。"}
                             </div>
                             <div className="mt-3 flex flex-wrap gap-2">
@@ -2265,7 +2265,7 @@ export function BookExplorer({
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <div>
                               <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
-                              版本焦点
+                              版本焦点卷
                               </div>
                             <div className="mt-2 text-xl font-semibold text-[#fbf3da]">
                               {activeVersion.label}
@@ -2404,7 +2404,6 @@ export function BookExplorer({
                               </button>
                             ) : (
                               <div className="mt-3 rounded-2xl border border-amber-300/15 bg-amber-300/8 px-3 py-3">
-                                <div className="text-sm text-amber-100">当前节点已经是版本源头。</div>
                                 <div className="text-sm text-amber-100">这层版本已经抵达源头。</div>
                                 <div className="mt-3 flex flex-wrap gap-2">
                                   <button
@@ -2591,7 +2590,7 @@ export function BookExplorer({
                 >
                   <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">祖本入口</div>
                   <div className="mt-2 text-sm font-medium text-[#fbf3da]">
-                    {activeVersionTrail[0]?.label ?? "当前祖本"}
+                    {activeVersionTrail[0]?.label ?? "祖本卷首"}
                   </div>
                   <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
                     直接回到版本链起点，看这部典籍最早显现的版本源头。
@@ -2610,7 +2609,7 @@ export function BookExplorer({
                 >
                   <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">馆藏入口</div>
                   <div className="mt-2 text-sm font-medium text-[#fbf3da]">
-                    {versionEvidenceSamples[0]?.title ?? institutionPreview[0]?.title ?? "当前版本馆藏线索"}
+                    {versionEvidenceSamples[0]?.title ?? institutionPreview[0]?.title ?? "就近馆藏线索"}
                   </div>
                   <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
                     {versionEvidenceSamples.length || institutionPreview.length
@@ -3008,7 +3007,7 @@ export function BookExplorer({
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
                       <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
-                        当前文本片段
+                        文本片段
                       </div>
                       <div className="mt-1 text-lg font-semibold text-[#fbf3da]">
                         {activePassage.section}
@@ -3068,7 +3067,7 @@ export function BookExplorer({
                       </p>
                     </div>
                     <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
-                      当前片段 {activePassage.section}
+                      片段 {activePassage.section}
                     </div>
                   </div>
                   <div className="mt-4 flex flex-wrap gap-2">
@@ -3426,9 +3425,9 @@ export function BookExplorer({
                                     {trace.note}
                                   </p>
                                   <div className="mt-3 flex flex-wrap gap-2">
-                                    <button
-                                      type="button"
-                                      onClick={() => handleOpenTraceBook(trace.title)}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleOpenTraceBook(trace.title)}
                                       disabled={!bookSlugByTitle.has(trace.title)}
                                       className={`rounded-full px-3 py-1.5 text-xs transition ${
                                         bookSlugByTitle.has(trace.title)
@@ -3438,7 +3437,7 @@ export function BookExplorer({
                                     >
                                       {bookSlugByTitle.has(trace.title)
                                         ? "钻入此上游典籍"
-                                        : "暂未挂出典籍入口"}
+                                        : "上游入口待补"}
                                     </button>
                                   </div>
                                 </div>
