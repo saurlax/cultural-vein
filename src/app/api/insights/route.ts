@@ -11,6 +11,7 @@ export function GET() {
           name: "CBDB",
           summary: "纪传人物与朝代分布",
           stat: `${realSupplements.cbdbSummary.personCount?.toLocaleString() ?? "--"} 位人物`,
+          magnitude: realSupplements.cbdbSummary.personCount ?? 0,
           sampleTitles: (realSupplements.cbdbSummary.topDynasties ?? [])
             .slice(0, 3)
             .map((item) => `${item.name} ${item.count}`),
@@ -30,6 +31,10 @@ export function GET() {
           name: "上图活动",
           summary: "场馆活动与预约样本",
           stat: `${realSupplements.shanghaiLibraryActivity.topVenues?.length ?? 0} 组场馆`,
+          magnitude:
+            realSupplements.shanghaiLibraryActivity.sampleRecords?.length ??
+            realSupplements.shanghaiLibraryActivity.topVenues?.length ??
+            0,
           sampleTitles: (realSupplements.shanghaiLibraryActivity.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => item.活动名称 ?? item.场馆名称 ?? "活动资料"),
@@ -49,6 +54,7 @@ export function GET() {
           name: "南京图书馆",
           summary: realSupplements.nanjingLibrarySample.institution,
           stat: `${realSupplements.nanjingLibrarySample.recordCount?.toLocaleString() ?? "--"} 条图像`,
+          magnitude: realSupplements.nanjingLibrarySample.recordCount ?? 0,
           sampleTitles: realSupplements.nanjingLibrarySample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.nanjingLibrarySample.sampleRecords ?? [])
             .slice(0, 3)
@@ -66,6 +72,7 @@ export function GET() {
           name: "复旦馆藏",
           summary: realSupplements.fudanArchiveSample.summary,
           stat: realSupplements.fudanArchiveSample.collectionTitle ?? "近代手稿资料",
+          magnitude: realSupplements.fudanArchiveSample.sampleRecords?.length ?? 0,
           sampleTitles: (realSupplements.fudanArchiveSample.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => item.title),
@@ -85,6 +92,9 @@ export function GET() {
           name: "南湖文献",
           summary: realSupplements.nanhuArchiveSample.summary,
           stat: `${realSupplements.nanhuArchiveSample.documentCount?.toLocaleString() ?? "--"} 篇文献 / ${realSupplements.nanhuArchiveSample.imageCount?.toLocaleString() ?? "--"} 张图像`,
+          magnitude:
+            (realSupplements.nanhuArchiveSample.documentCount ?? 0) +
+            (realSupplements.nanhuArchiveSample.imageCount ?? 0),
           sampleTitles: (realSupplements.nanhuArchiveSample.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => item.title),
@@ -104,6 +114,10 @@ export function GET() {
           name: "深圳图书馆",
           summary: realSupplements.shenzhenLibrarySample.summary,
           stat: `${realSupplements.shenzhenLibrarySample.sampleTitles?.length ?? 0} 组接口`,
+          magnitude:
+            realSupplements.shenzhenLibrarySample.sampleRecords?.length ??
+            realSupplements.shenzhenLibrarySample.sampleTitles?.length ??
+            0,
           sampleTitles: realSupplements.shenzhenLibrarySample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.shenzhenLibrarySample.sampleRecords ?? [])
             .slice(0, 3)
@@ -121,6 +135,10 @@ export function GET() {
           name: "韬奋纪念馆",
           summary: realSupplements.taofenMuseumSample.summary,
           stat: `${realSupplements.taofenMuseumSample.sampleTitles?.length ?? 0} 组出版资料`,
+          magnitude:
+            realSupplements.taofenMuseumSample.sampleRecords?.length ??
+            realSupplements.taofenMuseumSample.sampleTitles?.length ??
+            0,
           sampleTitles: realSupplements.taofenMuseumSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.taofenMuseumSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -138,6 +156,10 @@ export function GET() {
           name: "宋庆龄文献",
           summary: realSupplements.soongLiteratureSample.summary,
           stat: `${realSupplements.soongLiteratureSample.sampleTitles?.length ?? 0} 组人物事件字段`,
+          magnitude:
+            realSupplements.soongLiteratureSample.sampleRecords?.length ??
+            realSupplements.soongLiteratureSample.sampleTitles?.length ??
+            0,
           sampleTitles: realSupplements.soongLiteratureSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.soongLiteratureSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -155,6 +177,10 @@ export function GET() {
           name: "城市专题片",
           summary: realSupplements.videoTopicSample.summary,
           stat: `${realSupplements.videoTopicSample.sampleTitles?.length ?? 0} 组影像`,
+          magnitude:
+            realSupplements.videoTopicSample.sampleRecords?.length ??
+            realSupplements.videoTopicSample.sampleTitles?.length ??
+            0,
           sampleTitles: realSupplements.videoTopicSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.videoTopicSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -172,6 +198,10 @@ export function GET() {
           name: "搜韵图谱",
           summary: realSupplements.souyunKnowledgeGraphSample.summary,
           stat: `${realSupplements.souyunKnowledgeGraphSample.sampleTitles?.length ?? 0} 组接口`,
+          magnitude:
+            realSupplements.souyunKnowledgeGraphSample.sampleRecords?.length ??
+            realSupplements.souyunKnowledgeGraphSample.sampleTitles?.length ??
+            0,
           sampleTitles: realSupplements.souyunKnowledgeGraphSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.souyunKnowledgeGraphSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -189,6 +219,10 @@ export function GET() {
           name: "报刊索引",
           summary: realSupplements.periodicalIndexSample.summary,
           stat: `${realSupplements.periodicalIndexSample.sampleTitles?.length ?? 0} 组期刊`,
+          magnitude:
+            realSupplements.periodicalIndexSample.sampleRecords?.length ??
+            realSupplements.periodicalIndexSample.sampleTitles?.length ??
+            0,
           sampleTitles: realSupplements.periodicalIndexSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.periodicalIndexSample.sampleRecords ?? [])
             .slice(0, 3)

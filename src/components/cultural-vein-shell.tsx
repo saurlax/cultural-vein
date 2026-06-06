@@ -584,11 +584,10 @@ export function CulturalVeinShell() {
   const mergedHighlightedBookSlugs = Array.from(
     new Set([...searchHighlightedSlugs, ...sourceAtlasHighlightedBookSlugs]),
   );
-  const sourceAtlasMass =
-    (insights?.cbdbSummary?.personCount ?? 0) +
-    (insights?.nanjingLibrarySample?.recordCount ?? 0) +
-    (insights?.nanhuArchiveSample?.documentCount ?? 0) +
-    (insights?.nanhuArchiveSample?.imageCount ?? 0);
+  const sourceAtlasMass = sourceAtlasEntries.reduce(
+    (sum, entry) => sum + (entry.magnitude ?? entry.sampleRecords?.length ?? 0),
+    0,
+  );
   const handleSourceAtlasSelect = (entryId: string) => {
     setActiveSourceAtlasId(entryId);
     setSelectedDockId(null);
@@ -842,7 +841,7 @@ export function CulturalVeinShell() {
                         真实数据版图
                       </div>
                       <div className="mt-1 text-sm text-[#fbf3da]">
-                        已接入 {connectedSourceCount} 路来源
+                        已汇入 {connectedSourceCount} 路真实来源
                       </div>
                     </div>
                     <div className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-[10px] text-[#f2dfab]">
