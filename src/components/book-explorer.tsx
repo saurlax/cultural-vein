@@ -12,7 +12,7 @@ const tabs = [
   { id: "passages", label: "文本溯源" },
 ] as const;
 
-type ExplorerTab = (typeof tabs)[number]["id"];
+export type ExplorerTab = (typeof tabs)[number]["id"];
 
 function relationTypeClass(type?: string) {
   switch (type) {
@@ -73,9 +73,11 @@ function versionTypeClass(type?: string) {
 export function BookExplorer({
   book,
   detail,
+  forcedTab,
 }: {
   book: BookNode;
   detail: BookDetail;
+  forcedTab?: ExplorerTab | null;
 }) {
   const [tab, setTab] = useState<ExplorerTab>("spread");
   const [passageLayout, setPassageLayout] = useState<"horizontal" | "vertical">("horizontal");
@@ -124,6 +126,8 @@ export function BookExplorer({
 
     return () => window.clearInterval(timer);
   }, [activePassage?.id, activePassage?.tracePath]);
+
+  const activeTab = forcedTab ?? tab;
 
   const handleSelectPassage = (passageId: string) => {
     setSelectedPassageId(passageId);
@@ -174,7 +178,7 @@ export function BookExplorer({
               type="button"
               onClick={() => setTab(item.id)}
               className={`rounded-full px-3 py-2 text-xs transition ${
-                tab === item.id
+                activeTab === item.id
                   ? "bg-amber-300 text-stone-950"
                   : "border border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
               }`}
@@ -275,7 +279,7 @@ export function BookExplorer({
         </section>
       ) : null}
 
-      {tab === "spread" ? (
+      {activeTab === "spread" ? (
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">地理传播图</h3>
@@ -514,7 +518,7 @@ export function BookExplorer({
         </section>
       ) : null}
 
-      {tab === "people" ? (
+      {activeTab === "people" ? (
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">人物关系网</h3>
@@ -822,7 +826,7 @@ export function BookExplorer({
         </section>
       ) : null}
 
-      {tab === "versions" ? (
+      {activeTab === "versions" ? (
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">版本流变树</h3>
@@ -973,7 +977,7 @@ export function BookExplorer({
         </section>
       ) : null}
 
-      {tab === "timeline" ? (
+      {activeTab === "timeline" ? (
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">关联时间线</h3>
@@ -1126,7 +1130,7 @@ export function BookExplorer({
         </section>
       ) : null}
 
-      {tab === "passages" ? (
+      {activeTab === "passages" ? (
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">文本对读与溯源</h3>

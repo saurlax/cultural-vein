@@ -7,9 +7,84 @@ import { RiverScene } from "@/components/river-scene";
 import { riverDataset } from "@/data/demo-graph";
 import { useCulturalVeinStore } from "@/store/app-store";
 import type { DatasetInsight } from "@/types/domain";
+import type { ExplorerTab } from "@/components/book-explorer";
 
 const eras = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"] as const;
 const categories = ["全部", "经", "史", "子", "集"] as const;
+
+const demoSteps: Array<{
+  id: string;
+  title: string;
+  headline: string;
+  summary: string;
+  talkingPoint: string;
+  era: (typeof eras)[number];
+  category: (typeof categories)[number];
+  searchTerm: string;
+  bookSlug: string;
+  tab: ExplorerTab | null;
+}> = [
+  {
+    id: "macro-river",
+    title: "步骤 1",
+    headline: "宏观河流总览",
+    summary: "先用河流隐喻讲清文脉主干、支流和时代推进，回答“这个项目为什么不是普通图谱”。",
+    talkingPoint: "评审先看到的是整体谱系，而不是一团关系线。",
+    era: "近现代",
+    category: "全部",
+    searchTerm: "",
+    bookSlug: "sishu-zhangju",
+    tab: null,
+  },
+  {
+    id: "core-book",
+    title: "步骤 2",
+    headline: "典籍钻入示范",
+    summary: "从《四书章句集注》切入，展示从总览到单书剖面的钻取路径。",
+    talkingPoint: "这一跳说明平台既能总览，也能落到单个知识对象。",
+    era: "宋元",
+    category: "经",
+    searchTerm: "朱熹",
+    bookSlug: "sishu-zhangju",
+    tab: "spread",
+  },
+  {
+    id: "people-network",
+    title: "步骤 3",
+    headline: "人物与传播网络",
+    summary: "切到人物与传播关系，讲清著者、注者、后继者和传播路径如何交织。",
+    talkingPoint: "这里是中观层，最适合回答“研究价值和扩展空间”。",
+    era: "明清",
+    category: "经",
+    searchTerm: "",
+    bookSlug: "sishu-zhangju",
+    tab: "people",
+  },
+  {
+    id: "text-trace",
+    title: "步骤 4",
+    headline: "文本溯源与置信度",
+    summary: "进入微观层，展示证据卡、置信度分层和逆流而上的溯源链路。",
+    talkingPoint: "这一步用来回答“你们怎么保证严谨，不把推测当事实”。",
+    era: "明清",
+    category: "经",
+    searchTerm: "礼",
+    bookSlug: "sishu-zhangju",
+    tab: "passages",
+  },
+  {
+    id: "real-data",
+    title: "步骤 5",
+    headline: "真实数据来源与扩展性",
+    summary: "回到真实样本覆盖，强调 CBDB、上图、南图、复旦馆藏已经接入到人物、时间线和机构来源。",
+    talkingPoint: "最后把作品从“好看”拉回到“可验证、可持续扩展”。",
+    era: "近现代",
+    category: "全部",
+    searchTerm: "",
+    bookSlug: "shijing",
+    tab: "timeline",
+  },
+];
 
 export function CulturalVeinShell() {
   const {
@@ -25,6 +100,8 @@ export function CulturalVeinShell() {
     resetSelection,
   } = useCulturalVeinStore();
   const [insights, setInsights] = useState<DatasetInsight | null>(null);
+  const [demoMode, setDemoMode] = useState(false);
+  const [demoStepId, setDemoStepId] = useState(demoSteps[0].id);
 
   const filteredBooks = useMemo(() => {
     return riverDataset.books.filter((book) => {
@@ -55,6 +132,8 @@ export function CulturalVeinShell() {
   const selectedBook = riverDataset.books.find((book) => book.slug === selectedBookSlug);
   const selectedDetail = riverDataset.booksBySlug[selectedBookSlug];
   const cbdbSummary = insights?.cbdbSummary;
+  const currentDemoStep =
+    demoSteps.find((step) => step.id === demoStepId) ?? demoSteps[0];
 
   useEffect(() => {
     let cancelled = false;
@@ -82,6 +161,27 @@ export function CulturalVeinShell() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!demoMode) {
+      return;
+    }
+
+    setActiveEra(currentDemoStep.era);
+    setCategoryFilter(currentDemoStep.category);
+    setSearchTerm(currentDemoStep.searchTerm);
+    setSelectedBookSlug(currentDemoStep.bookSlug);
+  }, [
+    currentDemoStep.bookSlug,
+    currentDemoStep.category,
+    currentDemoStep.era,
+    currentDemoStep.searchTerm,
+    demoMode,
+    setActiveEra,
+    setCategoryFilter,
+    setSearchTerm,
+    setSelectedBookSlug,
+  ]);
+
   return (
     <div className="flex min-h-screen flex-col bg-[radial-gradient(circle_at_top,#214d46_0%,#102622_35%,#081512_65%,#050a09_100%)] text-stone-100">
       <header className="border-b border-white/10 bg-black/15 backdrop-blur">
@@ -96,6 +196,24 @@ export function CulturalVeinShell() {
             <p className="max-w-2xl text-sm leading-7 text-stone-300">
               以三维河流隐喻重构典籍传承网络，先完成可演示的 MVP：宏观文脉总览、典籍钻入与文本溯源的统一框架。
             </p>
+            <div className="flex flex-wrap gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setDemoMode((value) => !value)}
+                className={`rounded-full px-4 py-2 text-xs transition ${
+                  demoMode
+                    ? "bg-amber-300 text-stone-950"
+                    : "border border-white/10 bg-white/5 text-stone-200 hover:bg-white/10"
+                }`}
+              >
+                {demoMode ? "退出答辩模式" : "进入答辩模式"}
+              </button>
+              {demoMode ? (
+                <div className="rounded-full border border-amber-300/30 bg-amber-300/10 px-4 py-2 text-xs text-amber-100">
+                  当前演示：{currentDemoStep.headline}
+                </div>
+              ) : null}
+            </div>
           </div>
 
           <div className="grid gap-3 text-sm text-stone-200 sm:grid-cols-2 xl:grid-cols-4">
@@ -121,6 +239,98 @@ export function CulturalVeinShell() {
 
       <div className="mx-auto grid w-full max-w-7xl flex-1 gap-6 px-6 py-6 lg:grid-cols-[320px_minmax(0,1fr)_380px]">
         <aside className="space-y-4 rounded-[28px] border border-white/10 bg-black/20 p-5 shadow-2xl shadow-black/20 backdrop-blur">
+          <section className="rounded-[26px] border border-amber-300/15 bg-[linear-gradient(180deg,rgba(245,158,11,0.12),rgba(12,17,16,0.72))] p-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-xs uppercase tracking-[0.22em] text-amber-100/75">
+                  Guided Demo
+                </div>
+                <h2 className="mt-2 text-lg font-semibold text-stone-50">
+                  答辩演示路径
+                </h2>
+              </div>
+              <div
+                className={`rounded-full px-3 py-1 text-xs ${
+                  demoMode
+                    ? "bg-amber-300 text-stone-950"
+                    : "border border-white/10 bg-white/5 text-stone-300"
+                }`}
+              >
+                {demoMode ? "进行中" : "待开启"}
+              </div>
+            </div>
+            <p className="mt-3 text-sm leading-7 text-stone-300">
+              把当前系统压缩成固定五步讲述顺序，方便现场答辩时稳定输出“创新性、严谨性、数据性、扩展性”。
+            </p>
+            <div className="mt-4 space-y-3">
+              {demoSteps.map((step, index) => {
+                const isActive = step.id === currentDemoStep.id;
+
+                return (
+                  <button
+                    key={step.id}
+                    type="button"
+                    onClick={() => {
+                      setDemoMode(true);
+                      setDemoStepId(step.id);
+                    }}
+                    className={`w-full rounded-[22px] border px-4 py-4 text-left transition ${
+                      isActive
+                        ? "border-amber-300/45 bg-amber-300/10 shadow-lg shadow-amber-500/10"
+                        : "border-white/10 bg-black/15 hover:bg-white/10"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="text-xs uppercase tracking-[0.18em] text-stone-400">
+                          {step.title}
+                        </div>
+                        <div className="mt-2 text-base font-semibold text-stone-50">
+                          {step.headline}
+                        </div>
+                      </div>
+                      <div className="rounded-full bg-white/10 px-3 py-1 text-[11px] text-stone-200">
+                        {index + 1}/5
+                      </div>
+                    </div>
+                    <p className="mt-3 text-sm leading-6 text-stone-300">
+                      {step.summary}
+                    </p>
+                    <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-xs leading-6 text-amber-50/90">
+                      讲解重点：{step.talkingPoint}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+            {demoMode ? (
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentIndex = demoSteps.findIndex((step) => step.id === currentDemoStep.id);
+                    setDemoStepId(demoSteps[Math.max(currentIndex - 1, 0)].id);
+                  }}
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-stone-200 transition hover:bg-white/10"
+                >
+                  上一步
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentIndex = demoSteps.findIndex((step) => step.id === currentDemoStep.id);
+                    setDemoStepId(
+                      demoSteps[Math.min(currentIndex + 1, demoSteps.length - 1)].id,
+                    );
+                  }}
+                  className="rounded-full bg-amber-300 px-3 py-2 text-xs text-stone-950 transition hover:bg-amber-200"
+                >
+                  下一步
+                </button>
+              </div>
+            ) : null}
+          </section>
+
           <section className="space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-medium">宏观控制台</h2>
@@ -510,7 +720,11 @@ export function CulturalVeinShell() {
 
         <aside className="space-y-4 rounded-[28px] border border-white/10 bg-black/20 p-5 shadow-2xl shadow-black/20 backdrop-blur">
           {selectedBook && selectedDetail ? (
-            <BookExplorer book={selectedBook} detail={selectedDetail} />
+            <BookExplorer
+              book={selectedBook}
+              detail={selectedDetail}
+              forcedTab={demoMode ? currentDemoStep.tab : null}
+            />
           ) : null}
         </aside>
       </div>
