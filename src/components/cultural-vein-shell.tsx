@@ -5,10 +5,18 @@ import { useMemo } from "react";
 import { BookExplorer } from "@/components/book-explorer";
 import { RiverScene } from "@/components/river-scene";
 import { riverDataset } from "@/data/demo-graph";
+import realSupplements from "@/data/generated/real-supplements.json";
 import { useCulturalVeinStore } from "@/store/app-store";
 
 const eras = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"] as const;
 const categories = ["全部", "经", "史", "子", "集"] as const;
+const cbdbSummary = realSupplements.cbdbSummary as
+  | {
+      available?: boolean;
+      personCount?: number;
+      topDynasties?: Array<{ name: string; count: number }>;
+    }
+  | undefined;
 
 export function CulturalVeinShell() {
   const {
@@ -215,6 +223,31 @@ export function CulturalVeinShell() {
               </p>
             </div>
           </div>
+
+          {cbdbSummary?.available ? (
+            <div className="mt-4 rounded-[28px] border border-cyan-300/15 bg-cyan-300/5 px-5 py-4">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <div className="text-xs uppercase tracking-[0.22em] text-cyan-100/75">
+                    Real Dataset Coverage
+                  </div>
+                  <div className="mt-1 text-lg font-semibold text-cyan-50">
+                    CBDB 已接入 {cbdbSummary.personCount?.toLocaleString() ?? "未知"} 条人物记录
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(cbdbSummary.topDynasties ?? []).slice(0, 4).map((item) => (
+                    <span
+                      key={item.name}
+                      className="rounded-full border border-cyan-300/15 bg-cyan-300/8 px-3 py-1 text-xs text-cyan-100"
+                    >
+                      {item.name} {item.count.toLocaleString()}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : null}
 
           <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredBooks.map((book) => (

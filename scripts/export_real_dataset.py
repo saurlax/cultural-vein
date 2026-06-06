@@ -29,11 +29,11 @@ CBDB_DB = TMP_DIR / "CBDB_20240208.db"
 SL_ZIP = DATA_DIR / "上海图书馆开放数据2026.zip"
 
 TARGET_PEOPLE = {
-    "朱熹": {"role": "作者"},
-    "孔颖达": {"role": "注者"},
-    "司马光": {"role": "作者"},
-    "顾炎武": {"role": "作者"},
-    "王国维": {"role": "评论者"},
+    "朱熹": {"role": "作者", "aliases": ["朱熹"]},
+    "孔颖达": {"role": "注者", "aliases": ["孔颖达", "孔穎達"]},
+    "司马光": {"role": "作者", "aliases": ["司马光", "司馬光"]},
+    "顾炎武": {"role": "作者", "aliases": ["顾炎武", "顧炎武"]},
+    "王国维": {"role": "评论者", "aliases": ["王国维", "王國維"]},
 }
 
 
@@ -53,23 +53,29 @@ def fetch_cbdb_people() -> list[dict[str, object]]:
     people: list[dict[str, object]] = []
 
     for name, meta in TARGET_PEOPLE.items():
-        cur.execute(
-            """
-            SELECT
-              b.c_personid,
-              b.c_name_chn,
-              b.c_birthyear,
-              b.c_deathyear,
-              d.c_dynasty_chn,
-              b.c_notes
-            FROM BIOG_MAIN b
-            LEFT JOIN DYNASTIES d ON b.c_dy = d.c_dy
-            WHERE b.c_name_chn = ?
-            LIMIT 1
-            """,
-            (name,),
-        )
-        row = cur.fetchone()
+        row = None
+        matched_alias = None
+        for alias in meta["aliases"]:
+            cur.execute(
+                """
+                SELECT
+                  b.c_personid,
+                  b.c_name_chn,
+                  b.c_birthyear,
+                  b.c_deathyear,
+                  d.c_dynasty_chn,
+                  b.c_notes
+                FROM BIOG_MAIN b
+                LEFT JOIN DYNASTIES d ON b.c_dy = d.c_dy
+                WHERE b.c_name_chn = ?
+                LIMIT 1
+                """,
+                (alias,),
+            )
+            row = cur.fetchone()
+            if row is not None:
+                matched_alias = alias
+                break
 
         if row is None:
             people.append(
@@ -77,6 +83,7 @@ def fetch_cbdb_people() -> list[dict[str, object]]:
                     "name": name,
                     "role": meta["role"],
                     "foundInCbdb": False,
+                    "aliasesTried": meta["aliases"],
                 }
             )
             continue
@@ -92,10 +99,41 @@ def fetch_cbdb_people() -> list[dict[str, object]]:
                 "era": row["c_dynasty_chn"] or "未详",
                 "bio": note[:160] if note else "",
                 "foundInCbdb": True,
+                "matchedAlias": matched_alias,
             }
         )
 
     return people
+
+
+def fetch_cbdb_summary() -> dict[str, object]:
+    if not CBDB_DB.exists():
+        return {"available": False, "reason": "db missing"}
+
+    conn = sqlite3.connect(CBDB_DB)
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) FROM BIOG_MAIN")
+    person_count = cur.fetchone()[0]
+
+    cur.execute(
+        """
+        SELECT d.c_dynasty_chn, COUNT(*)
+        FROM BIOG_MAIN b
+        LEFT JOIN DYNASTIES d ON b.c_dy = d.c_dy
+        GROUP BY d.c_dynasty_chn
+        ORDER BY COUNT(*) DESC
+        LIMIT 8
+        """
+    )
+    dynasty_rows = cur.fetchall()
+
+    return {
+        "available": True,
+        "personCount": person_count,
+        "topDynasties": [
+            {"name": row[0] or "未详", "count": row[1]} for row in dynasty_rows
+        ],
+    }
 
 
 def fetch_shanghai_activity_sample() -> dict[str, object]:
@@ -152,6 +190,7 @@ def main() -> None:
     ensure_out_dir()
     payload = {
         "cbdbPeople": fetch_cbdb_people(),
+        "cbdbSummary": fetch_cbdb_summary(),
         "shanghaiLibraryActivity": fetch_shanghai_activity_sample(),
     }
     OUT_FILE.write_text(

@@ -16,6 +16,8 @@ interface RealSupplementPerson {
   era?: string;
   bio?: string;
   foundInCbdb?: boolean;
+  matchedAlias?: string;
+  aliasesTried?: string[];
 }
 
 interface RealSupplementActivity {
@@ -29,6 +31,15 @@ interface RealSupplementActivity {
     活动名称?: string;
     预约状态?: string;
     预约开始时间?: string;
+  }>;
+}
+
+interface RealSupplementCbdbSummary {
+  available?: boolean;
+  personCount?: number;
+  topDynasties?: Array<{
+    name: string;
+    count: number;
   }>;
 }
 
@@ -759,6 +770,7 @@ const placeholderDetail = (book: BookNode): BookDetail => ({
 });
 
 const cbdbPeople = (realSupplements.cbdbPeople ?? []) as RealSupplementPerson[];
+const cbdbSummary = (realSupplements.cbdbSummary ?? {}) as RealSupplementCbdbSummary;
 const shanghaiLibraryActivity = (realSupplements.shanghaiLibraryActivity ??
   {}) as RealSupplementActivity;
 
@@ -777,7 +789,7 @@ function mergePeople(
 
       return {
         id: person.id ?? `fallback-${person.name}`,
-        name: person.name,
+        name,
         role: person.role,
         birthYear: person.birthYear ?? null,
         deathYear: person.deathYear ?? null,
@@ -968,6 +980,24 @@ if (shanghaiLibraryActivity.available) {
           : "已接入上海图书馆活动样本。",
       venueSamples,
       eventSamples: eventSamples.slice(0, 3),
+    };
+  }
+}
+
+if (cbdbSummary.available) {
+  const topDynastyLine = (cbdbSummary.topDynasties ?? [])
+    .slice(0, 3)
+    .map((item) => `${item.name} ${item.count.toLocaleString()}`)
+    .join(" / ");
+
+  for (const slug of ["shijing", "sishu-zhangju", "shiji", "zi-zhi-tong-jian"] as const) {
+    const detail = details[slug];
+    detail.realWorldSignals = {
+      ...detail.realWorldSignals,
+      sourceLabel: detail.realWorldSignals?.sourceLabel ?? "CBDB + 上图数据",
+      venueSummary:
+        detail.realWorldSignals?.venueSummary ??
+        `CBDB 当前可用人物 ${cbdbSummary.personCount?.toLocaleString() ?? "未知"} 条；高频朝代样本为 ${topDynastyLine}。`,
     };
   }
 }
