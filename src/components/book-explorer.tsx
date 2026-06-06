@@ -169,6 +169,7 @@ export function BookExplorer({
   activeEra,
   onTraceFocusChange,
   onSceneFocusChange,
+  onOpenBook,
 }: {
   book: BookNode;
   detail: BookDetail;
@@ -176,6 +177,7 @@ export function BookExplorer({
   activeEra: RiverEra;
   onTraceFocusChange?: (focus: TraceFocusState | null) => void;
   onSceneFocusChange?: (focus: SceneFocusState | null) => void;
+  onOpenBook?: (slug: string) => void;
 }) {
   const [tab, setTab] = useState<ExplorerTab>("spread");
   const [passageLayout, setPassageLayout] = useState<"horizontal" | "vertical">("horizontal");
@@ -441,6 +443,13 @@ export function BookExplorer({
 
   const handleSelectLink = (linkId: string) => {
     setSelectedLinkId(linkId);
+  };
+  const handleOpenLinkedBook = () => {
+    if (!activeLink?.sourceBookId) {
+      return;
+    }
+
+    onOpenBook?.(activeLink.sourceBookId);
   };
   const handleStartTrace = () => {
     if (!activePassage?.tracePath?.length) {
@@ -1680,11 +1689,22 @@ export function BookExplorer({
 
                     {activeLink ? (
                       <div className="mt-4 rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4">
-                        <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                          当前聚焦证据
-                        </div>
-                        <div className="mt-2 text-sm font-medium text-amber-50">
-                          {activeLink.sourceTitle}
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <div className="text-xs tracking-[0.2em] text-amber-100/75">
+                              当前聚焦证据
+                            </div>
+                            <div className="mt-2 text-sm font-medium text-amber-50">
+                              {activeLink.sourceTitle}
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleOpenLinkedBook}
+                            className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-2 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                          >
+                            跳转源典籍
+                          </button>
                         </div>
                         <p className="mt-2 text-sm leading-7 text-amber-50/90">
                           {activeLink.evidence}

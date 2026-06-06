@@ -835,6 +835,7 @@ export function CulturalVeinShell() {
                         activeEra={activeEra}
                         onTraceFocusChange={setTraceFocus}
                         onSceneFocusChange={setSceneFocus}
+                        onOpenBook={handleDiveToBook}
                       />
                     </div>
                   </div>
@@ -1026,6 +1027,7 @@ export function CulturalVeinShell() {
                       detail={selectedDetail}
                       activeEra={activeEra}
                       onTraceFocusChange={setTraceFocus}
+                      onOpenBook={handleDiveToBook}
                     />
                   </div>
                 </div>
