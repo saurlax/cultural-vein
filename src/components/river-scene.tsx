@@ -836,7 +836,7 @@ function BookMarkers({
               anchorY="middle"
             >
               {isTraceCurrent
-                ? `${book.shortTitle} · 当前溯源`
+                ? `${book.shortTitle} · 正在溯源`
                 : isSceneFocused
                   ? `${book.shortTitle} · 场景联动`
                   : isHovered
@@ -1896,7 +1896,7 @@ export function RiverScene(props: RiverSceneProps) {
         : hoveredBranch
           ? `${hoveredBranch.label} 正在显现，顺着支流可进入对应典籍。`
           : props.selectedBookSlug
-            ? "焦点典籍已锁定，可继续展开文卷或归河巡看。"
+            ? "入卷典籍已停稳，可继续展开文卷或归河巡看。"
             : cruiseRunning
               ? "镜头正沿河巡航，可暂停后手动拖拽细看节点。"
               : "拖动河面巡看节点，悬停会提示，点击即可入卷。";

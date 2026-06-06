@@ -847,7 +847,7 @@ export function CulturalVeinShell() {
                     </div>
                   </div>
                   <div className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">
-                    当前题签
+                    长卷题签
                   </div>
                 </div>
 
@@ -898,7 +898,7 @@ export function CulturalVeinShell() {
                       </div>
                     ) : resolvedSearchResult?.query && !searchPending ? (
                       <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3">
-                        <div className="text-sm text-[#eadfbc]">当前检索词还没有直接照见河上节点。</div>
+                        <div className="text-sm text-[#eadfbc]">这个检索词还没有直接照见河上节点。</div>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {searchSuggestionChips.slice(0, 3).map((concept) => (
                             <button
@@ -1139,7 +1139,7 @@ export function CulturalVeinShell() {
                       </div>
                       <div className="mt-2 flex items-center gap-3">
                         <div className="rounded-full border border-[#ead8a6]/24 bg-[rgba(255,248,220,0.08)] px-3 py-1 text-[11px] text-[#eadfbc]">
-                          焦点典籍
+                          入卷典籍
                         </div>
                         <div className="text-sm text-[#d8c9a3]">{selectedBook.dynasty}</div>
                       </div>
@@ -1351,7 +1351,7 @@ export function CulturalVeinShell() {
                               </div>
                             </div>
                             <div className="shrink-0 text-[10px] text-[#f2dfab]">
-                              {isActive ? "当前" : route ? "在河上" : "可切换"}
+                              {isActive ? "已映照" : route ? "在河上" : "待切入"}
                             </div>
                           </button>
                         );
@@ -1587,7 +1587,7 @@ export function CulturalVeinShell() {
                 </>
               ) : null}
               <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(27,17,7,0.18)] px-3 py-3 text-sm text-[#eadfbc]">
-                当前河段推进到 {activeEra}，河上保留 {categoryFilter} 与 {schoolFilter} 的主线节点。
+                这道河段推进到 {activeEra}，河上保留 {categoryFilter} 与 {schoolFilter} 的主线节点。
               </div>
             </div>
           </div>
@@ -1599,7 +1599,7 @@ export function CulturalVeinShell() {
               <div className="rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(245,231,188,0.16),rgba(104,72,25,0.14))] p-3">
                 <div className="flex items-start justify-between gap-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(61,40,11,0.42)] px-4 py-3">
                   <div>
-                    <div className="text-[11px] tracking-[0.24em] text-[#f2dfab]/80">焦点文卷</div>
+                    <div className="text-[11px] tracking-[0.24em] text-[#f2dfab]/80">入卷文卷</div>
                     <div className="mt-1 text-lg font-medium text-[#fbf3da]">{selectedBook.title}</div>
                     <div className="mt-1 text-xs text-[#eadfbc]">
                       {selectedBook.dynasty} · {focusModeLabel}
