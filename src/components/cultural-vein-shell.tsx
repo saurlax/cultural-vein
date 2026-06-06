@@ -830,15 +830,27 @@ export function CulturalVeinShell() {
               </div>
 
               <div className="mt-4 flex flex-wrap gap-2 text-[11px] text-[#eadfbc]">
-                <span className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5">
+                <button
+                  type="button"
+                  onClick={() => setActiveDesktopPanel("search")}
+                  className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 transition hover:bg-[rgba(255,248,220,0.1)]"
+                >
                   典籍 {filteredBooks.length}
-                </span>
-                <span className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5">
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveDesktopPanel("branch")}
+                  className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 transition hover:bg-[rgba(255,248,220,0.1)]"
+                >
                   关系 {visibleCitations.length}
-                </span>
-                <span className="rounded-full border border-[#ead8a6]/20 bg-[rgba(233,191,86,0.08)] px-3 py-1.5 text-[#fbf3da]">
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveDesktopPanel("branch")}
+                  className="rounded-full border border-[#ead8a6]/20 bg-[rgba(233,191,86,0.08)] px-3 py-1.5 text-[#fbf3da] transition hover:bg-[rgba(233,191,86,0.14)]"
+                >
                   来源 {connectedSourceCount || "--"}
-                </span>
+                </button>
               </div>
 
               <div className="mt-4 flex flex-wrap gap-2">
@@ -1110,7 +1122,11 @@ export function CulturalVeinShell() {
                           ))}
                         </div>
                         {activeSourceAtlasEntry ? (
-                          <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                          <button
+                            type="button"
+                            onClick={() => handleSourceAtlasSelect(activeSourceAtlasEntry.id)}
+                            className="mt-3 w-full rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                          >
                             <div className="flex items-start justify-between gap-3">
                               <div className="min-w-0">
                                 <div className="truncate text-xs font-medium text-[#fbf3da]">
@@ -1124,7 +1140,10 @@ export function CulturalVeinShell() {
                                 {activeSourceAtlasEntry.stat}
                               </div>
                             </div>
-                          </div>
+                            <div className="mt-3 text-[11px] text-[#e6d7ae]">
+                              继续把这组真实来源映上河面，并顺着样本码头切入对应河段。
+                            </div>
+                          </button>
                         ) : null}
                       </div>
                     ) : null}
