@@ -59,6 +59,14 @@ export function GET() {
           sampleTitles: realSupplements.shenzhenLibrarySample.sampleTitles,
         }
       : undefined,
+    taofenMuseumSample: realSupplements.taofenMuseumSample
+      ? {
+          available: realSupplements.taofenMuseumSample.available,
+          institution: realSupplements.taofenMuseumSample.institution,
+          collectionTitle: realSupplements.taofenMuseumSample.collectionTitle,
+          sampleTitles: realSupplements.taofenMuseumSample.sampleTitles,
+        }
+      : undefined,
   };
 
   return NextResponse.json(payload);

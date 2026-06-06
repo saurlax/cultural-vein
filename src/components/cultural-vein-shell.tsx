@@ -357,6 +357,14 @@ export function CulturalVeinShell() {
         : insights?.shenzhenLibrarySample?.collectionTitle ?? "专题接口样本",
       detail: "深圳记忆专题库与城市景观雕塑数据库字段样本，可支撑专题记忆、空间位置与相关人物叙事扩展。",
     },
+    {
+      name: "韬奋纪念馆 API",
+      status: insights?.taofenMuseumSample?.available ? "已接入" : "待补充",
+      scale: insights?.taofenMuseumSample?.sampleTitles?.length
+        ? `${insights.taofenMuseumSample.sampleTitles.length} 组出版文化接口样本`
+        : insights?.taofenMuseumSample?.collectionTitle ?? "出版文化接口样本",
+      detail: "机构年表、人物年表、图书列表与人物关系接口样本，适合补强近现代出版文化与人物网络叙事。",
+    },
   ];
   const visibleBranchAnnotations = branchAnnotations.filter((annotation) => {
     const targetBook = riverDataset.books.find((book) => book.slug === annotation.targetSlug);

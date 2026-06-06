@@ -2215,5 +2215,42 @@
         "sourceText": "支持题名、作品时间、雕塑位置、经纬度、作品类型、材质、所在城市等字段抽取。"
       }
     ]
+  },
+  "taofenMuseumSample": {
+    "available": true,
+    "institution": "韬奋纪念馆",
+    "collectionTitle": "近现代出版文化 API 样本",
+    "summary": "韬奋纪念馆开放接口覆盖机构年表、人物年表、图书列表与邹韬奋人物关系，可为近现代出版文化、人物网络和事件时间线提供稳定样本。 当前文档已明确列出邹韬奋人物关系与图书列表等接口方向。",
+    "sampleTitles": [
+      "机构年表接口",
+      "人物年表接口",
+      "图书列表与人物关系接口"
+    ],
+    "sampleRecords": [
+      {
+        "institution": "韬奋纪念馆",
+        "title": "机构年表接口",
+        "category": "机构年表 / API",
+        "year": "2024",
+        "imageRef": "",
+        "sourceText": "可按起止时间与关键词查询机构年表，适合补充出版文化机构传播线索。"
+      },
+      {
+        "institution": "韬奋纪念馆",
+        "title": "人物年表接口",
+        "category": "人物年表 / API",
+        "year": "2024",
+        "imageRef": "",
+        "sourceText": "提供人物年表查询，适合补强近现代人物活动时间线。"
+      },
+      {
+        "institution": "韬奋纪念馆",
+        "title": "图书列表与人物关系接口",
+        "category": "图书目录 / 人物关系",
+        "year": "2024",
+        "imageRef": "",
+        "sourceText": "提供图书列表与邹韬奋人物关系数据，适合扩展出版史与文化人物关系叙事。"
+      }
+    ]
   }
 }

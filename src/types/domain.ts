@@ -218,6 +218,12 @@ export interface DatasetInsight {
     collectionTitle?: string;
     sampleTitles?: string[];
   };
+  taofenMuseumSample?: {
+    available?: boolean;
+    institution?: string;
+    collectionTitle?: string;
+    sampleTitles?: string[];
+  };
 }
 
 export interface RiverDataset {

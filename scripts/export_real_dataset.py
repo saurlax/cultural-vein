@@ -12,8 +12,10 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import subprocess
 import zipfile
 from pathlib import Path
+from shutil import which
 
 import pandas as pd
 
@@ -32,6 +34,7 @@ FUDAN_ZIP = DATA_DIR / "复旦大学图书馆.zip"
 NANHU_RAR = DATA_DIR / "南湖文献数据.rar"
 VIDEO_TOPIC_RAR = DATA_DIR / "专题片数据.rar"
 SZ_ZIP = DATA_DIR / "深圳图书馆2024.zip"
+TAOFEN_PDF = DATA_DIR / "API_韬奋纪念馆.pdf"
 
 DEMO_BOOKS = [
     {
@@ -2009,6 +2012,78 @@ def fetch_shenzhen_library_sample() -> dict[str, object]:
     }
 
 
+def extract_pdf_text(path: Path, page_to: int = 3) -> str:
+    pdftotext = which("pdftotext")
+    if not pdftotext or not path.exists():
+        return ""
+
+    out_path = WORK_DIR / f"{path.stem}.txt"
+    result = subprocess.run(
+        [pdftotext, "-f", "1", "-l", str(page_to), "-enc", "UTF-8", "-nopgbrk", str(path), str(out_path)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="ignore",
+        check=False,
+    )
+    if result.returncode != 0 or not out_path.exists():
+        return ""
+
+    return out_path.read_text(encoding="utf-8", errors="ignore")
+
+
+def fetch_taofen_museum_sample() -> dict[str, object]:
+    if not TAOFEN_PDF.exists():
+        return {"available": False, "reason": "pdf missing"}
+
+    text = extract_pdf_text(TAOFEN_PDF, page_to=4)
+    if not text:
+        return {"available": False, "reason": "pdftotext unavailable"}
+
+    sample_records = [
+        {
+            "institution": "韬奋纪念馆",
+            "title": "机构年表接口",
+            "category": "机构年表 / API",
+            "year": "2024",
+            "imageRef": "",
+            "sourceText": "可按起止时间与关键词查询机构年表，适合补充出版文化机构传播线索。",
+        },
+        {
+            "institution": "韬奋纪念馆",
+            "title": "人物年表接口",
+            "category": "人物年表 / API",
+            "year": "2024",
+            "imageRef": "",
+            "sourceText": "提供人物年表查询，适合补强近现代人物活动时间线。",
+        },
+        {
+            "institution": "韬奋纪念馆",
+            "title": "图书列表与人物关系接口",
+            "category": "图书目录 / 人物关系",
+            "year": "2024",
+            "imageRef": "",
+            "sourceText": "提供图书列表与邹韬奋人物关系数据，适合扩展出版史与文化人物关系叙事。",
+        },
+    ]
+
+    summary = (
+        "韬奋纪念馆开放接口覆盖机构年表、人物年表、图书列表与邹韬奋人物关系，"
+        "可为近现代出版文化、人物网络和事件时间线提供稳定样本。"
+    )
+    if "邹韬奋人物关系" in text:
+        summary += " 当前文档已明确列出邹韬奋人物关系与图书列表等接口方向。"
+
+    return {
+        "available": True,
+        "institution": "韬奋纪念馆",
+        "collectionTitle": "近现代出版文化 API 样本",
+        "summary": summary[:280],
+        "sampleTitles": [record["title"] for record in sample_records],
+        "sampleRecords": sample_records,
+    }
+
+
 def main() -> None:
     ensure_out_dir()
     cbdb_people = fetch_cbdb_people()
@@ -2045,6 +2120,7 @@ def main() -> None:
         "nanhuArchiveSample": fetch_nanhu_archive_sample(),
         "videoTopicSample": fetch_video_topic_sample(),
         "shenzhenLibrarySample": fetch_shenzhen_library_sample(),
+        "taofenMuseumSample": fetch_taofen_museum_sample(),
     }
     OUT_FILE.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2),

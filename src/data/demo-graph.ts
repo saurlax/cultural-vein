@@ -147,6 +147,22 @@ interface RealSupplementShenzhenLibrarySample {
   }>;
 }
 
+interface RealSupplementTaofenMuseumSample {
+  available?: boolean;
+  institution?: string;
+  collectionTitle?: string;
+  summary?: string;
+  sampleTitles?: string[];
+  sampleRecords?: Array<{
+    institution: string;
+    title: string;
+    category?: string;
+    year?: string;
+    imageRef?: string;
+    sourceText?: string;
+  }>;
+}
+
 interface RealSupplementCbdbSummary {
   available?: boolean;
   personCount?: number;
@@ -229,6 +245,8 @@ const videoTopicSample = (realSupplements.videoTopicSample ??
   {}) as RealSupplementVideoTopicSample;
 const shenzhenLibrarySample = (realSupplements.shenzhenLibrarySample ??
   {}) as RealSupplementShenzhenLibrarySample;
+const taofenMuseumSample = (realSupplements.taofenMuseumSample ??
+  {}) as RealSupplementTaofenMuseumSample;
 
 const personByName = new Map(cbdbPeople.map((person) => [person.name, person]));
 
@@ -398,6 +416,27 @@ if (shenzhenLibrarySample.available) {
         detail.realWorldSignals?.venueSummary ??
         shenzhenLibrarySample.summary ??
         "已接入深圳图书馆专题文化接口样本。",
+    };
+  }
+}
+
+if (taofenMuseumSample.available) {
+  const institutionSamples = (taofenMuseumSample.sampleRecords ?? []).slice(0, 3);
+  for (const slug of ["ren-jian-ci-hua", "ri-zhi-lu"] as const) {
+    const detail = details[slug];
+    detail.realWorldSignals = {
+      ...detail.realWorldSignals,
+      sourceLabel: detail.realWorldSignals?.sourceLabel
+        ? `${detail.realWorldSignals.sourceLabel} + 韬奋纪念馆 API 样本`
+        : "韬奋纪念馆 API 样本",
+      institutionSamples: [
+        ...(detail.realWorldSignals?.institutionSamples ?? []),
+        ...institutionSamples,
+      ],
+      venueSummary:
+        detail.realWorldSignals?.venueSummary ??
+        taofenMuseumSample.summary ??
+        "已接入韬奋纪念馆近现代出版文化 API 样本。",
     };
   }
 }
