@@ -237,6 +237,17 @@ export function CulturalVeinShell() {
     insights?.souyunKnowledgeGraphSample?.available,
     insights?.periodicalIndexSample?.available,
   ].filter(Boolean).length;
+  const focusModeLabel = traceFocus?.active
+    ? "逆流溯源"
+    : viewMode === "book"
+      ? "典籍钻入"
+      : "河流巡航";
+  const dossierToneClass = traceFocus?.active
+    ? "border-cyan-300/18 bg-[linear-gradient(135deg,rgba(8,54,58,0.5),rgba(10,16,16,0.78))]"
+    : transitionState === "diving" || transitionState === "settling"
+      ? "border-amber-300/18 bg-[linear-gradient(135deg,rgba(62,42,12,0.46),rgba(10,16,16,0.78))]"
+      : "border-amber-300/16 bg-[linear-gradient(135deg,rgba(54,34,12,0.38),rgba(10,16,16,0.78))]";
+  const visibleNodePreview = filteredBooks.slice(0, 5);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#050a09] text-stone-100">
@@ -416,6 +427,35 @@ export function CulturalVeinShell() {
                   </div>
                 </div>
 
+                {viewMode === "river" && visibleNodePreview.length ? (
+                  <div className="mt-4 rounded-[24px] border border-white/10 bg-black/18 px-4 py-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-[11px] uppercase tracking-[0.24em] text-stone-400">
+                        当前河段
+                      </div>
+                      <div className="text-[11px] text-stone-500">
+                        {filteredBooks.length} 本
+                      </div>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {visibleNodePreview.map((book) => (
+                        <button
+                          key={book.id}
+                          type="button"
+                          onClick={() => handleDiveToBook(book.slug)}
+                          className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                            selectedBookSlug === book.slug
+                              ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
+                              : "border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                          }`}
+                        >
+                          {book.shortTitle}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
                 {activeBranchAnnotation ? (
                   <div className="mt-4 rounded-[26px] border border-cyan-300/14 bg-cyan-300/6 px-4 py-4">
                     <div className="text-[11px] uppercase tracking-[0.24em] text-cyan-100/75">
@@ -444,10 +484,22 @@ export function CulturalVeinShell() {
               <div className={`max-h-[calc(100vh-170px)] overflow-hidden p-4 ${hudPanelClass}`}>
                 {selectedBook && selectedDetail ? (
                   <>
-                    <div className="mb-4 rounded-[24px] border border-amber-300/16 bg-[linear-gradient(135deg,rgba(54,34,12,0.38),rgba(10,16,16,0.78))] px-4 py-4">
+                    <div
+                      className={`mb-4 rounded-[24px] px-4 py-4 transition-all duration-500 ${dossierToneClass} ${
+                        traceFocus?.active
+                          ? "shadow-[0_0_28px_rgba(34,211,238,0.12)]"
+                          : transitionState === "diving" || transitionState === "settling"
+                            ? "shadow-[0_0_24px_rgba(245,158,11,0.1)]"
+                            : ""
+                      }`}
+                    >
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
-                          <div className="text-[11px] uppercase tracking-[0.24em] text-amber-100/75">
+                          <div
+                            className={`text-[11px] uppercase tracking-[0.24em] ${
+                              traceFocus?.active ? "text-cyan-100/75" : "text-amber-100/75"
+                            }`}
+                          >
                             Focus Dossier
                           </div>
                           <div className="mt-1 text-lg font-medium text-stone-50">
@@ -460,6 +512,15 @@ export function CulturalVeinShell() {
                         <div className="grid gap-2 text-xs text-stone-300">
                           <div className="rounded-full border border-white/10 bg-black/20 px-3 py-1">
                             关联 {selectedBookCitations.length} 条
+                          </div>
+                          <div
+                            className={`rounded-full px-3 py-1 ${
+                              traceFocus?.active
+                                ? "border border-cyan-300/20 bg-cyan-300/10 text-cyan-100"
+                                : "border border-amber-300/20 bg-amber-300/10 text-amber-100"
+                            }`}
+                          >
+                            {focusModeLabel}
                           </div>
                           {selectedSources.length ? (
                             <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-cyan-100">
@@ -478,7 +539,7 @@ export function CulturalVeinShell() {
                         <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
                           <div className="text-stone-500">当前模式</div>
                           <div className="mt-1 text-sm font-medium text-stone-100">
-                            {traceFocus?.active ? "逆流检索" : "典籍钻入"}
+                            {focusModeLabel}
                           </div>
                         </div>
                         <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
@@ -558,41 +619,6 @@ export function CulturalVeinShell() {
             </div>
           </div>
         </div>
-
-        {filteredBooks.length > 0 ? (
-          <div className="absolute bottom-[94px] left-4 z-20 hidden w-[280px] xl:block sm:left-6 lg:left-8">
-            <div className={`max-h-[300px] overflow-auto p-4 ${hudPanelClass}`}>
-              <div className="flex items-center justify-between gap-3">
-                <div className="text-[11px] uppercase tracking-[0.24em] text-stone-400">
-                  Visible Nodes
-                </div>
-                <div className="text-xs text-stone-500">{filteredBooks.length} 本</div>
-              </div>
-              <div className="mt-3 grid gap-2">
-                {filteredBooks.slice(0, 8).map((book) => (
-                  <button
-                    key={book.id}
-                    type="button"
-                    onClick={() => handleDiveToBook(book.slug)}
-                    className={`rounded-2xl border px-3 py-3 text-left transition ${
-                      selectedBookSlug === book.slug
-                        ? "border-amber-300/35 bg-amber-300/10"
-                        : "border-white/10 bg-white/5 hover:bg-white/10"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="text-sm font-medium text-stone-50">{book.title}</div>
-                      <div className="text-[11px] text-stone-500">{book.dynasty}</div>
-                    </div>
-                    <div className="mt-1 text-xs text-stone-400">
-                      {book.category} · {book.school}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : null}
       </div>
     </div>
   );
