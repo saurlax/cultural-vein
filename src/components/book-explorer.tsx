@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import type { BookDetail, BookNode } from "@/types/domain";
+import type { BookDetail, BookNode, RiverEra } from "@/types/domain";
 
 const tabs = [
   { id: "spread", label: "地理传播" },
@@ -13,6 +13,16 @@ const tabs = [
 ] as const;
 
 export type ExplorerTab = (typeof tabs)[number]["id"];
+const eraOrder: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
+const eraYearRange: Record<RiverEra, { start: number; end: number }> = {
+  "先秦": { start: -2000, end: -221 },
+  "两汉": { start: -220, end: 220 },
+  "魏晋": { start: 221, end: 589 },
+  "隋唐": { start: 581, end: 907 },
+  "宋元": { start: 960, end: 1368 },
+  "明清": { start: 1369, end: 1911 },
+  "近现代": { start: 1912, end: 9999 },
+};
 
 function relationTypeClass(type?: string) {
   switch (type) {
@@ -74,10 +84,12 @@ export function BookExplorer({
   book,
   detail,
   forcedTab,
+  activeEra,
 }: {
   book: BookNode;
   detail: BookDetail;
   forcedTab?: ExplorerTab | null;
+  activeEra: RiverEra;
 }) {
   const [tab, setTab] = useState<ExplorerTab>("spread");
   const [passageLayout, setPassageLayout] = useState<"horizontal" | "vertical">("horizontal");
@@ -88,16 +100,56 @@ export function BookExplorer({
   const [selectedPassageId, setSelectedPassageId] = useState<string | null>(null);
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null);
   const [traceStep, setTraceStep] = useState<number>(0);
-  const primaryPeople = detail.people.filter((person) => (person.relationTier ?? 2) === 1);
-  const secondaryPeople = detail.people.filter((person) => (person.relationTier ?? 2) === 2);
+  const activeEraIndex = eraOrder.indexOf(activeEra);
+  const activeEraRange = eraYearRange[activeEra];
+  const visibleSpread = useMemo(
+    () => detail.spread.filter((item) => item.startYear <= activeEraRange.end),
+    [activeEraRange.end, detail.spread],
+  );
+  const visiblePeople = useMemo(() => {
+    return detail.people.filter((person) => {
+      if (person.birthYear || person.deathYear) {
+        const first = person.birthYear ?? person.deathYear ?? activeEraRange.start;
+        return first <= activeEraRange.end;
+      }
+
+      return eraOrder.findIndex((era) => person.era.includes(era)) <= activeEraIndex;
+    });
+  }, [activeEraIndex, activeEraRange.end, activeEraRange.start, detail.people]);
+  const visibleVersions = useMemo(
+    () => detail.versions.filter((version) => version.year <= activeEraRange.end),
+    [activeEraRange.end, detail.versions],
+  );
+  const visibleTimeline = useMemo(
+    () => detail.timeline.filter((item) => item.year <= activeEraRange.end),
+    [activeEraRange.end, detail.timeline],
+  );
+  const primaryPeople = visiblePeople.filter((person) => (person.relationTier ?? 2) === 1);
+  const secondaryPeople = visiblePeople.filter((person) => (person.relationTier ?? 2) === 2);
+  const resolvedSpreadId =
+    selectedSpreadId && visibleSpread.some((item) => item.id === selectedSpreadId)
+      ? selectedSpreadId
+      : null;
+  const resolvedVersionId =
+    selectedVersionId && visibleVersions.some((item) => item.id === selectedVersionId)
+      ? selectedVersionId
+      : null;
+  const resolvedTimelineId =
+    selectedTimelineId && visibleTimeline.some((item) => item.id === selectedTimelineId)
+      ? selectedTimelineId
+      : null;
+  const resolvedPersonId =
+    selectedPersonId && visiblePeople.some((person) => person.id === selectedPersonId)
+      ? selectedPersonId
+      : null;
   const activePerson =
-    detail.people.find((person) => person.id === selectedPersonId) ?? detail.people[0];
+    visiblePeople.find((person) => person.id === resolvedPersonId) ?? visiblePeople[0];
   const activeSpread =
-    detail.spread.find((item) => item.id === selectedSpreadId) ?? detail.spread[0];
+    visibleSpread.find((item) => item.id === resolvedSpreadId) ?? visibleSpread[0];
   const activeVersion =
-    detail.versions.find((item) => item.id === selectedVersionId) ?? detail.versions[0];
+    visibleVersions.find((item) => item.id === resolvedVersionId) ?? visibleVersions[0];
   const activeTimelineItem =
-    detail.timeline.find((item) => item.id === selectedTimelineId) ?? detail.timeline[0];
+    visibleTimeline.find((item) => item.id === resolvedTimelineId) ?? visibleTimeline[0];
   const activeSpreadPlaces = activeSpread
     ? {
         from: detail.places.find((place) => place.id === activeSpread.fromPlaceId),
@@ -131,6 +183,12 @@ export function BookExplorer({
   const sourceBadges = detail.realWorldSignals?.sourceLabel
     ? detail.realWorldSignals.sourceLabel.split("+").map((item) => item.trim()).filter(Boolean)
     : [];
+  const eraLinkedSummary = {
+    spread: visibleSpread.length,
+    people: visiblePeople.length,
+    versions: visibleVersions.length,
+    timeline: visibleTimeline.length,
+  };
 
   const handleSelectPassage = (passageId: string) => {
     setSelectedPassageId(passageId);
@@ -201,6 +259,36 @@ export function BookExplorer({
           <div className="text-stone-400">传播区域</div>
           <div className="mt-2 text-xl font-semibold text-stone-50">
             {detail.heroMetric.coveredRegions}
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-amber-300/15 bg-amber-300/6 px-4 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div className="text-xs uppercase tracking-[0.2em] text-amber-100/75">
+              Era Linkage
+            </div>
+            <div className="mt-1 text-sm font-medium text-amber-50">
+              当前中观内容已跟随首页时间轴联动到 {activeEra}
+            </div>
+          </div>
+          <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
+            可见阶段 {eraLinkedSummary.timeline || 1} 条
+          </div>
+        </div>
+        <div className="mt-3 grid gap-2 md:grid-cols-4">
+          <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm text-stone-200">
+            传播 {eraLinkedSummary.spread} 段
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm text-stone-200">
+            人物 {eraLinkedSummary.people} 人
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm text-stone-200">
+            版本 {eraLinkedSummary.versions} 个
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-sm text-stone-200">
+            事件 {eraLinkedSummary.timeline} 条
           </div>
         </div>
       </section>
@@ -320,9 +408,9 @@ export function BookExplorer({
             <h3 className="text-lg font-medium">地理传播图</h3>
             <span className="text-xs text-stone-400">中观视图</span>
           </div>
-          {detail.spread.length === 0 ? (
+          {visibleSpread.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
-              该典籍尚未补充传播路径样例。
+              当前时代层下尚未显现传播路径样例。
             </div>
           ) : (
             <>
@@ -339,12 +427,12 @@ export function BookExplorer({
                         </div>
                       </div>
                       <div className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
-                        {detail.spread.length} 段航线
+                        {visibleSpread.length} 段航线
                       </div>
                     </div>
 
                     <div className="mt-5 flex items-center justify-between gap-2 overflow-x-auto pb-2">
-                      {detail.spread.map((item, index) => {
+                      {visibleSpread.map((item, index) => {
                         const fromPlace = detail.places.find((place) => place.id === item.fromPlaceId);
                         const toPlace = detail.places.find((place) => place.id === item.toPlaceId);
                         const isActive = activeSpread?.id === item.id;
@@ -373,7 +461,7 @@ export function BookExplorer({
                                 </span>
                               </div>
                             </button>
-                            {index < detail.spread.length - 1 ? (
+                            {index < visibleSpread.length - 1 ? (
                               <div className="h-px w-8 bg-gradient-to-r from-cyan-300/40 to-transparent" />
                             ) : null}
                           </div>
@@ -467,7 +555,7 @@ export function BookExplorer({
                   <div className="absolute inset-0 bg-[linear-gradient(transparent_24px,rgba(255,255,255,0.04)_25px),linear-gradient(90deg,transparent_24px,rgba(255,255,255,0.04)_25px)] bg-[length:100%_25%,25%_100%] opacity-40" />
                   <div className="relative h-[320px]">
                     <svg viewBox="0 0 100 100" className="h-full w-full">
-                      {detail.spread.map((item) => {
+                      {visibleSpread.map((item) => {
                         const fromPlace = detail.places.find((place) => place.id === item.fromPlaceId);
                         const toPlace = detail.places.find((place) => place.id === item.toPlaceId);
                         if (!fromPlace || !toPlace) {
@@ -559,9 +647,9 @@ export function BookExplorer({
             <h3 className="text-lg font-medium">人物关系网</h3>
             <span className="text-xs text-stone-400">中观视图</span>
           </div>
-          {detail.people.length === 0 ? (
+          {visiblePeople.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
-              该典籍尚未补充关联人物样例。
+              当前时代层下尚未显现关联人物样例。
             </div>
           ) : (
             <>
@@ -578,7 +666,7 @@ export function BookExplorer({
                         </div>
                       </div>
                       <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
-                        {detail.people.length} 个节点
+                        {visiblePeople.length} 个节点
                       </div>
                     </div>
 
@@ -867,9 +955,9 @@ export function BookExplorer({
             <h3 className="text-lg font-medium">版本流变树</h3>
             <span className="text-xs text-stone-400">中观视图</span>
           </div>
-          {detail.versions.length === 0 ? (
+          {visibleVersions.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
-              该典籍尚未补充版本链路样例。
+              当前时代层下尚未显现版本链路样例。
             </div>
           ) : (
             <>
@@ -886,12 +974,12 @@ export function BookExplorer({
                         </div>
                       </div>
                       <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
-                        {detail.versions.length} 个版本
+                        {visibleVersions.length} 个版本
                       </div>
                     </div>
 
                     <div className="mt-6 flex items-center gap-2 overflow-x-auto pb-2">
-                      {detail.versions.map((version, index) => {
+                      {visibleVersions.map((version, index) => {
                         const isActive = activeVersion?.id === version.id;
                         return (
                           <div key={version.id} className="flex min-w-max items-center gap-2">
@@ -914,7 +1002,7 @@ export function BookExplorer({
                                 {version.year} · {version.place}
                               </div>
                             </button>
-                            {index < detail.versions.length - 1 ? (
+                            {index < visibleVersions.length - 1 ? (
                               <div className="h-px w-8 bg-gradient-to-r from-amber-300/35 to-transparent" />
                             ) : null}
                           </div>
@@ -1018,7 +1106,7 @@ export function BookExplorer({
             <h3 className="text-lg font-medium">关联时间线</h3>
             <span className="text-xs text-stone-400">中观视图</span>
           </div>
-          {detail.timeline.length > 0 ? (
+          {visibleTimeline.length > 0 ? (
             <div className="rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.12),rgba(255,255,255,0.03))] p-4">
               <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
                 <div className="rounded-[24px] border border-white/10 bg-black/15 px-4 py-4">
@@ -1032,12 +1120,12 @@ export function BookExplorer({
                       </div>
                     </div>
                     <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
-                      {detail.timeline.length} 个事件
+                      {visibleTimeline.length} 个事件
                     </div>
                   </div>
 
                   <div className="mt-5 space-y-3">
-                    {detail.timeline.map((item, index) => {
+                    {visibleTimeline.map((item, index) => {
                       const isActive = activeTimelineItem?.id === item.id;
                       return (
                         <button
@@ -1056,7 +1144,7 @@ export function BookExplorer({
                                 isActive ? "bg-amber-300" : "bg-white/30"
                               }`}
                             />
-                            {index < detail.timeline.length - 1 ? (
+                            {index < visibleTimeline.length - 1 ? (
                               <div className="mt-1 h-full w-px bg-white/10" />
                             ) : null}
                           </div>
@@ -1107,7 +1195,7 @@ export function BookExplorer({
                           时间定位
                         </div>
                         <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2">
-                          {detail.timeline.map((item) => {
+                          {visibleTimeline.map((item) => {
                             const isActive = item.id === activeTimelineItem.id;
                             return (
                               <div key={item.id} className="flex min-w-max items-center gap-3">
@@ -1120,7 +1208,7 @@ export function BookExplorer({
                                 >
                                   {item.year}
                                 </div>
-                                {item.id !== detail.timeline[detail.timeline.length - 1]?.id ? (
+                                {item.id !== visibleTimeline[visibleTimeline.length - 1]?.id ? (
                                   <div className="h-px w-8 bg-gradient-to-r from-amber-300/35 to-transparent" />
                                 ) : null}
                               </div>

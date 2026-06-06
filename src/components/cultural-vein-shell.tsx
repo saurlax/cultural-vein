@@ -1425,6 +1425,7 @@ export function CulturalVeinShell() {
               book={selectedBook}
               detail={selectedDetail}
               forcedTab={demoMode ? currentDemoStep.tab : null}
+              activeEra={activeEra}
             />
           ) : null}
         </aside>
