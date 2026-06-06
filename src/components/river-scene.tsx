@@ -50,6 +50,7 @@ interface RiverSceneProps {
   onHoverBook?: (slug: string | null) => void;
   sourceAtlasLabel?: string | null;
   sourceAtlasSummary?: string | null;
+  sourceAtlasPathPoints?: Array<[number, number, number]>;
 }
 
 interface CruiseSnapshot {
@@ -1268,6 +1269,8 @@ function RiverWorld({
   highlightedBookSlugs = [],
   hoveredBookSlug,
   onHoverBook,
+  sourceAtlasLabel,
+  sourceAtlasPathPoints = [],
 }: RiverSceneProps & {
   cruiseProgress: number;
 }) {
@@ -1368,6 +1371,10 @@ function RiverWorld({
       : sceneFocus?.active
         ? "#fde68a"
         : "#fcd34d";
+  const sourceAtlasFlowPoints = useMemo(
+    () => sourceAtlasPathPoints.map((point) => new THREE.Vector3(...point)),
+    [sourceAtlasPathPoints],
+  );
   const eraIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
   const eraWarmth = eraIndex / Math.max(RIVER_ERA_ORDER.length - 1, 1);
   const scenePulse = traceFocus?.active ? 1 : sceneFocus?.active ? 0.72 : 0;
@@ -1679,6 +1686,31 @@ function RiverWorld({
             density={96}
             flowSpeed={traceFocus?.active ? 0.16 : 0.11}
             spread={0.08}
+          />
+        </group>
+      ) : null}
+      {!selectedBookSlug && sourceAtlasLabel && sourceAtlasFlowPoints.length >= 2 ? (
+        <group>
+          <Line
+            points={sourceAtlasFlowPoints}
+            color="#fbbf24"
+            transparent
+            opacity={0.86}
+            lineWidth={2.4}
+          />
+          <Line
+            points={sourceAtlasFlowPoints}
+            color="#fef3c7"
+            transparent
+            opacity={0.18}
+            lineWidth={6.2}
+          />
+          <RiverParticleStream
+            points={sourceAtlasFlowPoints}
+            color="#fde68a"
+            density={72}
+            flowSpeed={0.095}
+            spread={0.06}
           />
         </group>
       ) : null}

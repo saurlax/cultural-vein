@@ -420,6 +420,15 @@ export function CulturalVeinShell() {
       };
     });
   }, [activeSourceAtlasEntry, filteredBooks]);
+  const sourceAtlasPathPoints = useMemo(
+    () =>
+      sourceAtlasDockMarkers.map((dock) => [
+        dock.position[0],
+        dock.position[1] + 0.06,
+        dock.position[2],
+      ] as [number, number, number]),
+    [sourceAtlasDockMarkers],
+  );
   const mergedDockMarkers = selectedBook ? riverDockMarkers : sourceAtlasDockMarkers;
   const sourceAtlasMass =
     (insights?.cbdbSummary?.personCount ?? 0) +
@@ -1027,6 +1036,7 @@ export function CulturalVeinShell() {
             dockMarkers={mergedDockMarkers}
             sourceAtlasLabel={!selectedBook ? activeSourceAtlasEntry?.name ?? null : null}
             sourceAtlasSummary={!selectedBook ? activeSourceAtlasEntry?.summary ?? null : null}
+            sourceAtlasPathPoints={!selectedBook ? sourceAtlasPathPoints : []}
             visibleNodeCount={filteredBooks.length}
             totalNodeCount={riverDataset.books.length}
             highlightedBookSlugs={searchHighlightedSlugs}
