@@ -85,6 +85,49 @@ function inlineConfidenceClass(label: string) {
   return "rounded border border-dashed border-white/15 px-1.5 py-0.5 text-stone-300";
 }
 
+function passageHighlightClass(label: string, active: boolean) {
+  if (label === "高") {
+    return active
+      ? "border-emerald-200/45 bg-emerald-300/30 text-emerald-50 shadow-[0_0_0_1px_rgba(167,243,208,0.32)]"
+      : "border-emerald-300/22 bg-emerald-300/14 text-emerald-100";
+  }
+
+  if (label === "中") {
+    return active
+      ? "border-amber-200/45 bg-amber-300/30 text-amber-50 shadow-[0_0_0_1px_rgba(253,230,138,0.28)]"
+      : "border-amber-300/22 bg-amber-300/14 text-amber-100";
+  }
+
+  return active
+    ? "border-stone-200/35 bg-stone-300/20 text-stone-100 shadow-[0_0_0_1px_rgba(231,229,228,0.2)]"
+    : "border-dashed border-white/14 bg-white/8 text-stone-300";
+}
+
+function splitPassageIntoSegments(original: string, linkCount: number) {
+  if (linkCount <= 0) {
+    return [original];
+  }
+
+  const punctuationSegments = original
+    .split(/(?<=[，。？！；])/u)
+    .map((segment) => segment.trim())
+    .filter(Boolean);
+
+  if (punctuationSegments.length >= linkCount) {
+    return punctuationSegments;
+  }
+
+  const characters = Array.from(original);
+  const chunkSize = Math.max(1, Math.ceil(characters.length / linkCount));
+  const segments: string[] = [];
+
+  for (let index = 0; index < characters.length; index += chunkSize) {
+    segments.push(characters.slice(index, index + chunkSize).join(""));
+  }
+
+  return segments;
+}
+
 function versionTypeClass(type?: string) {
   switch (type) {
     case "祖本":
@@ -350,6 +393,21 @@ export function BookExplorer({
     return activePassage?.links.find((link) => link.id === selectedLinkId) ?? activePassage?.links[0];
   }, [activePassage, selectedLinkId]);
   const activeLinkId = activeLink?.id ?? null;
+  const activePassageSegments = useMemo(() => {
+    if (!activePassage) {
+      return [];
+    }
+
+    const baseSegments = splitPassageIntoSegments(
+      activePassage.original,
+      activePassage.links.length,
+    );
+
+    return baseSegments.map((text, index) => ({
+      text,
+      link: activePassage.links[index] ?? null,
+    }));
+  }, [activePassage]);
   const activeTab = forcedTab ?? tab;
   const activeTraceFocus = useMemo<TraceFocusState | null>(() => {
     if (activeTab !== "passages" || !activePassage?.tracePath?.length || !tracePlaying) {
@@ -1923,7 +1981,57 @@ export function BookExplorer({
                           : "text-sm leading-9"
                       }`}
                     >
-                      {activePassage.original}
+                      <div
+                        className={
+                          passageLayout === "vertical"
+                            ? "flex flex-col gap-3"
+                            : "flex flex-wrap gap-x-2 gap-y-3"
+                        }
+                      >
+                        {activePassageSegments.map((segment, index) => {
+                          const isActive = segment.link?.id === activeLinkId;
+
+                          if (!segment.link) {
+                            return (
+                              <span key={`${activePassage.id}-plain-${index}`}>
+                                {segment.text}
+                              </span>
+                            );
+                          }
+
+                          return (
+                            <button
+                              key={`${activePassage.id}-${segment.link.id}`}
+                              type="button"
+                              onClick={() => handleSelectLink(segment.link!.id)}
+                              className={`rounded-xl border px-2 py-1 text-left transition ${
+                                passageHighlightClass(
+                                  segment.link.confidenceLabel,
+                                  isActive,
+                                )
+                              } ${
+                                passageLayout === "vertical"
+                                  ? "min-h-[7rem] min-w-[2.4rem]"
+                                  : ""
+                              }`}
+                              title={`${segment.link.sourceTitle} · ${segment.link.confidenceLabel}置信度`}
+                            >
+                              {segment.text}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-stone-400">
+                      <span className="rounded-full border border-emerald-300/18 bg-emerald-300/10 px-3 py-1 text-emerald-100">
+                        绿色：显式引用 / 高置信度
+                      </span>
+                      <span className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-amber-100">
+                        黄色：语义关联 / 中置信度
+                      </span>
+                      <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-stone-300">
+                        点击高亮可聚焦对应证据
+                      </span>
                     </div>
                     <div className="mt-4 flex flex-wrap gap-2">
                       {activePassage.links.map((link) => (
