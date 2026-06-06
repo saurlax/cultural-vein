@@ -2669,15 +2669,80 @@ export function BookExplorer({
                             </div>
                           </div>
                           <div className="mt-3 grid gap-2 text-sm text-stone-300">
-                            <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                              馆藏 / 系统：{activeVersion.library}
-                            </div>
-                            <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                              存佚状态：{activeVersion.status}
-                            </div>
-                            <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                              版本记载：{activeVersion.note ?? "这一层版本用来标记流变位置。"}
-                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const targetRecord = versionEvidenceSamples[0] ?? institutionPreview[0];
+
+                                if (targetRecord) {
+                                  handleSelectInstitutionRecord(targetRecord);
+                                  return;
+                                }
+
+                                handleOpenSourceEvidence("institution-samples");
+                              }}
+                              className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left transition hover:bg-white/10"
+                            >
+                              <div className="text-xs tracking-[0.2em] text-stone-400">馆藏 / 系统</div>
+                              <div className="mt-1 font-medium text-stone-100">{activeVersion.library}</div>
+                              <div className="mt-2 text-sm leading-6 text-stone-300">
+                                {versionEvidenceSamples.length || institutionPreview.length
+                                  ? "顺手打开这一层版本最贴近的馆藏样本或影像线索。"
+                                  : "这一层暂未挂到更细样本时，先回机构总表继续追馆藏。"}
+                              </div>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (activeVersionParent?.id) {
+                                  setSelectedVersionId(activeVersionParent.id);
+                                  return;
+                                }
+
+                                const rootVersion = activeVersionTrail[0];
+                                if (rootVersion?.id) {
+                                  setSelectedVersionId(rootVersion.id);
+                                }
+                              }}
+                              className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left transition hover:bg-white/10"
+                            >
+                              <div className="text-xs tracking-[0.2em] text-stone-400">存佚状态</div>
+                              <div className="mt-1 font-medium text-stone-100">{activeVersion.status}</div>
+                              <div className="mt-2 text-sm leading-6 text-stone-300">
+                                {activeVersionParent?.id
+                                  ? "沿着上游承接回查这层版本从哪里传下、如何保留下来。"
+                                  : "直接回到祖本入口，看这条版本链最早的留存起点。"}
+                              </div>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (activeVersion.note) {
+                                  setTab("timeline");
+                                  return;
+                                }
+
+                                if (activeVersionChildren[0]?.id) {
+                                  setSelectedVersionId(activeVersionChildren[0].id);
+                                  return;
+                                }
+
+                                handleOpenSourceEvidence("institution-samples");
+                              }}
+                              className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left transition hover:bg-white/10"
+                            >
+                              <div className="text-xs tracking-[0.2em] text-stone-400">版本记载</div>
+                              <div className="mt-1 font-medium text-stone-100">
+                                {activeVersion.note ?? "这一层版本用来标记流变位置。"}
+                              </div>
+                              <div className="mt-2 text-sm leading-6 text-stone-300">
+                                {activeVersion.note
+                                  ? "转看时间线，把这条版本记载落到年代与事件里继续讲。"
+                                  : activeVersionChildren.length
+                                    ? "这层暂无额外记载时，顺着下游版本继续看流变。"
+                                    : "没有下游分化时，回查来源证据里与版本名称最接近的线索。"}
+                              </div>
+                            </button>
                           </div>
                         </div>
                       </>
@@ -2769,9 +2834,25 @@ export function BookExplorer({
                       <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
                         时间轨道
                       </div>
-                      <div className="mt-1 text-sm text-[#eadfbc]">
-                        按时间顺序浏览该典籍的关键事件
-                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (activeTimelineItem) {
+                            handleFocusEventEvidence();
+                            return;
+                          }
+
+                          const firstTimelineItem = visibleTimeline[0];
+                          if (firstTimelineItem) {
+                            setSelectedTimelineId(firstTimelineItem.id);
+                          }
+                        }}
+                        className="mt-1 text-left text-sm text-[#eadfbc] transition hover:text-[#fbf3da]"
+                      >
+                        {activeTimelineItem
+                          ? "打开当前事件证据，顺着这条时间节点继续回查现实材料。"
+                          : "按时间顺序切入典籍关键事件，先从最早节点开始讲。"}
+                      </button>
                     </div>
                     <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
                       {visibleTimeline.length} 个事件
@@ -2941,7 +3022,10 @@ export function BookExplorer({
                               <button
                                 key={`timeline-event-echo-${event.venue}-${event.title}-${event.startTime}`}
                                 type="button"
-                                onClick={handleFocusEventEvidence}
+                                onClick={() => {
+                                  handleSelectEventSample(event);
+                                  handleFocusEventEvidence();
+                                }}
                                 className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4 text-left transition hover:bg-[rgba(255,255,255,0.08)]"
                               >
                                 <div className="flex items-center justify-between gap-3">
@@ -2955,6 +3039,14 @@ export function BookExplorer({
                                 </div>
                                 <div className="mt-2 text-sm text-stone-300">
                                   {event.status}
+                                </div>
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                  <span className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
+                                    定位当前年份
+                                  </span>
+                                  <span className="rounded-full border border-white/10 bg-black/15 px-3 py-1 text-[10px] text-stone-300">
+                                    打开事件证据
+                                  </span>
                                 </div>
                               </button>
                             ))}
@@ -2981,6 +3073,38 @@ export function BookExplorer({
                                     {item.sourceText}
                                   </div>
                                 ) : null}
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      setTab("people");
+                                    }}
+                                    className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-stone-300 transition hover:bg-white/10"
+                                  >
+                                    转看人物关系
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      setTab("passages");
+                                    }}
+                                    className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                                  >
+                                    转看文本溯源
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      handleOpenSourceEvidence("institution-samples");
+                                    }}
+                                    className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
+                                  >
+                                    打开机构总表
+                                  </button>
+                                </div>
                               </button>
                             ))}
                           </div>
