@@ -381,6 +381,14 @@ export function CulturalVeinShell() {
         : insights?.souyunKnowledgeGraphSample?.collectionTitle ?? "诗词图谱样本",
       detail: "覆盖古典诗词、文史知识图谱、诗文库与古籍库接口方向，和当前典籍诗学叙事高度贴合。",
     },
+    {
+      name: "全国报刊索引 API",
+      status: insights?.periodicalIndexSample?.available ? "已接入" : "待补充",
+      scale: insights?.periodicalIndexSample?.sampleTitles?.length
+        ? `${insights.periodicalIndexSample.sampleTitles.length} 组研究文献样本`
+        : insights?.periodicalIndexSample?.collectionTitle ?? "研究文献样本",
+      detail: "覆盖刊名、作者、摘要、全文路径和主题词等字段，适合补强近现代研究线索与二次文献传播叙事。",
+    },
   ];
   const visibleBranchAnnotations = branchAnnotations.filter((annotation) => {
     const targetBook = riverDataset.books.find((book) => book.slug === annotation.targetSlug);

@@ -37,6 +37,7 @@ SZ_ZIP = DATA_DIR / "深圳图书馆2024.zip"
 TAOFEN_PDF = DATA_DIR / "API_韬奋纪念馆.pdf"
 SOONG_PDF = DATA_DIR / "API_宋庆龄文献.pdf"
 SOUYUN_PDF = DATA_DIR / "API_搜韵网知识图谱.pdf"
+CNBK_PDF = DATA_DIR / "API_全国报刊索引.pdf"
 
 DEMO_BOOKS = [
     {
@@ -2190,6 +2191,58 @@ def fetch_souyun_knowledge_graph_sample() -> dict[str, object]:
     }
 
 
+def fetch_periodical_index_sample() -> dict[str, object]:
+    if not CNBK_PDF.exists():
+        return {"available": False, "reason": "pdf missing"}
+
+    text = extract_pdf_text(CNBK_PDF, page_to=5)
+    if not text:
+        return {"available": False, "reason": "pdftotext unavailable"}
+
+    sample_records = [
+        {
+            "institution": "全国报刊索引",
+            "title": "期刊检索接口",
+            "category": "刊名 / 作者 / 摘要 / 关键词",
+            "year": "2024",
+            "imageRef": "",
+            "sourceText": "支持刊名、年卷期、作者、摘要与关键词检索，可为近现代研究线索提供稳定入口。",
+        },
+        {
+            "institution": "全国报刊索引",
+            "title": "全文路径与文献来源字段",
+            "category": "全文路径 / 文献来源",
+            "year": "2024",
+            "imageRef": "",
+            "sourceText": "返回全文上传路径、文献来源与期刊题名，可补足出版传播与二次研究链路。",
+        },
+        {
+            "institution": "全国报刊索引",
+            "title": "主题词与摘要字段",
+            "category": "主题研究 / 摘要",
+            "year": "2024",
+            "imageRef": "",
+            "sourceText": "返回 Subjects、Abstract 等字段，适合补强主题传播与研究热点叙事。",
+        },
+    ]
+
+    summary = (
+        "全国报刊索引开放接口覆盖刊名、年卷期、作者、摘要、关键词以及全文路径、主题词等字段，"
+        "可作为近现代研究论文、传播线索与二次文献网络的补充来源。"
+    )
+    if "UploadFulltextPath" in text and "Abstract" in text:
+        summary += " 当前文档已给出全文路径和摘要字段示例。"
+
+    return {
+        "available": True,
+        "institution": "全国报刊索引",
+        "collectionTitle": "近现代研究文献 API 样本",
+        "summary": summary[:280],
+        "sampleTitles": [record["title"] for record in sample_records],
+        "sampleRecords": sample_records,
+    }
+
+
 def main() -> None:
     ensure_out_dir()
     cbdb_people = fetch_cbdb_people()
@@ -2229,6 +2282,7 @@ def main() -> None:
         "taofenMuseumSample": fetch_taofen_museum_sample(),
         "soongLiteratureSample": fetch_soong_literature_sample(),
         "souyunKnowledgeGraphSample": fetch_souyun_knowledge_graph_sample(),
+        "periodicalIndexSample": fetch_periodical_index_sample(),
     }
     OUT_FILE.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2),

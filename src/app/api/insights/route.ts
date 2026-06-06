@@ -83,6 +83,14 @@ export function GET() {
           sampleTitles: realSupplements.souyunKnowledgeGraphSample.sampleTitles,
         }
       : undefined,
+    periodicalIndexSample: realSupplements.periodicalIndexSample
+      ? {
+          available: realSupplements.periodicalIndexSample.available,
+          institution: realSupplements.periodicalIndexSample.institution,
+          collectionTitle: realSupplements.periodicalIndexSample.collectionTitle,
+          sampleTitles: realSupplements.periodicalIndexSample.sampleTitles,
+        }
+      : undefined,
   };
 
   return NextResponse.json(payload);

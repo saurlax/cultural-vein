@@ -2326,5 +2326,42 @@
         "sourceText": "支持 Accept-Language 控制原始文本返回，并提供 OpenAPI/YAML schema 说明，便于后续规范化接入。"
       }
     ]
+  },
+  "periodicalIndexSample": {
+    "available": true,
+    "institution": "全国报刊索引",
+    "collectionTitle": "近现代研究文献 API 样本",
+    "summary": "全国报刊索引开放接口覆盖刊名、年卷期、作者、摘要、关键词以及全文路径、主题词等字段，可作为近现代研究论文、传播线索与二次文献网络的补充来源。 当前文档已给出全文路径和摘要字段示例。",
+    "sampleTitles": [
+      "期刊检索接口",
+      "全文路径与文献来源字段",
+      "主题词与摘要字段"
+    ],
+    "sampleRecords": [
+      {
+        "institution": "全国报刊索引",
+        "title": "期刊检索接口",
+        "category": "刊名 / 作者 / 摘要 / 关键词",
+        "year": "2024",
+        "imageRef": "",
+        "sourceText": "支持刊名、年卷期、作者、摘要与关键词检索，可为近现代研究线索提供稳定入口。"
+      },
+      {
+        "institution": "全国报刊索引",
+        "title": "全文路径与文献来源字段",
+        "category": "全文路径 / 文献来源",
+        "year": "2024",
+        "imageRef": "",
+        "sourceText": "返回全文上传路径、文献来源与期刊题名，可补足出版传播与二次研究链路。"
+      },
+      {
+        "institution": "全国报刊索引",
+        "title": "主题词与摘要字段",
+        "category": "主题研究 / 摘要",
+        "year": "2024",
+        "imageRef": "",
+        "sourceText": "返回 Subjects、Abstract 等字段，适合补强主题传播与研究热点叙事。"
+      }
+    ]
   }
 }

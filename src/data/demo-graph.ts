@@ -195,6 +195,22 @@ interface RealSupplementSouyunKnowledgeGraphSample {
   }>;
 }
 
+interface RealSupplementPeriodicalIndexSample {
+  available?: boolean;
+  institution?: string;
+  collectionTitle?: string;
+  summary?: string;
+  sampleTitles?: string[];
+  sampleRecords?: Array<{
+    institution: string;
+    title: string;
+    category?: string;
+    year?: string;
+    imageRef?: string;
+    sourceText?: string;
+  }>;
+}
+
 interface RealSupplementCbdbSummary {
   available?: boolean;
   personCount?: number;
@@ -283,6 +299,8 @@ const soongLiteratureSample = (realSupplements.soongLiteratureSample ??
   {}) as RealSupplementSoongLiteratureSample;
 const souyunKnowledgeGraphSample = (realSupplements.souyunKnowledgeGraphSample ??
   {}) as RealSupplementSouyunKnowledgeGraphSample;
+const periodicalIndexSample = (realSupplements.periodicalIndexSample ??
+  {}) as RealSupplementPeriodicalIndexSample;
 
 const personByName = new Map(cbdbPeople.map((person) => [person.name, person]));
 
@@ -515,6 +533,27 @@ if (souyunKnowledgeGraphSample.available) {
         detail.realWorldSignals?.venueSummary ??
         souyunKnowledgeGraphSample.summary ??
         "已接入搜韵网古典诗词知识图谱 API 样本。",
+    };
+  }
+}
+
+if (periodicalIndexSample.available) {
+  const institutionSamples = (periodicalIndexSample.sampleRecords ?? []).slice(0, 3);
+  for (const slug of ["ren-jian-ci-hua", "ri-zhi-lu"] as const) {
+    const detail = details[slug];
+    detail.realWorldSignals = {
+      ...detail.realWorldSignals,
+      sourceLabel: detail.realWorldSignals?.sourceLabel
+        ? `${detail.realWorldSignals.sourceLabel} + 全国报刊索引 API 样本`
+        : "全国报刊索引 API 样本",
+      institutionSamples: [
+        ...(detail.realWorldSignals?.institutionSamples ?? []),
+        ...institutionSamples,
+      ],
+      venueSummary:
+        detail.realWorldSignals?.venueSummary ??
+        periodicalIndexSample.summary ??
+        "已接入全国报刊索引近现代研究文献 API 样本。",
     };
   }
 }
