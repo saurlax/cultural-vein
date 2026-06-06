@@ -180,6 +180,14 @@ export interface DatasetInsight {
       note?: string;
     }>;
   }>;
+  atlasMeta?: {
+    demoBookCount: number;
+    totalBookCount: number;
+    totalCitationCount: number;
+    activeSources: number;
+    plannedLayers: string[];
+    expansionNote: string;
+  };
   cbdbSummary?: {
     available?: boolean;
     personCount?: number;

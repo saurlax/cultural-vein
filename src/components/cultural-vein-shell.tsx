@@ -412,6 +412,7 @@ export function CulturalVeinShell() {
     transitionState === "settling" ||
     transitionState === "returning";
   const sourceAtlasEntries = insights?.sourceAtlas ?? [];
+  const atlasMeta = insights?.atlasMeta ?? null;
   const connectedSourceCount = sourceAtlasEntries.length;
   const inferSourceAtlasEra = (entry: NonNullable<typeof sourceAtlasEntries>[number]) => {
     const inferredEra =
@@ -1119,6 +1120,35 @@ export function CulturalVeinShell() {
                           <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">真实数据版图</div>
                           <div className="text-[10px] text-[#f2dfab]">{sourceAtlasMass.toLocaleString()}</div>
                         </div>
+                        {atlasMeta ? (
+                          <button
+                            type="button"
+                            onClick={() => setActiveDesktopPanel("branch")}
+                            className="mt-3 w-full rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                          >
+                            <div className="flex flex-wrap items-center justify-between gap-3">
+                              <div className="text-xs font-medium text-[#fbf3da]">
+                                示范域已映出 {atlasMeta.demoBookCount} 部主河道典籍
+                              </div>
+                              <div className="text-[10px] text-[#f2dfab]">
+                                底座预留 {atlasMeta.totalBookCount.toLocaleString()} 种古籍
+                              </div>
+                            </div>
+                            <div className="mt-2 text-[11px] leading-5 text-[#e6d7ae]">
+                              {atlasMeta.expansionNote}
+                            </div>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {atlasMeta.plannedLayers.slice(0, 4).map((layer) => (
+                                <span
+                                  key={`atlas-layer-${layer}`}
+                                  className="rounded-full border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.04)] px-2.5 py-1 text-[10px] text-[#dccb9c]"
+                                >
+                                  {layer}
+                                </span>
+                              ))}
+                            </div>
+                          </button>
+                        ) : null}
                         <div className="mt-3 flex flex-wrap gap-2">
                           {sourceAtlasEntries.slice(0, 6).map((entry) => (
                             <button
@@ -1402,6 +1432,20 @@ export function CulturalVeinShell() {
                     <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">真实数据版图</div>
                     <div className="text-[11px] text-[#f2dfab]">{sourceAtlasMass.toLocaleString()}</div>
                   </div>
+                  {atlasMeta ? (
+                    <button
+                      type="button"
+                      onClick={() => setActiveDesktopPanel("branch")}
+                      className="mt-3 w-full rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                    >
+                      <div className="text-xs font-medium text-[#fbf3da]">
+                        示范域 {atlasMeta.demoBookCount} 部，底座预留 {atlasMeta.totalBookCount.toLocaleString()} 种
+                      </div>
+                      <div className="mt-2 text-[11px] leading-5 text-[#e6d7ae]">
+                        {atlasMeta.expansionNote}
+                      </div>
+                    </button>
+                  ) : null}
                   <div className="mt-3 flex flex-wrap gap-2">
                     {sourceAtlasEntries.slice(0, 5).map((entry) => (
                       <button
