@@ -578,6 +578,16 @@ export function BookExplorer({
       onClick: () => setTab("spread"),
     },
   ] as const;
+  const dossierEntryCards = [
+    {
+      label: `${book.dynasty} · ${book.category}`,
+      onClick: () => setTab("timeline"),
+    },
+    {
+      label: book.school,
+      onClick: () => setTab("people"),
+    },
+  ] as const;
   const eraLinkedSummary = {
     spread: visibleSpread.length,
     people: visiblePeople.length,
@@ -973,14 +983,34 @@ export function BookExplorer({
               {book.title}
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#6b4b1d]">{book.summary}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setTab("spread")}
+                className="rounded-full border border-[#caa45b]/24 bg-white/35 px-3 py-1.5 text-xs text-[#6b4b1d] transition hover:bg-white/50"
+              >
+                顺着长河看传播
+              </button>
+              <button
+                type="button"
+                onClick={() => setTab("passages")}
+                className="rounded-full border border-[#caa45b]/24 bg-white/35 px-3 py-1.5 text-xs text-[#6b4b1d] transition hover:bg-white/50"
+              >
+                直接入文本溯源
+              </button>
+            </div>
           </div>
           <div className="grid gap-2 text-xs text-[#6b4b1d]">
-            <div className="rounded-full border border-[#caa45b]/24 bg-white/30 px-3 py-1">
-              {book.dynasty} · {book.category}
-            </div>
-            <div className="rounded-full border border-[#caa45b]/24 bg-white/30 px-3 py-1">
-              {book.school}
-            </div>
+            {dossierEntryCards.map((item) => (
+              <button
+                key={item.label}
+                type="button"
+                onClick={item.onClick}
+                className="rounded-full border border-[#caa45b]/24 bg-white/30 px-3 py-1 text-left transition hover:bg-white/45"
+              >
+                {item.label}
+              </button>
+            ))}
           </div>
         </div>
       </section>
@@ -1050,6 +1080,13 @@ export function BookExplorer({
               落在 {activeTabMeta.label}
             </div>
           </div>
+          <button
+            type="button"
+            onClick={() => setTab(activeTabMeta.id)}
+            className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1 text-[11px] text-[#f2dfab] transition hover:bg-[rgba(255,248,220,0.1)]"
+          >
+            继续展开
+          </button>
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
           {tabs.map((item) => (
@@ -1076,13 +1113,21 @@ export function BookExplorer({
               <div className="text-xs tracking-[0.2em] text-amber-100/80">
                 真实来源信号
               </div>
-              <div className="mt-1 text-sm font-medium text-amber-50">
+              <button
+                type="button"
+                onClick={() => handleOpenSourceEvidence(activeSourceEvidence?.id ?? "institution-samples")}
+                className="mt-1 text-left text-sm font-medium text-amber-50 transition hover:text-[#fff2c7]"
+              >
                 {detail.realWorldSignals.sourceLabel}
-              </div>
+              </button>
             </div>
-            <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
+            <button
+              type="button"
+              onClick={() => handleOpenSourceEvidence(activeSourceEvidence?.id ?? "institution-samples")}
+              className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100 transition hover:bg-amber-300/18"
+            >
               正在映照
-            </div>
+            </button>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             {sourceBadges.map((item) => (
@@ -1135,8 +1180,8 @@ export function BookExplorer({
               </div>
             </button>
           </div>
-              <div className="mt-4 grid gap-3 xl:grid-cols-3">
-                <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
+          <div className="mt-4 grid gap-3 xl:grid-cols-3">
+            <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-xs tracking-[0.2em] text-amber-100/75">
                   场馆来源
