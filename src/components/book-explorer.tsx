@@ -739,6 +739,32 @@ export function BookExplorer({
         .slice(0, 2)
     : [];
   const fallbackTimelineInstitutionEchoes = institutionPreview.slice(0, 2);
+  const linkedVersionFromInstitution = activeInstitutionRecord
+    ? visibleVersions.find((version) => {
+        if (!activeInstitutionRecord.year) {
+          return false;
+        }
+
+        const versionYear = String(version.year);
+        const normalizedLibrary = version.library.toLowerCase();
+        const normalizedInstitution = activeInstitutionRecord.institution.toLowerCase();
+
+        return (
+          activeInstitutionRecord.year.includes(versionYear) ||
+          normalizedInstitution.includes(normalizedLibrary) ||
+          normalizedLibrary.includes(normalizedInstitution)
+        );
+      }) ?? null
+    : null;
+  const linkedTimelineFromInstitution = activeInstitutionRecord
+    ? visibleTimeline.find((item) => {
+        if (!activeInstitutionRecord.year) {
+          return false;
+        }
+
+        return activeInstitutionRecord.year.includes(String(item.year));
+      }) ?? null
+    : null;
   const secondaryPeopleExpanded =
     showSecondaryPeople || (activePerson?.relationTier ?? 2) === 2;
   const visibleSecondaryPeople = secondaryPeopleExpanded ? secondaryPeople : [];
@@ -1033,6 +1059,32 @@ export function BookExplorer({
                   <div className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
                     影像号 {activeInstitutionRecord.imageRef}
                   </div>
+                ) : null}
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {linkedVersionFromInstitution ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedVersionId(linkedVersionFromInstitution.id);
+                      setTab("versions");
+                    }}
+                    className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                  >
+                    回到版本节点
+                  </button>
+                ) : null}
+                {linkedTimelineFromInstitution ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedTimelineId(linkedTimelineFromInstitution.id);
+                      setTab("timeline");
+                    }}
+                    className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                  >
+                    回到关联时间线
+                  </button>
                 ) : null}
               </div>
               <div className="mt-4 grid gap-3 md:grid-cols-2">
