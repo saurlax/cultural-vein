@@ -1863,6 +1863,8 @@ function RiverWorld({
 }
 
 export function RiverScene(props: RiverSceneProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [eventSource, setEventSource] = useState<HTMLElement | null>(null);
   const [cruiseProgress, setCruiseProgress] = useState(0.18);
   const [autoCruise, setAutoCruise] = useState(false);
   const [isInteracting, setIsInteracting] = useState(false);
@@ -1902,6 +1904,10 @@ export function RiverScene(props: RiverSceneProps) {
               : "拖动河面巡看节点，悬停会提示，点击即可入卷。";
 
   useEffect(() => {
+    setEventSource(containerRef.current);
+  }, []);
+
+  useEffect(() => {
     if (!cruiseRunning) {
       return;
     }
@@ -1921,7 +1927,10 @@ export function RiverScene(props: RiverSceneProps) {
   };
 
   return (
-    <div className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#edd08a]/45 bg-[#3a2208] shadow-[0_0_80px_rgba(0,0,0,0.42)] [touch-action:none]">
+    <div
+      ref={containerRef}
+      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#edd08a]/45 bg-[#3a2208] shadow-[0_0_80px_rgba(0,0,0,0.42)] [touch-action:none]"
+    >
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(146,102,36,0.4),rgba(78,51,15,0))]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(44,26,8,0.74),rgba(44,26,8,0))]" />
       <div className="pointer-events-none absolute left-4 top-4 z-10 flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#ead8a6]/26 bg-[rgba(113,75,24,0.64)] px-4 py-2 text-[10px] text-[#f7edd1] sm:left-5 sm:top-5 sm:max-w-none sm:text-[11px]">
@@ -1939,7 +1948,7 @@ export function RiverScene(props: RiverSceneProps) {
                   : `${props.activeEra} 水位`}
         </span>
       </div>
-      <div className="pointer-events-none absolute left-1/2 top-16 z-10 w-[min(520px,calc(100vw-2.5rem))] -translate-x-1/2 px-3 sm:top-20">
+      <div className="pointer-events-none absolute left-1/2 top-16 z-10 w-[min(420px,calc(100vw-2.5rem))] -translate-x-1/2 px-3 sm:top-20">
         <div className="rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(79,52,16,0.74)] px-4 py-3 text-center text-[11px] leading-6 text-[#f7e9c0] shadow-lg shadow-black/20 backdrop-blur-md sm:text-xs">
           {sceneHint}
         </div>
@@ -1992,7 +2001,7 @@ export function RiverScene(props: RiverSceneProps) {
         </div>
       </div>
       <div className="pointer-events-none absolute right-4 top-4 z-10 hidden rounded-full border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.58)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md lg:flex">
-        {isInteracting ? "正在拖动画卷" : "按住左键拖动画卷 · 右键旋转 · 滚轮缩放"}
+        {isInteracting ? "正在拖动画卷" : "左键拖动画卷 · 右键旋转 · 滚轮缩放"}
       </div>
       {canCruise ? (
         <div className="absolute bottom-4 left-1/2 z-20 w-[min(280px,calc(100vw-2rem))] -translate-x-1/2 sm:bottom-5 sm:left-auto sm:right-5 sm:w-[min(320px,calc(100vw-2.5rem))] sm:translate-x-0">
@@ -2043,7 +2052,12 @@ export function RiverScene(props: RiverSceneProps) {
           </div>
         </div>
       ) : null}
-      <Canvas dpr={[1, 1.8]} className={isInteracting ? "cursor-grabbing touch-none" : "cursor-grab touch-none"}>
+      <Canvas
+        dpr={[1, 1.8]}
+        eventSource={eventSource ?? undefined}
+        eventPrefix="client"
+        className={isInteracting ? "cursor-grabbing touch-none" : "cursor-grab touch-none"}
+      >
         <RiverWorld
           {...props}
           cruiseProgress={cruiseProgress}

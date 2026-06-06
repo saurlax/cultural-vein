@@ -2182,6 +2182,22 @@ export function BookExplorer({
                                       {place.note}
                                     </p>
                                   ) : null}
+                                  <div className="mt-3 flex flex-wrap gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => setTab("spread")}
+                                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                                    >
+                                      转看传播航段
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleFocusCbdbEvidence(activePerson.id)}
+                                      className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                                    >
+                                      回查人物证据
+                                    </button>
+                                  </div>
                                 </div>
                               ))}
                             </div>
@@ -2869,6 +2885,24 @@ export function BookExplorer({
                       <p className="mt-4 text-sm leading-7 text-stone-300">
                         {activeTimelineItem.detail}
                       </p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleFocusEventEvidence();
+                          }}
+                          className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                        >
+                          打开事件证据
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setTab("versions")}
+                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                        >
+                          转看版本流变
+                        </button>
+                      </div>
                       {activeTimelineMeta ? (
                         <div className="mt-4 rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4">
                           <div className="flex flex-wrap items-center gap-2">

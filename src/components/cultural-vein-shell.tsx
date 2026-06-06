@@ -173,6 +173,7 @@ export function CulturalVeinShell() {
   const [showMobileControls, setShowMobileControls] = useState(false);
   const [showMobileDossier, setShowMobileDossier] = useState(false);
   const [showDesktopDossier, setShowDesktopDossier] = useState(false);
+  const [showDesktopControls, setShowDesktopControls] = useState(false);
   const [activeSourceAtlasId, setActiveSourceAtlasId] = useState<string | null>(null);
   const [activeDesktopPanel, setActiveDesktopPanel] = useState<
     "search" | "era" | "category" | "branch"
@@ -371,6 +372,7 @@ export function CulturalVeinShell() {
   const handleDiveToBook = (slug: string) => {
     if (selectedBookSlug === slug && viewMode === "book") {
       setShowDesktopDossier(true);
+      setShowDesktopControls(false);
       setSelectedBookSlug(slug);
       return;
     }
@@ -379,6 +381,7 @@ export function CulturalVeinShell() {
     setTransitionState("diving");
     window.setTimeout(() => {
       setShowDesktopDossier(true);
+      setShowDesktopControls(false);
       setSelectedBookSlug(slug);
       setTransitionState("settling");
     }, 180);
@@ -390,7 +393,9 @@ export function CulturalVeinShell() {
       setTraceFocus(null);
       setSceneFocus(null);
       setShowDesktopDossier(false);
+      setShowDesktopControls(false);
       setShowMobileDossier(false);
+      setShowMobileControls(false);
       resetSelection();
     }, 120);
   };
@@ -601,6 +606,7 @@ export function CulturalVeinShell() {
   const handleSourceAtlasSelect = (entryId: string) => {
     setActiveSourceAtlasId(entryId);
     setSelectedDockId(null);
+    setShowDesktopControls(true);
     setShowDesktopDossier(false);
     setShowMobileDossier(false);
 
@@ -659,6 +665,7 @@ export function CulturalVeinShell() {
     }
 
     setSelectedDockId((current) => (current === dockId ? null : dockId));
+    setShowDesktopControls(true);
     setShowDesktopDossier(false);
     setShowMobileDossier(false);
   };
@@ -772,10 +779,24 @@ export function CulturalVeinShell() {
           </div>
 
           <div className="pointer-events-auto flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setShowMobileControls(false);
+                setShowMobileDossier(false);
+                setShowDesktopControls((current) => !current);
+              }}
+              className="hidden rounded-full border border-[#ead8a6]/24 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-4 py-2 text-xs text-[#f7edd1] backdrop-blur-xl md:inline-flex"
+            >
+              {showDesktopControls ? "收起题签" : "展开题签"}
+            </button>
             {selectedBook ? (
               <button
                 type="button"
-                onClick={() => setShowDesktopDossier((current) => !current)}
+                onClick={() => {
+                  setShowDesktopControls(false);
+                  setShowDesktopDossier((current) => !current);
+                }}
                 className="hidden rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl md:inline-flex"
               >
                 {showDesktopDossier ? "收起文卷" : "展开文卷"}
@@ -784,9 +805,10 @@ export function CulturalVeinShell() {
           </div>
         </div>
 
-        <div className="absolute left-4 top-[104px] z-20 hidden w-[228px] sm:left-6 md:block lg:left-8 lg:w-[236px]">
-          <aside className="pointer-events-auto xl:pt-2">
-            <div className={`p-4 ${panelBaseClass}`}>
+        {showDesktopControls ? (
+          <div className="absolute right-4 top-[104px] z-20 hidden w-[228px] sm:right-6 md:block lg:right-8 lg:w-[236px]">
+            <aside className="pointer-events-auto xl:pt-2">
+              <div className={`p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">
@@ -1118,6 +1140,7 @@ export function CulturalVeinShell() {
             </div>
           </aside>
         </div>
+        ) : null}
 
         {showDesktopDossier && selectedBook && selectedDetail ? (
           <div className="absolute right-4 top-[104px] z-20 hidden w-[min(400px,calc(100vw-20rem))] sm:right-6 lg:right-8 xl:block">
@@ -1273,8 +1296,8 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileControls ? (
-          <div className="absolute inset-x-3 bottom-20 z-40 md:hidden">
-            <div className={`pointer-events-auto max-h-[30vh] overflow-auto p-3 ${panelBaseClass}`}>
+          <div className="absolute bottom-20 right-3 z-40 w-[min(340px,calc(100vw-1.5rem))] md:hidden">
+            <div className={`pointer-events-auto max-h-[62vh] overflow-auto p-3 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">长卷侧注</div>
@@ -1653,40 +1676,62 @@ export function CulturalVeinShell() {
                   : "bg-[rgba(78,52,18,0.88)] text-[#f7edd1]"
               }`}
             >
-              题签
+              {showMobileControls ? "收起题签" : "展开题签"}
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                setShowMobileControls(false);
-                setShowMobileDossier(false);
-              }}
-              className="rounded-full border border-[#ead8a6]/26 bg-[rgba(78,52,18,0.88)] px-4 py-2 text-xs text-[#f7edd1] shadow-xl shadow-black/25 backdrop-blur-xl"
-            >
-              净览
-            </button>
-            <button
-              type="button"
-              onClick={handleReturnToRiver}
-              className="rounded-full px-3 py-2 text-xs text-[#f7edd1]"
-            >
-              归河
-            </button>
-            {selectedBook ? (
+            {showMobileControls ? (
+              <div className="rounded-[24px] border border-[#ead8a6]/20 bg-[linear-gradient(180deg,rgba(90,60,19,0.94),rgba(40,26,9,0.92))] p-2 shadow-xl shadow-black/25 backdrop-blur-xl">
+                <div className="flex flex-wrap justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowMobileControls(false);
+                      setShowMobileDossier(false);
+                    }}
+                    className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-2 text-xs text-[#f7edd1]"
+                  >
+                    净览
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleReturnToRiver}
+                    className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-2 text-xs text-[#f7edd1]"
+                  >
+                    归河
+                  </button>
+                  {selectedBook ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowMobileControls(false);
+                        setShowMobileDossier((current) => !current);
+                      }}
+                      className={`rounded-full border border-[#ead8a6]/26 px-4 py-2 text-xs transition ${
+                        showMobileDossier
+                          ? "bg-[#f3dfab] text-[#42290a]"
+                          : "bg-[rgba(78,52,18,0.88)] text-[#f7edd1]"
+                      }`}
+                    >
+                      {showMobileDossier ? "收起文卷" : "展开文卷"}
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+            {selectedBook && !showMobileControls ? (
               <button
                 type="button"
                 onClick={() => {
                   setShowMobileControls(false);
                   setShowMobileDossier((current) => !current);
                 }}
-              className={`rounded-full border border-[#ead8a6]/26 px-4 py-2 text-xs shadow-xl shadow-black/25 backdrop-blur-xl transition ${
-                showMobileDossier
-                  ? "bg-[#f3dfab] text-[#42290a]"
-                  : "bg-[rgba(78,52,18,0.88)] text-[#f7edd1]"
-              }`}
-            >
-              文卷
-            </button>
+                className={`rounded-full border border-[#ead8a6]/26 px-4 py-2 text-xs shadow-xl shadow-black/25 backdrop-blur-xl transition ${
+                  showMobileDossier
+                    ? "bg-[#f3dfab] text-[#42290a]"
+                    : "bg-[rgba(78,52,18,0.88)] text-[#f7edd1]"
+                }`}
+              >
+                文卷
+              </button>
             ) : null}
           </div>
         </div>
