@@ -50,6 +50,47 @@ const relationLayerMeta: Record<
     description: "更适合视作研究线索，不在界面中伪装成确定事实。",
   },
 };
+const targetDatasetPlan = [
+  { name: "古籍循证数据", scale: "130 万余种", role: "典籍元数据、版本关系、河流节点基础" },
+  { name: "人名规范库", scale: "135 万余人", role: "人物关系网、注家与引者识别" },
+  { name: "书目数据", scale: "354 万余条", role: "版本流变树、出版与藏馆信息" },
+  { name: "CBDB", scale: "64 万余人", role: "人物传记、活动地点、活动时间线补充" },
+  { name: "地名志 / 历史地点", scale: "10000+ 地点", role: "传播路径与历史地点定位" },
+  { name: "历史文化事件", scale: "1.5 万余条", role: "典籍相关时间线事件补强" },
+  { name: "家谱 / 红色文献 / 诗词", scale: "10+ 万到百万级", role: "专题分支、跨域传播与衍生脉络" },
+] as const;
+const pipelineSteps = [
+  {
+    title: "离线抽取",
+    detail: "Python 脚本从 /data 中筛出当前可稳定利用的馆藏、人物与活动样本。",
+  },
+  {
+    title: "关系建模",
+    detail: "按元数据、显式引用、语义关联、影响链四类边组织成可展示的知识关系。",
+  },
+  {
+    title: "前端消费",
+    detail: "生成数据进入统一图谱对象，供河流总览、典籍钻入和文本溯源复用。",
+  },
+  {
+    title: "增量扩展",
+    detail: "后续只要继续导入新数据，河流、时间线、人物与机构面板都会自然长出新支流。",
+  },
+] as const;
+const applicationScenarios = [
+  {
+    title: "学术研究",
+    detail: "帮助研究者快速发现典籍间的引用、注疏与批评性继承关系，减少手工比勘成本。",
+  },
+  {
+    title: "公共传播",
+    detail: "适合图书馆、博物馆或展陈空间做“文脉飞越”式公共展示，让普通观众快速理解谱系。",
+  },
+  {
+    title: "知识服务",
+    detail: "可作为图书馆数字人文基础设施的前端入口，后续接入更完整图数据库和搜索服务。",
+  },
+] as const;
 
 const demoSteps: Array<{
   id: string;
@@ -213,6 +254,38 @@ export function CulturalVeinShell() {
     })
     .filter((citation): citation is NonNullable<typeof citation> => Boolean(citation))
     .sort((left, right) => right.confidence - left.confidence);
+  const connectedDatasetCards = [
+    {
+      name: "CBDB",
+      status: cbdbSummary?.available ? "已接入" : "待补充",
+      scale: cbdbSummary?.personCount
+        ? `${cbdbSummary.personCount.toLocaleString()} 条人物记录`
+        : "人物传记样本",
+      detail: "人物基础传记、别名匹配、活动地点与时间线线索。",
+    },
+    {
+      name: "上海图书馆开放数据 2026",
+      status: insights?.shanghaiLibraryActivity?.available ? "已接入" : "待补充",
+      scale: insights?.shanghaiLibraryActivity?.topVenues?.length
+        ? `${insights.shanghaiLibraryActivity.topVenues.length} 组场馆样本`
+        : "活动样本",
+      detail: "传播现场、活动场馆与在地文化事件信号。",
+    },
+    {
+      name: "南京图书馆",
+      status: insights?.nanjingLibrarySample?.available ? "已接入" : "待补充",
+      scale: insights?.nanjingLibrarySample?.recordCount
+        ? `${insights.nanjingLibrarySample.recordCount} 条资源记录`
+        : "图像资源样本",
+      detail: "图像资源出处、年代、分类与机构来源。",
+    },
+    {
+      name: "复旦大学图书馆",
+      status: insights?.fudanArchiveSample?.available ? "已接入" : "待补充",
+      scale: insights?.fudanArchiveSample?.collectionTitle ?? "馆藏样例",
+      detail: "馆藏介绍摘要、手稿诗笺与机构馆藏说明。",
+    },
+  ];
 
   useEffect(() => {
     let cancelled = false;
@@ -784,6 +857,142 @@ export function CulturalVeinShell() {
                   <p className="mt-2 text-sm leading-6 text-stone-300">
                     图像资源样本、馆藏来源与手稿诗笺说明。
                   </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-[30px] border border-fuchsia-300/10 bg-[linear-gradient(135deg,rgba(16,24,24,0.98),rgba(11,35,34,0.98),rgba(58,29,17,0.78))] px-5 py-5">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+              <div className="max-w-3xl">
+                <div className="text-xs uppercase tracking-[0.24em] text-fuchsia-100/70">
+                  Scale & Extensibility
+                </div>
+                <h3 className="mt-2 text-2xl font-semibold text-stone-50">
+                  数据规模、工程路径与可扩展性
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-stone-300">
+                  这一块专门回答方案里最容易被追问的三个问题：我们到底用了哪些数据、现在接到了什么程度、后续为什么能继续长成真正的数字人文基础设施。
+                </p>
+              </div>
+              <div className="grid gap-2 text-xs text-stone-200 sm:grid-cols-3 xl:w-[420px]">
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-3">
+                  <div className="text-stone-400">当前接入</div>
+                  <div className="mt-2 font-medium text-stone-50">
+                    {connectedDatasetCards.filter((item) => item.status === "已接入").length} 类真实来源
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-3">
+                  <div className="text-stone-400">目标覆盖</div>
+                  <div className="mt-2 font-medium text-stone-50">10+ 数据类型</div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-3">
+                  <div className="text-stone-400">工程模式</div>
+                  <div className="mt-2 font-medium text-stone-50">离线抽取 → 统一图谱</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
+              <div className="rounded-[26px] border border-white/10 bg-black/15 px-4 py-4">
+                <div className="flex items-center justify-between gap-3">
+                  <h4 className="text-lg font-medium text-stone-50">已接入真实来源</h4>
+                  <span className="rounded-full bg-cyan-300/10 px-3 py-1 text-xs text-cyan-100">
+                    当前演示可见
+                  </span>
+                </div>
+                <div className="mt-4 grid gap-3">
+                  {connectedDatasetCards.map((item) => (
+                    <div
+                      key={item.name}
+                      className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="text-sm font-medium text-stone-50">{item.name}</div>
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs ${
+                            item.status === "已接入"
+                              ? "bg-emerald-300/12 text-emerald-100"
+                              : "border border-white/10 bg-white/10 text-stone-300"
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+                      <div className="mt-2 text-sm text-amber-100">{item.scale}</div>
+                      <p className="mt-2 text-sm leading-6 text-stone-300">{item.detail}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-[26px] border border-white/10 bg-black/15 px-4 py-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <h4 className="text-lg font-medium text-stone-50">方案目标数据版图</h4>
+                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
+                      面向正式参赛版
+                    </span>
+                  </div>
+                  <div className="mt-4 grid gap-3">
+                    {targetDatasetPlan.map((item) => (
+                      <div
+                        key={item.name}
+                        className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <div className="text-sm font-medium text-stone-50">{item.name}</div>
+                          <span className="rounded-full bg-fuchsia-300/10 px-3 py-1 text-xs text-fuchsia-100">
+                            {item.scale}
+                          </span>
+                        </div>
+                        <p className="mt-2 text-sm leading-6 text-stone-300">{item.role}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 lg:grid-cols-2">
+                  <div className="rounded-[26px] border border-white/10 bg-black/15 px-4 py-4">
+                    <h4 className="text-lg font-medium text-stone-50">工程扩展路径</h4>
+                    <div className="mt-4 space-y-3">
+                      {pipelineSteps.map((step, index) => (
+                        <div key={step.title} className="flex gap-3">
+                          <div className="flex w-8 flex-col items-center pt-1">
+                            <div className="h-6 w-6 rounded-full bg-amber-300/15 text-center text-xs leading-6 text-amber-100">
+                              {index + 1}
+                            </div>
+                            {index < pipelineSteps.length - 1 ? (
+                              <div className="mt-2 h-full w-px bg-white/10" />
+                            ) : null}
+                          </div>
+                          <div className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+                            <div className="font-medium text-stone-50">{step.title}</div>
+                            <p className="mt-2 text-sm leading-6 text-stone-300">
+                              {step.detail}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-[26px] border border-white/10 bg-black/15 px-4 py-4">
+                    <h4 className="text-lg font-medium text-stone-50">落地应用场景</h4>
+                    <div className="mt-4 grid gap-3">
+                      {applicationScenarios.map((scenario) => (
+                        <div
+                          key={scenario.title}
+                          className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
+                        >
+                          <div className="text-sm font-medium text-stone-50">{scenario.title}</div>
+                          <p className="mt-2 text-sm leading-6 text-stone-300">
+                            {scenario.detail}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
