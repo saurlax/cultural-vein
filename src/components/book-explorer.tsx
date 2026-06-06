@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { PersonNetwork3D } from "@/components/person-network-3d";
 import { SpreadGlobe } from "@/components/spread-globe";
 import type { BookDetail, BookNode, RiverEra } from "@/types/domain";
 
@@ -882,156 +883,59 @@ export function BookExplorer({
                       </div>
                     </div>
 
-                    <div className="relative mt-4 rounded-[24px] border border-white/10 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.08),rgba(8,17,16,0.95))] px-4 py-6">
-                      <div className="absolute inset-0 opacity-30">
-                        <svg viewBox="0 0 100 100" className="h-full w-full">
-                          {primaryPeople.map((person, index) => {
-                            const x = 22;
-                            const y = 24 + index * (52 / Math.max(primaryPeople.length, 1));
-                            return (
-                              <line
-                                key={`primary-line-${person.id}`}
-                                x1="50"
-                                y1="50"
-                                x2={x}
-                                y2={y}
-                                stroke="rgba(110,231,183,0.6)"
-                                strokeWidth="1.4"
-                              />
-                            );
-                          })}
-                          {secondaryPeople.map((person, index) => {
-                            const x = 78;
-                            const y = 24 + index * (52 / Math.max(secondaryPeople.length, 1));
-                            return (
-                              <line
-                                key={`secondary-line-${person.id}`}
-                                x1="50"
-                                y1="50"
-                                x2={x}
-                                y2={y}
-                                stroke="rgba(148,163,184,0.45)"
-                                strokeWidth="1"
-                                strokeDasharray="2 2"
-                              />
-                            );
-                          })}
-                        </svg>
+                    <div className="mt-4">
+                      <PersonNetwork3D
+                        book={book}
+                        primaryPeople={primaryPeople}
+                        secondaryPeople={secondaryPeople}
+                        activePersonId={activePerson?.id ?? null}
+                        onSelectPerson={setSelectedPersonId}
+                      />
+                    </div>
+                    <div className="mt-4 grid gap-3 md:grid-cols-2">
+                      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                        <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                          一级关联
+                        </div>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {primaryPeople.map((person) => (
+                            <button
+                              key={person.id}
+                              type="button"
+                              onClick={() => setSelectedPersonId(person.id)}
+                              className={`rounded-full px-3 py-2 text-xs transition ${
+                                activePerson?.id === person.id
+                                  ? "bg-emerald-300/12 text-emerald-100"
+                                  : "border border-white/10 bg-black/15 text-stone-300"
+                              }`}
+                            >
+                              {person.name} · {person.role}
+                            </button>
+                          ))}
+                        </div>
                       </div>
-
-                      <div className="relative grid min-h-[340px] grid-cols-[1fr_220px_1fr] gap-4">
-                        <div className="space-y-3">
-                          <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
-                            一级关联
-                          </div>
-                          {primaryPeople.map((person) => {
-                            const isActive = activePerson?.id === person.id;
-                            return (
+                      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                        <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
+                          二级关联
+                        </div>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {secondaryPeople.length === 0 ? (
+                            <div className="text-sm text-stone-400">暂未补充二级关系人物。</div>
+                          ) : (
+                            secondaryPeople.map((person) => (
                               <button
                                 key={person.id}
                                 type="button"
                                 onClick={() => setSelectedPersonId(person.id)}
-                                className={`w-full rounded-2xl border px-4 py-4 text-left transition ${
-                                  isActive
-                                    ? "border-emerald-300/30 bg-emerald-300/10 shadow-lg shadow-emerald-500/10"
-                                    : "border-white/10 bg-white/5 hover:bg-white/10"
+                                className={`rounded-full px-3 py-2 text-xs transition ${
+                                  activePerson?.id === person.id
+                                    ? "bg-amber-300/12 text-amber-100"
+                                    : "border border-white/10 bg-black/15 text-stone-300"
                                 }`}
                               >
-                                <div className="flex items-start justify-between gap-3">
-                                  <div>
-                                    <div className="text-lg font-semibold text-stone-50">
-                                      {person.name}
-                                    </div>
-                                    <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone-400">
-                                      {person.role} · {person.era}
-                                    </div>
-                                  </div>
-                                  <div
-                                    className={`rounded-full px-3 py-1 text-xs ${relationTypeClass(person.relationType)}`}
-                                  >
-                                    {person.relationType ?? "引"}
-                                  </div>
-                                </div>
+                                {person.name} · {person.role}
                               </button>
-                            );
-                          })}
-                        </div>
-
-                        <div className="flex flex-col items-center justify-center gap-4 py-2">
-                          <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
-                            中心典籍
-                          </div>
-                          <div className="w-full rounded-[28px] border border-amber-300/25 bg-amber-300/10 px-5 py-6 text-center shadow-lg shadow-amber-500/10">
-                            <div className="text-xs uppercase tracking-[0.22em] text-amber-100/80">
-                              {book.dynasty} · {book.category}
-                            </div>
-                            <div className="mt-3 text-2xl font-semibold text-stone-50">
-                              {book.title}
-                            </div>
-                            <div className="mt-3 text-sm leading-7 text-stone-300">
-                              {book.school}
-                            </div>
-                          </div>
-                          <div className="flex w-full items-center justify-center gap-2 text-stone-500">
-                            <div className="h-px flex-1 bg-white/10" />
-                            <span className="text-[10px] uppercase tracking-[0.24em]">
-                              注 / 引 / 评
-                            </span>
-                            <div className="h-px flex-1 bg-white/10" />
-                          </div>
-                        </div>
-
-                        <div className="space-y-3">
-                          <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
-                            二级关联
-                          </div>
-                          {secondaryPeople.length === 0 ? (
-                            <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
-                              暂未补充二级关系人物。
-                            </div>
-                          ) : (
-                            secondaryPeople.map((person) => {
-                              const isActive = activePerson?.id === person.id;
-                              return (
-                                <button
-                                  key={person.id}
-                                  type="button"
-                                  onClick={() => setSelectedPersonId(person.id)}
-                                  className={`w-full rounded-2xl border px-4 py-4 text-left transition ${
-                                    isActive
-                                      ? "border-amber-300/30 bg-amber-300/10 shadow-lg shadow-amber-500/10"
-                                      : "border-white/10 bg-white/5 hover:bg-white/10"
-                                  }`}
-                                >
-                                  <div className="flex items-start justify-between gap-3">
-                                    <div>
-                                      <div className="text-lg font-semibold text-stone-50">
-                                        {person.name}
-                                      </div>
-                                      <div className="mt-1 text-xs uppercase tracking-[0.2em] text-stone-400">
-                                        {person.role} · {person.era}
-                                      </div>
-                                    </div>
-                                    <div className="flex flex-col items-end gap-2">
-                                      <div
-                                        className={`rounded-full px-3 py-1 text-xs ${relationTypeClass(person.relationType)}`}
-                                      >
-                                        {person.relationType ?? "引"}
-                                      </div>
-                                      <div
-                                        className={`rounded-full px-3 py-1 text-xs ${
-                                          person.source === "cbdb"
-                                            ? "bg-emerald-300/10 text-emerald-100"
-                                            : "bg-white/10 text-stone-300"
-                                        }`}
-                                      >
-                                        {person.source === "cbdb" ? "纪传库已对照" : "整理人物"}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </button>
-                              );
-                            })
+                            ))
                           )}
                         </div>
                       </div>

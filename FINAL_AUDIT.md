@@ -71,6 +71,7 @@
 - 状态：`已实现`
 - 证据：
   - people tab
+  - `src/components/person-network-3d.tsx`
   - 一级/二级人物关系
   - 人物详情与 CBDB 活动地点信号
 
