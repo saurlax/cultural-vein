@@ -43,6 +43,7 @@ interface RiverSceneProps {
   sceneFocus?: SceneFocusState | null;
   visibleNodeCount?: number;
   totalNodeCount?: number;
+  highlightedBookSlugs?: string[];
 }
 
 interface CruiseSnapshot {
@@ -313,6 +314,7 @@ function BookMarkers({
   viewMode,
   traceFocus,
   sceneFocus,
+  highlightedBookSlugs = [],
 }: {
   books: BookNode[];
   selectedBookSlug: string;
@@ -321,6 +323,7 @@ function BookMarkers({
   viewMode: ViewMode;
   traceFocus?: TraceFocusState | null;
   sceneFocus?: SceneFocusState | null;
+  highlightedBookSlugs?: string[];
 }) {
   const eraOrder: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
   const activeIndex = eraOrder.indexOf(activeEra);
@@ -328,6 +331,11 @@ function BookMarkers({
     () => new Set(traceFocus?.titles ?? []),
     [traceFocus?.titles],
   );
+  const highlightedSlugSet = useMemo(
+    () => new Set(highlightedBookSlugs),
+    [highlightedBookSlugs],
+  );
+  const hasSearchHighlight = highlightedBookSlugs.length > 0;
   const markerRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
@@ -351,18 +359,22 @@ function BookMarkers({
         const isTraceCurrent = traceFocus?.currentTitle === book.title;
         const isSceneFocused =
           sceneFocus?.active === true && sceneFocus.currentTitle === book.title;
+        const isSearchHighlighted = highlightedSlugSet.has(book.slug);
         const shouldDim =
-          (viewMode === "book" || Boolean(traceFocus?.active) || Boolean(sceneFocus?.active)) &&
+          ((viewMode === "book" || Boolean(traceFocus?.active) || Boolean(sceneFocus?.active)) &&
           !isSelected &&
           !isTraceLinked &&
           !isSceneFocused &&
-          !isNewestVisible;
+          !isNewestVisible) ||
+          (hasSearchHighlight && !isSearchHighlighted && !isSelected && !isTraceLinked && !isSceneFocused);
         const markerColor = isTraceCurrent
           ? "#fbbf24"
           : isSceneFocused
             ? "#fde68a"
           : isSelected
             ? "#fcd34d"
+            : isSearchHighlighted
+              ? "#fde68a"
             : isTraceLinked
               ? "#fde68a"
               : "#f8e7b2";
@@ -372,6 +384,8 @@ function BookMarkers({
             ? "#f59e0b"
           : isSelected
             ? "#f59e0b"
+            : isSearchHighlighted
+              ? "#f59e0b"
             : isTraceLinked
               ? "#d97706"
               : isNewestVisible
@@ -383,6 +397,8 @@ function BookMarkers({
             ? 0.22
           : isSelected
             ? 0.22
+            : isSearchHighlighted
+              ? 0.2
             : isTraceLinked
               ? 0.19
               : isNewestVisible
@@ -398,31 +414,43 @@ function BookMarkers({
               <meshStandardMaterial
                 color={markerColor}
                 transparent
-                opacity={shouldDim ? 0.4 : 1}
+                opacity={shouldDim ? 0.22 : isSearchHighlighted ? 1 : 0.94}
                 emissive={new THREE.Color(emissive)}
-                emissiveIntensity={isTraceCurrent ? 1.7 : isTraceLinked ? 1.1 : isNewestVisible ? 1 : 0.8}
+                emissiveIntensity={
+                  isTraceCurrent
+                    ? 1.7
+                    : isSearchHighlighted
+                      ? 1.25
+                      : isTraceLinked
+                        ? 1.1
+                        : isNewestVisible
+                          ? 1
+                          : 0.8
+                }
               />
             </mesh>
-            {isTraceLinked ? (
+            {isTraceLinked || isSearchHighlighted ? (
               <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
                 <ringGeometry
                   args={[markerSize + 0.08, markerSize + (isTraceCurrent ? 0.2 : 0.15), 32]}
                 />
                 <meshBasicMaterial
-                  color={isTraceCurrent ? "#fbbf24" : "#f59e0b"}
+                  color={isTraceCurrent ? "#fbbf24" : isSearchHighlighted ? "#fde68a" : "#f59e0b"}
                   transparent
-                  opacity={isTraceCurrent ? 0.65 : 0.28}
+                  opacity={isTraceCurrent ? 0.65 : isSearchHighlighted ? 0.4 : 0.28}
                 />
               </mesh>
             ) : null}
             <Text
-              position={[0, isTraceLinked ? 0.44 : 0.38, 0]}
+              position={[0, isTraceLinked || isSearchHighlighted ? 0.44 : 0.38, 0]}
               fontSize={isTraceCurrent ? 0.19 : 0.17}
               color={
                 isTraceCurrent
                   ? "#fef3c7"
                   : isSelected
                     ? "#fde68a"
+                    : isSearchHighlighted
+                      ? "#fef3c7"
                     : isTraceLinked
                       ? "#fef3c7"
                       : shouldDim
@@ -436,10 +464,12 @@ function BookMarkers({
                 ? `${book.shortTitle} · 当前溯源`
                 : isSceneFocused
                   ? `${book.shortTitle} · 场景联动`
-                : isTraceLinked
-                  ? `${book.shortTitle} · 溯源链`
-                  : isNewestVisible
-                    ? `${book.shortTitle} · 新显现`
+                  : isSearchHighlighted
+                    ? `${book.shortTitle} · 概念命中`
+                  : isTraceLinked
+                    ? `${book.shortTitle} · 溯源链`
+                    : isNewestVisible
+                      ? `${book.shortTitle} · 新显现`
                     : book.shortTitle}
             </Text>
           </group>
@@ -455,12 +485,14 @@ function CitationArcs({
   selectedBookSlug,
   traceFocus,
   sceneFocus,
+  highlightedBookSlugs = [],
 }: {
   books: BookNode[];
   citations: CitationEdge[];
   selectedBookSlug: string;
   traceFocus?: TraceFocusState | null;
   sceneFocus?: SceneFocusState | null;
+  highlightedBookSlugs?: string[];
 }) {
   const bookMap = useMemo(
     () => new Map(books.map((book) => [book.id, book])),
@@ -470,6 +502,11 @@ function CitationArcs({
     () => new Set(traceFocus?.titles ?? []),
     [traceFocus?.titles],
   );
+  const highlightedSlugSet = useMemo(
+    () => new Set(highlightedBookSlugs),
+    [highlightedBookSlugs],
+  );
+  const hasSearchHighlight = highlightedBookSlugs.length > 0;
 
   return (
     <>
@@ -495,6 +532,8 @@ function CitationArcs({
         const sceneLinked =
           sceneFocus?.active === true &&
           (source.title === sceneFocus.currentTitle || target.title === sceneFocus.currentTitle);
+        const searchLinked =
+          highlightedSlugSet.has(source.slug) || highlightedSlugSet.has(target.slug);
         const isFocusedArc = sourceSelected || targetSelected || traceLinked || sceneLinked;
         const style =
           citation.layer === "metadata"
@@ -535,7 +574,17 @@ function CitationArcs({
               points={points}
               color={style.color}
               transparent
-              opacity={isFocusedArc ? 0.94 : selectedBookSlug ? 0.2 : 0.68}
+              opacity={
+                isFocusedArc
+                  ? 0.94
+                  : hasSearchHighlight
+                    ? searchLinked
+                      ? 0.78
+                      : 0.08
+                    : selectedBookSlug
+                      ? 0.2
+                      : 0.68
+              }
               lineWidth={style.lineWidth}
               dashed={style.dashed}
               dashSize={style.dashSize}
@@ -546,7 +595,17 @@ function CitationArcs({
                 points={points}
                 color={style.color}
                 transparent
-                opacity={isFocusedArc ? 0.16 : selectedBookSlug ? 0.04 : 0.08}
+                opacity={
+                  isFocusedArc
+                    ? 0.16
+                    : hasSearchHighlight
+                      ? searchLinked
+                        ? 0.12
+                        : 0.02
+                      : selectedBookSlug
+                        ? 0.04
+                        : 0.08
+                }
                 lineWidth={style.lineWidth + 3.2}
                 dashed={style.dashed}
                 dashSize={style.dashSize}
@@ -830,6 +889,7 @@ function RiverWorld({
   traceFocus,
   sceneFocus,
   cruiseProgress,
+  highlightedBookSlugs = [],
 }: RiverSceneProps & {
   cruiseProgress: number;
 }) {
@@ -1180,6 +1240,7 @@ function RiverWorld({
         selectedBookSlug={selectedBookSlug}
         traceFocus={traceFocus}
         sceneFocus={sceneFocus}
+        highlightedBookSlugs={highlightedBookSlugs}
       />
       <FocusHalo
         selectedBookPosition={selectedBookPosition}
@@ -1228,6 +1289,7 @@ function RiverWorld({
         viewMode={viewMode}
         traceFocus={traceFocus}
         sceneFocus={sceneFocus}
+        highlightedBookSlugs={highlightedBookSlugs}
       />
       <OrbitControls
         ref={controlsRef}

@@ -187,31 +187,27 @@ export function CulturalVeinShell() {
   };
 
   const filteredBooks = useMemo(() => {
-    const normalizedSearch = searchTerm.trim();
-    const searchHitSlugs =
-      normalizedSearch.length > 0 && searchResult?.query.trim() === normalizedSearch
-        ? new Set(searchResult?.hits.map((hit) => hit.slug) ?? [])
-        : null;
-
     return riverDataset.books.filter((book) => {
       const matchesEra = eras.indexOf(book.dynasty) <= activeEraIndex;
       const matchesCategory =
         categoryFilter === "全部" || book.category === categoryFilter;
       const matchesSchool =
         schoolFilter === "全部" || book.school === schoolFilter;
-      const matchesSearch =
-        !searchHitSlugs || searchHitSlugs.has(book.slug);
 
-      return matchesEra && matchesCategory && matchesSchool && matchesSearch;
+      return matchesEra && matchesCategory && matchesSchool;
     });
   }, [
     activeEraIndex,
     categoryFilter,
     schoolFilter,
-    searchResult?.hits,
-    searchResult?.query,
-    searchTerm,
   ]);
+  const searchHighlightedSlugs = useMemo(
+    () =>
+      searchTerm.trim().length > 0 && searchResult?.query.trim() === searchTerm.trim()
+        ? searchResult?.hits.map((hit) => hit.slug) ?? []
+        : [],
+    [searchResult?.hits, searchResult?.query, searchTerm],
+  );
 
   const visibleCitations = useMemo(() => {
     return riverDataset.citations.filter((citation) => {
@@ -904,6 +900,7 @@ export function CulturalVeinShell() {
             dockMarkers={riverDockMarkers}
             visibleNodeCount={filteredBooks.length}
             totalNodeCount={riverDataset.books.length}
+            highlightedBookSlugs={searchHighlightedSlugs}
           />
         </main>
 
