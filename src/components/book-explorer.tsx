@@ -73,6 +73,18 @@ function confidenceClass(label: string) {
   return "border-white/10 bg-white/10 text-stone-200";
 }
 
+function downstreamConfidenceCardClass(label: string) {
+  if (label === "高") {
+    return "border-emerald-300/14 bg-emerald-300/6";
+  }
+
+  if (label === "中") {
+    return "border-amber-300/14 bg-amber-300/6";
+  }
+
+  return "border-dashed border-slate-300/18 bg-slate-300/8";
+}
+
 function inlineConfidenceClass(label: string) {
   if (label === "高") {
     return "rounded bg-emerald-300/18 px-1.5 py-0.5 text-emerald-100";
@@ -2103,6 +2115,9 @@ export function BookExplorer({
                       <span className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-amber-100">
                         黄色：语义关联 / 中置信度
                       </span>
+                      <span className="rounded-full border border-dashed border-white/14 bg-white/5 px-3 py-1 text-stone-300">
+                        灰色虚线：间接影响 / 低置信度
+                      </span>
                       <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-stone-300">
                         点击高亮可聚焦对应证据
                       </span>
@@ -2297,12 +2312,23 @@ export function BookExplorer({
                       <h4 className="text-sm font-medium text-amber-50">下游影响追踪</h4>
                       <span className="text-xs text-amber-100/70">反向查看</span>
                     </div>
+                    <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-stone-400">
+                      <span className="rounded-full border border-emerald-300/18 bg-emerald-300/10 px-3 py-1 text-emerald-100">
+                        高：直接承继
+                      </span>
+                      <span className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-amber-100">
+                        中：化用延展
+                      </span>
+                      <span className="rounded-full border border-dashed border-white/14 bg-white/5 px-3 py-1 text-stone-300">
+                        低：参考性影响
+                      </span>
+                    </div>
                     {activePassage.downstreamInfluence?.length ? (
                       <div className="mt-3 space-y-2">
                         {activePassage.downstreamInfluence.map((item) => (
                           <div
                             key={item.id}
-                            className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3"
+                            className={`rounded-2xl border px-3 py-3 ${downstreamConfidenceCardClass(item.confidenceLabel)}`}
                           >
                             <div className="flex items-center justify-between gap-3">
                               <span className="font-medium text-stone-50">
@@ -2320,6 +2346,11 @@ export function BookExplorer({
                             <p className="mt-2 text-sm leading-6 text-stone-300">
                               {item.note}
                             </p>
+                            {item.confidenceLabel === "低" ? (
+                              <div className="mt-3 rounded-2xl border border-dashed border-white/14 bg-white/5 px-3 py-3 text-xs leading-6 text-stone-400">
+                                此链路表示参考性间接影响，适合用于展示文脉回声，不宜等同于显式引述。
+                              </div>
+                            ) : null}
                             <div className="mt-3 flex flex-wrap gap-2">
                               <button
                                 type="button"
