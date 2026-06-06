@@ -182,35 +182,68 @@ function RiverParticleStream({
   points,
   color,
   density = 180,
+  flowSpeed = 0.08,
+  spread = 0.12,
 }: {
   points: THREE.Vector3[];
   color: string;
   density?: number;
+  flowSpeed?: number;
+  spread?: number;
 }) {
   const particleRef = useRef<THREE.Points>(null);
   const curve = useMemo(() => new THREE.CatmullRomCurve3(points), [points]);
+  const particleOffsets = useMemo(
+    () => Array.from({ length: density }, (_, index) => density === 1 ? 0 : index / (density - 1)),
+    [density],
+  );
+  const noiseOffsets = useMemo(
+    () =>
+      Array.from({ length: density }, (_, index) => ({
+        x: (pseudoNoise(index + 1.37) - 0.5) * spread,
+        y: (pseudoNoise(index * 2.13 + 4.2) - 0.5) * spread,
+        z: (pseudoNoise(index * 0.73 + 9.4) - 0.5) * spread,
+      })),
+    [density, spread],
+  );
   const positions = useMemo(() => {
     const values = new Float32Array(density * 3);
 
     for (let index = 0; index < density; index += 1) {
-      const t = density === 1 ? 0 : index / (density - 1);
+      const t = particleOffsets[index] ?? 0;
       const point = curve.getPointAt(t);
-      values[index * 3] = point.x + (pseudoNoise(index + 1.37) - 0.5) * 0.12;
-      values[index * 3 + 1] =
-        point.y + (pseudoNoise(index * 2.13 + 4.2) - 0.5) * 0.12;
-      values[index * 3 + 2] =
-        point.z + (pseudoNoise(index * 0.73 + 9.4) - 0.5) * 0.12;
+      const noise = noiseOffsets[index] ?? { x: 0, y: 0, z: 0 };
+      values[index * 3] = point.x + noise.x;
+      values[index * 3 + 1] = point.y + noise.y;
+      values[index * 3 + 2] = point.z + noise.z;
     }
 
     return values;
-  }, [curve, density]);
+  }, [curve, density, noiseOffsets, particleOffsets]);
 
   useFrame((state) => {
-    if (!particleRef.current) {
+    const geometry = particleRef.current?.geometry;
+    const positionAttribute = geometry?.getAttribute("position");
+
+    if (!particleRef.current || !positionAttribute) {
       return;
     }
 
-    particleRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.05) * 0.15;
+    for (let index = 0; index < density; index += 1) {
+      const baseOffset = particleOffsets[index] ?? 0;
+      const noise = noiseOffsets[index] ?? { x: 0, y: 0, z: 0 };
+      const t = (state.clock.elapsedTime * flowSpeed + baseOffset) % 1;
+      const point = curve.getPointAt(t);
+
+      positionAttribute.setXYZ(
+        index,
+        point.x + noise.x,
+        point.y + noise.y,
+        point.z + noise.z,
+      );
+    }
+
+    positionAttribute.needsUpdate = true;
   });
 
   return (
@@ -906,6 +939,30 @@ function RiverWorld({
         .map((book) => new THREE.Vector3(...book.coordinates)),
     );
   }, [books]);
+  const mainStreamStats = useMemo(() => {
+    const mainBooks = books.filter((book) => book.branchLevel === 0);
+    const averageInfluence =
+      mainBooks.reduce((sum, book) => sum + book.influence, 0) / Math.max(mainBooks.length, 1);
+    const averageVelocity =
+      mainBooks.reduce((sum, book) => sum + book.velocity, 0) / Math.max(mainBooks.length, 1);
+
+    return { averageInfluence, averageVelocity };
+  }, [books]);
+  const branchStreamStats = useMemo(
+    () =>
+      [1, 2].map((branchLevel) => {
+        const branchBooks = books.filter((book) => book.branchLevel === branchLevel);
+        const averageInfluence =
+          branchBooks.reduce((sum, book) => sum + book.influence, 0) /
+          Math.max(branchBooks.length, 1);
+        const averageVelocity =
+          branchBooks.reduce((sum, book) => sum + book.velocity, 0) /
+          Math.max(branchBooks.length, 1);
+
+        return { averageInfluence, averageVelocity };
+      }),
+    [books],
+  );
   useEffect(() => {
     const focusPoint = traceFocus?.active || sceneFocus?.active
       ? cameraTarget.clone()
@@ -1055,12 +1112,18 @@ function RiverWorld({
         <>
           <RiverRibbon
             points={mainStream}
-            width={0.21}
+            width={0.16 + mainStreamStats.averageInfluence / 420}
             color="#b45309"
             glow="#fbbf24"
             animated
           />
-          <RiverParticleStream points={mainStream} color="#fde68a" density={220} />
+          <RiverParticleStream
+            points={mainStream}
+            color="#fde68a"
+            density={180 + Math.round(mainStreamStats.averageInfluence * 0.9)}
+            flowSpeed={0.045 + mainStreamStats.averageVelocity * 0.18}
+            spread={0.1}
+          />
         </>
       ) : null}
 
@@ -1069,14 +1132,23 @@ function RiverWorld({
           <group key={`branch-${index}`}>
             <RiverRibbon
               points={stream}
-              width={0.12 - index * 0.02}
+              width={
+                Math.max(
+                  0.07,
+                  0.08 + branchStreamStats[index]!.averageInfluence / 520 - index * 0.012,
+                )
+              }
               color={index === 0 ? "#d97706" : "#92400e"}
               glow={index === 0 ? "#fcd34d" : "#fef3c7"}
             />
             <RiverParticleStream
               points={stream}
               color={index === 0 ? "#fde68a" : "#fef3c7"}
-              density={index === 0 ? 150 : 120}
+              density={Math.round(
+                (index === 0 ? 120 : 92) + branchStreamStats[index]!.averageInfluence * 0.56,
+              )}
+              flowSpeed={0.05 + branchStreamStats[index]!.averageVelocity * 0.2}
+              spread={0.09}
             />
           </group>
         ) : null,
@@ -1134,6 +1206,8 @@ function RiverWorld({
             points={focusStreamPoints}
             color={traceFocus?.active ? "#fbbf24" : "#fde68a"}
             density={96}
+            flowSpeed={traceFocus?.active ? 0.16 : 0.11}
+            spread={0.08}
           />
         </group>
       ) : null}
