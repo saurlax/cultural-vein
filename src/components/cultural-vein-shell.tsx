@@ -317,6 +317,69 @@ export function CulturalVeinShell() {
             </div>
           ) : null}
 
+          <div className="mt-4 grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+            <div className="rounded-[28px] border border-white/10 bg-black/15 px-5 py-5">
+              <div className="text-xs uppercase tracking-[0.24em] text-stone-400">
+                方法说明
+              </div>
+              <h3 className="mt-2 text-xl font-semibold text-stone-50">
+                三层关系 + 三层交互
+              </h3>
+              <div className="mt-4 grid gap-3 md:grid-cols-3">
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                  <div className="text-sm font-medium text-stone-50">宏观层</div>
+                  <p className="mt-2 text-sm leading-6 text-stone-300">
+                    用河流总览表达典籍主干、支流与时代推进。
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                  <div className="text-sm font-medium text-stone-50">中观层</div>
+                  <p className="mt-2 text-sm leading-6 text-stone-300">
+                    用传播、人物、版本、时间线展开关联叙事。
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                  <div className="text-sm font-medium text-stone-50">微观层</div>
+                  <p className="mt-2 text-sm leading-6 text-stone-300">
+                    用文本对读、证据切换和溯源链路解释引文关系。
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 text-sm leading-7 text-stone-300">
+                当前界面把元数据关系、显式引用、语义关联与影响链统一组织到同一交互框架中，优先保证可演示性，再逐步扩大真实数据覆盖面。
+              </div>
+            </div>
+
+            <div className="rounded-[28px] border border-white/10 bg-black/15 px-5 py-5">
+              <div className="text-xs uppercase tracking-[0.24em] text-stone-400">
+                数据来源
+              </div>
+              <h3 className="mt-2 text-xl font-semibold text-stone-50">
+                当前已接入的真实样本
+              </h3>
+              <div className="mt-4 grid gap-3">
+                <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4">
+                  <div className="text-sm font-medium text-cyan-50">CBDB</div>
+                  <p className="mt-2 text-sm leading-6 text-stone-300">
+                    人物传记、活动地点、活动时间线线索。
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4">
+                  <div className="text-sm font-medium text-cyan-50">上海图书馆开放数据 2026</div>
+                  <p className="mt-2 text-sm leading-6 text-stone-300">
+                    活动场馆样本与文化传播现场事件。
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4">
+                  <div className="text-sm font-medium text-cyan-50">南京图书馆 / 复旦大学图书馆</div>
+                  <p className="mt-2 text-sm leading-6 text-stone-300">
+                    图像资源样本、馆藏来源与手稿诗笺说明。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredBooks.length === 0 ? (
               <div className="xl:col-span-3 rounded-[26px] border border-dashed border-white/10 bg-black/10 px-5 py-8 text-sm text-stone-400">
