@@ -18,6 +18,7 @@ import type { DatasetInsight } from "@/types/domain";
 
 const eras = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"] as const;
 const categories = ["全部", "经", "史", "子", "集"] as const;
+const schoolLabel = "学派";
 const defaultConceptSuggestions = Array.from(
   new Set(riverDataset.books.flatMap((book) => book.concepts)),
 ).slice(0, 10);
@@ -107,9 +108,11 @@ export function CulturalVeinShell() {
     searchTerm,
     selectedBookSlug,
     categoryFilter,
+    schoolFilter,
     viewMode,
     setActiveEra,
     setCategoryFilter,
+    setSchoolFilter,
     setSearchTerm,
     setSelectedBookSlug,
     resetSelection,
@@ -131,6 +134,10 @@ export function CulturalVeinShell() {
   >("idle");
 
   const activeEraIndex = eras.indexOf(activeEra);
+  const schools = useMemo(
+    () => ["全部", ...new Set(riverDataset.books.map((book) => book.school))],
+    [],
+  );
 
   useEffect(() => {
     const trimmed = searchTerm.trim();
@@ -190,12 +197,21 @@ export function CulturalVeinShell() {
       const matchesEra = eras.indexOf(book.dynasty) <= activeEraIndex;
       const matchesCategory =
         categoryFilter === "全部" || book.category === categoryFilter;
+      const matchesSchool =
+        schoolFilter === "全部" || book.school === schoolFilter;
       const matchesSearch =
         !searchHitSlugs || searchHitSlugs.has(book.slug);
 
-      return matchesEra && matchesCategory && matchesSearch;
+      return matchesEra && matchesCategory && matchesSchool && matchesSearch;
     });
-  }, [activeEraIndex, categoryFilter, searchResult?.hits, searchResult?.query, searchTerm]);
+  }, [
+    activeEraIndex,
+    categoryFilter,
+    schoolFilter,
+    searchResult?.hits,
+    searchResult?.query,
+    searchTerm,
+  ]);
 
   const visibleCitations = useMemo(() => {
     return riverDataset.citations.filter((citation) => {
@@ -393,7 +409,10 @@ export function CulturalVeinShell() {
     {
       id: "category",
       label: "门类",
-      summary: categoryFilter,
+      summary:
+        schoolFilter === "全部"
+          ? categoryFilter
+          : `${categoryFilter} · ${schoolFilter}`,
     },
     {
       id: "branch",
@@ -657,6 +676,9 @@ export function CulturalVeinShell() {
 
                       {isActive && panel.id === "category" ? (
                         <div className="border-t border-[#ead8a6]/12 px-4 pb-4 pt-3">
+                          <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
+                            四部门类
+                          </div>
                           <div className="flex flex-wrap gap-2">
                             {categories.map((category) => (
                               <button
@@ -673,8 +695,28 @@ export function CulturalVeinShell() {
                               </button>
                             ))}
                           </div>
+                          <div className="mt-4 text-[11px] tracking-[0.24em] text-[#d8c9a3]">
+                            {schoolLabel}
+                          </div>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {schools.map((school) => (
+                              <button
+                                key={school}
+                                type="button"
+                                onClick={() => setSchoolFilter(school)}
+                                className={`rounded-full px-3 py-2 text-xs transition ${
+                                  schoolFilter === school
+                                    ? "bg-[#f3dfab] text-[#42290a]"
+                                    : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                                }`}
+                              >
+                                {school}
+                              </button>
+                            ))}
+                          </div>
                           <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-sm text-[#eadfbc]">
-                            当前河段显现自 {eras[0]} 至 {activeEra}，门类为 {categoryFilter}。
+                            当前河段显现自 {eras[0]} 至 {activeEra}，门类为
+                            {categoryFilter}，学派为 {schoolFilter}。
                           </div>
                         </div>
                       ) : null}
@@ -985,6 +1027,31 @@ export function CulturalVeinShell() {
                     {category}
                   </button>
                 ))}
+              </div>
+              <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-4 py-4">
+                <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
+                  {schoolLabel}
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {schools.map((school) => (
+                    <button
+                      key={`mobile-school-${school}`}
+                      type="button"
+                      onClick={() => setSchoolFilter(school)}
+                      className={`rounded-full px-3 py-2 text-xs transition ${
+                        schoolFilter === school
+                          ? "bg-[#f3dfab] text-[#42290a]"
+                          : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                      }`}
+                    >
+                      {school}
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(27,17,7,0.18)] px-3 py-3 text-sm text-[#eadfbc]">
+                  当前河段显现自 {eras[0]} 至 {activeEra}，门类为 {categoryFilter}，学派为{" "}
+                  {schoolFilter}。
+                </div>
               </div>
             </div>
           </div>
