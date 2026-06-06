@@ -489,6 +489,8 @@ export function CulturalVeinShell() {
     sourceAtlasDockMarkers.find((dock) => dock.id === selectedDockId) ??
     sourceAtlasDockMarkers.find((dock) => dock.id === hoveredDockId) ??
     null;
+  const getSourceAtlasDockId = (index: number) =>
+    activeSourceAtlasEntry ? `source-atlas-${activeSourceAtlasEntry.id}-${index}` : null;
   const mergedDockMarkers = selectedBook ? riverDockMarkers : sourceAtlasDockMarkers;
   const sourceAtlasHighlightedBookSlugs = (() => {
     if (!activeSourceAtlasEntry || selectedBook) {
@@ -585,6 +587,17 @@ export function CulturalVeinShell() {
           : null,
       );
     }
+  };
+  const handleSourceRecordFocus = (index: number) => {
+    const dockId = getSourceAtlasDockId(index);
+
+    if (!dockId) {
+      return;
+    }
+
+    setSelectedDockId((current) => (current === dockId ? null : dockId));
+    setShowDesktopDossier(false);
+    setShowMobileDossier(false);
   };
   const focusModeLabel = traceFocus?.active
     ? "逆流溯源"
@@ -813,13 +826,30 @@ export function CulturalVeinShell() {
                       </div>
                       {activeSourceAtlasEntry.sampleRecords?.length ? (
                         <div className="mt-3 space-y-2">
-                          {activeSourceAtlasEntry.sampleRecords.slice(0, 3).map((record) => (
-                            <div
+                          {activeSourceAtlasEntry.sampleRecords.slice(0, 3).map((record, index) => {
+                            const dockId = getSourceAtlasDockId(index);
+                            const isDockActive = dockId !== null && activeSourceDock?.id === dockId;
+
+                            return (
+                              <button
                               key={`${activeSourceAtlasEntry.id}-${record.title}`}
-                              className="rounded-[18px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.36)] px-3 py-2.5"
+                              type="button"
+                              onClick={() => handleSourceRecordFocus(index)}
+                              onMouseEnter={() => setHoveredDockId(dockId)}
+                              onMouseLeave={() => setHoveredDockId((current) => (current === dockId ? null : current))}
+                              className={`w-full rounded-[18px] border px-3 py-2.5 text-left transition ${
+                                isDockActive
+                                  ? "border-amber-300/30 bg-[rgba(120,81,26,0.48)] shadow-[0_0_0_1px_rgba(252,211,77,0.12)]"
+                                  : "border-[#ead8a6]/12 bg-[rgba(64,41,12,0.36)] hover:bg-[rgba(83,54,16,0.42)]"
+                              }`}
                             >
-                              <div className="text-[11px] font-medium leading-5 text-[#fbf3da]">
-                                {record.title}
+                              <div className="flex items-start justify-between gap-3">
+                                <div className="text-[11px] font-medium leading-5 text-[#fbf3da]">
+                                  {record.title}
+                                </div>
+                                <div className="shrink-0 text-[10px] text-[#f2dfab]">
+                                  {isDockActive ? "河面已锁定" : "映射河面"}
+                                </div>
                               </div>
                               <div className="mt-1 text-[10px] text-[#f2dfab]">
                                 {[record.category, record.year].filter(Boolean).join(" · ") || "样本条目"}
@@ -829,8 +859,9 @@ export function CulturalVeinShell() {
                                   {record.note}
                                 </div>
                               ) : null}
-                            </div>
-                          ))}
+                            </button>
+                            );
+                          })}
                         </div>
                       ) : null}
                       {activeSourceDock ? (
@@ -1261,6 +1292,29 @@ export function CulturalVeinShell() {
                       <div className="mt-1 text-[11px] leading-5 text-[#e6d7ae]">
                         {activeSourceAtlasEntry.summary ?? "真实来源样本"}
                       </div>
+                      {activeSourceAtlasEntry.sampleRecords?.length ? (
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {activeSourceAtlasEntry.sampleRecords.slice(0, 3).map((record, index) => {
+                            const dockId = getSourceAtlasDockId(index);
+                            const isDockActive = dockId !== null && activeSourceDock?.id === dockId;
+
+                            return (
+                              <button
+                                key={`mobile-source-record-${activeSourceAtlasEntry.id}-${record.title}`}
+                                type="button"
+                                onClick={() => handleSourceRecordFocus(index)}
+                                className={`rounded-full px-3 py-1.5 text-[10px] transition ${
+                                  isDockActive
+                                    ? "bg-[#f3dfab] text-[#42290a]"
+                                    : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc]"
+                                }`}
+                              >
+                                {record.title}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ) : null}
                       {activeSourceAtlasEntry.sampleRecords?.[0] ? (
                         <div className="mt-2 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.34)] px-3 py-2.5">
                           <div className="text-[11px] font-medium leading-5 text-[#fbf3da]">
