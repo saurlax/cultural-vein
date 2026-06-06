@@ -327,6 +327,9 @@ export function BookExplorer({
   const sourceBadges = detail.realWorldSignals?.sourceLabel
     ? detail.realWorldSignals.sourceLabel.split("+").map((item) => item.trim()).filter(Boolean)
     : [];
+  const venuePreview = detail.realWorldSignals?.venueSamples?.slice(0, 3) ?? [];
+  const eventPreview = detail.realWorldSignals?.eventSamples?.slice(0, 3) ?? [];
+  const institutionPreview = detail.realWorldSignals?.institutionSamples?.slice(0, 3) ?? [];
   const eraLinkedSummary = {
     spread: visibleSpread.length,
     people: visiblePeople.length,
@@ -510,6 +513,104 @@ export function BookExplorer({
                 活动事件样本 {detail.realWorldSignals.eventSamples?.length ?? 0} 条
               </div>
             </div>
+          </div>
+          <div className="mt-4 grid gap-3 xl:grid-cols-3">
+            <div className="rounded-2xl border border-cyan-300/10 bg-black/15 px-4 py-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                  场馆来源
+                </div>
+                <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-[10px] text-cyan-100">
+                  {detail.realWorldSignals.venueSamples?.length ?? 0} 组
+                </div>
+              </div>
+              <div className="mt-3 space-y-2">
+                {venuePreview.length ? (
+                  venuePreview.map((venue) => (
+                    <div
+                      key={venue.name}
+                      className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-sm"
+                    >
+                      <div className="font-medium text-stone-100">{venue.name}</div>
+                      <div className="mt-1 text-xs text-stone-400">
+                        活动样本 {venue.sampleCount}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4 text-sm text-stone-400">
+                    当前没有挂接场馆样本。
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="rounded-2xl border border-cyan-300/10 bg-black/15 px-4 py-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                  活动事件
+                </div>
+                <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-[10px] text-cyan-100">
+                  {detail.realWorldSignals.eventSamples?.length ?? 0} 条
+                </div>
+              </div>
+              <div className="mt-3 space-y-2">
+                {eventPreview.length ? (
+                  eventPreview.map((event) => (
+                    <div
+                      key={`${event.venue}-${event.title}-${event.startTime}`}
+                      className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-sm"
+                    >
+                      <div className="font-medium text-stone-100">{event.title}</div>
+                      <div className="mt-1 text-xs text-stone-400">
+                        {event.venue} · {event.startTime}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4 text-sm text-stone-400">
+                    当前没有挂接活动事件样本。
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="rounded-2xl border border-cyan-300/10 bg-black/15 px-4 py-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                  机构资源
+                </div>
+                <div className="rounded-full bg-cyan-300/10 px-3 py-1 text-[10px] text-cyan-100">
+                  {detail.realWorldSignals.institutionSamples?.length ?? 0} 条
+                </div>
+              </div>
+              <div className="mt-3 space-y-2">
+                {institutionPreview.length ? (
+                  institutionPreview.map((item) => (
+                    <div
+                      key={`${item.institution}-${item.title}-${item.imageRef}`}
+                      className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-sm"
+                    >
+                      <div className="font-medium text-stone-100">{item.title}</div>
+                      <div className="mt-1 text-xs text-stone-400">
+                        {item.institution}
+                        {item.year ? ` · ${item.year}` : ""}
+                      </div>
+                      {item.imageRef || item.sourceText ? (
+                        <div className="mt-2 text-[11px] text-cyan-100/80">
+                          {item.imageRef ?? item.sourceText}
+                        </div>
+                      ) : null}
+                    </div>
+                  ))
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4 text-sm text-stone-400">
+                    当前没有挂接机构资源样本。
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4 text-sm leading-7 text-amber-50/90">
+            这块证据板把“人物命中、场馆传播、活动事件、机构资源”放在同一层展示，答辩时可以直接说明哪些是已接入真实来源，哪些仍是示范域建模。
           </div>
           {detail.realWorldSignals.institutionSamples?.length ? (
             <div className="mt-4 rounded-2xl border border-cyan-300/10 bg-black/15 px-4 py-4">
