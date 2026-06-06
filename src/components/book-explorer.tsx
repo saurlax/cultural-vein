@@ -2665,7 +2665,7 @@ export function BookExplorer({
                                 </div>
                               ) : (
                                 <div className="mt-2 rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
-                                  <div className="text-sm text-stone-200">这一时代河段里还没有更晚分化版本。</div>
+                                  <div className="text-sm text-stone-200">这一时代河段暂时没有更晚分化版本时，先回时间线、人物承接或原文证据继续把流变叙事往后讲。</div>
                                   <div className="mt-3 flex flex-wrap gap-2">
                                     <button
                                       type="button"
@@ -2680,6 +2680,13 @@ export function BookExplorer({
                                       className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                                     >
                                       转看人物承接
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => setTab("passages")}
+                                      className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
+                                    >
+                                      转看原文证据
                                     </button>
                                   </div>
                                 </div>
@@ -2738,7 +2745,7 @@ export function BookExplorer({
                               ))}
                               {!versionEvidenceSamples.length && !institutionPreview.length ? (
                                 <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4">
-                                  <div className="text-sm text-stone-200">这一层版本还没有挂到更细的影像或馆藏样本。</div>
+                                  <div className="text-sm text-stone-200">这一层版本暂时没有更细的影像或馆藏样本时，先回机构总表、传播航段或时间回声继续补资源落点。</div>
                                   <div className="mt-3 flex flex-wrap gap-2">
                                     <button
                                       type="button"
@@ -2753,6 +2760,13 @@ export function BookExplorer({
                                       className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                                     >
                                       转看传播航段
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => setTab("timeline")}
+                                      className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
+                                    >
+                                      转看时间回声
                                     </button>
                                   </div>
                                 </div>
@@ -3217,7 +3231,7 @@ export function BookExplorer({
                             <div className="text-xs tracking-[0.2em] text-stone-400">
                               现实回声
                             </div>
-                            <div className="text-[10px] text-stone-500">典籍资料预览</div>
+                            <div className="text-[10px] text-stone-500">机构回查入口</div>
                           </div>
                           <div className="mt-3 flex flex-wrap gap-2">
                             <button
