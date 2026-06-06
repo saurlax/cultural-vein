@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "文脉溯源",
-  description: "典籍知识演化的三维交互探索系统 MVP",
+  description: "典籍知识演化的三维交互探索系统",
 };
 
 export default function RootLayout({
