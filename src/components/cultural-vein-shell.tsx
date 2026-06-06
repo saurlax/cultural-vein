@@ -527,6 +527,7 @@ export function CulturalVeinShell() {
       })
       .filter((route): route is NonNullable<typeof route> => Boolean(route));
   })();
+  const sourceAtlasRouteMap = new Map(sourceAtlasRoutes.map((route) => [route.id, route]));
   const activeSourceDock =
     sourceAtlasDockMarkers.find((dock) => dock.id === selectedDockId) ??
     sourceAtlasDockMarkers.find((dock) => dock.id === hoveredDockId) ??
@@ -851,6 +852,49 @@ export function CulturalVeinShell() {
                         {entry.name}
                       </button>
                     ))}
+                  </div>
+                  <div className="mt-3 rounded-[18px] border border-[#ead8a6]/12 bg-[rgba(38,25,8,0.28)] px-3 py-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">来源河册</div>
+                      <div className="text-[10px] text-[#c9b68a]">河面分布带</div>
+                    </div>
+                    <div className="mt-3 max-h-40 space-y-2 overflow-auto pr-1">
+                      {sourceAtlasEntries.map((entry) => {
+                        const route = sourceAtlasRouteMap.get(entry.id);
+                        const isActive = activeSourceAtlasEntry?.id === entry.id;
+
+                        return (
+                          <button
+                            key={`atlas-route-${entry.id}`}
+                            type="button"
+                            onClick={() => handleSourceAtlasSelect(entry.id)}
+                            className={`flex w-full items-center justify-between gap-3 rounded-[16px] border px-3 py-2.5 text-left transition ${
+                              isActive
+                                ? "border-amber-300/28 bg-[rgba(120,81,26,0.42)]"
+                                : "border-[#ead8a6]/10 bg-[rgba(255,248,220,0.03)] hover:bg-[rgba(255,248,220,0.06)]"
+                            }`}
+                          >
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className="h-2.5 w-2.5 shrink-0 rounded-full"
+                                  style={{ backgroundColor: route?.color ?? "#d6a33d" }}
+                                />
+                                <span className="truncate text-[11px] font-medium text-[#fbf3da]">
+                                  {entry.name}
+                                </span>
+                              </div>
+                              <div className="mt-1 truncate text-[10px] text-[#d8c9a3]">
+                                {entry.stat ?? "真实来源样本"}
+                              </div>
+                            </div>
+                            <div className="shrink-0 text-[10px] text-[#f2dfab]">
+                              {isActive ? "当前河段" : route ? "已映河面" : "题签可看"}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                   {activeSourceAtlasEntry ? (
                     <div className="mt-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3">
@@ -1324,6 +1368,47 @@ export function CulturalVeinShell() {
                         {entry.name}
                       </button>
                     ))}
+                  </div>
+                  <div className="mt-2 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(38,25,8,0.24)] px-3 py-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-[11px] tracking-[0.2em] text-[#d8c9a3]">来源河册</div>
+                      <div className="text-[10px] text-[#c9b68a]">点选切换河段</div>
+                    </div>
+                    <div className="mt-2 max-h-28 space-y-2 overflow-auto pr-1">
+                      {sourceAtlasEntries.map((entry) => {
+                        const route = sourceAtlasRouteMap.get(entry.id);
+                        const isActive = activeSourceAtlasEntry?.id === entry.id;
+
+                        return (
+                          <button
+                            key={`mobile-atlas-route-${entry.id}`}
+                            type="button"
+                            onClick={() => handleSourceAtlasSelect(entry.id)}
+                            className={`flex w-full items-center justify-between gap-3 rounded-[14px] border px-3 py-2 text-left transition ${
+                              isActive
+                                ? "border-amber-300/28 bg-[rgba(120,81,26,0.4)]"
+                                : "border-[#ead8a6]/10 bg-[rgba(255,248,220,0.03)]"
+                            }`}
+                          >
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className="h-2.5 w-2.5 shrink-0 rounded-full"
+                                  style={{ backgroundColor: route?.color ?? "#d6a33d" }}
+                                />
+                                <span className="truncate text-[11px] text-[#fbf3da]">{entry.name}</span>
+                              </div>
+                              <div className="mt-1 truncate text-[10px] text-[#d8c9a3]">
+                                {entry.stat ?? "真实来源样本"}
+                              </div>
+                            </div>
+                            <div className="shrink-0 text-[10px] text-[#f2dfab]">
+                              {isActive ? "当前" : route ? "在河上" : "可切换"}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                   {activeSourceAtlasEntry ? (
                     <div className="mt-3 rounded-[18px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3">
