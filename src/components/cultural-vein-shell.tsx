@@ -532,6 +532,27 @@ export function CulturalVeinShell() {
     sourceAtlasDockMarkers.find((dock) => dock.id === selectedDockId) ??
     sourceAtlasDockMarkers.find((dock) => dock.id === hoveredDockId) ??
     null;
+  const activeSourceRecordIndex = (() => {
+    if (!activeSourceAtlasEntry?.sampleRecords?.length) {
+      return null;
+    }
+
+    if (!activeSourceDock?.id?.startsWith(`source-atlas-${activeSourceAtlasEntry.id}-`)) {
+      return 0;
+    }
+
+    const index = Number(
+      activeSourceDock.id.slice(`source-atlas-${activeSourceAtlasEntry.id}-`.length),
+    );
+
+    return Number.isNaN(index) ? 0 : index;
+  })();
+  const activeSourceRecord =
+    activeSourceRecordIndex !== null
+      ? activeSourceAtlasEntry?.sampleRecords?.[activeSourceRecordIndex] ??
+        activeSourceAtlasEntry?.sampleRecords?.[0] ??
+        null
+      : null;
   const getSourceAtlasDockId = (index: number) =>
     activeSourceAtlasEntry ? `source-atlas-${activeSourceAtlasEntry.id}-${index}` : null;
   const mergedDockMarkers = selectedBook ? riverDockMarkers : sourceAtlasDockMarkers;
@@ -876,8 +897,20 @@ export function CulturalVeinShell() {
                         ))}
                       </div>
                     ) : resolvedSearchResult?.query && !searchPending ? (
-                      <div className="mt-3 text-sm text-[#d8c9a3]">
-                        暂未照见相关文脉节点。
+                      <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                        <div className="text-sm text-[#eadfbc]">当前检索词还没有直接照见河上节点。</div>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {searchSuggestionChips.slice(0, 3).map((concept) => (
+                            <button
+                              key={`fallback-concept-${concept}`}
+                              type="button"
+                              onClick={() => handleSearchTermChange(concept)}
+                              className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                            >
+                              转搜 {concept}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     ) : null}
                   </div>
@@ -960,7 +993,7 @@ export function CulturalVeinShell() {
                       ))}
                     </div>
                     <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-sm text-[#eadfbc]">
-                      当前河段显现自 {eras[0]} 至 {activeEra}，门类为 {categoryFilter}，学派为 {schoolFilter}。
+                      当前河段推进到 {activeEra}，河上保留 {categoryFilter} 与 {schoolFilter} 的主线节点。
                     </div>
                   </div>
                 ) : null}
@@ -972,24 +1005,43 @@ export function CulturalVeinShell() {
                         <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
                           关系层级
                         </div>
-                        <div className="text-[11px] text-[#c9b68a]">置信度说明</div>
+                        <div className="text-[11px] text-[#c9b68a]">点层级切河道</div>
                       </div>
                       <div className="mt-3 flex flex-wrap gap-2">
                         {relationSummary.map(({ layer, count }) => (
-                          <span
+                          <button
                             key={layer}
+                            type="button"
+                            onClick={() => {
+                              const target = visibleBranchAnnotations.find(
+                                (branch) => branch.id === `branch-${layer}`,
+                              );
+
+                              if (target?.targetSlug) {
+                                handleDiveToBook(target.targetSlug);
+                              }
+                            }}
                             className={`rounded-full border px-3 py-1.5 text-[11px] ${relationLayerMeta[layer].tone}`}
                           >
                             {relationLayerMeta[layer].label} {count}
-                          </span>
+                          </button>
                         ))}
                       </div>
                     </div>
                     <div className="mt-3 rounded-[18px] border border-[#ead8a6]/14 bg-[rgba(93,62,18,0.22)] px-3 py-3">
                       {activeBranchAnnotation ? (
                         <>
-                          <div className="text-sm font-medium text-[#fbf3da]">
-                            {activeBranchAnnotation.label}
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="text-sm font-medium text-[#fbf3da]">
+                              {activeBranchAnnotation.label}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleDiveToBook(activeBranchAnnotation.targetSlug)}
+                              className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-[11px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                            >
+                              入卷
+                            </button>
                           </div>
                           <p className="mt-2 text-sm leading-6 text-[#f4e8c4]">
                             {activeBranchAnnotation.description}
@@ -1338,22 +1390,22 @@ export function CulturalVeinShell() {
                           })}
                         </div>
                       ) : null}
-                      {activeSourceAtlasEntry.sampleRecords?.[0] ? (
+                      {activeSourceRecord ? (
                         <div className="mt-2 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.34)] px-3 py-2.5">
                           <div className="text-[11px] font-medium leading-5 text-[#fbf3da]">
-                            {activeSourceAtlasEntry.sampleRecords[0].title}
+                            {activeSourceRecord.title}
                           </div>
                           <div className="mt-1 text-[10px] text-[#f2dfab]">
                             {[
-                              activeSourceAtlasEntry.sampleRecords[0].category,
-                              activeSourceAtlasEntry.sampleRecords[0].year,
+                              activeSourceRecord.category,
+                              activeSourceRecord.year,
                             ]
                               .filter(Boolean)
                               .join(" · ") || "样本条目"}
                           </div>
-                          {activeSourceAtlasEntry.sampleRecords[0].note ? (
+                          {activeSourceRecord.note ? (
                             <div className="mt-1 text-[11px] leading-5 text-[#dccb9c] line-clamp-3">
-                              {activeSourceAtlasEntry.sampleRecords[0].note}
+                              {activeSourceRecord.note}
                             </div>
                           ) : null}
                         </div>
@@ -1506,16 +1558,26 @@ export function CulturalVeinShell() {
                   <div className="mt-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(27,17,7,0.18)] px-3 py-3">
                     <div className="flex items-center justify-between gap-3">
                       <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">关系层级</div>
-                      <div className="text-[11px] text-[#c9b68a]">置信度说明</div>
+                      <div className="text-[11px] text-[#c9b68a]">点层级切河道</div>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {relationSummary.map(({ layer, count }) => (
-                        <span
+                        <button
                           key={`mobile-layer-${layer}`}
+                          type="button"
+                          onClick={() => {
+                            const target = visibleBranchAnnotations.find(
+                              (branch) => branch.id === `branch-${layer}`,
+                            );
+
+                            if (target?.targetSlug) {
+                              handleDiveToBook(target.targetSlug);
+                            }
+                          }}
                           className={`rounded-full border px-3 py-1.5 text-[11px] ${relationLayerMeta[layer].tone}`}
                         >
                           {relationLayerMeta[layer].label} {count}
-                        </span>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -1525,7 +1587,7 @@ export function CulturalVeinShell() {
                 </>
               ) : null}
               <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(27,17,7,0.18)] px-3 py-3 text-sm text-[#eadfbc]">
-                当前河段显现自 {eras[0]} 至 {activeEra}，门类为 {categoryFilter}，学派为 {schoolFilter}。
+                当前河段推进到 {activeEra}，河上保留 {categoryFilter} 与 {schoolFilter} 的主线节点。
               </div>
             </div>
           </div>
