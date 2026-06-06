@@ -96,6 +96,9 @@ export function CulturalVeinShell() {
   const [showMobileControls, setShowMobileControls] = useState(false);
   const [showMobileDossier, setShowMobileDossier] = useState(false);
   const [showDesktopDossier, setShowDesktopDossier] = useState(false);
+  const [activeDesktopPanel, setActiveDesktopPanel] = useState<
+    "search" | "era" | "category" | "branch"
+  >("search");
   const [transitionState, setTransitionState] = useState<
     "idle" | "diving" | "settling" | "returning"
   >("idle");
@@ -311,6 +314,34 @@ export function CulturalVeinShell() {
       : defaultConceptSuggestions;
   const panelBaseClass =
     "rounded-[28px] border border-[#ead8a6]/24 bg-[linear-gradient(180deg,rgba(100,72,28,0.9),rgba(44,30,10,0.86))] shadow-2xl shadow-black/30 backdrop-blur-xl";
+  const desktopPanels: Array<{
+    id: "search" | "era" | "category" | "branch";
+    label: string;
+    summary: string;
+  }> = [
+    {
+      id: "search",
+      label: "检索",
+      summary: resolvedSearchResult?.query
+        ? `命中 ${resolvedSearchResult.total} 本`
+        : "概念联想",
+    },
+    {
+      id: "era",
+      label: "时代",
+      summary: activeEra,
+    },
+    {
+      id: "category",
+      label: "门类",
+      summary: categoryFilter,
+    },
+    {
+      id: "branch",
+      label: "支流",
+      summary: activeBranchAnnotation?.label ?? "主河道",
+    },
+  ];
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#201508] text-stone-100">
@@ -389,7 +420,7 @@ export function CulturalVeinShell() {
           </div>
         </div>
 
-        <div className="absolute left-4 top-[108px] z-20 hidden w-[296px] sm:left-6 lg:left-8 xl:block">
+        <div className="absolute left-4 top-[108px] z-20 hidden w-[262px] sm:left-6 lg:left-8 xl:block">
           <aside className="pointer-events-auto xl:pt-2">
             <div className={`p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
@@ -412,216 +443,202 @@ export function CulturalVeinShell() {
                 ) : null}
               </div>
 
-              <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-[#eadfbc]">
-                <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-3">
-                  <div className="text-[#c9b68a]">典籍</div>
-                  <div className="mt-1 text-sm font-medium text-[#fbf3da]">
-                    {filteredBooks.length}
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-3">
-                  <div className="text-[#c9b68a]">关系</div>
-                  <div className="mt-1 text-sm font-medium text-[#fbf3da]">
-                    {visibleCitations.length}
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-[#ead8a6]/20 bg-[rgba(233,191,86,0.08)] px-3 py-3">
-                  <div className="text-[#f2dfab]/80">来源</div>
-                  <div className="mt-1 text-sm font-medium text-[#fbf3da]">
-                    {connectedSourceCount || "--"}
-                  </div>
-                </div>
-              </div>
-
-              <label className="mt-4 block">
-                <span className="text-xs tracking-[0.22em] text-[#d8c9a3]">
-                  概念检索
+              <div className="mt-4 flex flex-wrap gap-2 text-[11px] text-[#eadfbc]">
+                <span className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5">
+                  典籍 {filteredBooks.length}
                 </span>
-                <input
-                  value={searchTerm}
-                  onChange={(event) => handleSearchTermChange(event.target.value)}
-                  placeholder="例如 仁、礼、诗教、朱熹"
-                  className="mt-2 w-full rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-4 py-3 text-sm text-[#fbf3da] outline-none placeholder:text-[#c9b68a] focus:border-[#f0cf75]/40"
-                />
-              </label>
+                <span className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5">
+                  关系 {visibleCitations.length}
+                </span>
+                <span className="rounded-full border border-[#ead8a6]/20 bg-[rgba(233,191,86,0.08)] px-3 py-1.5 text-[#fbf3da]">
+                  来源 {connectedSourceCount || "--"}
+                </span>
+              </div>
 
-              <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(27,17,7,0.24)] px-4 py-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
-                    概念联想
-                  </div>
-                  <div className="text-[11px] text-[#c9b68a]">
-                    {searchPending
-                      ? "检索中"
-                      : resolvedSearchResult?.query
-                        ? `命中 ${resolvedSearchResult.total} 本`
-                        : "常用概念"}
-                  </div>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {searchSuggestionChips.map((concept) => (
-                    <button
-                      key={concept}
-                      type="button"
-                      onClick={() => handleSearchTermChange(concept)}
-                      className={`rounded-full border px-3 py-1.5 text-xs transition ${
-                        searchTerm.trim() === concept
-                          ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
-                          : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+              <div className="mt-4 space-y-3">
+                {desktopPanels.map((panel) => {
+                  const isActive = activeDesktopPanel === panel.id;
+
+                  return (
+                    <section
+                      key={panel.id}
+                      className={`overflow-hidden rounded-[24px] border transition ${
+                        isActive
+                          ? "border-[#ead8a6]/26 bg-[rgba(255,248,220,0.07)]"
+                          : "border-[#ead8a6]/14 bg-[rgba(27,17,7,0.18)]"
                       }`}
                     >
-                      {concept}
-                    </button>
-                  ))}
-                </div>
-                {resolvedSearchResult?.hits.length ? (
-                  <div className="mt-4 space-y-2">
-                    {resolvedSearchResult.hits.slice(0, 4).map((hit) => (
                       <button
-                        key={hit.slug}
                         type="button"
-                        onClick={() => handleDiveToBook(hit.slug)}
-                        className="w-full rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                        onClick={() => setActiveDesktopPanel(panel.id)}
+                        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
                       >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <div className="font-medium text-[#fbf3da]">{hit.title}</div>
-                            <div className="mt-1 text-xs text-[#d8c9a3]">
-                              {hit.dynasty} · {hit.category} · {hit.school}
-                            </div>
-                          </div>
-                          <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-2 py-1 text-[10px] text-amber-100">
-                            {hit.score}
-                          </div>
-                        </div>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {hit.matchedConcepts.map((concept) => (
-                            <span
-                              key={`${hit.slug}-${concept}`}
-                              className="rounded-full bg-amber-300/10 px-2 py-1 text-[10px] text-amber-100"
-                            >
-                              {concept}
+                        <span>
+                          <span className="block text-[11px] tracking-[0.24em] text-[#d8c9a3]">
+                            {panel.label}
+                          </span>
+                          <span className="mt-1 block text-sm text-[#fbf3da]">
+                            {panel.summary}
+                          </span>
+                        </span>
+                        <span className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">
+                          {isActive ? "展开中" : "查看"}
+                        </span>
+                      </button>
+
+                      {isActive && panel.id === "search" ? (
+                        <div className="border-t border-[#ead8a6]/12 px-4 pb-4 pt-3">
+                          <label className="block">
+                            <span className="text-xs tracking-[0.22em] text-[#d8c9a3]">
+                              概念检索
                             </span>
-                          ))}
+                            <input
+                              value={searchTerm}
+                              onChange={(event) => handleSearchTermChange(event.target.value)}
+                              placeholder="例如 仁、礼、诗教、朱熹"
+                              className="mt-2 w-full rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-4 py-3 text-sm text-[#fbf3da] outline-none placeholder:text-[#c9b68a] focus:border-[#f0cf75]/40"
+                            />
+                          </label>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {searchSuggestionChips.slice(0, 8).map((concept) => (
+                              <button
+                                key={concept}
+                                type="button"
+                                onClick={() => handleSearchTermChange(concept)}
+                                className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                                  searchTerm.trim() === concept
+                                    ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
+                                    : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                                }`}
+                              >
+                                {concept}
+                              </button>
+                            ))}
+                          </div>
+                          {resolvedSearchResult?.hits.length ? (
+                            <div className="mt-3 space-y-2">
+                              {resolvedSearchResult.hits.slice(0, 3).map((hit) => (
+                                <button
+                                  key={hit.slug}
+                                  type="button"
+                                  onClick={() => handleDiveToBook(hit.slug)}
+                                  className="w-full rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                                >
+                                  <div className="font-medium text-[#fbf3da]">{hit.title}</div>
+                                  <div className="mt-1 text-xs text-[#d8c9a3]">
+                                    {hit.dynasty} · {hit.category} · {hit.school}
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
+                          ) : resolvedSearchResult?.query && !searchPending ? (
+                            <div className="mt-3 text-sm text-[#d8c9a3]">
+                              当前检索词没有命中文脉节点。
+                            </div>
+                          ) : null}
                         </div>
-                      </button>
-                    ))}
-                  </div>
-                ) : resolvedSearchResult?.query && !searchPending ? (
-                  <div className="mt-4 text-sm text-[#d8c9a3]">
-                    当前检索词没有命中文脉节点，可以试试更核心的概念词。
-                  </div>
-                ) : null}
+                      ) : null}
+
+                      {isActive && panel.id === "era" ? (
+                        <div className="border-t border-[#ead8a6]/12 px-4 pb-4 pt-3">
+                          <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-[#d8c9a3]">
+                            <span>时代水位</span>
+                            <span className="text-amber-100">{activeEra}</span>
+                          </div>
+                          <input
+                            type="range"
+                            min={0}
+                            max={eras.length - 1}
+                            step={1}
+                            value={activeEraIndex}
+                            onChange={(event) =>
+                              setActiveEra(eras[Number(event.target.value)] ?? eras[0])
+                            }
+                            className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
+                          />
+                          <div className="mt-3 grid grid-cols-4 gap-2 text-[11px] text-[#c9b68a]">
+                            {eras.map((era) => (
+                              <button
+                                key={era}
+                                type="button"
+                                onClick={() => setActiveEra(era)}
+                                className={`rounded-full px-2 py-1 transition ${
+                                  activeEra === era
+                                    ? "bg-amber-300/14 text-amber-100"
+                                    : "bg-white/0 text-[#c9b68a] hover:bg-[rgba(255,248,220,0.05)] hover:text-[#eadfbc]"
+                                }`}
+                              >
+                                {era}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
+
+                      {isActive && panel.id === "category" ? (
+                        <div className="border-t border-[#ead8a6]/12 px-4 pb-4 pt-3">
+                          <div className="flex flex-wrap gap-2">
+                            {categories.map((category) => (
+                              <button
+                                key={category}
+                                type="button"
+                                onClick={() => setCategoryFilter(category)}
+                                className={`rounded-full px-3 py-2 text-xs transition ${
+                                  categoryFilter === category
+                                    ? "bg-[#f3dfab] text-[#42290a]"
+                                    : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                                }`}
+                              >
+                                {category}
+                              </button>
+                            ))}
+                          </div>
+                          <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-sm text-[#eadfbc]">
+                            当前显现 {eras[0]} 至 {activeEra}，门类筛选为 {categoryFilter}。
+                          </div>
+                        </div>
+                      ) : null}
+
+                      {isActive && panel.id === "branch" ? (
+                        <div className="border-t border-[#ead8a6]/12 px-4 pb-4 pt-3">
+                          {activeBranchAnnotation ? (
+                            <>
+                              <div className="text-sm font-medium text-[#fbf3da]">
+                                {activeBranchAnnotation.label}
+                              </div>
+                              <p className="mt-2 text-sm leading-6 text-[#f4e8c4]">
+                                {activeBranchAnnotation.description}
+                              </p>
+                            </>
+                          ) : (
+                            <div className="text-sm text-[#d8c9a3]">
+                              当前处于主河道视角，可从河面节点直接钻入。
+                            </div>
+                          )}
+                          {viewMode === "river" && visibleNodePreview.length ? (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {visibleNodePreview.map((book) => (
+                                <button
+                                  key={book.id}
+                                  type="button"
+                                  onClick={() => handleDiveToBook(book.slug)}
+                                  className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                                    selectedBookSlug === book.slug
+                                      ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
+                                      : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                                  }`}
+                                >
+                                  {book.shortTitle}
+                                </button>
+                              ))}
+                            </div>
+                          ) : null}
+                        </div>
+                      ) : null}
+                    </section>
+                  );
+                })}
               </div>
-
-              <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-4 py-4">
-                <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-[#d8c9a3]">
-                  <span>时代水位</span>
-                  <span className="text-amber-100">{activeEra}</span>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={eras.length - 1}
-                  step={1}
-                  value={activeEraIndex}
-                  onChange={(event) =>
-                    setActiveEra(eras[Number(event.target.value)] ?? eras[0])
-                  }
-                  className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
-                />
-                <div className="mt-3 grid grid-cols-4 gap-2 text-[11px] text-[#c9b68a]">
-                  {eras.map((era) => (
-                    <button
-                      key={era}
-                      type="button"
-                      onClick={() => setActiveEra(era)}
-                      className={`rounded-full px-2 py-1 transition ${
-                        activeEra === era
-                          ? "bg-amber-300/14 text-amber-100"
-                          : "bg-white/0 text-[#c9b68a] hover:bg-[rgba(255,248,220,0.05)] hover:text-[#eadfbc]"
-                      }`}
-                    >
-                      {era}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    type="button"
-                    onClick={() => setCategoryFilter(category)}
-                    className={`rounded-full px-3 py-2 text-xs transition ${
-                      categoryFilter === category
-                        ? "bg-[#f3dfab] text-[#42290a]"
-                        : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
-
-              <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-4 py-3">
-                  <div className="text-[#d8c9a3]">显现上限</div>
-                  <div className="mt-1 font-medium text-[#fbf3da]">
-                    {eras[0]}至{activeEra}
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-4 py-3">
-                  <div className="text-[#d8c9a3]">运行模式</div>
-                  <div className="mt-1 font-medium text-[#fbf3da]">
-                    {viewMode === "river" ? "河流总览" : "典籍钻入"}
-                  </div>
-                </div>
-              </div>
-
-              {viewMode === "river" && visibleNodePreview.length ? (
-                <div className="mt-4 rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(27,17,7,0.24)] px-4 py-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
-                      当前河段
-                    </div>
-                    <div className="text-[11px] text-[#c9b68a]">
-                      {filteredBooks.length} 本
-                    </div>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {visibleNodePreview.map((book) => (
-                      <button
-                        key={book.id}
-                        type="button"
-                        onClick={() => handleDiveToBook(book.slug)}
-                        className={`rounded-full border px-3 py-1.5 text-xs transition ${
-                          selectedBookSlug === book.slug
-                            ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
-                            : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
-                        }`}
-                      >
-                        {book.shortTitle}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-
-              {activeBranchAnnotation ? (
-                <div className="mt-4 rounded-[26px] border border-[#ead8a6]/20 bg-[rgba(233,191,86,0.1)] px-4 py-4">
-                  <div className="text-[11px] tracking-[0.24em] text-[#f2dfab]/80">
-                    当前支流
-                  </div>
-                  <div className="mt-2 text-sm font-medium text-[#fbf3da]">
-                    {activeBranchAnnotation.label}
-                  </div>
-                  <p className="mt-2 text-sm leading-6 text-[#f4e8c4]">
-                    {activeBranchAnnotation.description}
-                  </p>
-                </div>
-              ) : null}
             </div>
           </aside>
         </div>
