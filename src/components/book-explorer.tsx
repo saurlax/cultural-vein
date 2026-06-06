@@ -173,6 +173,7 @@ export function BookExplorer({
   const [selectedPassageId, setSelectedPassageId] = useState<string | null>(null);
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null);
   const [traceStep, setTraceStep] = useState<number>(0);
+  const [tracePlaying, setTracePlaying] = useState(false);
   const bookEraByTitle = useMemo(() => {
     return new Map<string, RiverEra>([
       ["诗经", "先秦"],
@@ -290,7 +291,7 @@ export function BookExplorer({
   const activeLinkId = activeLink?.id ?? null;
   const activeTab = forcedTab ?? tab;
   const activeTraceFocus = useMemo<TraceFocusState | null>(() => {
-    if (activeTab !== "passages" || !activePassage?.tracePath?.length) {
+    if (activeTab !== "passages" || !activePassage?.tracePath?.length || !tracePlaying) {
       return null;
     }
 
@@ -305,21 +306,28 @@ export function BookExplorer({
       progress: currentIndex + 1,
       total: activePassage.tracePath.length,
     };
-  }, [activePassage, activeTab, book.title, traceStep]);
+  }, [activePassage, activeTab, book.title, tracePlaying, traceStep]);
 
   useEffect(() => {
-    if (!activePassage?.tracePath?.length) {
+    if (!activePassage?.tracePath?.length || !tracePlaying) {
       return;
     }
 
     const timer = window.setInterval(() => {
-      setTraceStep((current) =>
-        current >= activePassage.tracePath!.length - 1 ? current : current + 1,
-      );
+      setTraceStep((current) => {
+        if (current >= activePassage.tracePath!.length - 1) {
+          window.setTimeout(() => {
+            setTracePlaying(false);
+          }, 260);
+          return current;
+        }
+
+        return current + 1;
+      });
     }, 900);
 
     return () => window.clearInterval(timer);
-  }, [activePassage?.id, activePassage?.tracePath]);
+  }, [activePassage?.id, activePassage?.tracePath, tracePlaying]);
 
   useEffect(() => {
     onTraceFocusChange?.(activeTraceFocus);
@@ -346,10 +354,19 @@ export function BookExplorer({
     setSelectedPassageId(passageId);
     setSelectedLinkId(null);
     setTraceStep(0);
+    setTracePlaying(false);
   };
 
   const handleSelectLink = (linkId: string) => {
     setSelectedLinkId(linkId);
+  };
+  const handleStartTrace = () => {
+    if (!activePassage?.tracePath?.length) {
+      return;
+    }
+
+    setTraceStep(0);
+    setTracePlaying(true);
   };
   const spreadMeta = spreadSourceMeta(Boolean(detail.realWorldSignals?.venueSamples?.length));
   const activeVersionMeta = activeVersion ? versionSourceMeta(activeVersion.library) : null;
@@ -1473,12 +1490,30 @@ export function BookExplorer({
                 </div>
 
                 <div className="rounded-2xl border border-amber-300/15 bg-amber-300/5 px-4 py-4">
-                  <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                    交互说明
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-xs tracking-[0.2em] text-amber-100/75">
+                        交互说明
+                      </div>
+                      <p className="mt-3 text-sm leading-7 text-amber-50/90">
+                        先选中文本片段与证据卡，再点击“启动溯源”，链路会沿当前文本逆流而上，并逐步停留在中间转引节点。
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleStartTrace}
+                      disabled={!activePassage?.tracePath?.length || tracePlaying}
+                      className={`rounded-full px-4 py-2 text-xs transition ${
+                        !activePassage?.tracePath?.length
+                          ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                          : tracePlaying
+                            ? "border border-amber-300/20 bg-amber-300/12 text-amber-100"
+                            : "border border-amber-300/25 bg-amber-300/15 text-amber-50 hover:bg-amber-300/20"
+                      }`}
+                    >
+                      {tracePlaying ? "溯源进行中" : "启动溯源"}
+                    </button>
                   </div>
-                  <p className="mt-3 text-sm leading-7 text-amber-50/90">
-                    点击证据卡可切换当前引文焦点；当前时代以前已显现的证据链、溯源路径和下游影响会逐步点亮，模拟方案中的“逆流而上”。
-                  </p>
                 </div>
               </div>
 
@@ -1573,7 +1608,7 @@ export function BookExplorer({
                     <div className="flex items-center justify-between">
                       <h4 className="text-sm font-medium text-amber-50">溯源光线链路</h4>
                       <span className="text-xs text-amber-100/70">
-                        已推进 {Math.min(traceStep + 1, activePassage.tracePath?.length ?? 0)} /
+                        已推进 {tracePlaying ? Math.min(traceStep + 1, activePassage.tracePath?.length ?? 0) : 0} /
                         {activePassage.tracePath?.length ?? 0}
                       </span>
                     </div>
@@ -1609,7 +1644,7 @@ export function BookExplorer({
                                 const total = Math.max(activePassage.tracePath!.length - 1, 1);
                                 const x = 12 + (index / total) * 76;
                                 const y = 62 - Math.sin((index / total) * Math.PI) * 22;
-                                const isActive = index <= traceStep;
+                                const isActive = tracePlaying && index <= traceStep;
                                 const next = activePassage.tracePath?.[index + 1];
                                 const nextX = next ? 12 + ((index + 1) / total) * 76 : null;
                                 const nextY = next
@@ -1655,7 +1690,7 @@ export function BookExplorer({
                                   </g>
                                 );
                               })}
-                              {activePassage.tracePath[traceStep] ? (() => {
+                              {tracePlaying && activePassage.tracePath[traceStep] ? (() => {
                                 const total = Math.max(activePassage.tracePath!.length - 1, 1);
                                 const x = 12 + (traceStep / total) * 76;
                                 const y = 62 - Math.sin((traceStep / total) * Math.PI) * 22;
@@ -1681,7 +1716,7 @@ export function BookExplorer({
 
                         <div className="space-y-3">
                           {activePassage.tracePath.map((trace, index) => {
-                            const isActive = index <= traceStep;
+                            const isActive = tracePlaying && index <= traceStep;
                             return (
                               <div key={trace.id} className="flex gap-3">
                                 <div className="flex w-8 flex-col items-center pt-1">
