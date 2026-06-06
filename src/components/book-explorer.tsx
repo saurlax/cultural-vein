@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type { BookDetail, BookNode } from "@/types/domain";
 
@@ -78,8 +78,44 @@ export function BookExplorer({
   detail: BookDetail;
 }) {
   const [tab, setTab] = useState<ExplorerTab>("spread");
+  const [passageLayout, setPassageLayout] = useState<"horizontal" | "vertical">("horizontal");
+  const [selectedPassageId, setSelectedPassageId] = useState<string | null>(null);
+  const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null);
+  const [traceStep, setTraceStep] = useState<number>(0);
   const primaryPeople = detail.people.filter((person) => (person.relationTier ?? 2) === 1);
   const secondaryPeople = detail.people.filter((person) => (person.relationTier ?? 2) === 2);
+  const activePassage = useMemo(() => {
+    return detail.passages.find((passage) => passage.id === selectedPassageId) ?? detail.passages[0];
+  }, [detail.passages, selectedPassageId]);
+  const activePassageId = activePassage?.id ?? null;
+  const activeLink = useMemo(() => {
+    return activePassage?.links.find((link) => link.id === selectedLinkId) ?? activePassage?.links[0];
+  }, [activePassage, selectedLinkId]);
+  const activeLinkId = activeLink?.id ?? null;
+
+  useEffect(() => {
+    if (!activePassage?.tracePath?.length) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setTraceStep((current) =>
+        current >= activePassage.tracePath!.length - 1 ? current : current + 1,
+      );
+    }, 900);
+
+    return () => window.clearInterval(timer);
+  }, [activePassage?.id, activePassage?.tracePath]);
+
+  const handleSelectPassage = (passageId: string) => {
+    setSelectedPassageId(passageId);
+    setSelectedLinkId(null);
+    setTraceStep(0);
+  };
+
+  const handleSelectLink = (linkId: string) => {
+    setSelectedLinkId(linkId);
+  };
 
   return (
     <div className="space-y-4">
@@ -542,31 +578,106 @@ export function BookExplorer({
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6 text-sm text-stone-400">
               当前典籍尚未补充逐字对读样例，后续阶段会接入显式引用与语义关联证据。
             </div>
-          ) : (
-            detail.passages.map((passage) => (
-              <div
-                key={passage.id}
-                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4"
-              >
-                <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                  {passage.section}
-                </div>
-                <div className="mt-4 grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
-                  <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
-                    <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                      原文对读
+          ) : activePassage ? (
+            <>
+              <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_240px]">
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                        当前文本片段
+                      </div>
+                      <div className="mt-1 text-lg font-semibold text-stone-50">
+                        {activePassage.section}
+                      </div>
                     </div>
-                    <p className="mt-3 text-sm leading-8 text-stone-100">
-                      {passage.original}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setPassageLayout("horizontal")}
+                        className={`rounded-full px-3 py-2 text-xs transition ${
+                          passageLayout === "horizontal"
+                            ? "bg-amber-300 text-stone-950"
+                            : "border border-white/10 bg-white/5 text-stone-300"
+                        }`}
+                      >
+                        横排
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPassageLayout("vertical")}
+                        className={`rounded-full px-3 py-2 text-xs transition ${
+                          passageLayout === "vertical"
+                            ? "bg-amber-300 text-stone-950"
+                            : "border border-white/10 bg-white/5 text-stone-300"
+                        }`}
+                      >
+                        竖排
+                      </button>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {detail.passages.map((passage) => (
+                      <button
+                        key={passage.id}
+                        type="button"
+                        onClick={() => handleSelectPassage(passage.id)}
+                        className={`rounded-full px-3 py-2 text-xs transition ${
+                          activePassageId === passage.id
+                            ? "bg-cyan-300 text-stone-950"
+                            : "border border-white/10 bg-black/15 text-stone-300 hover:bg-white/10"
+                        }`}
+                      >
+                        {passage.section}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-cyan-300/15 bg-cyan-300/5 px-4 py-4">
+                  <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                    交互说明
+                  </div>
+                  <p className="mt-3 text-sm leading-7 text-cyan-50/90">
+                    点击证据卡可切换当前引文焦点；溯源链会按节奏逐步点亮，模拟方案中的“逆流而上”。
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                <div className="mt-1 grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+                  <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                        原文对读
+                      </div>
+                      <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-stone-300">
+                        {passageLayout === "vertical" ? "竖排模式" : "横排模式"}
+                      </span>
+                    </div>
+                    <div
+                      className={`mt-4 rounded-2xl border border-white/10 bg-[#090f0f] px-5 py-5 text-stone-100 ${
+                        passageLayout === "vertical"
+                          ? "max-h-[320px] overflow-x-auto [writing-mode:vertical-rl] text-lg leading-10 tracking-[0.25em]"
+                          : "text-sm leading-9"
+                      }`}
+                    >
+                      {activePassage.original}
+                    </div>
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {passage.links.map((link) => (
-                        <span
+                      {activePassage.links.map((link) => (
+                        <button
                           key={link.id}
-                          className={`text-xs ${inlineConfidenceClass(link.confidenceLabel)}`}
+                          type="button"
+                          onClick={() => handleSelectLink(link.id)}
+                          className={`text-xs transition ${
+                            activeLinkId === link.id
+                              ? "rounded bg-amber-300 px-2 py-1 text-stone-950"
+                              : inlineConfidenceClass(link.confidenceLabel)
+                          }`}
                         >
                           {link.sourceTitle} · {link.confidenceLabel}置信度
-                        </span>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -576,10 +687,16 @@ export function BookExplorer({
                       引用证据
                     </div>
                     <div className="mt-3 space-y-2">
-                      {passage.links.map((link) => (
-                        <div
+                      {activePassage.links.map((link) => (
+                        <button
                           key={link.id}
-                          className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-sm"
+                          type="button"
+                          onClick={() => handleSelectLink(link.id)}
+                          className={`w-full rounded-2xl border px-3 py-3 text-left text-sm transition ${
+                            activeLinkId === link.id
+                              ? "border-amber-300/35 bg-amber-300/10"
+                              : "border-white/10 bg-white/5 hover:bg-white/10"
+                          }`}
                         >
                           <div className="flex items-center justify-between gap-3">
                             <span className="font-medium text-stone-50">
@@ -593,9 +710,23 @@ export function BookExplorer({
                           </div>
                           <div className="mt-2 text-stone-200">{link.quote}</div>
                           <p className="mt-2 text-stone-300">{link.evidence}</p>
-                        </div>
+                        </button>
                       ))}
                     </div>
+
+                    {activeLink ? (
+                      <div className="mt-4 rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4">
+                        <div className="text-xs uppercase tracking-[0.2em] text-cyan-100/75">
+                          当前聚焦证据
+                        </div>
+                        <div className="mt-2 text-sm font-medium text-cyan-50">
+                          {activeLink.sourceTitle}
+                        </div>
+                        <p className="mt-2 text-sm leading-7 text-cyan-50/90">
+                          {activeLink.evidence}
+                        </p>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
 
@@ -603,33 +734,53 @@ export function BookExplorer({
                   <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4">
                     <div className="flex items-center justify-between">
                       <h4 className="text-sm font-medium text-cyan-50">溯源光线链路</h4>
-                      <span className="text-xs text-cyan-100/70">上游追踪</span>
+                      <span className="text-xs text-cyan-100/70">
+                        已推进 {Math.min(traceStep + 1, activePassage.tracePath?.length ?? 0)} /
+                        {activePassage.tracePath?.length ?? 0}
+                      </span>
                     </div>
-                    {passage.tracePath?.length ? (
+                    {activePassage.tracePath?.length ? (
                       <div className="mt-3 space-y-3">
-                        {passage.tracePath.map((trace, index) => (
-                          <div key={trace.id} className="flex gap-3">
-                            <div className="flex w-8 flex-col items-center pt-1">
-                              <div className="h-3 w-3 rounded-full bg-cyan-300" />
-                              {index < passage.tracePath!.length - 1 ? (
-                                <div className="mt-1 h-full w-px bg-cyan-300/25" />
-                              ) : null}
-                            </div>
-                            <div className="flex-1 rounded-2xl bg-black/15 px-3 py-3">
-                              <div className="flex items-center justify-between gap-3">
-                                <span className="font-medium text-stone-50">
-                                  {trace.title}
-                                </span>
-                                <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-xs text-cyan-100">
-                                  {trace.relation}
-                                </span>
+                        {activePassage.tracePath.map((trace, index) => {
+                          const isActive = index <= traceStep;
+                          return (
+                            <div key={trace.id} className="flex gap-3">
+                              <div className="flex w-8 flex-col items-center pt-1">
+                                <div
+                                  className={`h-3 w-3 rounded-full transition ${
+                                    isActive ? "bg-cyan-300 shadow-[0_0_16px_rgba(103,232,249,0.65)]" : "bg-white/20"
+                                  }`}
+                                />
+                                {index < activePassage.tracePath!.length - 1 ? (
+                                  <div
+                                    className={`mt-1 h-full w-px transition ${
+                                      isActive ? "bg-cyan-300/35" : "bg-white/10"
+                                    }`}
+                                  />
+                                ) : null}
                               </div>
-                              <p className="mt-2 text-sm leading-6 text-stone-300">
-                                {trace.note}
-                              </p>
+                              <div
+                                className={`flex-1 rounded-2xl px-3 py-3 transition ${
+                                  isActive
+                                    ? "bg-cyan-300/10 ring-1 ring-cyan-300/15"
+                                    : "bg-black/15"
+                                }`}
+                              >
+                                <div className="flex items-center justify-between gap-3">
+                                  <span className="font-medium text-stone-50">
+                                    {trace.title}
+                                  </span>
+                                  <span className="rounded-full bg-cyan-300/10 px-2 py-1 text-xs text-cyan-100">
+                                    {trace.relation}
+                                  </span>
+                                </div>
+                                <p className="mt-2 text-sm leading-6 text-stone-300">
+                                  {trace.note}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     ) : (
                       <div className="mt-3 text-sm text-stone-400">暂无溯源链路样例。</div>
@@ -641,9 +792,9 @@ export function BookExplorer({
                       <h4 className="text-sm font-medium text-amber-50">下游影响追踪</h4>
                       <span className="text-xs text-amber-100/70">反向查看</span>
                     </div>
-                    {passage.downstreamInfluence?.length ? (
+                    {activePassage.downstreamInfluence?.length ? (
                       <div className="mt-3 space-y-2">
-                        {passage.downstreamInfluence.map((item) => (
+                        {activePassage.downstreamInfluence.map((item) => (
                           <div
                             key={item.id}
                             className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3"
@@ -673,10 +824,10 @@ export function BookExplorer({
                   </div>
                 </div>
               </div>
-            ))
-          )}
+            </>
+          ) : null}
           <div className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 px-4 py-4 text-sm leading-7 text-cyan-50">
-            “溯源光线动画”和“影响追踪”下一步会从这些 passages 和 citations 数据直接生成。
+            微观层现在已经支持横排/竖排切换、证据焦点切换、自动推进式溯源链路和下游影响追踪，更接近方案里的“逐字探源”交互。
           </div>
         </section>
       ) : null}
