@@ -49,13 +49,13 @@ export function VersionTree({
   const items = buildVersionTree(versions);
 
   return (
-    <div className="rounded-[24px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.12),rgba(16,10,5,0.96))] px-4 py-4">
+    <div className="rounded-[24px] border border-[#ead8a6]/16 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.18),rgba(58,37,12,0.9)_36%,rgba(16,10,5,0.98))] px-4 py-4">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <div className="text-xs uppercase tracking-[0.22em] text-stone-400">版本流变树</div>
-          <div className="mt-1 text-sm text-stone-300">按祖本、传抄、刊刻与重刊关系展开版本链</div>
+          <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">版本流变树</div>
+          <div className="mt-1 text-sm text-[#eadfbc]">按祖本、传抄、刊刻与重刊关系展开版本链</div>
         </div>
-        <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
+        <div className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.06)] px-3 py-1 text-xs text-[#eadfbc]">
           {versions.length} 个版本
         </div>
       </div>
@@ -113,16 +113,16 @@ export function VersionTree({
                     ? "border-amber-300/35 bg-amber-300/10 shadow-lg shadow-amber-500/10"
                     : version.status === "佚失"
                       ? "border-slate-300/12 bg-[rgba(148,163,184,0.08)] hover:bg-[rgba(148,163,184,0.12)]"
-                      : "border-white/10 bg-white/5 hover:bg-white/10"
+                      : "border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] hover:bg-[rgba(255,248,220,0.1)]"
                 }`}
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <div className="text-xs uppercase tracking-[0.18em] text-stone-400">
+                    <div className="text-xs tracking-[0.18em] text-[#c9b68a]">
                       {version.editionType ?? "版本节点"}
                     </div>
-                    <div className="mt-2 text-sm font-medium text-stone-50">{version.label}</div>
-                    <div className="mt-2 text-xs text-stone-400">
+                    <div className="mt-2 text-sm font-medium text-[#fbf3da]">{version.label}</div>
+                    <div className="mt-2 text-xs text-[#d8c9a3]">
                       {version.year} · {version.place} · {version.library}
                     </div>
                   </div>
@@ -152,12 +152,12 @@ export function VersionTree({
           );
         })}
       </div>
-      <div className="mt-4 flex flex-wrap gap-2 text-[10px] text-stone-400">
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
+      <div className="mt-4 flex flex-wrap gap-2 text-[10px] text-[#c9b68a]">
+        <span className="inline-flex items-center gap-2 rounded-full border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-3 py-1">
           <span className="h-px w-5 bg-white/20" />
           存世实线
         </span>
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
+        <span className="inline-flex items-center gap-2 rounded-full border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-3 py-1">
           <span className="h-px w-5 bg-[repeating-linear-gradient(to_right,rgba(203,213,225,0.52)_0_6px,transparent_6px_11px)]" />
           佚失虚线
         </span>

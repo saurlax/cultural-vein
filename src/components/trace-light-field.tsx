@@ -171,12 +171,12 @@ function TraceScene({ traces, activeIndex, playing }: TraceLightFieldProps) {
 
 export function TraceLightField({ traces, activeIndex, playing }: TraceLightFieldProps) {
   return (
-    <div className="relative h-[220px] overflow-hidden rounded-[20px] border border-white/10 bg-[linear-gradient(180deg,rgba(28,18,7,0.92),rgba(12,7,3,0.98))]">
+    <div className="relative h-[220px] overflow-hidden rounded-[20px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(56,35,11,0.92),rgba(14,8,4,0.98))]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.22),transparent_45%)]" />
-      <div className="pointer-events-none absolute left-4 top-3 z-10 text-[10px] tracking-[0.22em] text-amber-100/70">
+      <div className="pointer-events-none absolute left-4 top-3 z-10 text-[10px] tracking-[0.22em] text-amber-100/78">
         3D 溯源光场
       </div>
-      <div className="pointer-events-none absolute bottom-3 left-4 right-4 z-10 flex items-center justify-between text-[10px] tracking-[0.22em] text-stone-400">
+      <div className="pointer-events-none absolute bottom-3 left-4 right-4 z-10 flex items-center justify-between text-[10px] tracking-[0.22em] text-[#d8c9a3]">
         <span>当前文本</span>
         <span>中间转引</span>
         <span>源头典籍</span>
