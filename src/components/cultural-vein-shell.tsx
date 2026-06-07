@@ -2125,23 +2125,7 @@ export function CulturalVeinShell() {
           <div className="absolute inset-x-3 bottom-[4.75rem] z-40 md:hidden">
             <div className={`pointer-events-auto overflow-hidden p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
               <div className="rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(245,231,188,0.16),rgba(104,72,25,0.14))] p-3">
-                <div className="flex items-start justify-between gap-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(61,40,11,0.42)] px-4 py-3">
-                  <div>
-                    <div className="text-[11px] tracking-[0.24em] text-[#f2dfab]/80">入卷文卷</div>
-                    <div className="mt-1 text-lg font-medium text-[#fbf3da]">{selectedBook.title}</div>
-                    <div className="mt-1 text-xs text-[#eadfbc]">
-                      {selectedBook.dynasty} · {focusModeLabel}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleReturnToRiver}
-                    className="rounded-full border border-amber-300/22 bg-amber-300/10 px-3 py-1.5 text-xs text-amber-100"
-                  >
-                    归河
-                  </button>
-                </div>
-                <div className="mt-3 rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(247,237,206,0.98),rgba(230,204,140,0.94))] px-4 py-4 text-[#42290a]">
+                <div className="rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(247,237,206,0.98),rgba(230,204,140,0.94))] px-4 py-4 text-[#42290a]">
                   <div className="rounded-[20px] border border-[#b89247]/16 bg-[rgba(255,255,255,0.18)] px-4 py-3">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
@@ -2151,8 +2135,17 @@ export function CulturalVeinShell() {
                           {selectedBook.category} · {selectedBook.school}
                         </div>
                       </div>
-                      <div className="rounded-full border border-[#b89247]/18 bg-[rgba(255,255,255,0.22)] px-3 py-1 text-[10px] text-[#7a571d]">
-                        {focusModeLabel}
+                      <div className="flex flex-col items-end gap-2">
+                        <div className="rounded-full border border-[#b89247]/18 bg-[rgba(255,255,255,0.22)] px-3 py-1 text-[10px] text-[#7a571d]">
+                          {focusModeLabel}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleReturnToRiver}
+                          className="rounded-full border border-amber-300/22 bg-amber-300/10 px-3 py-1.5 text-[10px] text-amber-100"
+                        >
+                          归河
+                        </button>
                       </div>
                     </div>
                   </div>
