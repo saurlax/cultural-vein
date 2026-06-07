@@ -3396,34 +3396,38 @@ export function RiverScene(props: RiverSceneProps) {
         />
       </Canvas>
       <div
-        className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 hidden justify-center px-3 pb-3 transition-all duration-500 sm:flex sm:px-4 sm:pb-4 ${
-          props.mobilePanelOpen ? "translate-y-6 opacity-0" : "translate-y-0 opacity-100"
+        className={`pointer-events-none absolute bottom-3 right-3 z-20 hidden transition-all duration-500 sm:block sm:bottom-4 sm:right-4 ${
+          props.mobilePanelOpen ? "translate-y-4 opacity-0" : "translate-y-0 opacity-100"
         }`}
       >
-        <div className="pointer-events-auto w-full max-w-[min(42rem,calc(100vw-2rem))] rounded-[18px] border border-[#e6c77f]/16 bg-[linear-gradient(180deg,rgba(78,50,16,0.62),rgba(46,29,8,0.72))] px-3.5 py-2 shadow-[0_12px_26px_rgba(53,31,7,0.14)] backdrop-blur-md sm:px-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="pointer-events-auto w-[min(26rem,calc(100vw-3rem))] rounded-[20px] border border-[#e6c77f]/18 bg-[linear-gradient(180deg,rgba(88,56,18,0.68),rgba(48,30,8,0.78))] px-3 py-3 shadow-[0_14px_30px_rgba(53,31,7,0.16)] backdrop-blur-md">
+          <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-amber-300/18 bg-amber-300/8 px-2.5 py-1 text-[10px] tracking-[0.24em] text-amber-100">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="rounded-full border border-amber-300/18 bg-amber-300/10 px-2.5 py-1 text-[10px] tracking-[0.24em] text-amber-100">
                   河势题签
                 </span>
-                <span className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.06)] px-2.5 py-1 text-[10px] text-[#f1e0b4]">
+                <span className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.08)] px-2.5 py-1 text-[10px] text-[#f1e0b4]">
                   {props.activeEra}
                 </span>
-                <span className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.06)] px-2.5 py-1 text-[10px] text-[#f1e0b4]">
+                <span className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.08)] px-2.5 py-1 text-[10px] text-[#f1e0b4]">
                   {riverStageModeLabel}
                 </span>
-                {!props.selectedBookSlug && activeCruiseAnchor ? (
-                  <span className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.06)] px-2.5 py-1 text-[10px] text-[#f1e0b4]">
-                    锚点 · {activeCruiseAnchor.label}
-                    {activeCruiseAnchor.era ? ` · ${activeCruiseAnchor.era}` : ""}
-                  </span>
-                ) : null}
               </div>
-              <div className="mt-1 text-[12px] font-medium text-[#fbf3da]">{stageLead}</div>
-              <div className="mt-0.5 line-clamp-1 text-[10px] leading-5 text-[#e8d7a9]">{stageDetail}</div>
+              <div className="mt-2 line-clamp-2 text-[12px] font-medium leading-5 text-[#fbf3da]">
+                {stageLead}
+              </div>
+              <div className="mt-1 line-clamp-2 text-[10px] leading-5 text-[#e8d7a9]">
+                {stageDetail}
+              </div>
+              {!props.selectedBookSlug && activeCruiseAnchor ? (
+                <div className="mt-2 text-[10px] text-[#dcbc7b]">
+                  当前锚点 · {activeCruiseAnchor.label}
+                  {activeCruiseAnchor.era ? ` · ${activeCruiseAnchor.era}` : ""}
+                </div>
+              ) : null}
             </div>
-            <div className="flex shrink-0 flex-wrap items-center gap-1.5">
+            <div className="flex w-[8.8rem] shrink-0 flex-wrap justify-end gap-1.5">
               {!props.selectedBookSlug && canCruise ? (
                 <>
                   <button
