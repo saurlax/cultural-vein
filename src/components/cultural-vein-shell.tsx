@@ -902,6 +902,7 @@ export function CulturalVeinShell() {
           .map((offset) => sourceAtlasEntries[activeSourceAtlasIndex + offset])
           .filter((entry): entry is NonNullable<typeof sourceAtlasEntries>[number] => Boolean(entry))
       : sourceAtlasEntries.slice(1, 3);
+  const coverageLayers = atlasMeta?.coverageLayers ?? [];
   const eraRecommendedBooks = useMemo(() => {
     return filteredBooks
       .filter((book) => book.dynasty === activeEra)
@@ -1371,6 +1372,37 @@ export function CulturalVeinShell() {
                                 </span>
                               ))}
                             </div>
+                            {coverageLayers.length ? (
+                              <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">数据覆盖图</div>
+                                <div className="mt-2 grid gap-2">
+                                  {coverageLayers.slice(0, 5).map((layer) => (
+                                    <div
+                                      key={`desktop-coverage-${layer.id}`}
+                                      className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(255,248,220,0.04)] px-3 py-2"
+                                    >
+                                      <div className="flex items-center justify-between gap-3">
+                                        <div className="text-[11px] text-[#fbf3da]">{layer.label}</div>
+                                        <div
+                                          className={`rounded-full px-2 py-0.5 text-[10px] ${
+                                            layer.status === "已接入"
+                                              ? "bg-emerald-300/14 text-emerald-100"
+                                              : layer.status === "示范接入"
+                                                ? "bg-amber-300/14 text-amber-100"
+                                                : "bg-white/8 text-stone-300"
+                                          }`}
+                                        >
+                                          {layer.status}
+                                        </div>
+                                      </div>
+                                      <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">
+                                        {layer.scope} · {layer.usage}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ) : null}
                           </button>
                         ) : null}
                         <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.26)] px-3 py-3">
@@ -1796,6 +1828,34 @@ export function CulturalVeinShell() {
                       <div className="mt-2 text-[11px] leading-5 text-[#e6d7ae]">
                         {atlasMeta.expansionNote}
                       </div>
+                      {coverageLayers.length ? (
+                        <div className="mt-3 grid gap-2">
+                          {coverageLayers.slice(0, 4).map((layer) => (
+                            <div
+                              key={`mobile-coverage-${layer.id}`}
+                              className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2"
+                            >
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="text-[11px] text-[#fbf3da]">{layer.label}</div>
+                                <div
+                                  className={`rounded-full px-2 py-0.5 text-[10px] ${
+                                    layer.status === "已接入"
+                                      ? "bg-emerald-300/14 text-emerald-100"
+                                      : layer.status === "示范接入"
+                                        ? "bg-amber-300/14 text-amber-100"
+                                        : "bg-white/8 text-stone-300"
+                                  }`}
+                                >
+                                  {layer.status}
+                                </div>
+                              </div>
+                              <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">
+                                {layer.scope}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : null}
                     </button>
                   ) : null}
                   <div className="mt-2 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(38,25,8,0.24)] px-3 py-3">
