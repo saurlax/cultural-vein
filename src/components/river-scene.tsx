@@ -2024,6 +2024,27 @@ export function RiverScene(props: RiverSceneProps) {
       <div className="pointer-events-none absolute left-4 top-16 z-10 hidden rounded-full border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.42)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md xl:flex">
         {isInteracting ? "正在拖动画卷" : "拖移河面巡看文脉"}
       </div>
+      <div className="pointer-events-none absolute right-4 top-16 z-10 hidden w-56 rounded-[22px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(88,58,19,0.72),rgba(54,34,11,0.72))] px-4 py-3 text-[#f4e8c6] shadow-lg shadow-black/20 backdrop-blur-md xl:block">
+        <div className="text-[10px] tracking-[0.28em] text-[#e5d1a1]">关系图例</div>
+        <div className="mt-3 space-y-2 text-[11px]">
+          <div className="flex items-center gap-3">
+            <span className="h-px w-8 bg-white/70" />
+            <span>书目关联</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="h-px w-8 bg-emerald-300" />
+            <span>显式引用 · 高置信</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="h-px w-8 bg-[repeating-linear-gradient(to_right,#fcd34d_0_6px,transparent_6px_10px)]" />
+            <span>语义关联 · 中置信</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="h-px w-8 bg-[repeating-linear-gradient(to_right,#94a3b8_0_2px,transparent_2px_6px)]" />
+            <span>间接影响 · 低置信</span>
+          </div>
+        </div>
+      </div>
       <div
         className={`pointer-events-none absolute left-1/2 top-5 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
           showMobileTouchHint || isInteracting ? "opacity-100" : "opacity-0"
