@@ -95,7 +95,7 @@ function relationTypeClass(type?: string) {
     case "注":
       return "bg-sky-300/12 text-sky-100";
     case "校":
-      return "bg-violet-300/12 text-violet-100";
+      return "bg-[#c08a3f]/18 text-[#f6deb0]";
     case "评":
       return "bg-amber-300/12 text-amber-100";
     default:
@@ -189,7 +189,7 @@ function versionTypeClass(type?: string) {
     case "刻本":
       return "bg-sky-300/12 text-sky-100";
     case "抄本":
-      return "bg-violet-300/12 text-violet-100";
+      return "bg-[#c08a3f]/18 text-[#f6deb0]";
     case "重刊本":
       return "bg-emerald-300/12 text-emerald-100";
     case "整理本":
@@ -3009,7 +3009,7 @@ export function BookExplorer({
                           {activePerson.relationType ?? "引"}
                         </span>
                       ) : null}
-                      <span className="rounded-full border border-violet-300/20 bg-violet-300/10 px-3 py-1.5 text-xs text-violet-100">
+                      <span className="rounded-full border border-[#c08a3f]/22 bg-[#c08a3f]/12 px-3 py-1.5 text-xs text-[#f6deb0]">
                         核心 {primaryPeople.length} · 支流 {secondaryPeople.length}
                       </span>
                     </div>
@@ -3173,7 +3173,7 @@ export function BookExplorer({
                             >
                               {activePerson.relationType ?? "引"}
                             </div>
-                            <div className="rounded-full bg-violet-300/10 px-3 py-1 text-xs text-violet-100">
+                            <div className="rounded-full border border-[#c08a3f]/18 bg-[#c08a3f]/10 px-3 py-1 text-xs text-[#f6deb0]">
                               {activePerson.birthYear ?? "?"} - {activePerson.deathYear ?? "?"}
                             </div>
                           </div>
