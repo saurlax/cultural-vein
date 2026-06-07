@@ -247,6 +247,57 @@ export function GET() {
       plannedLayers: ["古籍循证", "人名规范", "书目版本", "地名事件", "专题文献", "诗词图谱"],
       expansionNote:
         "当前首页已先将主河道、真实来源与样本码头铺成一条可演示的长卷；后续还可继续接入更多典籍、地名、事件与专题支流。",
+      coverageLayers: [
+        {
+          id: "core-classics",
+          label: "古籍循证",
+          status: "示范接入",
+          scope: "主线典籍示范域",
+          usage: "主河道节点、引用关系与文本溯源基础",
+        },
+        {
+          id: "cbdb-people",
+          label: "人名规范 / CBDB",
+          status: "已接入",
+          scope: "人物命中与纪传地点",
+          usage: "人物关系、活动地点、时间线补证",
+        },
+        {
+          id: "bibliography",
+          label: "书目版本",
+          status: "示范接入",
+          scope: "版本链与馆藏样本",
+          usage: "版本流变树、馆藏落点与资源回查",
+        },
+        {
+          id: "geo-events",
+          label: "地名事件",
+          status: "示范接入",
+          scope: "场馆、活动、专题片与事件样本",
+          usage: "地理传播、时间回声与真实场景挂接",
+        },
+        {
+          id: "special-archives",
+          label: "专题文献",
+          status: "已接入",
+          scope: "南湖、宋庆龄、韬奋等专题资料",
+          usage: "近现代支流、机构样本与来源证据总表",
+        },
+        {
+          id: "poetry-graph",
+          label: "诗词图谱",
+          status: "已接入",
+          scope: "搜韵接口与古典诗学外推",
+          usage: "诗学支流、文本比对与后续古籍扩面",
+        },
+        {
+          id: "genealogy-red",
+          label: "家谱 / 红色文献",
+          status: "待扩展",
+          scope: "方案保留层",
+          usage: "后续补家族传播与红色典籍分支",
+        },
+      ],
     },
     cbdbSummary: realSupplements.cbdbSummary,
     cbdbPeople: (realSupplements.cbdbPeople ?? []).map((person) => ({

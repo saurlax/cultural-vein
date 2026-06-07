@@ -187,6 +187,13 @@ export interface DatasetInsight {
     activeSources: number;
     plannedLayers: string[];
     expansionNote: string;
+    coverageLayers?: Array<{
+      id: string;
+      label: string;
+      status: "已接入" | "示范接入" | "待扩展";
+      scope: string;
+      usage: string;
+    }>;
   };
   cbdbSummary?: {
     available?: boolean;

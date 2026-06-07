@@ -1410,6 +1410,39 @@ export function CulturalVeinShell() {
                             </div>
                           </button>
                         ) : null}
+                        {atlasMeta?.coverageLayers?.length ? (
+                          <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(44,27,8,0.24)] px-3 py-3">
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="text-[11px] tracking-[0.2em] text-[#d8c9a3]">数据覆盖图</div>
+                              <div className="text-[10px] text-[#c9b68a]">方案数据层</div>
+                            </div>
+                            <div className="mt-3 space-y-2">
+                              {atlasMeta.coverageLayers.slice(0, 5).map((layer) => (
+                                <div
+                                  key={`desktop-coverage-${layer.id}`}
+                                  className="rounded-[14px] border border-[#ead8a6]/10 bg-[rgba(255,248,220,0.03)] px-3 py-2.5"
+                                >
+                                  <div className="flex items-center justify-between gap-3">
+                                    <div className="text-[11px] text-[#fbf3da]">{layer.label}</div>
+                                    <span
+                                      className={`rounded-full px-2 py-1 text-[10px] ${
+                                        layer.status === "已接入"
+                                          ? "bg-emerald-300/10 text-emerald-100"
+                                          : layer.status === "示范接入"
+                                            ? "bg-amber-300/12 text-amber-100"
+                                            : "bg-white/8 text-stone-300"
+                                      }`}
+                                    >
+                                      {layer.status}
+                                    </span>
+                                  </div>
+                                  <div className="mt-1 text-[10px] text-[#cdb98d]">{layer.scope}</div>
+                                  <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">{layer.usage}</div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
                         <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.26)] px-3 py-3">
                           <div className="flex items-center justify-between gap-3">
                             <div className="text-[11px] tracking-[0.2em] text-[#d8c9a3]">来源河册</div>
@@ -1883,6 +1916,39 @@ export function CulturalVeinShell() {
                         {atlasMeta.expansionNote}
                       </div>
                     </button>
+                  ) : null}
+                  {atlasMeta?.coverageLayers?.length ? (
+                    <div className="mt-2 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(38,25,8,0.24)] px-3 py-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="text-[11px] tracking-[0.2em] text-[#d8c9a3]">数据覆盖图</div>
+                        <div className="text-[10px] text-[#c9b68a]">已接入与待扩展</div>
+                      </div>
+                      <div className="mt-2 space-y-2">
+                        {atlasMeta.coverageLayers.slice(0, 4).map((layer) => (
+                          <div
+                            key={`mobile-coverage-${layer.id}`}
+                            className="rounded-[14px] border border-[#ead8a6]/10 bg-[rgba(255,248,220,0.03)] px-3 py-2.5"
+                          >
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="text-[11px] text-[#fbf3da]">{layer.label}</div>
+                              <span
+                                className={`rounded-full px-2 py-1 text-[10px] ${
+                                  layer.status === "已接入"
+                                    ? "bg-emerald-300/10 text-emerald-100"
+                                    : layer.status === "示范接入"
+                                      ? "bg-amber-300/12 text-amber-100"
+                                      : "bg-white/8 text-stone-300"
+                                }`}
+                              >
+                                {layer.status}
+                              </span>
+                            </div>
+                            <div className="mt-1 text-[10px] text-[#d8c9a3]">{layer.scope}</div>
+                            <div className="mt-1 text-[10px] leading-5 text-[#e6d7ae]">{layer.usage}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   ) : null}
                   <div className="mt-2 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(38,25,8,0.24)] px-3 py-3">
                     <div className="flex items-center justify-between gap-3">
