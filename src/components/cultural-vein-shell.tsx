@@ -1031,7 +1031,7 @@ export function CulturalVeinShell() {
               }}
               className="hidden rounded-full border border-[#e7c97b]/24 bg-[linear-gradient(180deg,rgba(108,77,29,0.92),rgba(58,37,12,0.84))] px-4 py-2 text-xs text-[#f7edd1] backdrop-blur-xl md:inline-flex"
             >
-              {showDesktopControls ? "收起题签" : "展开题签"}
+              {showDesktopControls ? "收卷签" : "卷签"}
             </button>
             {selectedBook ? (
               <button
@@ -1042,7 +1042,7 @@ export function CulturalVeinShell() {
                 }}
                 className="hidden rounded-full border border-amber-200/24 bg-[linear-gradient(180deg,rgba(108,77,29,0.92),rgba(58,37,12,0.84))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl md:inline-flex"
               >
-                {showDesktopDossier ? "收起文卷" : "展开文卷"}
+                {showDesktopDossier ? "收卷" : "入卷"}
               </button>
             ) : null}
           </div>
@@ -1054,12 +1054,8 @@ export function CulturalVeinShell() {
               <div className={`p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">
-                    长卷侧注
-                  </div>
-                  <div className="mt-1 text-base font-medium text-[#fbf3da]">
-                    河上题签
-                  </div>
+                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">卷签</div>
+                  <div className="mt-1 text-base font-medium text-[#fbf3da]">河上入口</div>
                 </div>
                 {viewMode === "book" ? (
                   <button
@@ -1806,17 +1802,15 @@ export function CulturalVeinShell() {
             <div className={`pointer-events-auto max-h-[56vh] overflow-auto p-3 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">河上题签</div>
-                  <div className="mt-1 text-sm font-medium text-[#fbf3da]">
-                    {activeDesktopPanelConfig.label}题签
-                  </div>
+                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">卷签</div>
+                  <div className="mt-1 text-sm font-medium text-[#fbf3da]">{activeDesktopPanelConfig.label}</div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowMobileControls(false)}
                   className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200"
                 >
-                  收起
+                  收卷
                 </button>
               </div>
               <div className="mt-3 grid grid-cols-3 gap-2 text-[11px] text-[#eadfbc]">
@@ -2228,12 +2222,9 @@ export function CulturalVeinShell() {
                     : activeDesktopPanel === "category"
                       ? `筛到 ${categoryFilter} 与 ${schoolFilter} 后，河道已经更收束，适合直接挑主线节点展开讲述。`
                       : "先顺着关系层级与来源河册找到入口，再从河面码头进入具体典籍与样本。"}
-                      </div>
-                    </div>
-                    <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-[11px] leading-5 text-[#eadfbc]">
-                      顺着这一层时代水位继续前后推移，就能看到主干如何加粗、支流如何增生或收束。
-                    </div>
-                  </div>
+              </div>
+            </div>
+          </div>
         ) : null}
 
         {showMobileDossier && selectedBook && selectedDetail ? (
@@ -2318,7 +2309,7 @@ export function CulturalVeinShell() {
               }}
               className="rounded-full border border-[#e7c97b]/30 bg-[linear-gradient(180deg,rgba(154,116,49,0.96),rgba(97,64,22,0.96))] px-4 py-2 text-[11px] tracking-[0.2em] text-[#fff0c7] shadow-xl shadow-black/20 backdrop-blur-xl"
             >
-              {showMobileControls ? "收题签" : "卷签"}
+              {showMobileControls ? "收卷签" : "卷签"}
             </button>
             {selectedBook ? (
               <button

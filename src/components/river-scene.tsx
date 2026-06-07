@@ -2512,21 +2512,8 @@ export function RiverScene(props: RiverSceneProps) {
                 {activeCruiseStory.trunk}
               </div>
             ) : null}
-            <div className="mt-3 hidden flex-wrap gap-2 text-[10px] sm:flex">
-              <button
-                type="button"
-                onClick={() => props.onOpenControlPanel?.()}
-                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
-              >
-                打开河上题签
-              </button>
-              <button
-                type="button"
-                onClick={() => props.onOpenEraPanel?.()}
-                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
-              >
-                换时代
-              </button>
+            <div className="mt-3 hidden text-[10px] leading-5 text-[#e8d6aa] sm:block">
+              顺流巡看时先让长河自己展开；需要检索、换时代或看来源时，再从右上角卷签入手。
             </div>
           </div>
         </div>
