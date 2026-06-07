@@ -1002,7 +1002,7 @@ export function CulturalVeinShell() {
               }}
               className="hidden rounded-full border border-[#e7c97b]/24 bg-[linear-gradient(180deg,rgba(164,123,52,0.92),rgba(96,64,24,0.88))] px-4 py-2 text-xs text-[#fff0cf] backdrop-blur-xl md:inline-flex"
             >
-              {showDesktopControls ? "收起河图" : "展开河图"}
+              {showDesktopControls ? "收河图" : "河图"}
             </button>
             {selectedBook ? (
               <button
@@ -1013,7 +1013,7 @@ export function CulturalVeinShell() {
                 }}
                 className="hidden rounded-full border border-amber-200/24 bg-[linear-gradient(180deg,rgba(164,123,52,0.92),rgba(96,64,24,0.88))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl md:inline-flex"
               >
-                {showDesktopDossier ? "收起文卷" : "展开文卷"}
+                {showDesktopDossier ? "收文卷" : "文卷"}
               </button>
             ) : null}
           </div>
@@ -1026,7 +1026,7 @@ export function CulturalVeinShell() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">河图</div>
-                  <div className="mt-1 text-base font-medium text-[#fbf3da]">长卷总览</div>
+                  <div className="mt-1 text-base font-medium text-[#fbf3da]">河上卷签</div>
                 </div>
                 {viewMode === "book" ? (
                   <button
@@ -1662,10 +1662,10 @@ export function CulturalVeinShell() {
                     <div className="mb-3 flex items-center justify-between gap-3 border-b border-[#b89247]/20 pb-3">
                       <div>
                         <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">
-                          卷内细览
+                          卷内脉络
                         </div>
                         <div className="mt-1 text-sm font-medium text-[#5b3a11]">
-                          沿卷细看传播、人物、版本与溯源
+                          沿卷细看传播、人物、版本与溯源回声
                         </div>
                       </div>
                     </div>
