@@ -297,6 +297,18 @@ function RiverBanks() {
 
   return (
     <group ref={bankRef}>
+      <mesh rotation={[-Math.PI / 2.02, 0, 0.14]} position={[3.05, -1.03, 4.15]}>
+        <planeGeometry args={[23.2, 2.2, 1, 1]} />
+        <meshStandardMaterial
+          color="#8a5e21"
+          emissive={new THREE.Color("#d0a04d")}
+          emissiveIntensity={0.12}
+          roughness={0.92}
+          metalness={0.02}
+          transparent
+          opacity={0.96}
+        />
+      </mesh>
       <mesh rotation={[-Math.PI / 2.08, 0, 0.11]} position={[3.2, -0.96, 3.45]}>
         <planeGeometry args={[21.5, 6.8, 1, 1]} />
         <meshStandardMaterial
@@ -307,6 +319,18 @@ function RiverBanks() {
           metalness={0.02}
           transparent
           opacity={0.98}
+        />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2.02, 0, -0.12]} position={[3.7, -1.04, -4.2]}>
+        <planeGeometry args={[24, 2.4, 1, 1]} />
+        <meshStandardMaterial
+          color="#7b4f1f"
+          emissive={new THREE.Color("#be8534")}
+          emissiveIntensity={0.12}
+          roughness={0.92}
+          metalness={0.02}
+          transparent
+          opacity={0.94}
         />
       </mesh>
       <mesh rotation={[-Math.PI / 2.06, 0, -0.09]} position={[3.5, -0.98, -3.55]}>
@@ -325,9 +349,17 @@ function RiverBanks() {
         <planeGeometry args={[18.5, 1.4, 1, 1]} />
         <meshBasicMaterial color="#f0cf84" transparent opacity={0.14} />
       </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0.05]} position={[3.15, -0.88, 5.05]}>
+        <planeGeometry args={[17.8, 0.42, 1, 1]} />
+        <meshBasicMaterial color="#fff0c7" transparent opacity={0.18} />
+      </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.55, -0.92, -4.6]}>
         <planeGeometry args={[19.4, 1.6, 1, 1]} />
         <meshBasicMaterial color="#e3b45b" transparent opacity={0.11} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, -0.05]} position={[3.72, -0.9, -5.24]}>
+        <planeGeometry args={[18.2, 0.44, 1, 1]} />
+        <meshBasicMaterial color="#f1d187" transparent opacity={0.16} />
       </mesh>
     </group>
   );
@@ -356,6 +388,20 @@ function ScrollContourLines() {
         new THREE.Vector3(4.8, -0.68, 2.82),
         new THREE.Vector3(9.6, -0.66, 2.58),
       ],
+      [
+        new THREE.Vector3(-4.4, -0.69, 4.86),
+        new THREE.Vector3(-0.2, -0.67, 5.08),
+        new THREE.Vector3(4.2, -0.65, 4.92),
+        new THREE.Vector3(8.9, -0.63, 4.76),
+        new THREE.Vector3(12.1, -0.62, 4.98),
+      ],
+      [
+        new THREE.Vector3(-4.8, -0.7, -5.14),
+        new THREE.Vector3(-0.4, -0.69, -5.28),
+        new THREE.Vector3(4.4, -0.67, -5.08),
+        new THREE.Vector3(9.1, -0.65, -5.26),
+        new THREE.Vector3(12.5, -0.64, -5.02),
+      ],
     ],
     [],
   );
@@ -366,9 +412,9 @@ function ScrollContourLines() {
         <Line
           key={`scroll-contour-${index}`}
           points={points}
-          color={index === 1 ? "#b88a34" : "#d7b567"}
+          color={index === 1 || index === 4 ? "#b88a34" : "#d7b567"}
           transparent
-          opacity={index === 2 ? 0.18 : 0.24}
+          opacity={index >= 3 ? 0.14 : index === 2 ? 0.18 : 0.24}
           lineWidth={1.2}
         />
       ))}
@@ -495,6 +541,10 @@ function ForegroundScrollVeil({
 
   return (
     <group ref={veilRef}>
+      <mesh position={[3.5, -0.58, 6.9]} scale={[19.6, 2.74, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#4f2f0f" transparent opacity={0.18 + warmth * 0.04 + focusBoost * 0.4} />
+      </mesh>
       <mesh position={[3.5, -0.42, 6.6]} scale={[18.4, 2.15, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
         <meshBasicMaterial color={paperShadow} transparent opacity={0.13 + warmth * 0.04 + focusBoost * 0.5} />
@@ -510,6 +560,22 @@ function ForegroundScrollVeil({
       <mesh position={[-0.8, 0.16, 5.6]} scale={[6.4, 1.1, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
         <meshBasicMaterial color="#dba94e" transparent opacity={0.045 + warmth * 0.02 + focusBoost * 0.35} />
+      </mesh>
+      <mesh position={[-7.1, 0.28, 5.2]} scale={[1.18, 7.8, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#f5dd9f" transparent opacity={0.09 + warmth * 0.04} />
+      </mesh>
+      <mesh position={[14.2, 0.36, 5.2]} scale={[1.18, 7.8, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#ddb35b" transparent opacity={0.08 + warmth * 0.04} />
+      </mesh>
+      <mesh position={[-7.34, 0.34, 5.28]} scale={[0.22, 8.1, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#fff2cb" transparent opacity={0.14 + warmth * 0.03} />
+      </mesh>
+      <mesh position={[14.42, 0.4, 5.24]} scale={[0.22, 8.1, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#fff1c0" transparent opacity={0.12 + warmth * 0.03} />
       </mesh>
     </group>
   );
@@ -2422,6 +2488,10 @@ export function RiverScene(props: RiverSceneProps) {
       onContextMenu={(event) => event.preventDefault()}
       className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#d7ab56]/60 bg-[#c98b34] shadow-[0_0_110px_rgba(107,68,18,0.2)] [touch-action:pan-x_pinch-zoom]"
     >
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-[linear-gradient(90deg,rgba(253,236,187,0.84),rgba(253,236,187,0.2),transparent)]" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-[linear-gradient(270deg,rgba(228,183,86,0.82),rgba(228,183,86,0.18),transparent)]" />
+      <div className="pointer-events-none absolute inset-y-0 left-2 z-10 w-[3px] rounded-full bg-[linear-gradient(180deg,rgba(255,244,205,0.95),rgba(218,173,78,0.55),rgba(255,244,205,0.9))]" />
+      <div className="pointer-events-none absolute inset-y-0 right-2 z-10 w-[3px] rounded-full bg-[linear-gradient(180deg,rgba(255,239,196,0.92),rgba(198,143,48,0.55),rgba(255,239,196,0.88))]" />
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-36 bg-[linear-gradient(180deg,rgba(255,243,202,0.5),rgba(211,154,58,0))]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-44 bg-[linear-gradient(0deg,rgba(157,104,29,0.44),rgba(157,104,29,0))]" />
       <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_46%,rgba(254,233,166,0.2),transparent_42%),linear-gradient(90deg,rgba(250,228,160,0.08),transparent_18%,transparent_82%,rgba(250,228,160,0.08))]" />

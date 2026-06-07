@@ -1691,7 +1691,7 @@ export function CulturalVeinShell() {
             <aside className={`pointer-events-auto transition-all duration-500 ease-out xl:pt-2 ${dossierMotionClass}`}>
               <div className={`overflow-hidden p-4 ${panelBaseClass}`}>
                 <div
-                  className={`rounded-[30px] border border-[#ead8a6]/20 bg-[linear-gradient(180deg,rgba(245,231,188,0.14),rgba(104,72,25,0.14))] p-3 ${
+                  className={`relative rounded-[30px] border border-[#ead8a6]/20 bg-[linear-gradient(180deg,rgba(245,231,188,0.14),rgba(104,72,25,0.14))] p-3 ${
                     traceFocus?.active
                       ? "shadow-[0_0_28px_rgba(245,158,11,0.12)]"
                       : transitionState === "diving" || transitionState === "settling"
@@ -1699,6 +1699,9 @@ export function CulturalVeinShell() {
                         : ""
                   }`}
                 >
+                  <div className="pointer-events-none absolute inset-y-6 left-2 w-3 rounded-full bg-[linear-gradient(180deg,rgba(255,239,196,0.9),rgba(212,164,72,0.58),rgba(255,239,196,0.84))]" />
+                  <div className="pointer-events-none absolute inset-y-6 right-2 w-3 rounded-full bg-[linear-gradient(180deg,rgba(255,232,184,0.88),rgba(196,138,47,0.58),rgba(255,232,184,0.84))]" />
+                  <div className="pointer-events-none absolute inset-x-8 top-3 h-px bg-[linear-gradient(90deg,transparent,rgba(246,221,160,0.6),transparent)]" />
                   <div className="flex items-start justify-between gap-3 rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(61,40,11,0.45)] px-4 py-3">
                     <div className="min-w-0">
                       <div className="text-[11px] tracking-[0.28em] text-[#f2dfab]/80">
@@ -1749,6 +1752,7 @@ export function CulturalVeinShell() {
                       </div>
                     </div>
 
+                    <div className="mt-4 h-px bg-[linear-gradient(90deg,transparent,rgba(242,223,171,0.55),transparent)]" />
                     <div className="mt-4 flex flex-wrap gap-2 text-xs">
                       <span className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.08)] px-3 py-1.5 text-[#fbf3da]">
                         {focusModeLabel}
@@ -1773,7 +1777,9 @@ export function CulturalVeinShell() {
                     </div>
                   </div>
 
-                  <div className="mt-3 rounded-[28px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(244,230,188,0.96),rgba(224,200,146,0.92))] px-4 py-4 text-[#42290a] shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
+                  <div className="relative mt-3 rounded-[28px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(248,236,198,0.98),rgba(227,204,148,0.94))] px-4 py-4 text-[#42290a] shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
+                    <div className="pointer-events-none absolute inset-y-4 left-2 w-px bg-[linear-gradient(180deg,transparent,rgba(178,139,71,0.35),transparent)]" />
+                    <div className="pointer-events-none absolute inset-y-4 right-2 w-px bg-[linear-gradient(180deg,transparent,rgba(178,139,71,0.28),transparent)]" />
                     <div className="mb-3 flex items-center justify-between gap-3 border-b border-[#b89247]/20 pb-3">
                       <div>
                       <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">
@@ -2099,7 +2105,9 @@ export function CulturalVeinShell() {
           <div className="absolute inset-x-0 bottom-0 z-40 md:hidden">
             <div className={`pointer-events-auto mx-3 mb-[4.3rem] max-h-[min(24rem,36vh)] overflow-hidden rounded-[28px] p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
               <div className="rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(245,231,188,0.16),rgba(104,72,25,0.14))] p-3">
-                <div className="rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(247,237,206,0.98),rgba(230,204,140,0.94))] px-4 py-4 text-[#42290a]">
+                <div className="relative rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(247,237,206,0.98),rgba(230,204,140,0.94))] px-4 py-4 text-[#42290a]">
+                  <div className="pointer-events-none absolute inset-y-5 left-2 w-2 rounded-full bg-[linear-gradient(180deg,rgba(255,239,196,0.88),rgba(212,164,72,0.55),rgba(255,239,196,0.82))]" />
+                  <div className="pointer-events-none absolute inset-y-5 right-2 w-2 rounded-full bg-[linear-gradient(180deg,rgba(255,232,184,0.86),rgba(196,138,47,0.55),rgba(255,232,184,0.8))]" />
                   <div className="rounded-[20px] border border-[#b89247]/16 bg-[rgba(255,255,255,0.18)] px-4 py-3">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
