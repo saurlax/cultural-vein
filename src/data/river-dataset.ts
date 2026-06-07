@@ -3123,10 +3123,902 @@ const placeholderDetail = (book: BookNode): BookDetail => ({
   passages: [],
 });
 
+const mergeById = <T extends { id: string }>(existing: T[], additions: T[]) => {
+  const merged = new Map(existing.map((item) => [item.id, item]));
+  for (const item of additions) {
+    merged.set(item.id, item);
+  }
+  return Array.from(merged.values());
+};
+
+const appendSourceLabel = (current: string | undefined, next: string) => {
+  const tokens = [...(current ? current.split("+") : []), next]
+    .map((item) => item.trim())
+    .filter(Boolean);
+  return Array.from(new Set(tokens)).join(" + ");
+};
+
+const appendVenueSummary = (current: string | undefined, next: string) => {
+  if (!current) {
+    return next;
+  }
+  return current.includes(next) ? current : `${current} ${next}`;
+};
+
 for (const book of books) {
   if (!details[book.slug]) {
     details[book.slug] = placeholderDetail(book);
   }
+}
+
+const lijiDetail = details.liji;
+if (lijiDetail) {
+  lijiDetail.heroMetric = {
+    directCitations: Math.max(lijiDetail.heroMetric.directCitations, 88),
+    downstreamInfluence: Math.max(lijiDetail.heroMetric.downstreamInfluence, 274),
+    coveredRegions: Math.max(lijiDetail.heroMetric.coveredRegions, 7),
+  };
+  lijiDetail.places = mergeById(lijiDetail.places, [
+    {
+      id: "place-changan-lj",
+      name: "长安",
+      lat: 34.3416,
+      lng: 108.9398,
+      note: "《礼记》礼学整理与官学讲授的重要中心。",
+    },
+    {
+      id: "place-luoyang-lj",
+      name: "洛阳",
+      lat: 34.6197,
+      lng: 112.454,
+      note: "汉唐礼学讲习与注疏流播的关键节点。",
+    },
+    {
+      id: "place-quzhou-lj",
+      name: "衢州",
+      lat: 28.9701,
+      lng: 118.8595,
+      note: "南宋书院与家礼讲习把《礼记》重新带回日常教化场景。",
+    },
+  ]);
+  lijiDetail.spread = mergeById(lijiDetail.spread, [
+    {
+      id: "spread-lj-1",
+      fromPlaceId: "place-changan-lj",
+      toPlaceId: "place-luoyang-lj",
+      startYear: 80,
+      endYear: 650,
+      volume: 74,
+    },
+    {
+      id: "spread-lj-2",
+      fromPlaceId: "place-luoyang-lj",
+      toPlaceId: "place-quzhou-lj",
+      startYear: 960,
+      endYear: 1200,
+      volume: 82,
+    },
+  ]);
+  lijiDetail.people = mergeById(lijiDetail.people, [
+    {
+      id: "person-dai-sheng-liji",
+      name: "戴圣",
+      role: "编者",
+      era: "两汉",
+      bio: "后世通行《礼记》多归于戴圣整理，使礼学篇章得以进入更稳定的经籍秩序。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 1,
+      relationType: "编" as never,
+    } as PersonNode,
+    {
+      id: "person-zhengxuan-liji",
+      name: "郑玄",
+      role: "注者",
+      birthYear: 127,
+      deathYear: 200,
+      era: "两汉",
+      bio: "东汉经学家，以注释系统重整《礼记》篇章秩序，成为后世礼学解释的重要底座。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 1,
+      relationType: "注",
+    },
+    {
+      id: "person-kongyingda-liji",
+      name: "孔颖达",
+      role: "疏者",
+      birthYear: 574,
+      deathYear: 648,
+      era: "隋唐",
+      bio: "《礼记正义》使《礼记》进入唐代官学正义系统，稳定礼学教学主线。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "评",
+    },
+  ]);
+  lijiDetail.versions = mergeById(lijiDetail.versions, [
+    {
+      id: "version-lj-1",
+      label: "《礼记》汉代整理本系",
+      year: 80,
+      place: "长安",
+      library: "经学传抄系统",
+      status: "佚失",
+      editionType: "祖本",
+      note: "《礼记》诸篇经西汉整理后形成较稳定的传写底本。",
+    },
+    {
+      id: "version-lj-2",
+      label: "郑玄注《礼记》写本系",
+      year: 190,
+      place: "洛阳",
+      library: "经师注释系统",
+      status: "佚失",
+      parentId: "version-lj-1",
+      editionType: "抄本",
+      note: "郑玄注为后世礼学阅读提供统一入口。",
+    },
+    {
+      id: "version-lj-3",
+      label: "《礼记正义》官学本",
+      year: 653,
+      place: "长安",
+      library: "国子监",
+      status: "存世",
+      parentId: "version-lj-2",
+      editionType: "刻本",
+      note: "唐代正义系统将《礼记》纳入官方教学与科举阅读体系。",
+    },
+  ]);
+  lijiDetail.timeline = mergeById(lijiDetail.timeline, [
+    {
+      id: "tl-lj-1",
+      year: 80,
+      title: "《礼记》篇章次序逐步稳定",
+      detail: "汉代经学整理把分散礼学材料重组为可传授、可诵习的经典形态。",
+    },
+    {
+      id: "tl-lj-2",
+      year: 190,
+      title: "郑玄注重建礼学阅读底座",
+      detail: "注释系统让《礼记》从篇章汇编进一步进入稳定解释框架。",
+    },
+    {
+      id: "tl-lj-3",
+      year: 653,
+      title: "《礼记正义》进入官学主线",
+      detail: "唐代正义把《礼记》推进到更大范围的学校、考试与礼制讨论网络中。",
+    },
+  ]);
+  lijiDetail.passages = mergeById(lijiDetail.passages, [
+    {
+      id: "passage-lj-1",
+      section: "大学母体",
+      original: "《大学》《中庸》原本俱在《礼记》之中，礼学框架为后世义理化重组提供了母体。",
+      links: [
+        {
+          id: "passage-lj-1-link-1",
+          quote: "《大学》由礼学篇章析出",
+          sourceBookId: "book-daxue",
+          sourceTitle: "大学",
+          layer: "explicit",
+          confidenceLabel: "高",
+          evidence: "《大学》原为《礼记》篇章，这条链路说明四书教材化之前已有礼学母体。",
+        },
+        {
+          id: "passage-lj-1-link-2",
+          quote: "《中庸》承接礼学内在化",
+          sourceBookId: "book-zhongyong",
+          sourceTitle: "中庸",
+          layer: "explicit",
+          confidenceLabel: "高",
+          evidence: "《中庸》同样出自《礼记》，其后发展为独立义理文本。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-lj-1",
+          title: "礼记",
+          relation: "母体",
+          note: "提供四书内部若干核心篇章的制度与礼学背景。",
+        },
+        {
+          id: "trace-lj-2",
+          title: "大学",
+          relation: "析出",
+          note: "修身治国纲领从礼学篇章转为独立学习入口。",
+        },
+        {
+          id: "trace-lj-3",
+          title: "四书章句集注",
+          relation: "重组",
+          note: "宋代理学将礼学母体重新编码为四书教材体系。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-lj-1",
+          targetTitle: "大学",
+          relation: "篇章母体",
+          note: "《礼记》为《大学》提供直接文本来源与礼学背景。",
+          confidenceLabel: "高",
+        },
+      ],
+    },
+    {
+      id: "passage-lj-2",
+      section: "礼治秩序",
+      original: "礼不仅是制度条文，更是把家国秩序、身体实践与教化结构连成一体的运行框架。",
+      links: [
+        {
+          id: "passage-lj-2-link-1",
+          quote: "家内教化向《孝经》延伸",
+          sourceBookId: "book-xiaojing",
+          sourceTitle: "孝经",
+          layer: "semantic",
+          confidenceLabel: "中",
+          evidence: "《孝经》把《礼记》中的礼治秩序进一步压缩为家内教化与亲爱结构。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-lj-4",
+          title: "礼记",
+          relation: "制度框架",
+          note: "从冠婚丧祭到修身次第，构成礼治世界的基础语言。",
+        },
+        {
+          id: "trace-lj-5",
+          title: "孝经",
+          relation: "家内转写",
+          note: "将礼治秩序转化为更易传播的孝悌教化结构。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-lj-2",
+          targetTitle: "孝经",
+          relation: "伦理转写",
+          note: "《孝经》长期承担《礼记》礼治秩序的通俗化与教化化传播功能。",
+          confidenceLabel: "中",
+        },
+      ],
+    },
+  ]);
+  lijiDetail.realWorldSignals = {
+    ...lijiDetail.realWorldSignals,
+    sourceLabel: appendSourceLabel(lijiDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    venueSummary: appendVenueSummary(
+      lijiDetail.realWorldSignals?.venueSummary,
+      "补厚《礼记》后，首页主河道能更清楚地展示“四书母体”与礼治秩序的源头层，不再只剩一个抽象名称。",
+    ),
+  };
+}
+
+const lunyuJizhuDetail = details["lunyu-jizhu"];
+if (lunyuJizhuDetail) {
+  lunyuJizhuDetail.heroMetric = {
+    directCitations: Math.max(lunyuJizhuDetail.heroMetric.directCitations, 76),
+    downstreamInfluence: Math.max(lunyuJizhuDetail.heroMetric.downstreamInfluence, 226),
+    coveredRegions: Math.max(lunyuJizhuDetail.heroMetric.coveredRegions, 6),
+  };
+  lunyuJizhuDetail.places = mergeById(lunyuJizhuDetail.places, [
+    {
+      id: "place-wuyishan-lyjz",
+      name: "武夷山",
+      lat: 27.7566,
+      lng: 118.0314,
+      note: "朱熹讲学与《论语集注》定型的重要空间。",
+    },
+    {
+      id: "place-kaifeng-lyjz",
+      name: "开封",
+      lat: 34.7972,
+      lng: 114.3076,
+      note: "北宋义理讨论为《论语集注》的成形提供前序背景。",
+    },
+    {
+      id: "place-hangzhou-lyjz",
+      name: "杭州",
+      lat: 30.2741,
+      lng: 120.1551,
+      note: "南宋以后书院与科举阅读继续放大《论语集注》的教材影响力。",
+    },
+  ]);
+  lunyuJizhuDetail.spread = mergeById(lunyuJizhuDetail.spread, [
+    {
+      id: "spread-lyjz-1",
+      fromPlaceId: "place-kaifeng-lyjz",
+      toPlaceId: "place-wuyishan-lyjz",
+      startYear: 1030,
+      endYear: 1170,
+      volume: 84,
+    },
+    {
+      id: "spread-lyjz-2",
+      fromPlaceId: "place-wuyishan-lyjz",
+      toPlaceId: "place-hangzhou-lyjz",
+      startYear: 1170,
+      endYear: 1300,
+      volume: 92,
+    },
+  ]);
+  lunyuJizhuDetail.people = mergeById(lunyuJizhuDetail.people, [
+    {
+      id: "person-zhuxi-lyjz",
+      name: "朱熹",
+      role: "注者",
+      birthYear: 1130,
+      deathYear: 1200,
+      era: "宋",
+      bio: "以《论语集注》重整孔门语录阅读路径，使之进入更统一的四书教材结构。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 1,
+      relationType: "注",
+    },
+    {
+      id: "person-chengyi-lyjz",
+      name: "程颐",
+      role: "思想前驱",
+      birthYear: 1033,
+      deathYear: 1107,
+      era: "宋",
+      bio: "二程理学提供《论语》义理化再解释的前置框架，为朱熹集注铺路。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+    {
+      id: "person-lvzuqian-lyjz",
+      name: "吕祖谦",
+      role: "传播者",
+      birthYear: 1137,
+      deathYear: 1181,
+      era: "宋",
+      bio: "与朱熹所处书院网络一起推动理学经典的讲会、刊刻与流布。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "评",
+    },
+  ]);
+  lunyuJizhuDetail.versions = mergeById(lunyuJizhuDetail.versions, [
+    {
+      id: "version-lyjz-1",
+      label: "《论语集注》书院写本系",
+      year: 1170,
+      place: "武夷山",
+      library: "书院系统",
+      status: "佚失",
+      editionType: "抄本",
+      note: "讲会与书院教学环境中的早期流传层。",
+    },
+    {
+      id: "version-lyjz-2",
+      label: "南宋《论语集注》刊本",
+      year: 1190,
+      place: "杭州",
+      library: "书院刊刻系统",
+      status: "存世",
+      parentId: "version-lyjz-1",
+      editionType: "刻本",
+      note: "进入更大范围的士人阅读与考试训练体系。",
+    },
+    {
+      id: "version-lyjz-3",
+      label: "元明四书讲本系",
+      year: 1320,
+      place: "杭州",
+      library: "四书讲习系统",
+      status: "存世",
+      parentId: "version-lyjz-2",
+      editionType: "重刊本",
+      note: "《论语集注》作为四书教材长期占据中心地位。",
+    },
+  ]);
+  lunyuJizhuDetail.timeline = mergeById(lunyuJizhuDetail.timeline, [
+    {
+      id: "tl-lyjz-1",
+      year: 1100,
+      title: "北宋理学重释《论语》",
+      detail: "二程学脉把孔门语录引入更系统的心性与工夫论框架。",
+    },
+    {
+      id: "tl-lyjz-2",
+      year: 1170,
+      title: "朱熹完成《论语集注》重组",
+      detail: "《论语》被重新编码为四书学习路径中的稳定入口之一。",
+    },
+    {
+      id: "tl-lyjz-3",
+      year: 1313,
+      title: "四书体系进入官方教学轨道",
+      detail: "《论语集注》与四书讲义长期成为学校和考试阅读的基础文本。",
+    },
+  ]);
+  lunyuJizhuDetail.passages = mergeById(lunyuJizhuDetail.passages, [
+    {
+      id: "passage-lyjz-1",
+      section: "集注之义",
+      original: "《论语集注》不是简单注释，而是把孔门语录重新排入理学工夫、心性与教材秩序之中。",
+      links: [
+        {
+          id: "passage-lyjz-1-link-1",
+          quote: "四书化后的统一入口",
+          sourceBookId: "book-sishu-zhangju",
+          sourceTitle: "四书章句集注",
+          layer: "explicit",
+          confidenceLabel: "高",
+          evidence: "《论语集注》是四书章句体系中的关键组成部分，与《大学》《中庸》《孟子》共同构成统一教材结构。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-lyjz-1",
+          title: "论语",
+          relation: "原典",
+          note: "孔门语录提供源文本。",
+        },
+        {
+          id: "trace-lyjz-2",
+          title: "论语集注",
+          relation: "重释",
+          note: "理学化与教材化重组改变了阅读入口。",
+        },
+        {
+          id: "trace-lyjz-3",
+          title: "四书章句集注",
+          relation: "并入",
+          note: "进入统一四书学习框架后，影响进一步放大。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-lyjz-1",
+          targetTitle: "四书章句集注",
+          relation: "教材组成",
+          note: "作为四书体系中的关键组成部分长期发挥教学作用。",
+          confidenceLabel: "高",
+        },
+      ],
+    },
+    {
+      id: "passage-lyjz-2",
+      section: "仁礼重释",
+      original: "孔门原有的仁、礼、学问命题，在集注中被重新压入心性工夫与义理秩序。",
+      links: [
+        {
+          id: "passage-lyjz-2-link-1",
+          quote: "诚与中和的心性入口",
+          sourceBookId: "book-zhongyong",
+          sourceTitle: "中庸",
+          layer: "semantic",
+          confidenceLabel: "中",
+          evidence: "《论语集注》对仁礼关系的解释长期与《中庸》的诚、中和论互相支撑。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-lyjz-4",
+          title: "论语",
+          relation: "伦理命题",
+          note: "原典提出“仁”“礼”“学”的经典组合。",
+        },
+        {
+          id: "trace-lyjz-5",
+          title: "中庸",
+          relation: "形上支撑",
+          note: "提供更稳定的心性与中和框架。",
+        },
+        {
+          id: "trace-lyjz-6",
+          title: "论语集注",
+          relation: "再编码",
+          note: "把孔门伦理命题重新放回理学解释秩序中。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-lyjz-2",
+          targetTitle: "中庸",
+          relation: "义理互证",
+          note: "《论语集注》与《中庸》共同构成宋代理学心性论的阅读入口。",
+          confidenceLabel: "中",
+        },
+      ],
+    },
+  ]);
+  lunyuJizhuDetail.realWorldSignals = {
+    ...lunyuJizhuDetail.realWorldSignals,
+    sourceLabel: appendSourceLabel(lunyuJizhuDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    venueSummary: appendVenueSummary(
+      lunyuJizhuDetail.realWorldSignals?.venueSummary,
+      "补入《论语集注》后，《论语》不再只是源头节点，而能继续点进“理学化、教材化”的中段河道。",
+    ),
+  };
+}
+
+const zuozhuanDetail = details.zuozhuan;
+if (zuozhuanDetail) {
+  zuozhuanDetail.spread = mergeById(zuozhuanDetail.spread, [
+    {
+      id: "spread-zz-3",
+      fromPlaceId: "place-luoyang-zz",
+      toPlaceId: "place-lin'an-zz",
+      startYear: 1080,
+      endYear: 1250,
+      volume: 76,
+    },
+  ]);
+  zuozhuanDetail.people = mergeById(zuozhuanDetail.people, [
+    {
+      id: "person-duyu-zz",
+      name: "杜预",
+      role: "注者",
+      birthYear: 222,
+      deathYear: 285,
+      era: "魏晋",
+      bio: "《春秋左氏经传集解》为《左传》提供稳定注释入口，使其史法与经义并进。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 1,
+      relationType: "注",
+    },
+  ]);
+  zuozhuanDetail.timeline = mergeById(zuozhuanDetail.timeline, [
+    {
+      id: "tl-zz-4",
+      year: 1180,
+      title: "宋代理学与史法阅读重新接续《左传》",
+      detail: "《左传》不仅保留在经学次序中，也继续向史学叙事与政治判断回流。",
+    },
+  ]);
+  zuozhuanDetail.passages = mergeById(zuozhuanDetail.passages, [
+    {
+      id: "passage-zz-2",
+      section: "史法转写",
+      original: "编年叙事、因果线索与人物褒贬在《左传》中形成可被后世史家继承的方法感。",
+      links: [
+        {
+          id: "passage-zz-2-link-1",
+          quote: "纪传体与通史写作的前驱",
+          sourceBookId: "book-shiji",
+          sourceTitle: "史记",
+          layer: "influence",
+          confidenceLabel: "中",
+          evidence: "《左传》的叙事组织与史法意识为《史记》及后世通史写作提供重要参照。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-zz-7",
+          title: "左传",
+          relation: "史法源头",
+          note: "形成经史交界处最具叙事性的书写方式。",
+        },
+        {
+          id: "trace-zz-8",
+          title: "史记",
+          relation: "改造",
+          note: "纪传体通史吸收并改造了《左传》的史法资源。",
+        },
+        {
+          id: "trace-zz-9",
+          title: "资治通鉴",
+          relation: "回流",
+          note: "编年体通史重新把《左传》的史法意识拉回主河道。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-zz-2",
+          targetTitle: "资治通鉴",
+          relation: "史法回流",
+          note: "《通鉴》重新激活《左传》式的编年史法与政治判断资源。",
+          confidenceLabel: "中",
+        },
+      ],
+    },
+  ]);
+  zuozhuanDetail.realWorldSignals = {
+    ...zuozhuanDetail.realWorldSignals,
+    sourceLabel: appendSourceLabel(zuozhuanDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    venueSummary: appendVenueSummary(
+      zuozhuanDetail.realWorldSignals?.venueSummary,
+      "《左传》补入真实来源信号后，经史互证这条支流在现场演示时不再显得孤立。",
+    ),
+  };
+}
+
+const shijiDetail = details.shiji;
+if (shijiDetail) {
+  shijiDetail.places = mergeById(shijiDetail.places, [
+    {
+      id: "place-changan-sj",
+      name: "长安",
+      lat: 34.3416,
+      lng: 108.9398,
+      note: "《史记》成书与汉代史官制度背景的重要中心。",
+    },
+    {
+      id: "place-luoyang-sj",
+      name: "洛阳",
+      lat: 34.6197,
+      lng: 112.454,
+      note: "东汉以降纪传体史学继续讲习与流布的重要节点。",
+    },
+  ]);
+  shijiDetail.spread = mergeById(shijiDetail.spread, [
+    {
+      id: "spread-sj-1",
+      fromPlaceId: "place-changan-sj",
+      toPlaceId: "place-luoyang-sj",
+      startYear: -90,
+      endYear: 200,
+      volume: 72,
+    },
+    {
+      id: "spread-sj-2",
+      fromPlaceId: "place-luoyang-sj",
+      toPlaceId: "place-hangzhou",
+      startYear: 960,
+      endYear: 1250,
+      volume: 66,
+    },
+  ]);
+  shijiDetail.people = mergeById(shijiDetail.people, [
+    {
+      id: "person-banbiao-sj",
+      name: "班彪",
+      role: "继承者",
+      birthYear: 3,
+      deathYear: 54,
+      era: "两汉",
+      bio: "班氏史学承接《史记》而重开《汉书》系统，使纪传体成为更稳定的正史写作框架。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+    {
+      id: "person-simazhen-sj",
+      name: "司马贞",
+      role: "注者",
+      birthYear: 679,
+      deathYear: 732,
+      era: "隋唐",
+      bio: "《史记索隐》代表唐代学者继续整理《史记》文本与义例。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "注",
+    },
+  ]);
+  shijiDetail.versions = mergeById(shijiDetail.versions, [
+    {
+      id: "version-sj-3",
+      label: "《史记三家注》本",
+      year: 720,
+      place: "长安",
+      library: "史学注释系统",
+      status: "存世",
+      parentId: "version-sj-2",
+      editionType: "重刊本",
+      note: "裴骃集解、司马贞索隐、张守节正义共同构成后世最稳定的《史记》阅读层。",
+    },
+  ]);
+  shijiDetail.timeline = mergeById(shijiDetail.timeline, [
+    {
+      id: "tl-sj-2",
+      year: 80,
+      title: "班氏史学接续纪传体通史方法",
+      detail: "《史记》所开启的纪传体写作，被班氏进一步制度化为更稳定的正史书写范式。",
+    },
+    {
+      id: "tl-sj-3",
+      year: 720,
+      title: "《史记》注释系统稳定",
+      detail: "三家注使《史记》长期保持在注释化、教学化与案头研读的中心位置。",
+    },
+  ]);
+  shijiDetail.passages = mergeById(shijiDetail.passages, [
+    {
+      id: "passage-sj-1",
+      section: "究天人之际",
+      original: "《史记》把人物、制度与时代起伏并置，形成“纪传体”式的历史解释结构。",
+      links: [
+        {
+          id: "passage-sj-1-link-1",
+          quote: "《左传》史法资源的再编排",
+          sourceBookId: "book-zuozhuan",
+          sourceTitle: "左传",
+          layer: "influence",
+          confidenceLabel: "中",
+          evidence: "《史记》虽体例不同，但其叙事张力、人物褒贬与史法意识可回溯到《左传》传统。",
+        },
+        {
+          id: "passage-sj-1-link-2",
+          quote: "通史写作向《资治通鉴》回流",
+          sourceBookId: "book-zi-zhi-tong-jian",
+          sourceTitle: "资治通鉴",
+          layer: "influence",
+          confidenceLabel: "中",
+          evidence: "《通鉴》重新以编年体组织广域历史，但其人物与制度观察始终与《史记》保持对话。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-sj-1",
+          title: "左传",
+          relation: "史法前驱",
+          note: "叙事史法与褒贬意识提供重要先导资源。",
+        },
+        {
+          id: "trace-sj-2",
+          title: "史记",
+          relation: "纪传定型",
+          note: "把历史书写重组为人物、世家、列传并行的通史结构。",
+        },
+        {
+          id: "trace-sj-3",
+          title: "资治通鉴",
+          relation: "通史回流",
+          note: "后世通史继续与《史记》展开体例与方法对话。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-sj-1",
+          targetTitle: "资治通鉴",
+          relation: "通史互证",
+          note: "《资治通鉴》在编年结构之外持续回应《史记》的人物与制度观察。",
+          confidenceLabel: "中",
+        },
+      ],
+    },
+  ]);
+  shijiDetail.realWorldSignals = {
+    ...shijiDetail.realWorldSignals,
+    sourceLabel: appendSourceLabel(shijiDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    venueSummary: appendVenueSummary(
+      shijiDetail.realWorldSignals?.venueSummary,
+      "补厚《史记》后，经史转写这段河道终于有了从《左传》到《通鉴》的中继节点。",
+    ),
+  };
+}
+
+const zztjDetail = details["zi-zhi-tong-jian"];
+if (zztjDetail) {
+  zztjDetail.places = mergeById(zztjDetail.places, [
+    {
+      id: "place-kaifeng-zztj",
+      name: "开封",
+      lat: 34.7972,
+      lng: 114.3076,
+      note: "北宋政治与史学讨论网络为《通鉴》编修提供制度背景。",
+    },
+    {
+      id: "place-luoyang-zztj",
+      name: "洛阳",
+      lat: 34.6197,
+      lng: 112.454,
+      note: "司马光退居讲修与编年史阅读的重要空间。",
+    },
+    {
+      id: "place-hangzhou-zztj",
+      name: "杭州",
+      lat: 30.2741,
+      lng: 120.1551,
+      note: "南宋以后史学与治道讨论继续把《通鉴》推向更广的讲习网络。",
+    },
+  ]);
+  zztjDetail.spread = mergeById(zztjDetail.spread, [
+    {
+      id: "spread-zztj-1",
+      fromPlaceId: "place-kaifeng-zztj",
+      toPlaceId: "place-luoyang-zztj",
+      startYear: 1065,
+      endYear: 1084,
+      volume: 78,
+    },
+    {
+      id: "spread-zztj-2",
+      fromPlaceId: "place-luoyang-zztj",
+      toPlaceId: "place-hangzhou-zztj",
+      startYear: 1084,
+      endYear: 1250,
+      volume: 84,
+    },
+  ]);
+  zztjDetail.versions = mergeById(zztjDetail.versions, [
+    {
+      id: "version-zztj-4",
+      label: "南宋《资治通鉴》刊本系",
+      year: 1150,
+      place: "杭州",
+      library: "史学刊刻系统",
+      status: "存世",
+      parentId: "version-zztj-3",
+      editionType: "重刊本",
+      note: "《通鉴》持续进入史学训练、政治议论与书院讲习环境。",
+    },
+  ]);
+  zztjDetail.timeline = mergeById(zztjDetail.timeline, [
+    {
+      id: "tl-zztj-3",
+      year: 1150,
+      title: "南宋继续扩大《通鉴》治道阅读",
+      detail: "《通鉴》不止是史书，也成为议论政治得失与制度教训的常用底本。",
+    },
+  ]);
+  zztjDetail.passages = mergeById(zztjDetail.passages, [
+    {
+      id: "passage-zztj-1",
+      section: "资治之义",
+      original: "编年不是单纯排列年代，而是把制度得失、人物抉择与治乱因果组织成可供后人回看的历史镜面。",
+      links: [
+        {
+          id: "passage-zztj-1-link-1",
+          quote: "《左传》编年史法的再激活",
+          sourceBookId: "book-zuozhuan",
+          sourceTitle: "左传",
+          layer: "influence",
+          confidenceLabel: "中",
+          evidence: "《通鉴》以更大规模重新激活《左传》式编年史法与政治判断传统。",
+        },
+        {
+          id: "passage-zztj-1-link-2",
+          quote: "通史视野与《史记》持续对话",
+          sourceBookId: "book-shiji",
+          sourceTitle: "史记",
+          layer: "influence",
+          confidenceLabel: "中",
+          evidence: "《通鉴》在人物与制度观察上始终与《史记》形成通史层面的互证关系。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-zztj-1",
+          title: "左传",
+          relation: "编年前驱",
+          note: "提供史法与政治判断资源。",
+        },
+        {
+          id: "trace-zztj-2",
+          title: "史记",
+          relation: "通史参照",
+          note: "提供广域历史组织的另一极体例。",
+        },
+        {
+          id: "trace-zztj-3",
+          title: "资治通鉴",
+          relation: "重构",
+          note: "把编年、治道与制度镜鉴重新压到一条主河道上。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-zztj-1",
+          targetTitle: "日知录",
+          relation: "治道回读",
+          note: "晚明清学者经常借《通鉴》与正史材料回看制度得失。",
+          confidenceLabel: "低",
+        },
+      ],
+    },
+  ]);
+  zztjDetail.realWorldSignals = {
+    ...zztjDetail.realWorldSignals,
+    sourceLabel: appendSourceLabel(zztjDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    venueSummary: appendVenueSummary(
+      zztjDetail.realWorldSignals?.venueSummary,
+      "补厚《资治通鉴》后，经史支流能完整落到“史法回流为治道镜鉴”的演示叙事上。",
+    ),
+  };
 }
 
 const cbdbPeople = (supplementPayload.cbdbPeople ?? []) as RealSupplementPerson[];
@@ -3227,9 +4119,10 @@ if (shanghaiLibraryActivity.available) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
-      sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 上海图书馆活动资料`
-        : "CBDB 人物 + 上海图书馆活动资料",
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel ?? "CBDB 人物",
+        "上海图书馆活动资料",
+      ),
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         (venueSamples.length > 0
@@ -3247,9 +4140,10 @@ if (nanjingLibrarySample.available) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
-      sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 南京图书馆图像资料`
-        : "CBDB + 南京图书馆图像资料",
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel ?? "CBDB",
+        "南京图书馆图像资料",
+      ),
       institutionSamples,
     };
   }
@@ -3261,9 +4155,10 @@ if (fudanArchiveSample.available) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
-      sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 复旦馆藏资料`
-        : "复旦大学图书馆馆藏资料",
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel,
+        "复旦馆藏资料",
+      ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
@@ -3282,9 +4177,10 @@ if (nanhuArchiveSample.available) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
-      sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 南湖专题文献资料`
-        : "南湖专题文献资料",
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel,
+        "南湖专题文献资料",
+      ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
@@ -3303,9 +4199,10 @@ if (videoTopicSample.available) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
-      sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 近代上海城市文化专题片`
-        : "近代上海城市文化专题片",
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel,
+        "近代上海城市文化专题片",
+      ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
@@ -3324,9 +4221,10 @@ if (shenzhenLibrarySample.available) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
-      sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 深圳图书馆专题接口资料`
-        : "深圳图书馆专题接口资料",
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel,
+        "深圳图书馆专题接口资料",
+      ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
@@ -3345,9 +4243,10 @@ if (taofenMuseumSample.available) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
-      sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 韬奋纪念馆 API 资料`
-        : "韬奋纪念馆 API 资料",
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel,
+        "韬奋纪念馆 API 资料",
+      ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
@@ -3366,9 +4265,10 @@ if (soongLiteratureSample.available) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
-      sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 宋庆龄文献 API 资料`
-        : "宋庆龄文献 API 资料",
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel,
+        "宋庆龄文献 API 资料",
+      ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
@@ -3387,9 +4287,10 @@ if (souyunKnowledgeGraphSample.available) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
-      sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 搜韵知识图谱 API 资料`
-        : "搜韵知识图谱 API 资料",
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel,
+        "搜韵知识图谱 API 资料",
+      ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
@@ -3408,9 +4309,10 @@ if (periodicalIndexSample.available) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
-      sourceLabel: detail.realWorldSignals?.sourceLabel
-        ? `${detail.realWorldSignals.sourceLabel} + 全国报刊索引 API 资料`
-        : "全国报刊索引 API 资料",
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel,
+        "全国报刊索引 API 资料",
+      ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
@@ -3453,7 +4355,10 @@ if (cbdbSummary.available) {
     const fallbackCount = detail.people.filter((person) => person.source !== "cbdb").length;
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
-      sourceLabel: detail.realWorldSignals?.sourceLabel ?? "CBDB + 上图数据",
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel ?? "上图数据",
+        "CBDB 人物",
+      ),
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         `CBDB 当前可用人物 ${cbdbSummary.personCount?.toLocaleString() ?? "未知"} 条；高频朝代分布为 ${topDynastyLine}。`,
