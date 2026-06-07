@@ -319,6 +319,14 @@ function buildInstitutionAccessMeta(record: {
     };
   }
 
+  if (record.institution.includes("Artlib")) {
+    return {
+      label: "艺术资源入口",
+      href: "https://openapi.artlib.cn",
+      note: "可继续访问 Artlib 世界艺术鉴赏库开放接口，回查艺术家列表、艺术家详情与艺术品资源入口。",
+    };
+  }
+
   if (record.institution.includes("南京图书馆") && record.imageRef) {
     return {
       label: "图像路径线索",

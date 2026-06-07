@@ -2507,5 +2507,42 @@
         "sourceText": "返回 Subjects、Abstract 等字段，适合补强主题传播与研究热点叙事。"
       }
     ]
+  },
+  "artlibSample": {
+    "available": true,
+    "institution": "Artlib 世界艺术鉴赏库",
+    "collectionTitle": "世界艺术与图像资源 API 资料",
+    "summary": "Artlib 世界艺术鉴赏库开放艺术家列表、艺术家详情、艺术品类目、艺术品列表与详情接口，可作为近现代审美传播、人物图像与跨媒介艺术资源的补充来源。 当前文档已明确列出艺术家与艺术品两组核心接口。",
+    "sampleTitles": [
+      "艺术家列表接口",
+      "艺术家详情接口",
+      "艺术品列表与详情接口"
+    ],
+    "sampleRecords": [
+      {
+        "institution": "Artlib 世界艺术鉴赏库",
+        "title": "艺术家列表接口",
+        "category": "艺术家 / 检索",
+        "year": "2022",
+        "imageRef": "",
+        "sourceText": "支持按字母与关键词检索艺术家，可作为人物图像与跨文化艺术脉络的补充入口。"
+      },
+      {
+        "institution": "Artlib 世界艺术鉴赏库",
+        "title": "艺术家详情接口",
+        "category": "艺术家 / 详情",
+        "year": "2022",
+        "imageRef": "",
+        "sourceText": "提供艺术家详情字段，可补充近现代审美人物与艺术史叙述背景。"
+      },
+      {
+        "institution": "Artlib 世界艺术鉴赏库",
+        "title": "艺术品列表与详情接口",
+        "category": "艺术品 / 图像资源",
+        "year": "2022",
+        "imageRef": "",
+        "sourceText": "提供艺术品类目、列表与详情接口，可为审美传播、图像参照与展陈场景扩展提供入口。"
+      }
+    ]
   }
 }

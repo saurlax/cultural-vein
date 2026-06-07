@@ -126,6 +126,10 @@ function getSourceThemeLabel(name: string) {
     return "近现代文献";
   }
 
+  if (name.includes("Artlib") || name.includes("艺术")) {
+    return "城市影像";
+  }
+
   if (name.includes("图书馆") || name.includes("馆藏") || name.includes("纪念馆")) {
     return "馆藏支流";
   }
@@ -586,6 +590,30 @@ export function getInsightsPayload(): DatasetInsight {
             })),
         }
       : null,
+    realSupplements.artlibSample?.available
+      ? {
+          id: "artlib",
+          name: "Artlib 艺术库",
+          summary: realSupplements.artlibSample.summary,
+          stat: `${realSupplements.artlibSample.sampleTitles?.length ?? 0} 组艺术资源`,
+          magnitude:
+            realSupplements.artlibSample.sampleRecords?.length ??
+            realSupplements.artlibSample.sampleTitles?.length ??
+            0,
+          evidenceLabel: realSupplements.artlibSample.collectionTitle ?? "艺术家 / 艺术品接口",
+          evidenceNote: "原始资料保留艺术家列表、艺术家详情、艺术品类目、列表与详情接口说明。",
+          relatedBookSlugs: ["ren-jian-ci-hua", "wenxin-diaolong", "wenxuan"],
+          sampleTitles: realSupplements.artlibSample.sampleTitles?.slice(0, 3),
+          sampleRecords: (realSupplements.artlibSample.sampleRecords ?? [])
+            .slice(0, 3)
+            .map((item) => ({
+              title: item.title,
+              category: item.category,
+              year: item.year,
+              note: item.sourceText,
+            })),
+        }
+      : null,
   ].filter((item): item is NonNullable<typeof item> => Boolean(item));
 
   return {
@@ -604,6 +632,7 @@ export function getInsightsPayload(): DatasetInsight {
         "诗词图谱",
         "家谱文献",
         "红色文献",
+        "艺术图像",
       ],
       expansionNote:
         "首页长卷已将主线典籍、真实来源与河上落点汇成一河，能够直接顺流检索、入卷、回查来源。",
@@ -656,6 +685,13 @@ export function getInsightsPayload(): DatasetInsight {
           status: "已显河面",
           scope: "搜韵图谱与古典诗学外推",
           usage: "诗学支流、文本比对与古籍关联外推",
+        },
+        {
+          id: "art-image",
+          label: "艺术图像",
+          status: "已显河面",
+          scope: "Artlib 世界艺术鉴赏库",
+          usage: "近现代审美传播、人物图像与艺术品资源补充，可继续外推到展陈与图像叙事场景。",
         },
         {
           id: "genealogy",
@@ -798,6 +834,15 @@ export function getInsightsPayload(): DatasetInsight {
           collectionTitle: realSupplements.periodicalIndexSample.collectionTitle,
           summary: realSupplements.periodicalIndexSample.summary,
           sampleTitles: realSupplements.periodicalIndexSample.sampleTitles,
+        }
+      : undefined,
+    artlibSample: realSupplements.artlibSample
+      ? {
+          available: realSupplements.artlibSample.available,
+          institution: realSupplements.artlibSample.institution,
+          collectionTitle: realSupplements.artlibSample.collectionTitle,
+          summary: realSupplements.artlibSample.summary,
+          sampleTitles: realSupplements.artlibSample.sampleTitles,
         }
       : undefined,
   };

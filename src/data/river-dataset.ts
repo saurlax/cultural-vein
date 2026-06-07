@@ -241,6 +241,7 @@ interface RealSupplementPayload {
   soongLiteratureSample?: RealSupplementSoongLiteratureSample;
   souyunKnowledgeGraphSample?: RealSupplementSouyunKnowledgeGraphSample;
   periodicalIndexSample?: RealSupplementPeriodicalIndexSample;
+  artlibSample?: RealSupplementPeriodicalIndexSample;
 }
 
 const supplementPayload = realSupplements as unknown as RealSupplementPayload;
@@ -5568,6 +5569,8 @@ const souyunKnowledgeGraphSample = (supplementPayload.souyunKnowledgeGraphSample
   {}) as RealSupplementSouyunKnowledgeGraphSample;
 const periodicalIndexSample = (supplementPayload.periodicalIndexSample ??
   {}) as RealSupplementPeriodicalIndexSample;
+const artlibSample = (supplementPayload.artlibSample ??
+  {}) as RealSupplementPeriodicalIndexSample;
 
 const personByName = new Map(cbdbPeople.map((person) => [person.name, person]));
 
@@ -6214,6 +6217,28 @@ if (periodicalIndexSample.available) {
         detail.realWorldSignals?.venueSummary ??
         periodicalIndexSample.summary ??
         "全国报刊索引近现代研究文献资料已映入这段河面。",
+    };
+  }
+}
+
+if (artlibSample.available) {
+  const institutionSamples = (artlibSample.sampleRecords ?? []).slice(0, 3);
+  for (const slug of ["ren-jian-ci-hua", "wenxin-diaolong", "wenxuan"] as const) {
+    const detail = details[slug];
+    detail.realWorldSignals = {
+      ...detail.realWorldSignals,
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel,
+        "Artlib 世界艺术资料",
+      ),
+      institutionSamples: [
+        ...(detail.realWorldSignals?.institutionSamples ?? []),
+        ...institutionSamples,
+      ],
+      venueSummary: detail.realWorldSignals?.venueSummary
+        ? `${detail.realWorldSignals.venueSummary} 同时已挂接 Artlib 世界艺术鉴赏库，可继续把近现代审美传播外推到人物图像与艺术品资源。`
+        : artlibSample.summary ??
+          "Artlib 世界艺术鉴赏库资料已映入这段河面。",
     };
   }
 }

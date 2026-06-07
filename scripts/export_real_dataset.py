@@ -38,6 +38,7 @@ TAOFEN_PDF = DATA_DIR / "API_韬奋纪念馆.pdf"
 SOONG_PDF = DATA_DIR / "API_宋庆龄文献.pdf"
 SOUYUN_PDF = DATA_DIR / "API_搜韵网知识图谱.pdf"
 CNBK_PDF = DATA_DIR / "API_全国报刊索引.pdf"
+ARTLIB_PDF = DATA_DIR / "API_Artlib世界艺术鉴赏库.pdf"
 
 CURATED_BOOKS = [
     {
@@ -2327,6 +2328,58 @@ def fetch_periodical_index_sample() -> dict[str, object]:
     }
 
 
+def fetch_artlib_sample() -> dict[str, object]:
+    if not ARTLIB_PDF.exists():
+        return {"available": False, "reason": "pdf missing"}
+
+    text = extract_pdf_text(ARTLIB_PDF, page_to=7)
+    if not text:
+        return {"available": False, "reason": "pdftotext unavailable"}
+
+    sample_records = [
+        {
+            "institution": "Artlib 世界艺术鉴赏库",
+            "title": "艺术家列表接口",
+            "category": "艺术家 / 检索",
+            "year": "2022",
+            "imageRef": "",
+            "sourceText": "支持按字母与关键词检索艺术家，可作为人物图像与跨文化艺术脉络的补充入口。",
+        },
+        {
+            "institution": "Artlib 世界艺术鉴赏库",
+            "title": "艺术家详情接口",
+            "category": "艺术家 / 详情",
+            "year": "2022",
+            "imageRef": "",
+            "sourceText": "提供艺术家详情字段，可补充近现代审美人物与艺术史叙述背景。",
+        },
+        {
+            "institution": "Artlib 世界艺术鉴赏库",
+            "title": "艺术品列表与详情接口",
+            "category": "艺术品 / 图像资源",
+            "year": "2022",
+            "imageRef": "",
+            "sourceText": "提供艺术品类目、列表与详情接口，可为审美传播、图像参照与展陈场景扩展提供入口。",
+        },
+    ]
+
+    summary = (
+        "Artlib 世界艺术鉴赏库开放艺术家列表、艺术家详情、艺术品类目、艺术品列表与详情接口，"
+        "可作为近现代审美传播、人物图像与跨媒介艺术资源的补充来源。"
+    )
+    if "/artist/list" in text and "/work/detail/:id" in text:
+        summary += " 当前文档已明确列出艺术家与艺术品两组核心接口。"
+
+    return {
+        "available": True,
+        "institution": "Artlib 世界艺术鉴赏库",
+        "collectionTitle": "世界艺术与图像资源 API 资料",
+        "summary": summary[:280],
+        "sampleTitles": [record["title"] for record in sample_records],
+        "sampleRecords": sample_records,
+    }
+
+
 def main() -> None:
     ensure_out_dir()
     cbdb_people = fetch_cbdb_people()
@@ -2368,6 +2421,7 @@ def main() -> None:
         "soongLiteratureSample": fetch_soong_literature_sample(),
         "souyunKnowledgeGraphSample": fetch_souyun_knowledge_graph_sample(),
         "periodicalIndexSample": fetch_periodical_index_sample(),
+        "artlibSample": fetch_artlib_sample(),
     }
     OUT_FILE.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2),

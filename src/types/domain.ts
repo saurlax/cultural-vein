@@ -316,6 +316,13 @@ export interface DatasetInsight {
     summary?: string;
     sampleTitles?: string[];
   };
+  artlibSample?: {
+    available?: boolean;
+    institution?: string;
+    collectionTitle?: string;
+    summary?: string;
+    sampleTitles?: string[];
+  };
 }
 
 export interface RiverDataset {
