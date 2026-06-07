@@ -11,7 +11,6 @@ import type { RiverEra, ViewMode } from "@/types/domain";
 
 type OrbitControlsInstance = ElementRef<typeof OrbitControls>;
 const RIVER_ERA_ORDER: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
-const touchModeLabel = "单指拖动画卷，双指缩放";
 const ERA_FLOW_PROFILE: Record<
   RiverEra,
   {
@@ -3136,7 +3135,6 @@ export function RiverScene(props: RiverSceneProps) {
   const [cruiseProgress, setCruiseProgress] = useState(0.18);
   const [autoCruise, setAutoCruise] = useState(true);
   const [isInteracting, setIsInteracting] = useState(false);
-  const [showMobileTouchHint, setShowMobileTouchHint] = useState(true);
   const [eraTransitionProgress, setEraTransitionProgress] = useState(1);
   const previousEraRef = useRef<RiverEra>(props.activeEra);
   const canCruise =
@@ -3145,7 +3143,6 @@ export function RiverScene(props: RiverSceneProps) {
     !props.sceneFocus?.active &&
     !props.searchFocusSlug;
   const cruiseRunning = canCruise && autoCruise;
-  const mobilePanelOpen = props.mobilePanelOpen ?? false;
   const cruiseAnchorMoments = useMemo<CruiseAnchorMoment[]>(() => {
     const eraAnchors = RIVER_ERA_ORDER.map((era) => {
       const eraBooks = props.books
@@ -3237,18 +3234,6 @@ export function RiverScene(props: RiverSceneProps) {
   }, [props.activeEra]);
 
   useEffect(() => {
-    if (!showMobileTouchHint) {
-      return;
-    }
-
-    const timer = window.setTimeout(() => {
-      setShowMobileTouchHint(false);
-    }, 2200);
-
-    return () => window.clearTimeout(timer);
-  }, [showMobileTouchHint]);
-
-  useEffect(() => {
     if (!cruiseRunning) {
       return;
     }
@@ -3293,15 +3278,6 @@ export function RiverScene(props: RiverSceneProps) {
         traceFocus={props.traceFocus}
         sceneFocus={props.sceneFocus}
       />
-      <div
-        className={`pointer-events-none absolute left-1/2 top-3 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
-          (showMobileTouchHint || isInteracting) && !mobilePanelOpen ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <div className="rounded-full border border-[#e7c97b]/14 bg-[rgba(150,108,35,0.2)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
-          {isInteracting ? "正在拖移长河" : touchModeLabel}
-        </div>
-      </div>
       <Canvas
         dpr={[1, 1.8]}
         onPointerDown={() => {

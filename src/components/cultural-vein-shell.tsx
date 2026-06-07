@@ -1224,12 +1224,23 @@ export function CulturalVeinShell() {
               }))
           : [];
 
-    return previewBooks.slice(0, 3);
+    return previewBooks.slice(0, 2);
   }, [activeSourceAtlasEntry, activeSourceRelatedBooks, getEntryAnchorBooks, selectedBook]);
   const openingPreviewLead =
     openingSourcePreviewBooks.length > 0
       ? `首屏先把 ${openingSourcePreviewBooks.map((book) => `《${book.title}》`).join("、")} 牵到这股水势周围。`
       : landingNarrative;
+  const compactRelationSummary = relationSummary.filter(({ count }) => count > 0).slice(0, 3);
+  const compactSourceMeta = [
+    activeSourceAtlasEntry ? getSourceThemeLabel(activeSourceAtlasEntry.name) : null,
+    activeSourceAtlasEntry?.stat ?? null,
+    atlasMeta ? `主线 ${atlasMeta.demoBookCount} 部` : null,
+  ].filter((item): item is string => Boolean(item));
+  const compactBranchLead = activeBranchAnnotation
+    ? activeBranchSummary
+      ? `${relationLayerMeta[activeBranchSummary.layer].label}当前显出 ${activeBranchSummary.count} 股。`
+      : "顺着这一股支流继续入卷。"
+    : "河上节点已经浮起，可择一典籍顺势入卷。";
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#e7c978] text-stone-100">
@@ -1282,24 +1293,25 @@ export function CulturalVeinShell() {
 
       <div className="relative z-10 min-h-screen">
         {showDesktopControls ? (
-          <div className="absolute left-4 top-4 z-20 hidden w-[min(18.75rem,calc(100vw-32rem))] md:block lg:left-6 lg:top-6 lg:w-[19.5rem]">
+          <div className="absolute left-4 top-4 z-20 hidden w-[min(15.5rem,calc(100vw-35rem))] md:block lg:left-6 lg:top-6 lg:w-[16rem]">
             <aside className="pointer-events-auto xl:pt-2">
-              <div className={`relative max-h-[min(76vh,52rem)] overflow-hidden p-3.5 ${panelBaseClass}`}>
+              <div className={`relative max-h-[min(72vh,44rem)] overflow-hidden p-3 ${panelBaseClass}`}>
               <div className="pointer-events-none absolute inset-y-5 left-2 w-px bg-[linear-gradient(180deg,transparent,rgba(244,220,156,0.42),transparent)]" />
               <div className="pointer-events-none absolute inset-y-5 right-2 w-px bg-[linear-gradient(180deg,transparent,rgba(213,167,70,0.34),transparent)]" />
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[10px] tracking-[0.28em] text-[#8d6a2c]">黄河长卷</div>
-                  <div className="mt-1 text-[15px] font-semibold text-[#5b3a11]">文脉溯源 · {activeDesktopPanelConfig.label}</div>
+                  <div className="mt-1 text-[15px] font-semibold text-[#5b3a11]">文脉溯源</div>
+                  <div className="mt-1 text-[11px] text-[#8d6a2c]">{activeDesktopPanelConfig.label}</div>
                 </div>
-                <div className="rounded-full border border-[#b89247]/16 bg-[rgba(255,255,255,0.18)] px-3 py-1 text-[10px] text-[#7a571d]">
+                <div className="rounded-full border border-[#b89247]/16 bg-[rgba(255,255,255,0.14)] px-2.5 py-1 text-[10px] text-[#7a571d]">
                   {focusModeLabel}
                 </div>
               </div>
 
-              <div className="mt-3 rounded-[22px] border border-[#d9b86b]/18 bg-[rgba(255,252,240,0.32)] px-3 py-3 text-[#6f4b18]">
+              <div className="mt-3 rounded-[20px] border border-[#d9b86b]/16 bg-[rgba(255,252,240,0.24)] px-3 py-3 text-[#6f4b18]">
                 <div className="text-[12px] leading-6">{openingLead}</div>
-                <div className="mt-2 text-[11px] leading-5 text-[#8d6a2c]">{openingPreviewLead}</div>
+                <div className="mt-2 line-clamp-3 text-[11px] leading-5 text-[#8d6a2c]">{openingPreviewLead}</div>
                 {openingSourcePreviewBooks.length ? (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {openingSourcePreviewBooks.map((book) => (
@@ -1339,7 +1351,7 @@ export function CulturalVeinShell() {
                 ))}
               </div>
 
-              <section className={`mt-3 max-h-[min(56vh,37rem)] overflow-auto rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(62,40,11,0.18)] px-3 py-3 pr-2 transition-all duration-500 ease-out ${showDesktopControls ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}>
+              <section className={`mt-3 max-h-[min(48vh,28rem)] overflow-auto rounded-[20px] border border-[#ead8a6]/12 bg-[rgba(93,62,18,0.16)] px-3 py-3 pr-2 transition-all duration-500 ease-out ${showDesktopControls ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-[10px] tracking-[0.22em] text-[#d8c9a3]">
@@ -1555,7 +1567,7 @@ export function CulturalVeinShell() {
                 {activeDesktopPanel === "branch" ? (
                   <div className="mt-4">
                     {!selectedBook && activeSourceAtlasEntry ? (
-                      <div className="mb-3 rounded-[18px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-3 py-3">
+                      <div className="mb-3 rounded-[18px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.06)] px-3 py-3">
                         <div className="flex items-center gap-2">
                           <span
                             className="h-2.5 w-2.5 shrink-0 rounded-full"
@@ -1564,51 +1576,15 @@ export function CulturalVeinShell() {
                           <div className="text-[10px] tracking-[0.24em] text-[#f4d892]/82">真实来源图例</div>
                         </div>
                         <div className="mt-2 text-[12px] text-[#fff2cf]">{activeSourceAtlasEntry.name}</div>
-                        <div className="mt-1 text-[10px] leading-5 text-[#e8d7ab]">
-                          {getSourceThemeLabel(activeSourceAtlasEntry.name)} · {activeSourceAtlasEntry.stat ?? "来源支流"}
-                        </div>
-                        {atlasMeta ? (
-                          <div className="mt-2 flex flex-wrap gap-1.5">
-                            <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
-                              主线 {atlasMeta.demoBookCount} 部
-                            </span>
-                            <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
-                              来源 {atlasMeta.activeSources} 股
-                            </span>
-                            <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
-                              可扩至 {atlasMeta.totalBookCount.toLocaleString()}
-                            </span>
-                          </div>
-                        ) : null}
-                        {atlasCoverageHighlights.length ? (
-                          <div className="mt-2 flex flex-wrap gap-1.5">
-                            {atlasCoverageHighlights.map((label) => (
-                              <span
-                                key={`coverage-layer-inline-${label}`}
-                                className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]"
-                              >
-                                {label}
-                              </span>
-                            ))}
-                          </div>
-                        ) : null}
                         <div className="mt-2 flex flex-wrap gap-1.5">
-                          {relationSummary
-                            .filter(({ count }) => count > 0)
-                            .slice(0, 3)
-                            .map(({ layer, count }) => (
-                              <span
-                                key={`relation-layer-inline-${layer}`}
-                                className={`rounded-full px-2.5 py-1 text-[10px] ${relationLayerMeta[layer].tone}`}
-                              >
-                                {relationLayerMeta[layer].label} {count}
-                              </span>
-                            ))}
-                          {cbdbPersonCount ? (
-                            <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
-                              纪传 {cbdbPersonCount.toLocaleString()} 人
+                          {compactSourceMeta.map((label) => (
+                            <span
+                              key={`compact-source-meta-${label}`}
+                              className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]"
+                            >
+                              {label}
                             </span>
-                          ) : null}
+                          ))}
                         </div>
                       </div>
                     ) : null}
@@ -1617,11 +1593,8 @@ export function CulturalVeinShell() {
                         <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">关系层级</div>
                         <div className="text-[11px] text-[#c9b68a]">河上脉络</div>
                       </div>
-                      <div className="mt-3 rounded-[14px] border border-[#ead8a6]/10 bg-[rgba(255,248,220,0.05)] px-3 py-2.5 text-[11px] leading-5 text-[#eadfbc]">
-                        只保留四层主脉提示，顺着色签点选即可切到对应河段，不再让说明块压住河面。
-                      </div>
                       <div className="mt-3 flex flex-wrap gap-2">
-                        {relationSummary.map(({ layer, count }) => (
+                        {compactRelationSummary.map(({ layer, count }) => (
                           <button
                             key={layer}
                             type="button"
@@ -1649,9 +1622,7 @@ export function CulturalVeinShell() {
                                 {activeBranchAnnotation.label}
                               </div>
                               {activeBranchSummary ? (
-                                <div className="mt-1 text-[11px] text-[#d8c9a3]">
-                                  {relationLayerMeta[activeBranchSummary.layer].label} · 当前已显 {activeBranchSummary.count} 股
-                                </div>
+                                <div className="mt-1 text-[11px] text-[#d8c9a3]">{compactBranchLead}</div>
                               ) : null}
                             </div>
                             <button
@@ -1662,7 +1633,7 @@ export function CulturalVeinShell() {
                               入卷
                             </button>
                           </div>
-                          <p className="mt-2 text-sm leading-6 text-[#f4e8c4]">
+                          <p className="mt-2 line-clamp-4 text-sm leading-6 text-[#f4e8c4]">
                             {activeBranchAnnotation.description}
                           </p>
                         </>
@@ -2154,9 +2125,9 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileSheet ? (
-          <div className="absolute inset-x-0 bottom-[4.9rem] z-40 px-3 md:hidden">
+          <div className="absolute inset-x-0 bottom-[4.25rem] z-40 px-3 md:hidden">
             <div
-              className={`pointer-events-auto max-h-[min(30rem,58vh)] overflow-auto rounded-[24px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.16)] ${panelBaseClass}`}
+              className={`pointer-events-auto max-h-[min(22rem,46vh)] overflow-auto rounded-[22px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.14)] ${panelBaseClass}`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div>
