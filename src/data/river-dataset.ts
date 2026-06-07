@@ -4021,6 +4021,508 @@ if (zztjDetail) {
   };
 }
 
+const rizhiluDetail = details["ri-zhi-lu"];
+if (rizhiluDetail) {
+  rizhiluDetail.heroMetric = {
+    directCitations: Math.max(rizhiluDetail.heroMetric.directCitations, 74),
+    downstreamInfluence: Math.max(rizhiluDetail.heroMetric.downstreamInfluence, 214),
+    coveredRegions: Math.max(rizhiluDetail.heroMetric.coveredRegions, 6),
+  };
+  rizhiluDetail.places = mergeById(rizhiluDetail.places, [
+    {
+      id: "place-suzhou-rzl",
+      name: "苏州",
+      lat: 31.2989,
+      lng: 120.5853,
+      note: "顾炎武成长与明清学术回流的重要江南文化空间。",
+    },
+    {
+      id: "place-kunshan-rzl",
+      name: "昆山",
+      lat: 31.3856,
+      lng: 120.9807,
+      note: "家国之变与地方社会观察共同构成《日知录》的经验底色。",
+    },
+    {
+      id: "place-beijing-rzl",
+      name: "北京",
+      lat: 39.9042,
+      lng: 116.4074,
+      note: "清代学术整理与经世讨论继续放大《日知录》的制度批评意义。",
+    },
+  ]);
+  rizhiluDetail.spread = mergeById(rizhiluDetail.spread, [
+    {
+      id: "spread-rzl-1",
+      fromPlaceId: "place-kunshan-rzl",
+      toPlaceId: "place-suzhou-rzl",
+      startYear: 1660,
+      endYear: 1680,
+      volume: 70,
+    },
+    {
+      id: "spread-rzl-2",
+      fromPlaceId: "place-suzhou-rzl",
+      toPlaceId: "place-beijing-rzl",
+      startYear: 1680,
+      endYear: 1820,
+      volume: 82,
+    },
+  ]);
+  rizhiluDetail.people = mergeById(rizhiluDetail.people, [
+    {
+      id: "person-guyanwu-rzl",
+      name: "顾炎武",
+      role: "作者",
+      birthYear: 1613,
+      deathYear: 1682,
+      era: "明清",
+      bio: "以经世考据方法重估制度、礼制与学术传统，使《日知录》成为清初经世思潮的重要入口。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 1,
+      relationType: "著",
+    },
+    {
+      id: "person-yanruoju-rzl",
+      name: "阎若璩",
+      role: "承继者",
+      birthYear: 1636,
+      deathYear: 1704,
+      era: "明清",
+      bio: "清初考据学者，经由辨伪与校勘继续推进《日知录》所代表的实证治学方向。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+    {
+      id: "person-dai-zhen-rzl",
+      name: "戴震",
+      role: "承继者",
+      birthYear: 1724,
+      deathYear: 1777,
+      era: "明清",
+      bio: "朴学高峰人物之一，把经学、训诂与制度考证进一步推向系统化，也让《日知录》的问题意识长期回响。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+  ]);
+  rizhiluDetail.versions = mergeById(rizhiluDetail.versions, [
+    {
+      id: "version-rzl-1",
+      label: "顾炎武《日知录》稿本系",
+      year: 1670,
+      place: "苏州",
+      library: "学人稿抄系统",
+      status: "佚失",
+      editionType: "抄本",
+      note: "经世考据笔记在士人圈层中先以稿抄与摘录方式流布。",
+    },
+    {
+      id: "version-rzl-2",
+      label: "清刊《日知录》本",
+      year: 1720,
+      place: "北京",
+      library: "学术刊刻系统",
+      status: "存世",
+      parentId: "version-rzl-1",
+      editionType: "刻本",
+      note: "进入更稳定的清代学术整理与经世议论网络。",
+    },
+    {
+      id: "version-rzl-3",
+      label: "清校《日知录集释》本系",
+      year: 1810,
+      place: "北京",
+      library: "考据整理系统",
+      status: "存世",
+      parentId: "version-rzl-2",
+      editionType: "整理本",
+      note: "通过校勘、集释与引证继续放大其制度批评与考据意义。",
+    },
+  ]);
+  rizhiluDetail.timeline = mergeById(rizhiluDetail.timeline, [
+    {
+      id: "tl-rzl-1",
+      year: 1670,
+      title: "《日知录》逐步成编",
+      detail: "顾炎武把亡国反思、制度观察与经学考据压入随札式条目结构中。",
+    },
+    {
+      id: "tl-rzl-2",
+      year: 1720,
+      title: "清代刊本进入更大阅读网络",
+      detail: "《日知录》从私人笔记转为清代学术与经世论述的重要案头书。",
+    },
+    {
+      id: "tl-rzl-3",
+      year: 1810,
+      title: "考据整理继续放大《日知录》影响",
+      detail: "集释与校勘让《日知录》长期处在制度、经义与文字考证的交汇处。",
+    },
+  ]);
+  rizhiluDetail.passages = mergeById(rizhiluDetail.passages, [
+    {
+      id: "passage-rzl-1",
+      section: "经世之学",
+      original: "学术不止为章句存续，更要回到制度、礼制与天下治理的真实问题中去。",
+      links: [
+        {
+          id: "passage-rzl-1-link-1",
+          quote: "春秋义例回到现实制度判断",
+          sourceBookId: "book-gongyang-zhuan",
+          sourceTitle: "春秋公羊传",
+          layer: "influence",
+          confidenceLabel: "中",
+          evidence: "《日知录》的经世判断长期承接春秋学中的制度义例与政治批评传统。",
+        },
+        {
+          id: "passage-rzl-1-link-2",
+          quote: "训诂与制度考证互相支撑",
+          sourceBookId: "book-shuowen",
+          sourceTitle: "说文解字",
+          layer: "semantic",
+          confidenceLabel: "中",
+          evidence: "《日知录》式考据并不止于制度议论，其文字训诂工作也与《说文》系统长期互证。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-rzl-1",
+          title: "春秋公羊传",
+          relation: "义例前驱",
+          note: "经世批评中的制度判断可回溯到春秋义例传统。",
+        },
+        {
+          id: "trace-rzl-2",
+          title: "说文解字",
+          relation: "训诂底座",
+          note: "文字学与小学资源让经世考据具有更强的可证性。",
+        },
+        {
+          id: "trace-rzl-3",
+          title: "日知录",
+          relation: "经世回收",
+          note: "把义例、训诂与制度批评重新拉回同一条河道。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-rzl-1",
+          targetTitle: "说文解字",
+          relation: "考据互证",
+          note: "清代实证学风使《说文》与《日知录》共同成为经世考据的常用资源。",
+          confidenceLabel: "中",
+        },
+      ],
+    },
+    {
+      id: "passage-rzl-2",
+      section: "通史镜鉴",
+      original: "观察制度成败与世变兴衰时，历史材料不是死文本，而是现实反思的镜面。",
+      links: [
+        {
+          id: "passage-rzl-2-link-1",
+          quote: "通史材料回到现实制度反思",
+          sourceBookId: "book-zi-zhi-tong-jian",
+          sourceTitle: "资治通鉴",
+          layer: "influence",
+          confidenceLabel: "中",
+          evidence: "《日知录》的经世视角常与《通鉴》式历史镜鉴互相呼应，把史事转化为现实制度反思资源。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-rzl-4",
+          title: "资治通鉴",
+          relation: "史鉴资源",
+          note: "广域史事为制度反思提供持续镜鉴。",
+        },
+        {
+          id: "trace-rzl-5",
+          title: "日知录",
+          relation: "现实回看",
+          note: "把史鉴重新导回现实制度和天下治理问题。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-rzl-2",
+          targetTitle: "资治通鉴",
+          relation: "治道回读",
+          note: "《日知录》强化了后世从《通鉴》等史书中寻找制度镜鉴的阅读方式。",
+          confidenceLabel: "低",
+        },
+      ],
+    },
+  ]);
+  rizhiluDetail.realWorldSignals = {
+    ...rizhiluDetail.realWorldSignals,
+    sourceLabel: appendSourceLabel(rizhiluDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    venueSummary: appendVenueSummary(
+      rizhiluDetail.realWorldSignals?.venueSummary,
+      "补厚《日知录》后，晚明清的经世考据支流终于不再只是一张薄卡，而能继续点到制度、训诂与史鉴三层内容。",
+    ),
+  };
+}
+
+const renjianciHuaDetail = details["ren-jian-ci-hua"];
+if (renjianciHuaDetail) {
+  renjianciHuaDetail.heroMetric = {
+    directCitations: Math.max(renjianciHuaDetail.heroMetric.directCitations, 79),
+    downstreamInfluence: Math.max(renjianciHuaDetail.heroMetric.downstreamInfluence, 232),
+    coveredRegions: Math.max(renjianciHuaDetail.heroMetric.coveredRegions, 6),
+  };
+  renjianciHuaDetail.places = mergeById(renjianciHuaDetail.places, [
+    {
+      id: "place-haining-rjch",
+      name: "海宁",
+      lat: 30.5255,
+      lng: 120.6888,
+      note: "王国维学术成长的重要江南空间，也是古典资源进入近代学术转写的起点之一。",
+    },
+    {
+      id: "place-shanghai-rjch",
+      name: "上海",
+      lat: 31.2304,
+      lng: 121.4737,
+      note: "近代出版、报刊与学术网络使《人间词话》能够进入更广阔的公共阅读场。",
+    },
+    {
+      id: "place-beijing-rjch",
+      name: "北京",
+      lat: 39.9042,
+      lng: 116.4074,
+      note: "近代学术整理与新旧文学讨论继续放大《人间词话》的审美影响力。",
+    },
+  ]);
+  renjianciHuaDetail.spread = mergeById(renjianciHuaDetail.spread, [
+    {
+      id: "spread-rjch-1",
+      fromPlaceId: "place-haining-rjch",
+      toPlaceId: "place-shanghai-rjch",
+      startYear: 1908,
+      endYear: 1915,
+      volume: 72,
+    },
+    {
+      id: "spread-rjch-2",
+      fromPlaceId: "place-shanghai-rjch",
+      toPlaceId: "place-beijing-rjch",
+      startYear: 1915,
+      endYear: 1935,
+      volume: 80,
+    },
+  ]);
+  renjianciHuaDetail.people = mergeById(renjianciHuaDetail.people, [
+    {
+      id: "person-wangguowei-rjch",
+      name: "王国维",
+      role: "作者",
+      birthYear: 1877,
+      deathYear: 1927,
+      era: "近现代",
+      bio: "以“境界”说重组古典词学与近代审美批评语言，使《人间词话》成为传统诗学近代转写的核心节点。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 1,
+      relationType: "著",
+    },
+    {
+      id: "person-yejia-ying-rjch",
+      name: "叶嘉莹",
+      role: "阐释者",
+      birthYear: 1924,
+      deathYear: 2024,
+      era: "近现代",
+      bio: "现代古典诗词研究者，长期通过教学与阐释让《人间词话》继续进入公共审美教育场域。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "评",
+    },
+    {
+      id: "person-zhu-guangqian-rjch",
+      name: "朱光潜",
+      role: "阐释者",
+      birthYear: 1897,
+      deathYear: 1986,
+      era: "近现代",
+      bio: "现代美学家，古典审美与现代美学之间的对话常与《人间词话》的问题意识形成呼应。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "评",
+    },
+  ]);
+  renjianciHuaDetail.versions = mergeById(renjianciHuaDetail.versions, [
+    {
+      id: "version-rjch-1",
+      label: "《人间词话》初刊稿本系",
+      year: 1908,
+      place: "上海",
+      library: "近代报刊出版系统",
+      status: "佚失",
+      editionType: "抄本",
+      note: "初期文本多依托近代出版媒介与学术圈层流通。",
+    },
+    {
+      id: "version-rjch-2",
+      label: "民国《人间词话》整理本",
+      year: 1926,
+      place: "上海",
+      library: "近代出版系统",
+      status: "存世",
+      parentId: "version-rjch-1",
+      editionType: "整理本",
+      note: "使零散词话条目逐步形成更稳定的案头读本。",
+    },
+    {
+      id: "version-rjch-3",
+      label: "现代校注本系",
+      year: 1980,
+      place: "北京",
+      library: "现代学术整理系统",
+      status: "存世",
+      parentId: "version-rjch-2",
+      editionType: "整理本",
+      note: "校注本使《人间词话》长期处于古典诗词教育与现代审美讨论交界处。",
+    },
+  ]);
+  renjianciHuaDetail.timeline = mergeById(renjianciHuaDetail.timeline, [
+    {
+      id: "tl-rjch-1",
+      year: 1908,
+      title: "《人间词话》开始进入近代出版场",
+      detail: "王国维以词话形式重组古典词学判断，使传统诗学开始直接对接近代审美语汇。",
+    },
+    {
+      id: "tl-rjch-2",
+      year: 1926,
+      title: "整理本稳定词话阅读形态",
+      detail: "《人间词话》从零散文本逐步成为近代古典审美判断的稳定读本。",
+    },
+    {
+      id: "tl-rjch-3",
+      year: 1980,
+      title: "现代校注继续扩大公共影响",
+      detail: "它不再只是词学小书，而成为古典文学课堂、研究与大众阅读反复回看的入口。",
+    },
+  ]);
+  renjianciHuaDetail.passages = mergeById(renjianciHuaDetail.passages, [
+    {
+      id: "passage-rjch-1",
+      section: "境界说",
+      original: "词以境界为最上。有境界则自成高格，自有名句。",
+      links: [
+        {
+          id: "passage-rjch-1-link-1",
+          quote: "六朝文论中的风格与抒情问题在近代重生",
+          sourceBookId: "book-wenxin-diaolong",
+          sourceTitle: "文心雕龙",
+          layer: "influence",
+          confidenceLabel: "中",
+          evidence: "《人间词话》的境界、风格与抒情判断，与《文心雕龙》以来的古典文论问题保持长期对话。",
+        },
+        {
+          id: "passage-rjch-1-link-2",
+          quote: "总集传统提供古典资源库",
+          sourceBookId: "book-wenxuan",
+          sourceTitle: "昭明文选",
+          layer: "semantic",
+          confidenceLabel: "低",
+          evidence: "近代古典审美判断并不直接出自《文选》，但总集阅读传统为其组织古典资源提供了长期背景。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-rjch-1",
+          title: "文心雕龙",
+          relation: "文论前驱",
+          note: "风格、抒情与文体判断构成更早的问题框架。",
+        },
+        {
+          id: "trace-rjch-2",
+          title: "昭明文选",
+          relation: "资源库",
+          note: "总集传统长期积累古典诗文的可读秩序。",
+        },
+        {
+          id: "trace-rjch-3",
+          title: "人间词话",
+          relation: "近代转写",
+          note: "王国维以近代语言重新编码古典审美判断。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-rjch-1",
+          targetTitle: "文心雕龙",
+          relation: "近代回读",
+          note: "《人间词话》的成功让古典文论被重新放回现代审美教育场中理解。",
+          confidenceLabel: "低",
+        },
+      ],
+    },
+    {
+      id: "passage-rjch-2",
+      section: "词学回流",
+      original: "近代词学不是与古典割裂，而是在新的语言里重新回看风雅、骚体、文论与选本所累积的全部传统。",
+      links: [
+        {
+          id: "passage-rjch-2-link-1",
+          quote: "骚体与抒情传统的远源回声",
+          sourceBookId: "book-chuci-zhangju",
+          sourceTitle: "楚辞章句",
+          layer: "semantic",
+          confidenceLabel: "低",
+          evidence: "《人间词话》并不直接注解《楚辞》，但近代抒情审美判断的深层背景仍可回溯到骚体传统。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-rjch-4",
+          title: "楚辞章句",
+          relation: "抒情远源",
+          note: "骚体资源为后世抒情美学提供深层传统背景。",
+        },
+        {
+          id: "trace-rjch-5",
+          title: "文心雕龙",
+          relation: "理论中段",
+          note: "六朝文论把古典抒情与风格问题抽象出来。",
+        },
+        {
+          id: "trace-rjch-6",
+          title: "人间词话",
+          relation: "近代再说",
+          note: "王国维以更现代的语言重新组织古典诗词的审美判断。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-rjch-2",
+          targetTitle: "昭明文选",
+          relation: "传统回看",
+          note: "近代词学重估也反过来强化了人们对总集传统和古典资源组织方式的再认识。",
+          confidenceLabel: "低",
+        },
+      ],
+    },
+  ]);
+  renjianciHuaDetail.realWorldSignals = {
+    ...renjianciHuaDetail.realWorldSignals,
+    sourceLabel: appendSourceLabel(renjianciHuaDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    venueSummary: appendVenueSummary(
+      renjianciHuaDetail.realWorldSignals?.venueSummary,
+      "补厚《人间词话》后，诗学支流可以自然收束到近代审美回读，而不是只停在一张近现代来源卡上。",
+    ),
+  };
+}
+
 const cbdbPeople = (supplementPayload.cbdbPeople ?? []) as RealSupplementPerson[];
 const cbdbSummary = (supplementPayload.cbdbSummary ?? {}) as RealSupplementCbdbSummary;
 const shanghaiLibraryActivity = (supplementPayload.shanghaiLibraryActivity ??
