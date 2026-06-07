@@ -1108,11 +1108,11 @@ export function CulturalVeinShell() {
 
       <div className="relative z-10 min-h-screen">
         <div className="pointer-events-none absolute inset-x-0 top-0 z-30 hidden items-start justify-between gap-3 px-4 py-4 md:flex sm:px-6 lg:px-8">
-          <div className={`pointer-events-auto max-w-[188px] px-4 py-3 sm:max-w-[204px] ${panelBaseClass}`}>
+          <div className={`pointer-events-auto max-w-[172px] px-4 py-3 sm:max-w-[188px] ${panelBaseClass}`}>
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[11px] tracking-[0.32em] text-[#f2dfab]/80">
-                  黄河文脉长卷
+                  黄河长卷
                 </div>
                 <h1 className="mt-1 text-[clamp(1.25rem,2vw,1.65rem)] font-semibold text-[#fff4d6]">
                   文脉溯源
@@ -1144,32 +1144,6 @@ export function CulturalVeinShell() {
               }`}
             >
               河册
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setShowDesktopDossier(false);
-                setActiveDesktopPanel("era");
-                setShowDesktopControls(true);
-                setShowMobileControls(false);
-                setShowMobileDossier(false);
-              }}
-              className="min-w-[3.15rem] rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.04)] px-2.5 py-1.5 text-[10px] tracking-[0.18em] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
-            >
-              时代
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setShowDesktopDossier(false);
-                setActiveDesktopPanel("search");
-                setShowDesktopControls(true);
-                setShowMobileControls(false);
-                setShowMobileDossier(false);
-              }}
-              className="min-w-[3.15rem] rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.04)] px-2.5 py-1.5 text-[10px] tracking-[0.18em] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
-            >
-              寻章
             </button>
             {selectedBook ? (
               <button
@@ -1907,9 +1881,9 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileControls ? (
-          <div className="absolute bottom-[4.4rem] right-3 z-40 md:hidden">
+          <div className="absolute bottom-[4.8rem] right-3 z-40 md:hidden">
             <div
-              className={`pointer-events-auto w-[min(17.25rem,calc(100vw-1.5rem))] max-h-[min(12.75rem,30vh)] overflow-auto rounded-[28px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.24)] ${panelBaseClass}`}
+              className={`pointer-events-auto w-[min(16.2rem,calc(100vw-1.5rem))] max-h-[min(12rem,28vh)] overflow-auto rounded-[28px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.24)] ${panelBaseClass}`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -2165,7 +2139,7 @@ export function CulturalVeinShell() {
 
         {showMobileDossier && selectedBook && selectedDetail ? (
           <div className="absolute inset-x-0 bottom-0 z-40 md:hidden">
-            <div className={`pointer-events-auto mx-3 mb-[4.3rem] max-h-[min(24rem,36vh)] overflow-hidden rounded-[28px] p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
+            <div className={`pointer-events-auto mx-3 mb-[4.8rem] max-h-[min(22rem,34vh)] overflow-hidden rounded-[28px] p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
               <div className="rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(245,231,188,0.16),rgba(104,72,25,0.14))] p-3">
                 <div className="relative rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(247,237,206,0.98),rgba(230,204,140,0.94))] px-4 py-4 text-[#42290a]">
                   <div className="pointer-events-none absolute inset-y-5 left-2 w-2 rounded-full bg-[linear-gradient(180deg,rgba(255,239,196,0.88),rgba(212,164,72,0.55),rgba(255,239,196,0.82))]" />
@@ -2215,24 +2189,9 @@ export function CulturalVeinShell() {
             </div>
           </div>
         ) : null}
-        <div className="pointer-events-none absolute inset-x-0 bottom-3 z-30 md:hidden">
+        <div className="pointer-events-none absolute bottom-3 right-3 z-30 md:hidden">
           <div className="pointer-events-auto">
-            <div className="mx-auto flex w-[min(calc(100vw-2.6rem),13.5rem)] items-center justify-center gap-1 rounded-[999px] border border-[#e7c97b]/24 bg-[linear-gradient(180deg,rgba(182,134,53,0.88),rgba(109,73,24,0.82))] px-1.5 py-1.5 shadow-[0_12px_26px_rgba(52,28,6,0.18)] backdrop-blur-xl">
-            <div className="mr-1 h-7 w-1.5 rounded-full bg-[linear-gradient(180deg,rgba(252,239,189,0.78),rgba(219,175,82,0.58))]" />
-            <button
-              type="button"
-              onClick={() => {
-                setShowMobileDossier(false);
-                setShowMobileControls((current) => !current);
-              }}
-              className={`rounded-full px-3 py-1 text-[10px] transition ${
-                showMobileControls
-                  ? "bg-[#f3dfab] text-[#42290a]"
-                  : "border border-[#e7c97b]/20 bg-[rgba(255,240,199,0.08)] text-[#fff0c7]"
-              }`}
-              >
-                {showMobileControls ? activeDesktopPanelConfig.label : "河册"}
-              </button>
+            <div className="flex items-center gap-2">
             {selectedBook ? (
               <button
                 type="button"
@@ -2240,16 +2199,29 @@ export function CulturalVeinShell() {
                   setShowMobileControls(false);
                   setShowMobileDossier((current) => !current);
                 }}
-                className={`rounded-full px-3 py-1 text-[10px] transition ${
+                className={`rounded-full border px-3 py-2 text-[10px] shadow-[0_10px_22px_rgba(52,28,6,0.18)] backdrop-blur-xl transition ${
                   showMobileDossier
-                    ? "bg-[#f3dfab] text-[#42290a]"
-                    : "border border-[#ead8a6]/20 bg-[rgba(255,240,199,0.08)] text-[#f8ebc6]"
+                    ? "border-[#f0cf75]/34 bg-[#f3dfab] text-[#42290a]"
+                    : "border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(182,134,53,0.88),rgba(109,73,24,0.82))] text-[#fff0c7]"
                 }`}
               >
                 文卷
               </button>
             ) : null}
-            <div className="ml-1 h-7 w-1.5 rounded-full bg-[linear-gradient(180deg,rgba(252,239,189,0.78),rgba(219,175,82,0.58))]" />
+            <button
+              type="button"
+              onClick={() => {
+                setShowMobileDossier(false);
+                setShowMobileControls((current) => !current);
+              }}
+              className={`rounded-full border px-3 py-2 text-[10px] shadow-[0_10px_22px_rgba(52,28,6,0.18)] backdrop-blur-xl transition ${
+                showMobileControls
+                  ? "border-[#f0cf75]/34 bg-[#f3dfab] text-[#42290a]"
+                  : "border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(182,134,53,0.88),rgba(109,73,24,0.82))] text-[#fff0c7]"
+              }`}
+              >
+                {showMobileControls ? activeDesktopPanelConfig.label : "河册"}
+              </button>
             </div>
           </div>
         </div>

@@ -9,7 +9,7 @@ const notoSerifSc = Noto_Serif_SC({
 });
 
 export const metadata: Metadata = {
-  title: "文脉溯源 | 典籍知识演化的三维交互探索系统",
+  title: "文脉溯源 | 黄河长卷中的典籍传承",
   description:
     "以黄河长卷隐喻呈现典籍引用、注疏与传承关系，联动地理传播、人物网络、版本流变与文本溯源的中文交互作品。",
 };

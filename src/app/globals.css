@@ -42,7 +42,7 @@ button,
 }
 
 canvas {
-  touch-action: none;
+  touch-action: pan-x pan-y pinch-zoom;
 }
 
 ::selection {
