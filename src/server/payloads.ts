@@ -127,7 +127,7 @@ function getSourceThemeLabel(name: string) {
   }
 
   if (name.includes("Artlib") || name.includes("艺术")) {
-    return "城市影像";
+    return "艺术图像";
   }
 
   if (name.includes("图书馆") || name.includes("馆藏") || name.includes("纪念馆")) {
