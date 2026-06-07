@@ -596,26 +596,6 @@ export function BookExplorer({
     [detail.realWorldSignals?.eventSamples],
   );
   const institutionPreview = useMemo(() => institutionRecords.slice(0, 3), [institutionRecords]);
-  const heroEntryCards = [
-    {
-      label: "直接引用",
-      value: detail.heroMetric.directCitations,
-      hint: "顺看文本溯源",
-      onClick: () => setTab("passages"),
-    },
-    {
-      label: "下游影响",
-      value: detail.heroMetric.downstreamInfluence,
-      hint: "顺看人物关系",
-      onClick: () => setTab("people"),
-    },
-    {
-      label: "传播区域",
-      value: detail.heroMetric.coveredRegions,
-      hint: "顺看地理传播",
-      onClick: () => setTab("spread"),
-    },
-  ] as const;
   const dossierEntryCards = [
     {
       label: `${book.dynasty} · ${book.category}`,
@@ -633,29 +613,6 @@ export function BookExplorer({
     timeline: visibleTimeline.length,
     passages: visiblePassages.length,
   };
-  const eraEntryCards = [
-    {
-      label: "传播",
-      value: `${eraLinkedSummary.spread} 段`,
-      onClick: () => setTab("spread"),
-    },
-    {
-      label: "人物",
-      value: `${eraLinkedSummary.people} 人`,
-      onClick: () => setTab("people"),
-    },
-    {
-      label: "版本",
-      value: `${eraLinkedSummary.versions} 个`,
-      onClick: () => setTab("versions"),
-    },
-    {
-      label: "事件",
-      value: `${eraLinkedSummary.timeline} 条`,
-      onClick: () => setTab("timeline"),
-    },
-  ] as const;
-
   const handleSelectPassage = (passageId: string) => {
     setSelectedPassageId(passageId);
     setSelectedLinkId(null);
@@ -1103,21 +1060,6 @@ export function BookExplorer({
         </div>
       </section>
 
-      <section className="grid grid-cols-3 gap-3 text-center text-sm">
-        {heroEntryCards.map((item) => (
-          <button
-            key={item.label}
-            type="button"
-            onClick={item.onClick}
-            className="rounded-[24px] border border-[#caa45b]/18 bg-[rgba(248,237,206,0.12)] px-3 py-3 text-center transition hover:border-[#d7b066]/30 hover:bg-[rgba(248,237,206,0.18)]"
-          >
-            <div className="text-[#8d6a2c]">{item.label}</div>
-            <div className="mt-2 text-xl font-semibold text-[#4a2c08]">{item.value}</div>
-            <div className="mt-2 text-[11px] text-[#9d7631]">{item.hint}</div>
-          </button>
-        ))}
-      </section>
-
       <section className="rounded-[24px] border border-[#e1bd6e]/18 bg-[linear-gradient(180deg,rgba(194,140,42,0.16),rgba(78,50,14,0.2))] px-4 py-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -1136,45 +1078,9 @@ export function BookExplorer({
             可见阶段 {eraLinkedSummary.timeline || 1} 条
           </button>
         </div>
-        <div className="mt-3 grid gap-2 md:grid-cols-4">
-          {eraEntryCards.map((item) => (
-            <button
-              key={item.label}
-              type="button"
-              onClick={item.onClick}
-              className="rounded-2xl border border-[#ead8a6]/12 bg-[rgba(54,33,10,0.28)] px-3 py-3 text-left text-sm text-[#f6e8bd] transition hover:bg-[rgba(84,54,18,0.4)]"
-            >
-              <div className="text-[11px] tracking-[0.18em] text-[#d8c9a3]">{item.label}</div>
-              <div className="mt-2">{item.value}</div>
-            </button>
-          ))}
-        </div>
-        <button
-          type="button"
-          onClick={() => setTab("passages")}
-          className="mt-2 text-xs text-amber-100/75 transition hover:text-amber-50"
-        >
-          微观文本已显出 {eraLinkedSummary.passages} 个片段，继续入文本溯源细看。
-        </button>
-      </section>
-
-      <section className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(27,17,7,0.2)] px-4 py-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
-              卷内分栏
-            </div>
-            <div className="mt-1 text-sm text-[#fbf3da]">
-              落在 {activeTabMeta.label}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => setTab(activeTabMeta.id)}
-            className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1 text-[11px] text-[#f2dfab] transition hover:bg-[rgba(255,248,220,0.1)]"
-          >
-            继续展开
-          </button>
+        <div className="mt-3 rounded-2xl border border-[#ead8a6]/12 bg-[rgba(54,33,10,0.28)] px-3 py-3 text-sm leading-7 text-[#f6e8bd]">
+          这一时代已显出 {eraLinkedSummary.spread} 段传播、{eraLinkedSummary.people} 位人物、{eraLinkedSummary.versions} 个版本节点与 {eraLinkedSummary.passages} 个文本片段，
+          当前卷面落在 {activeTabMeta.label}。
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
           {tabs.map((item) => (

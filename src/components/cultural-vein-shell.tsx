@@ -2217,15 +2217,9 @@ export function CulturalVeinShell() {
                       </div>
                     </div>
                   </div>
-                  <div className="mb-3 flex flex-wrap gap-2 text-xs">
-                    <span className="rounded-full border border-[#b89247]/20 bg-[rgba(255,255,255,0.24)] px-3 py-1 text-[#5b3a11]">
-                      关联 {selectedBookCitations.length} 条
-                    </span>
-                    {selectedSources.length ? (
-                      <span className="rounded-full border border-[#b89247]/20 bg-[rgba(255,255,255,0.24)] px-3 py-1 text-[#5b3a11]">
-                        来源 {selectedSources.length} 类
-                      </span>
-                    ) : null}
+                  <div className="mb-3 mt-3 rounded-[18px] border border-[#b89247]/14 bg-[rgba(255,255,255,0.2)] px-4 py-3 text-[12px] leading-6 text-[#5b3a11]">
+                    {selectedBook.dynasty} 的这部典籍此刻正以 {focusModeLabel} 停驻卷心，卷内已牵出 {selectedBookCitations.length} 条关联
+                    {selectedSources.length ? ` 与 ${selectedSources.length} 类来源回声。` : "。"}
                   </div>
                   <div className="mt-3 max-h-[calc(40vh-112px)] overflow-auto pr-1">
                     <BookExplorer
