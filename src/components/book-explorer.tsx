@@ -1168,7 +1168,7 @@ export function BookExplorer({
                 纪传库对照 {detail.realWorldSignals.cbdbMatchedPeople ?? 0} 人
               </div>
               <div className="mt-1 text-xs text-stone-400">
-                可续校人物 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
+                旁支人物回声 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
               </div>
             </button>
             <button
@@ -1208,14 +1208,14 @@ export function BookExplorer({
                       onClick={() =>
                         handleOpenSourceSample("venue-samples", {
                           label: venue.name,
-                          detail: `活动记录 ${venue.sampleCount}`,
+                          detail: `卷中回声 ${venue.sampleCount}`,
                         })
                       }
                       className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left text-sm transition hover:bg-white/10"
                     >
                       <div className="font-medium text-stone-100">{venue.name}</div>
                       <div className="mt-1 text-xs text-stone-400">
-                        活动记录 {venue.sampleCount}
+                        卷中回声 {venue.sampleCount}
                       </div>
                     </button>
                   ))
@@ -1677,7 +1677,7 @@ export function BookExplorer({
                           凭据卷轴
                           </div>
                           <div className="mt-1 text-sm text-stone-300">
-                            第 {Math.max(activeSourceEvidenceIndex + 1, 1)} / {Math.max(sourceEvidence.length, 1)} 类
+                            卷中第 {Math.max(activeSourceEvidenceIndex + 1, 1)} 册，共 {Math.max(sourceEvidence.length, 1)} 册
                           </div>
                         </div>
                         <div className="flex flex-wrap gap-2">

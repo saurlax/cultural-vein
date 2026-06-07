@@ -1386,21 +1386,21 @@ export function CulturalVeinShell() {
                                 <div className="mt-1 text-sm font-medium text-[#fbf3da]">
                                   {atlasMeta.totalBookCount.toLocaleString()}
                                 </div>
-                                <div className="mt-1 text-[10px] text-[#dccb9c]">目标全域书目底盘</div>
+                                <div className="mt-1 text-[10px] text-[#dccb9c]">长卷远景书目</div>
                               </div>
                               <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
                                 <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">河上关系</div>
                                 <div className="mt-1 text-sm font-medium text-[#fbf3da]">
                                   {atlasMeta.totalCitationCount.toLocaleString()}
                                 </div>
-                                <div className="mt-1 text-[10px] text-[#dccb9c]">当前长卷已显关系边</div>
+                                <div className="mt-1 text-[10px] text-[#dccb9c]">长卷此刻已显关系</div>
                               </div>
                               <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
-                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">人物底本</div>
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">人物源流</div>
                                 <div className="mt-1 text-sm font-medium text-[#fbf3da]">
                                   {cbdbPersonCount?.toLocaleString() ?? "--"}
                                 </div>
-                                <div className="mt-1 text-[10px] text-[#dccb9c]">纪传人物库底盘</div>
+                                <div className="mt-1 text-[10px] text-[#dccb9c]">纪传人物库长线依据</div>
                               </div>
                             </div>
                             <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
@@ -1413,11 +1413,11 @@ export function CulturalVeinShell() {
                                 </div>
                               </div>
                               <div className="mt-2 text-[10px] leading-5 text-[#dccb9c]">
-                                当前先以主脉长卷
+                                眼前先以主脉长卷
                                 <span className="px-1 text-[#fbf3da]">
                                   {atlasMeta.demoBookCount.toLocaleString()}
                                 </span>
-                                部主线典籍串起完整体验，把宏观河流、中观钻入与微观溯源先做深；底层仍对齐
+                                部主线典籍串起完整体验，把宏观河流、中观钻入与微观溯源先做深；远处仍对齐
                                 <span className="px-1 text-[#fbf3da]">
                                   {atlasMeta.totalBookCount.toLocaleString()}
                                 </span>
