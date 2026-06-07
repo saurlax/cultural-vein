@@ -344,6 +344,22 @@ const coreClassicExtensions: RealSupplementBook[] = [
     coordinates: [0.72, 0.82, 1.46],
   },
   {
+    id: "book-zhuzi-jiali",
+    slug: "zhuzi-jiali",
+    title: "朱子家礼",
+    shortTitle: "家礼",
+    dynasty: "宋元",
+    year: 1180,
+    category: "子",
+    school: "家礼",
+    influence: 78,
+    velocity: 0.36,
+    branchLevel: 2,
+    summary: "朱熹将礼学、孝治与修身秩序压入家庭仪节与宗族实践，使家礼成为连接经典义理和家族传播现场的关键支流。",
+    concepts: ["家礼", "宗族", "仪礼", "教化"],
+    coordinates: [1.92, 0.56, 1.72],
+  },
+  {
     id: "book-shangshu-zhengyi",
     slug: "shangshu-zhengyi",
     title: "尚书正义",
@@ -583,6 +599,33 @@ const coreClassicCitationExtensions: RealSupplementCitation[] = [
     confidence: 0.68,
     label: "修齐互通",
     evidence: "《大学》修齐治平结构与《孝经》家国教化逻辑在宋后教材系统中形成互补。",
+  },
+  {
+    id: "edge-jiali-1",
+    source: "book-zhuzi-jiali",
+    target: "book-xiaojing",
+    layer: "semantic",
+    confidence: 0.82,
+    label: "孝治落礼",
+    evidence: "《朱子家礼》把《孝经》的家国教化进一步落到家庭仪节、丧祭秩序与宗族实践之中。",
+  },
+  {
+    id: "edge-jiali-2",
+    source: "book-zhuzi-jiali",
+    target: "book-liji",
+    layer: "explicit",
+    confidence: 0.88,
+    label: "礼学日用化",
+    evidence: "《朱子家礼》系统承接《礼记》的礼治秩序，把礼学篇章压成可执行的家内礼仪程序。",
+  },
+  {
+    id: "edge-jiali-3",
+    source: "book-zhuzi-jiali",
+    target: "book-daxue",
+    layer: "semantic",
+    confidence: 0.79,
+    label: "修齐入家",
+    evidence: "《大学》的修齐治平路径在《朱子家礼》中转化为家庭教化、宗族整饬与日常伦理秩序。",
   },
   {
     id: "edge-shangshu-zhengyi-1",
@@ -1661,6 +1704,255 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
     realWorldSignals: {
       sourceLabel: "纪传人物库 + 上海图书馆活动资料 + 搜韵知识图谱资料",
       venueSummary: "补入《周易》后，主河道不再只覆盖四书内部，而能向五经义理与天道论方向继续展开。",
+    },
+  },
+  "zhuzi-jiali": {
+    bookId: "book-zhuzi-jiali",
+    heroMetric: {
+      directCitations: 71,
+      downstreamInfluence: 202,
+      coveredRegions: 6,
+    },
+    spread: [
+      {
+        id: "spread-jl-1",
+        fromPlaceId: "place-wuyishan-jl",
+        toPlaceId: "place-hangzhou-jl",
+        startYear: 1180,
+        endYear: 1300,
+        volume: 76,
+      },
+      {
+        id: "spread-jl-2",
+        fromPlaceId: "place-hangzhou-jl",
+        toPlaceId: "place-huizhou-jl",
+        startYear: 1300,
+        endYear: 1800,
+        volume: 86,
+      },
+    ],
+    people: [
+      {
+        id: "person-zhuxi-jl",
+        name: "朱熹",
+        role: "作者",
+        birthYear: 1130,
+        deathYear: 1200,
+        era: "宋元",
+        bio: "以《朱子家礼》把礼学、孝治与理学工夫压入婚冠丧祭与宗族教化实践，成为家礼支流的关键中继者。",
+        source: "curated",
+        sourceStatus: "curated",
+        relationTier: 1,
+        relationType: "著",
+      },
+      {
+        id: "person-zhen-dexiu-jl",
+        name: "真德秀",
+        role: "承继者",
+        birthYear: 1178,
+        deathYear: 1235,
+        era: "宋元",
+        bio: "南宋学者，以地方教化和四书讲习继续扩大《朱子家礼》在士绅、书院与地方社会中的执行力度。",
+        source: "curated",
+        sourceStatus: "curated",
+        relationTier: 2,
+        relationType: "承",
+      },
+      {
+        id: "person-lv-kun-jl",
+        name: "吕坤",
+        role: "评论者",
+        birthYear: 1536,
+        deathYear: 1618,
+        era: "明清",
+        bio: "明代乡约、家训与地方教化论述不断回看《家礼》传统，使其从士人礼书进一步下沉到家族实践层。",
+        source: "curated",
+        sourceStatus: "curated",
+        relationTier: 2,
+        relationType: "评",
+      },
+    ],
+    places: [
+      {
+        id: "place-wuyishan-jl",
+        name: "武夷山",
+        lat: 27.7566,
+        lng: 118.0314,
+        note: "朱熹讲学与家礼整理的重要空间，理学与日用礼仪在此发生压缩与落地。",
+      },
+      {
+        id: "place-hangzhou-jl",
+        name: "杭州",
+        lat: 30.2741,
+        lng: 120.1551,
+        note: "南宋以后书院讲习与地方教化不断放大家礼文本的流通与实践影响。",
+      },
+      {
+        id: "place-huizhou-jl",
+        name: "徽州",
+        lat: 29.7152,
+        lng: 118.3387,
+        note: "宗族、祠堂与家谱编修传统密集之地，最适合展示家礼如何进入地方家族网络。",
+      },
+    ],
+    versions: [
+      {
+        id: "version-jl-1",
+        label: "《朱子家礼》南宋写本系",
+        year: 1180,
+        place: "武夷山",
+        library: "书院讲习系统",
+        status: "佚失",
+        editionType: "祖本",
+        note: "理学讲学环境中形成的早期家礼文本层，先在书院与士人圈流通。",
+      },
+      {
+        id: "version-jl-2",
+        label: "元明《家礼》刊本系",
+        year: 1320,
+        place: "杭州",
+        library: "地方刊刻系统",
+        status: "存世",
+        parentId: "version-jl-1",
+        editionType: "刻本",
+        note: "进入地方刊刻与家塾讲习系统后，家礼开始更明显地下沉到基层实践。",
+      },
+      {
+        id: "version-jl-3",
+        label: "清代《朱子家礼》评注本",
+        year: 1720,
+        place: "徽州",
+        library: "宗族与家塾系统",
+        status: "存世",
+        parentId: "version-jl-2",
+        editionType: "整理本",
+        note: "评注与改编让《家礼》能更直接地嵌入家谱、祠堂与地方宗族教化场景。",
+      },
+    ],
+    timeline: [
+      {
+        id: "tl-jl-1",
+        year: 1180,
+        title: "《朱子家礼》形成家礼中继层",
+        detail: "朱熹把礼学、孝治与理学工夫压成家庭仪节和宗族秩序，补出经典通往家族社会的一层桥梁。",
+      },
+      {
+        id: "tl-jl-2",
+        year: 1320,
+        title: "元明刊刻推动家礼下沉",
+        detail: "《家礼》进入地方家塾、士绅家训与宗族实践层，逐渐形成广泛的公共教化影响。",
+      },
+      {
+        id: "tl-jl-3",
+        year: 1720,
+        title: "清代评注本嵌入家谱与祠堂网络",
+        detail: "评注和地方改编使《家礼》与家谱编修、宗族祭祀和地方礼仪网络紧密挂接。",
+      },
+    ],
+    passages: [
+      {
+        id: "passage-jl-1",
+        section: "家礼立本",
+        original: "家礼之设，不止为仪节条文，实在把孝治、礼序与修身之工夫一并安放进家内日用之中。",
+        links: [
+          {
+            id: "passage-jl-1-link-1",
+            quote: "孝治入家",
+            sourceBookId: "book-xiaojing",
+            sourceTitle: "孝经",
+            layer: "semantic",
+            confidenceLabel: "中",
+            evidence: "《朱子家礼》把《孝经》的家国教化转成婚冠丧祭与尊亲敬长的家庭礼序。",
+          },
+          {
+            id: "passage-jl-1-link-2",
+            quote: "礼学压到日用程序",
+            sourceBookId: "book-liji",
+            sourceTitle: "礼记",
+            layer: "explicit",
+            confidenceLabel: "高",
+            evidence: "《朱子家礼》系统承接《礼记》礼治篇章，把礼学原则转成可执行的家内程序。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-jl-1",
+            title: "礼记",
+            relation: "礼学母体",
+            note: "礼治秩序提供了婚冠丧祭与家内秩序的上游原则。",
+          },
+          {
+            id: "trace-jl-2",
+            title: "孝经",
+            relation: "教化压缩",
+            note: "把礼学秩序进一步压成亲爱、尊长与家庭教化核心。",
+          },
+          {
+            id: "trace-jl-3",
+            title: "朱子家礼",
+            relation: "家内落礼",
+            note: "最终把义理与教化压到可执行的家内礼节中。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-jl-1",
+            targetTitle: "大学",
+            relation: "修齐回流",
+            note: "《家礼》将《大学》的修齐路径重新回灌到家庭秩序与地方教化实践之中。",
+            confidenceLabel: "中",
+          },
+        ],
+      },
+      {
+        id: "passage-jl-2",
+        section: "宗族成河",
+        original: "一部家礼若进入家谱、祠堂与宗族训约，文脉便不再只在书卷里，而会沿族裔与地方空间继续扩散。",
+        links: [
+          {
+            id: "passage-jl-2-link-1",
+            quote: "修齐治平在家族层展开",
+            sourceBookId: "book-daxue",
+            sourceTitle: "大学",
+            layer: "semantic",
+            confidenceLabel: "中",
+            evidence: "《大学》的修齐治平逻辑在《家礼》与家族网络中变成更具执行感的家庭与宗族秩序。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-jl-4",
+            title: "大学",
+            relation: "修齐路径",
+            note: "先把家国秩序讲成由内而外的工夫结构。",
+          },
+          {
+            id: "trace-jl-5",
+            title: "朱子家礼",
+            relation: "家学转写",
+            note: "再把工夫结构落到家庭礼仪、族规与祭祀秩序。",
+          },
+          {
+            id: "trace-jl-6",
+            title: "孝经",
+            relation: "教化回声",
+            note: "家礼的最终落点仍不断回响孝治与尊亲敬长逻辑。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-jl-2",
+            targetTitle: "孝经",
+            relation: "礼教回响",
+            note: "《家礼》把《孝经》中的教化命题不断回响到地方家族实践层。",
+            confidenceLabel: "中",
+          },
+        ],
+      },
+    ],
+    realWorldSignals: {
+      sourceLabel: "家谱文献线索 + 复旦馆藏资料",
+      venueSummary: "补入《朱子家礼》后，家学与家谱支流终于有了可钻入的中继节点，能把《孝经》《礼记》《大学》与地方家族传播现场真正连成一段河。",
     },
   },
   xiaojing: {
@@ -5917,6 +6209,7 @@ const peopleMergePlan: Partial<Record<string, string[]>> = {
   zhongyong: ["朱熹"],
   zhouyi: ["孔颖达", "朱熹"],
   xiaojing: ["朱熹"],
+  "zhuzi-jiali": ["朱熹"],
   "sishu-zhangju": ["朱熹"],
   shiji: ["司马迁"],
   mengzi: ["孟子", "朱熹"],
@@ -6086,6 +6379,34 @@ const curatedPeopleSupplements: Partial<Record<string, PersonNode[]>> = {
       relationType: "注",
     } as PersonNode,
   ],
+  "zhuzi-jiali": [
+    {
+      id: "person-qiu-jun-jl",
+      name: "丘濬",
+      role: "承继者",
+      birthYear: 1421,
+      deathYear: 1495,
+      era: "明清",
+      bio: "明代经世与礼制讨论不断沿着《家礼》扩展到地方教化与家族治理，使其不只停留于南宋讲学语境。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+    {
+      id: "person-lan-dingyuan-jl",
+      name: "蓝鼎元",
+      role: "评论者",
+      birthYear: 1680,
+      deathYear: 1733,
+      era: "明清",
+      bio: "清代地方治理与礼教实践论述继续回看《家礼》传统，进一步把家礼嵌入宗族和乡里秩序。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "评",
+    } as PersonNode,
+  ],
   daxue: [
     {
       id: "person-chengyi-daxue",
@@ -6243,7 +6564,7 @@ if (shanghaiLibraryActivity.available) {
     startTime: record["预约开始时间"] ?? "",
   }));
 
-  for (const slug of ["shijing", "shangshu", "mengzi", "sishu-zhangju", "lunyu", "liji", "daxue", "zhongyong", "zhouyi", "xiaojing", "gongyang-zhuan", "chuci-zhangju", "wenxin-diaolong", "shipin", "wenxuan"] as const) {
+  for (const slug of ["shijing", "shangshu", "mengzi", "sishu-zhangju", "lunyu", "liji", "daxue", "zhongyong", "zhouyi", "xiaojing", "zhuzi-jiali", "gongyang-zhuan", "chuci-zhangju", "wenxin-diaolong", "shipin", "wenxuan"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -6274,7 +6595,7 @@ if (shanghaiLibraryBorrow.available) {
     }))
     .slice(0, 4);
 
-  for (const slug of ["shijing", "lunyu", "liji", "daxue", "zhongyong", "xiaojing"] as const) {
+  for (const slug of ["shijing", "lunyu", "liji", "daxue", "zhongyong", "xiaojing", "zhuzi-jiali"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -6336,7 +6657,7 @@ if (fudanArchiveSample.available) {
   const genealogySummary =
     "复旦馆藏中的周氏族裔、来雨楼递藏与地方藏书线索，已经把家学、家礼与家族传播正式挂进这段河面。";
 
-  for (const slug of ["xiaojing", "liji", "daxue"] as const) {
+  for (const slug of ["xiaojing", "liji", "daxue", "zhuzi-jiali"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -6506,7 +6827,7 @@ if (soongLiteratureSample.available) {
 
 if (souyunKnowledgeGraphSample.available) {
   const institutionSamples = (souyunKnowledgeGraphSample.sampleRecords ?? []).slice(0, 3);
-  for (const slug of ["shijing", "lunyu", "liji", "daxue", "zhongyong", "zhouyi", "mengzi", "sishu-zhangju", "ren-jian-ci-hua", "chuci-zhangju", "wenxin-diaolong", "shipin", "wenxuan"] as const) {
+  for (const slug of ["shijing", "lunyu", "liji", "daxue", "zhongyong", "zhouyi", "mengzi", "sishu-zhangju", "ren-jian-ci-hua", "chuci-zhangju", "wenxin-diaolong", "shipin", "wenxuan", "zhuzi-jiali"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -6586,6 +6907,7 @@ if (cbdbSummary.available) {
     "zhongyong",
     "zhouyi",
     "xiaojing",
+    "zhuzi-jiali",
     "mengzi",
     "gongyang-zhuan",
     "shuowen",

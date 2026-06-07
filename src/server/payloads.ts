@@ -373,8 +373,8 @@ export function getInsightsPayload(): DatasetInsight {
           magnitude: realSupplements.fudanArchiveSample.sampleRecords?.length ?? 0,
           evidenceLabel: "族裔递藏与家学线索",
           evidenceNote:
-            "依据复旦馆藏摘要中的周氏族裔、藏书递藏与地方书楼叙述，当前已把家族传播落点挂入《孝经》《礼记》《大学》等河段。",
-          relatedBookSlugs: ["xiaojing", "liji", "daxue"],
+            "依据复旦馆藏摘要中的周氏族裔、藏书递藏与地方书楼叙述，当前已把家族传播落点挂入《孝经》《礼记》《大学》《朱子家礼》等河段。",
+          relatedBookSlugs: ["xiaojing", "liji", "daxue", "zhuzi-jiali"],
           sampleTitles: (realSupplements.fudanArchiveSample.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => item.title),
