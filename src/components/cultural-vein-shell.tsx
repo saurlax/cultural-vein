@@ -108,44 +108,104 @@ const relationLayerMeta = {
   },
 } as const;
 
-const branchAnnotations: RiverBranchAnnotation[] = [
-  {
-    id: "branch-li-xue",
-    label: "朱熹集注 至 理学分流",
-    description:
-      "以《论语集注》《四书章句集注》为中心，把经学重新组织成理学化、教材化的主河段。",
-    targetSlug: "sishu-zhangju",
-    accentColor: "#f59e0b",
-    position: [3.1, 1.05, 0.58],
-  },
-  {
-    id: "branch-shi-fa",
-    label: "左传史法 至 通鉴支流",
-    description:
-      "从《春秋左传》到《史记》《资治通鉴》，展示经史互证如何沉淀为后世史学叙事方法。",
-    targetSlug: "zi-zhi-tong-jian",
-    accentColor: "#38bdf8",
-    position: [-1.1, 0.58, -0.96],
-  },
-  {
-    id: "branch-jing-shi",
-    label: "孟子义理 至 经世反思",
-    description:
-      "从《孟子》到《日知录》，强调王道、民本与现实制度讨论之间的批评性承继。",
-    targetSlug: "ri-zhi-lu",
-    accentColor: "#34d399",
-    position: [5.95, 0.52, 0.8],
-  },
-  {
-    id: "branch-poetics",
-    label: "诗教传统 至 近代诗学",
-    description:
-      "从《诗经》一路回流到《人间词话》，把古典诗教转译为近代审美与境界论。",
-    targetSlug: "ren-jian-ci-hua",
-    accentColor: "#c084fc",
-    position: [9.2, 0.72, -0.18],
-  },
-] as const;
+const branchAccentByLayer = {
+  metadata: "#f59e0b",
+  explicit: "#34d399",
+  semantic: "#38bdf8",
+  influence: "#c084fc",
+} as const;
+
+function deriveBranchAnnotations(
+  activeEraIndex: number,
+  allowedSlugs: Set<string>,
+  selectedSlug: string,
+): RiverBranchAnnotation[] {
+  const visibleBooks = riverDataset.books.filter((book) => {
+    return allowedSlugs.has(book.slug) && eras.indexOf(book.dynasty) <= activeEraIndex;
+  });
+  const bookById = new Map(visibleBooks.map((book) => [book.id, book]));
+  const candidates = riverDataset.citations
+    .map((citation) => {
+      const sourceBook = bookById.get(citation.source);
+      const targetBook = bookById.get(citation.target);
+
+      if (!sourceBook || !targetBook) {
+        return null;
+      }
+
+      const branchWeight =
+        Math.abs((sourceBook.branchLevel ?? 0) - (targetBook.branchLevel ?? 0)) +
+        (sourceBook.school === targetBook.school ? 0 : 1) +
+        (sourceBook.category === targetBook.category ? 0 : 0.6) +
+        citation.confidence;
+
+      return {
+        citation,
+        sourceBook,
+        targetBook,
+        branchWeight,
+      };
+    })
+    .filter(
+      (
+        candidate,
+      ): candidate is {
+        citation: (typeof riverDataset.citations)[number];
+        sourceBook: (typeof riverDataset.books)[number];
+        targetBook: (typeof riverDataset.books)[number];
+        branchWeight: number;
+      } => Boolean(candidate),
+    )
+    .filter(({ sourceBook, targetBook, branchWeight }) => {
+      return (
+        branchWeight >= 1.9 &&
+        sourceBook.slug !== targetBook.slug &&
+        (sourceBook.branchLevel ?? 0) >= 1 &&
+        sourceBook.slug !== selectedSlug &&
+        targetBook.slug !== selectedSlug
+      );
+    })
+    .sort((left, right) => {
+      const sourceEraDelta = eras.indexOf(left.sourceBook.dynasty) - eras.indexOf(right.sourceBook.dynasty);
+
+      if (sourceEraDelta !== 0) {
+        return sourceEraDelta;
+      }
+
+      return right.branchWeight - left.branchWeight;
+    });
+
+  const usedTargets = new Set<string>();
+
+  return candidates
+    .filter(({ sourceBook }) => {
+      if (usedTargets.has(sourceBook.slug)) {
+        return false;
+      }
+
+      usedTargets.add(sourceBook.slug);
+      return true;
+    })
+    .slice(0, 6)
+    .map(({ citation, sourceBook, targetBook }) => {
+      const sourcePoint = sourceBook.coordinates;
+      const targetPoint = targetBook.coordinates;
+      const midX = (sourcePoint[0] + targetPoint[0]) / 2;
+      const midY = Math.max(sourcePoint[1], targetPoint[1]) + 0.22;
+      const midZ = (sourcePoint[2] + targetPoint[2]) / 2;
+      const offsetZ = sourcePoint[2] >= targetPoint[2] ? 0.28 : -0.28;
+      const label = `${targetBook.shortTitle} · ${citation.label}`;
+
+      return {
+        id: `branch-${citation.id}`,
+        label,
+        description: citation.evidence,
+        targetSlug: sourceBook.slug,
+        accentColor: branchAccentByLayer[citation.layer],
+        position: [midX, midY, midZ + offsetZ] as [number, number, number],
+      };
+    });
+}
 
 export function CulturalVeinShell() {
   const {
@@ -292,18 +352,14 @@ export function CulturalVeinShell() {
     .map((item) => item.trim())
     .filter(Boolean) ?? [];
 
-  const visibleBranchAnnotations = branchAnnotations.filter((annotation) => {
-    const targetBook = riverDataset.books.find((book) => book.slug === annotation.targetSlug);
-
-    if (!targetBook) {
-      return false;
-    }
-
-    return (
-      filteredBooks.some((book) => book.slug === annotation.targetSlug) &&
-      eras.indexOf(targetBook.dynasty) <= activeEraIndex
-    );
-  });
+  const visibleBookSlugs = useMemo(
+    () => new Set(filteredBooks.map((book) => book.slug)),
+    [filteredBooks],
+  );
+  const visibleBranchAnnotations = useMemo(
+    () => deriveBranchAnnotations(activeEraIndex, visibleBookSlugs, selectedBookSlug),
+    [activeEraIndex, visibleBookSlugs, selectedBookSlug],
+  );
 
   const activeBranchAnnotation =
     visibleBranchAnnotations.find((annotation) => annotation.id === hoveredBranchId) ??
