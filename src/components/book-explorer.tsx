@@ -434,10 +434,19 @@ export function BookExplorer({
     return visiblePassages.find((passage) => passage.id === selectedPassageId) ?? visiblePassages[0];
   }, [selectedPassageId, visiblePassages]);
   const activePassageId = activePassage?.id ?? null;
+  const activePassageSequenceIndex = activePassage
+    ? visiblePassages.findIndex((passage) => passage.id === activePassage.id)
+    : -1;
   const activeLink = useMemo(() => {
     return activePassage?.links.find((link) => link.id === selectedLinkId) ?? activePassage?.links[0];
   }, [activePassage, selectedLinkId]);
   const activeLinkId = activeLink?.id ?? null;
+  const activePassageSequenceWindow = activePassage
+    ? visiblePassages.slice(
+        Math.max(0, activePassageSequenceIndex - 1),
+        Math.min(visiblePassages.length, activePassageSequenceIndex + 2),
+      )
+    : visiblePassages.slice(0, 3);
   const activePassageSegments = useMemo(() => {
     if (!activePassage) {
       return [];
@@ -3948,6 +3957,84 @@ export function BookExplorer({
                         {passage.section}
                       </button>
                     ))}
+                  </div>
+                  <div className="mt-4 rounded-[20px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <div className="text-[11px] tracking-[0.22em] text-[#d8c9a3]">
+                          文本卷轴
+                        </div>
+                        <div className="mt-1 text-sm text-[#eadfbc]">
+                          第 {Math.max(activePassageSequenceIndex + 1, 1)} / {Math.max(visiblePassages.length, 1)} 段
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const previousPassage = visiblePassages[activePassageSequenceIndex - 1];
+                            if (previousPassage?.id) {
+                              handleSelectPassage(previousPassage.id);
+                            }
+                          }}
+                          disabled={activePassageSequenceIndex <= 0}
+                          className={`rounded-full px-3 py-1.5 text-xs transition ${
+                            activePassageSequenceIndex <= 0
+                              ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                              : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                          }`}
+                        >
+                          前一段
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const nextPassage = visiblePassages[activePassageSequenceIndex + 1];
+                            if (nextPassage?.id) {
+                              handleSelectPassage(nextPassage.id);
+                            }
+                          }}
+                          disabled={activePassageSequenceIndex >= visiblePassages.length - 1}
+                          className={`rounded-full px-3 py-1.5 text-xs transition ${
+                            activePassageSequenceIndex >= visiblePassages.length - 1
+                              ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                              : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                          }`}
+                        >
+                          后一段
+                        </button>
+                      </div>
+                    </div>
+                    {activePassageSequenceWindow.length > 1 ? (
+                      <div className="mt-3 grid gap-3 md:grid-cols-3">
+                        {activePassageSequenceWindow.map((passage) => {
+                          const isActive = passage.id === activePassage.id;
+
+                          return (
+                            <button
+                              key={`passage-window-${passage.id}`}
+                              type="button"
+                              onClick={() => handleSelectPassage(passage.id)}
+                              className={`rounded-[18px] border px-3 py-3 text-left transition ${
+                                isActive
+                                  ? "border-amber-300/30 bg-amber-300/10"
+                                  : "border-white/10 bg-white/5 hover:bg-white/10"
+                              }`}
+                            >
+                              <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">
+                                {isActive ? "当前片段" : "相邻片段"}
+                              </div>
+                              <div className="mt-2 text-sm font-medium text-[#fbf3da]">
+                                {passage.section}
+                              </div>
+                              <div className="mt-2 text-[11px] leading-5 text-[#d8c9a3]">
+                                {passage.links.length} 条证据 · {passage.tracePath?.length ?? 0} 层上游
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : null}
                   </div>
                   <div className="mt-4 rounded-[20px] border border-[#ead8a6]/14 bg-[rgba(36,22,8,0.28)] px-3 py-3">
                     <div className="text-[11px] tracking-[0.22em] text-[#d8c9a3]">
