@@ -160,6 +160,46 @@ const eraNarratives: Record<
   },
 };
 
+function getSourceThemeLabel(name: string) {
+  if (name.includes("红色") || name.includes("南湖")) {
+    return "红色支流";
+  }
+
+  if (name.includes("搜韵")) {
+    return "诗学支流";
+  }
+
+  if (name.includes("纪传")) {
+    return "人物支流";
+  }
+
+  if (name.includes("借阅")) {
+    return "公共流通";
+  }
+
+  if (name.includes("活动")) {
+    return "城市现场";
+  }
+
+  if (name.includes("专题片")) {
+    return "城市影像";
+  }
+
+  if (name.includes("报刊")) {
+    return "近现代文献";
+  }
+
+  if (name.includes("图书馆") || name.includes("馆藏") || name.includes("纪念馆")) {
+    return "馆藏支流";
+  }
+
+  if (name.includes("宋庆龄") || name.includes("韬奋")) {
+    return "近现代支流";
+  }
+
+  return "来源支流";
+}
+
 function deriveBranchAnnotations(
   activeEraIndex: number,
   allowedSlugs: Set<string>,
@@ -952,17 +992,6 @@ export function CulturalVeinShell() {
   ];
   const activeDesktopPanelConfig =
     desktopPanels.find((panel) => panel.id === activeDesktopPanel) ?? desktopPanels[0];
-  const coverageStatusClass = (status: NonNullable<typeof coverageLayers>[number]["status"]) => {
-    if (status === "已显河面") {
-      return "bg-emerald-300/14 text-emerald-100";
-    }
-
-    if (status === "正在铺开") {
-      return "bg-amber-300/14 text-amber-100";
-    }
-
-    return "bg-white/8 text-stone-300";
-  };
   const activeEraNarrative = eraNarratives[activeEra];
   const activePanelNarrative =
     activeDesktopPanel === "search"
@@ -980,11 +1009,10 @@ export function CulturalVeinShell() {
               : "主河道与来源支流正在同一卷面上交汇展开。";
   const sourceAtlasNeighborEntries =
     activeSourceAtlasIndex >= 0
-      ? [-1, 1]
+      ? [1]
           .map((offset) => prioritizedSourceAtlasEntries[activeSourceAtlasIndex + offset])
           .filter((entry): entry is NonNullable<typeof sourceAtlasEntries>[number] => Boolean(entry))
-      : prioritizedSourceAtlasEntries.slice(1, 3);
-  const coverageLayers = atlasMeta?.coverageLayers ?? [];
+      : prioritizedSourceAtlasEntries.slice(1, 2);
   const cbdbPersonCount = insights?.cbdbSummary?.personCount ?? null;
   const eraRecommendedBooks = useMemo(() => {
     return filteredBooks
@@ -1018,9 +1046,9 @@ export function CulturalVeinShell() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#e2c372] text-stone-100">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_14%,rgba(250,234,182,0.38),transparent_26%),radial-gradient(circle_at_82%_12%,rgba(226,184,83,0.24),transparent_24%),radial-gradient(circle_at_50%_100%,rgba(205,151,52,0.18),transparent_36%),linear-gradient(180deg,#f0ddb0_0%,#ddb86d_24%,#bb7f2e_58%,#7b4e16_100%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_14%,rgba(255,246,212,0.28),transparent_26%),radial-gradient(circle_at_82%_12%,rgba(244,213,127,0.18),transparent_24%),radial-gradient(circle_at_50%_100%,rgba(173,114,29,0.12),transparent_36%),linear-gradient(180deg,rgba(247,234,196,0.18)_0%,rgba(214,165,71,0.1)_26%,rgba(126,79,24,0.14)_100%)]" />
-      <div className="absolute inset-0 opacity-15 [background-image:linear-gradient(rgba(131,88,29,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(131,88,29,0.08)_1px,transparent_1px)] [background-size:112px_112px]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_14%,rgba(255,246,210,0.58),transparent_28%),radial-gradient(circle_at_82%_10%,rgba(225,177,62,0.26),transparent_24%),radial-gradient(circle_at_50%_100%,rgba(177,119,35,0.18),transparent_38%),linear-gradient(180deg,#f8edc8_0%,#efd89b_24%,#d4a24b_58%,#8f5c20_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_14%,rgba(255,252,235,0.26),transparent_30%),radial-gradient(circle_at_82%_12%,rgba(248,226,150,0.16),transparent_24%),linear-gradient(180deg,rgba(255,247,220,0.18)_0%,rgba(222,177,83,0.08)_28%,rgba(126,79,24,0.12)_100%)]" />
+      <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(149,108,42,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(149,108,42,0.08)_1px,transparent_1px)] [background-size:108px_108px]" />
 
       {showDiveOverlay ? (
         <div className="pointer-events-none absolute inset-0 z-40 overflow-hidden">
@@ -1057,7 +1085,7 @@ export function CulturalVeinShell() {
 
       <div className="relative z-10 min-h-screen">
         <div className="pointer-events-none absolute inset-x-0 top-0 z-30 hidden items-start justify-between gap-3 px-4 py-4 md:flex sm:px-6 lg:px-8">
-          <div className={`pointer-events-auto max-w-[228px] px-4 py-3 sm:max-w-[248px] ${panelBaseClass}`}>
+          <div className={`pointer-events-auto max-w-[220px] px-4 py-3 sm:max-w-[236px] ${panelBaseClass}`}>
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[11px] tracking-[0.32em] text-[#f2dfab]/80">
@@ -1072,7 +1100,7 @@ export function CulturalVeinShell() {
               </div>
             </div>
             <div className="mt-3 text-[11px] leading-6 text-[#eadfbc]">
-              河心承载典籍主脉，支流映出传播、人物、版本与文本回响。
+              顺河巡看典籍主脉，点中节点即可入卷细览。
             </div>
           </div>
 
@@ -1104,7 +1132,7 @@ export function CulturalVeinShell() {
         </div>
 
         {showDesktopControls ? (
-          <div className="absolute right-4 top-[132px] z-20 hidden w-[214px] sm:right-6 md:block lg:right-8 lg:w-[228px]">
+          <div className="absolute right-4 top-[132px] z-20 hidden w-[214px] sm:right-6 md:block lg:right-8 lg:w-[224px]">
             <aside className="pointer-events-auto xl:pt-2">
               <div className={`p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
@@ -1140,7 +1168,7 @@ export function CulturalVeinShell() {
                 ))}
               </div>
 
-              <section className="mt-4 rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(27,17,7,0.22)] px-4 py-4">
+              <section className="mt-4 rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(62,40,11,0.22)] px-4 py-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
@@ -1423,127 +1451,16 @@ export function CulturalVeinShell() {
                       )}
                     </div>
                     {sourceAtlasEntries.length ? (
-                    <div className="mt-3 rounded-[18px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(105,72,24,0.3),rgba(39,25,8,0.22))] px-3 py-3">
+                    <div className="mt-3 rounded-[18px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(127,87,27,0.28),rgba(58,36,10,0.18))] px-3 py-3">
                       <div className="flex items-center justify-between gap-3">
                         <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">来源河册</div>
                         <div className="text-[10px] text-[#f2dfab]">{sourceAtlasMass.toLocaleString()}</div>
                         </div>
                         {atlasMeta ? (
-                          <button
-                            type="button"
-                            onClick={() => setActiveDesktopPanel("branch")}
-                            className="mt-3 w-full rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
-                          >
-                            <div className="flex flex-wrap items-center justify-between gap-3">
-                              <div className="text-xs font-medium text-[#fbf3da]">
-                                河上已映出 {atlasMeta.demoBookCount} 部主线典籍
-                              </div>
-                              <div className="text-[10px] text-[#f2dfab]">
-                                已连入 {atlasMeta.activeSources} 股真实来源
-                              </div>
-                            </div>
-                            <div className="mt-2 text-[11px] leading-5 text-[#e6d7ae]">
-                              {atlasMeta.expansionNote}
-                            </div>
-                            <div className="mt-3 grid gap-2 md:grid-cols-3">
-                              <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
-                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">卷中所见</div>
-                                <div className="mt-1 text-sm font-medium text-[#fbf3da]">
-                                  {atlasMeta.demoBookCount.toLocaleString()} 部典籍
-                                </div>
-                                <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">这一段先让主河道、支流与关键节点完整显影。</div>
-                              </div>
-                              <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
-                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">卷中牵连</div>
-                                <div className="mt-1 text-sm font-medium text-[#fbf3da]">
-                                  {atlasMeta.totalCitationCount.toLocaleString()} 道文脉
-                                </div>
-                                <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">引用、注疏与影响关系会在河面上彼此牵出。</div>
-                              </div>
-                              <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
-                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">卷中人物</div>
-                                <div className="mt-1 text-sm font-medium text-[#fbf3da]">
-                                  {cbdbPersonCount?.toLocaleString() ?? "--"} 位纪传人物
-                                </div>
-                                <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">纪传人物库为人物网络、地点与时代回声托底。</div>
-                              </div>
-                            </div>
-                            <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
-                              <div className="flex items-center justify-between gap-3">
-                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">长卷铺陈</div>
-                                <div className="rounded-full border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-2 py-0.5 text-[10px] text-[#f2dfab]">主脉先行</div>
-                              </div>
-                              <div className="mt-2 text-[10px] leading-5 text-[#dccb9c]">
-                                眼前先以主脉长卷
-                                <span className="px-1 text-[#fbf3da]">
-                                  {atlasMeta.demoBookCount.toLocaleString()}
-                                </span>
-                                部主线典籍串起完整体验，把宏观河流、中观钻入与微观溯源先做深；更远处仍对齐
-                                <span className="px-1 text-[#fbf3da]">
-                                  {atlasMeta.totalBookCount.toLocaleString()}
-                                </span>
-                                部古籍远景，后续可沿统一装配链自然长出新支流。
-                              </div>
-                            </div>
-                            <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
-                              <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">循证分层</div>
-                              <div className="mt-2 grid gap-2">
-                                <div className="rounded-[12px] border border-white/10 bg-[rgba(255,248,220,0.04)] px-3 py-2">
-                                  <div className="text-[11px] text-[#fbf3da]">元数据层</div>
-                                  <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">
-                                    直接来自古籍、书目、人物与馆藏来源，托住主河道、版本链与机构落点。
-                                  </div>
-                                </div>
-                                <div className="rounded-[12px] border border-emerald-300/14 bg-emerald-300/8 px-3 py-2">
-                                  <div className="text-[11px] text-emerald-100">显式引用层</div>
-                                  <div className="mt-1 text-[10px] leading-5 text-[#dff7ea]">
-                                    依据原文引述、注疏和目录痕迹建立高置信度关系，不把研究线索包装成确定事实。
-                                  </div>
-                                </div>
-                                <div className="rounded-[12px] border border-amber-300/14 bg-amber-300/8 px-3 py-2">
-                                  <div className="text-[11px] text-amber-100">语义关联层</div>
-                                  <div className="mt-1 text-[10px] leading-5 text-[#f5e8c0]">
-                                    用相近义理与段落回声补足中程支流，并在界面中显式保留置信度差异。
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="mt-3 flex flex-wrap gap-2">
-                              {atlasMeta.plannedLayers.slice(0, 4).map((layer) => (
-                                <span
-                                  key={`atlas-layer-${layer}`}
-                                  className="rounded-full border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.04)] px-2.5 py-1 text-[10px] text-[#dccb9c]"
-                                >
-                                  {layer}
-                                </span>
-                              ))}
-                            </div>
-                            {coverageLayers.length ? (
-                              <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
-                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">数据覆盖图</div>
-                                <div className="mt-2 grid gap-2">
-                                  {coverageLayers.slice(0, 6).map((layer) => (
-                                    <div
-                                      key={`desktop-coverage-${layer.id}`}
-                                      className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(255,248,220,0.04)] px-3 py-2"
-                                    >
-                                      <div className="flex items-center justify-between gap-3">
-                                        <div className="text-[11px] text-[#fbf3da]">{layer.label}</div>
-                                        <div
-                                          className={`rounded-full px-2 py-0.5 text-[10px] ${coverageStatusClass(layer.status)}`}
-                                        >
-                                          {layer.status}
-                                        </div>
-                                      </div>
-                              <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">
-                                {layer.scope} · {layer.usage}
-                              </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            ) : null}
-                          </button>
+                          <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-[11px] leading-5 text-[#e6d7ae]">
+                            眼前长卷已映出 {atlasMeta.demoBookCount} 部主线典籍、{atlasMeta.activeSources} 股真实来源与{" "}
+                            {cbdbPersonCount?.toLocaleString() ?? "--"} 位纪传人物，河册会顺着当前时代继续把相邻支流带到河面。
+                          </div>
                         ) : null}
                         <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.26)] px-3 py-3">
                           <div className="flex items-center justify-between gap-3">
@@ -1588,19 +1505,9 @@ export function CulturalVeinShell() {
                               <div className="mt-2 text-[10px] text-[#f2dfab]">
                                 {activeSourceAtlasEntry.stat ?? "来源线索"}
                               </div>
-                              {(activeSourceAtlasEntry.name.includes("南湖") ||
-                                activeSourceAtlasEntry.name.includes("红色") ||
-                                activeSourceAtlasEntry.name.includes("韬奋") ||
-                                activeSourceAtlasEntry.name.includes("宋庆龄") ||
-                                activeSourceAtlasEntry.name.includes("搜韵")) ? (
-                                <div className="mt-2 inline-flex rounded-full border border-rose-300/24 bg-rose-300/10 px-2.5 py-1 text-[10px] text-rose-100">
-                                  {activeSourceAtlasEntry.name.includes("红色")
-                                    ? "红色支流"
-                                    : activeSourceAtlasEntry.name.includes("搜韵")
-                                      ? "诗学支流"
-                                      : "近现代支流"}
-                                </div>
-                              ) : null}
+                              <div className="mt-2 inline-flex rounded-full border border-amber-200/22 bg-[rgba(255,244,214,0.08)] px-2.5 py-1 text-[10px] text-[#fff0c2]">
+                                {getSourceThemeLabel(activeSourceAtlasEntry.name)}
+                              </div>
                               <div className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#e6d7ae]">
                                 {activeSourceAtlasEntry.summary ?? "这股来源正在河面留下对应线索与落点。"}
                               </div>
@@ -1645,17 +1552,7 @@ export function CulturalVeinShell() {
                                     </div>
                                   </div>
                                   <div className="shrink-0 text-[10px] text-[#d8c9a3]">
-                                    {entry.name.includes("南湖") ||
-                                    entry.name.includes("红色") ||
-                                    entry.name.includes("韬奋") ||
-                                    entry.name.includes("宋庆龄") ||
-                                    entry.name.includes("搜韵")
-                                      ? entry.name.includes("红色")
-                                        ? "红色支流"
-                                        : entry.name.includes("搜韵")
-                                          ? "诗学支流"
-                                        : "近现代支流"
-                                      : "待映照"}
+                                    {getSourceThemeLabel(entry.name)}
                                   </div>
                                 </button>
                               );
@@ -1923,8 +1820,9 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileControls ? (
-          <div className="absolute inset-x-3 bottom-[4.9rem] z-40 md:hidden">
-            <div className={`pointer-events-auto max-h-[min(16rem,38vh)] overflow-auto p-3 ${panelBaseClass}`}>
+          <div className="absolute inset-x-0 bottom-0 z-40 md:hidden">
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(67,42,11,0),rgba(67,42,11,0.26)_38%,rgba(67,42,11,0.46))]" />
+            <div className={`pointer-events-auto mx-3 mb-[4.3rem] max-h-[min(13.5rem,32vh)] overflow-auto rounded-[28px] p-3 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">卷边题签</div>
@@ -1945,7 +1843,7 @@ export function CulturalVeinShell() {
                     ? `${activeEra} 水位已推至 ${eraProgressPercent}% ，这一段文脉河势正在卷面铺开。`
                     : activeDesktopPanel === "category"
                       ? `${categoryFilter} 与 ${schoolFilter} 的筛选结果正在收束河道轮廓。`
-                      : "来源支流、关系层级与河上码头正沿同一卷面彼此映照。"}
+                      : "来源支流与河上码头已浮出，可顺势切换不同来源。"}
               </div>
               {activeDesktopPanel === "era" ? (
                 <div className="mt-3 rounded-[20px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3">
@@ -1987,7 +1885,7 @@ export function CulturalVeinShell() {
                     {activeSourceAtlasEntry?.summary ?? "来源支流与河上码头已经映入这段河面。"}
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {prioritizedSourceAtlasEntries.slice(0, 3).map((entry) => {
+                    {prioritizedSourceAtlasEntries.slice(0, 2).map((entry) => {
                       const isActive = activeSourceAtlasEntry?.id === entry.id;
 
                       return (
@@ -2001,7 +1899,7 @@ export function CulturalVeinShell() {
                               : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc]"
                           }`}
                         >
-                          {entry.name}
+                          {entry.name} · {getSourceThemeLabel(entry.name)}
                         </button>
                       );
                     })}
@@ -2177,8 +2075,8 @@ export function CulturalVeinShell() {
         ) : null}
 
         {showMobileDossier && selectedBook && selectedDetail ? (
-          <div className="absolute inset-x-3 bottom-[4.9rem] z-40 md:hidden">
-            <div className={`pointer-events-auto max-h-[min(26rem,42vh)] overflow-hidden p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
+          <div className="absolute inset-x-0 bottom-0 z-40 md:hidden">
+            <div className={`pointer-events-auto mx-3 mb-[4.3rem] max-h-[min(24rem,36vh)] overflow-hidden rounded-[28px] p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
               <div className="rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(245,231,188,0.16),rgba(104,72,25,0.14))] p-3">
                 <div className="rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(247,237,206,0.98),rgba(230,204,140,0.94))] px-4 py-4 text-[#42290a]">
                   <div className="rounded-[20px] border border-[#b89247]/16 bg-[rgba(255,255,255,0.18)] px-4 py-3">
@@ -2208,7 +2106,7 @@ export function CulturalVeinShell() {
                     {selectedBook.dynasty} 的这部典籍此刻正以 {focusModeLabel} 停驻卷心，卷内已牵出 {selectedBookCitations.length} 条关联
                     {selectedSources.length ? ` 与 ${selectedSources.length} 类实证回声。` : "。"}
                   </div>
-                  <div className="max-h-[calc(24vh-96px)] overflow-auto pr-1">
+                  <div className="max-h-[calc(21vh-72px)] overflow-auto pr-1">
                     <BookExplorer
                       key={`mobile-explorer-${selectedBook.slug}-${entryExplorerTab ?? "spread"}`}
                       book={selectedBook}
@@ -2226,9 +2124,9 @@ export function CulturalVeinShell() {
             </div>
           </div>
         ) : null}
-        <div className="pointer-events-none absolute bottom-3 left-1/2 z-30 -translate-x-1/2 md:hidden">
+        <div className="pointer-events-none absolute inset-x-0 bottom-3 z-30 md:hidden">
           <div className="pointer-events-auto">
-            <div className="flex items-center gap-1 rounded-full border border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(176,130,51,0.82),rgba(110,74,24,0.8))] px-1 py-1 shadow-lg shadow-black/15 backdrop-blur-xl">
+            <div className="mx-auto flex w-[min(calc(100vw-1.4rem),18rem)] items-center justify-center gap-1 rounded-full border border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(176,130,51,0.82),rgba(110,74,24,0.8))] px-1 py-1 shadow-lg shadow-black/15 backdrop-blur-xl">
             <button
               type="button"
               onClick={() => {

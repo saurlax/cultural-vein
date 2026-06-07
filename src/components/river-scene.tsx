@@ -11,7 +11,7 @@ import type { RiverEra, ViewMode } from "@/types/domain";
 
 type OrbitControlsInstance = ElementRef<typeof OrbitControls>;
 const RIVER_ERA_ORDER: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
-const touchModeLabel = "单指拖动画卷，双指缩放河势";
+const touchModeLabel = "单指拖河巡看，双指缩放卷面";
 const RIVER_ERA_STORIES: Record<
   RiverEra,
   {
@@ -2420,12 +2420,12 @@ export function RiverScene(props: RiverSceneProps) {
     <div
       ref={containerRef}
       onContextMenu={(event) => event.preventDefault()}
-      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#dfb55f]/60 bg-[#b77b2f] shadow-[0_0_110px_rgba(77,45,13,0.28)] touch-none"
+      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#d7ab56]/60 bg-[#c98b34] shadow-[0_0_110px_rgba(107,68,18,0.2)] [touch-action:pan-x_pinch-zoom]"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-36 bg-[linear-gradient(180deg,rgba(252,239,191,0.42),rgba(195,138,53,0))]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-44 bg-[linear-gradient(0deg,rgba(145,94,28,0.46),rgba(145,94,28,0))]" />
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_46%,rgba(250,228,157,0.18),transparent_42%),linear-gradient(90deg,rgba(247,223,154,0.08),transparent_18%,transparent_82%,rgba(247,223,154,0.08))]" />
-      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#efd38f]/34 bg-[rgba(132,88,27,0.34)] px-4 py-2 text-[10px] text-[#fff3d0] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-36 bg-[linear-gradient(180deg,rgba(255,243,202,0.5),rgba(211,154,58,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-44 bg-[linear-gradient(0deg,rgba(157,104,29,0.44),rgba(157,104,29,0))]" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_46%,rgba(254,233,166,0.2),transparent_42%),linear-gradient(90deg,rgba(250,228,160,0.08),transparent_18%,transparent_82%,rgba(250,228,160,0.08))]" />
+      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#efd38f]/34 bg-[rgba(150,104,31,0.28)] px-4 py-2 text-[10px] text-[#fff3d0] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
         <span className="tracking-[0.28em] text-[#fff0c2]">黄河文脉长卷</span>
         <span className="hidden h-3 w-px bg-[#ead8a6]/24 sm:block" />
         <span className="truncate text-[#f1e3bd]">
@@ -2441,11 +2441,11 @@ export function RiverScene(props: RiverSceneProps) {
         </span>
       </div>
       <div
-        className={`pointer-events-none absolute left-1/2 top-4 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
+        className={`pointer-events-none absolute left-1/2 top-3 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
           showMobileTouchHint || isInteracting ? "opacity-100" : "opacity-0"
         }`}
       >
-        <div className="rounded-full border border-[#e7c97b]/18 bg-[rgba(132,92,31,0.36)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
+        <div className="rounded-full border border-[#e7c97b]/18 bg-[rgba(150,108,35,0.28)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
           {isInteracting ? "正在拖移长河" : touchModeLabel}
         </div>
       </div>
@@ -2455,7 +2455,7 @@ export function RiverScene(props: RiverSceneProps) {
           mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
         }`}
       >
-          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/16 bg-[linear-gradient(180deg,rgba(179,132,53,0.62),rgba(112,75,24,0.54))] px-3 py-3 text-[#f1e2bb] shadow-xl shadow-black/10 backdrop-blur-md">
+          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/16 bg-[linear-gradient(180deg,rgba(187,142,59,0.56),rgba(124,84,28,0.5))] px-3 py-3 text-[#f1e2bb] shadow-xl shadow-black/10 backdrop-blur-md">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-[10px] tracking-[0.24em] text-[#e5d1a1]">河势卷签</div>
@@ -2521,7 +2521,7 @@ export function RiverScene(props: RiverSceneProps) {
         }}
         onPointerUp={() => setIsInteracting(false)}
         onPointerLeave={() => setIsInteracting(false)}
-        className={isInteracting ? "cursor-grabbing !touch-none" : "cursor-grab !touch-none"}
+        className={isInteracting ? "cursor-grabbing [touch-action:pan-x_pinch-zoom]" : "cursor-grab [touch-action:pan-x_pinch-zoom]"}
       >
         <RiverWorld
           {...props}
