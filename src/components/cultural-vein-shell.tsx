@@ -1523,7 +1523,7 @@ export function CulturalVeinShell() {
                                 {activeSourceAtlasEntry.stat ?? "来源片段"}
                               </div>
                               <div className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#e6d7ae]">
-                                {activeSourceAtlasEntry.summary ?? "这股来源正在河面留下对应样本与落点。"}
+                                {activeSourceAtlasEntry.summary ?? "这股来源正在河面留下对应片段与落点。"}
                               </div>
                               {activeSourceAtlasEntry.evidenceLabel ? (
                                 <div className="mt-2 rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-2.5 py-2">
@@ -1633,7 +1633,7 @@ export function CulturalVeinShell() {
                                 <span className="px-1 text-[#fbf3da]">
                                   {activeSourceRoute.points.length}
                                 </span>
-                                个样本码头铺开，河段与来源已彼此扣合。
+                                个码头落点铺开，河段与来源已彼此扣合。
                               </div>
                             ) : null}
                             {activeSourceRecord ? (
@@ -1983,7 +1983,7 @@ export function CulturalVeinShell() {
                   <div className="mt-2 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(38,25,8,0.24)] px-3 py-3">
                     <div className="flex items-center justify-between gap-3">
                       <div className="text-[11px] tracking-[0.2em] text-[#d8c9a3]">来源支流</div>
-                      <div className="text-[10px] text-[#c9b68a]">来源与样本</div>
+                          <div className="text-[10px] text-[#c9b68a]">来源与落点</div>
                     </div>
                     <div className="mt-2 max-h-32 space-y-2 overflow-auto pr-1">
                       {sourceAtlasEntries.map((entry) => {
@@ -2028,7 +2028,7 @@ export function CulturalVeinShell() {
                           <div className="truncate text-xs text-[#fbf3da]">{activeSourceAtlasEntry.name}</div>
                           {activeSourceRoute ? (
                             <div className="mt-1 text-[10px] text-[#c9b68a]">
-                              这股来源支流正沿 {activeSourceRoute.points.length} 个样本码头铺开
+                              这股来源支流正沿 {activeSourceRoute.points.length} 个码头落点铺开
                             </div>
                           ) : null}
                         </div>

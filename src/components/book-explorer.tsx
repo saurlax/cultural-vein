@@ -1318,7 +1318,7 @@ export function BookExplorer({
                   })
                 ) : (
                   <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4">
-                    <div className="text-sm text-stone-200">这一层尚未落到机构资源样本，版本与来源两条线仍在为资源落点留出位置。</div>
+                    <div className="text-sm text-stone-200">这一层尚未落到更细馆藏，版本与来源两条线仍在为馆藏去处留出位置。</div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
@@ -1332,7 +1332,7 @@ export function BookExplorer({
                         onClick={() => setSelectedSourceEvidenceId("institution-samples")}
                         className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                       >
-                        来源归录
+                        来源卷录
                       </button>
                     </div>
                   </div>
@@ -1507,7 +1507,7 @@ export function BookExplorer({
                   className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-left transition hover:bg-white/10"
                 >
                   <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                    资源落点
+                    馆藏去处
                   </div>
                   <div className="mt-2 text-sm leading-6 text-stone-300">
                     {[
@@ -1519,7 +1519,7 @@ export function BookExplorer({
                       .join(" · ")}
                   </div>
                   <div className="mt-3 text-xs text-amber-100/80">
-                    机构归录会继续把馆藏与版本资源线并列展开。
+                    机构归录会继续把馆藏与版本脉络并列展开。
                   </div>
                 </button>
                 <button
@@ -1528,13 +1528,13 @@ export function BookExplorer({
                   className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-left transition hover:bg-white/10"
                 >
                   <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                    资源线索
+                    馆藏线索
                   </div>
                   <div className="mt-2 text-sm leading-6 text-stone-300">
-                    {activeInstitutionRecord.sourceText ?? activeInstitutionRecord.imageRef ?? "这条馆藏条目已经成为此版的资源落点。"}
+                    {activeInstitutionRecord.sourceText ?? activeInstitutionRecord.imageRef ?? "这条馆藏条目已经成为此版的馆藏去处。"}
                   </div>
                   <div className="mt-3 text-xs text-amber-100/80">
-                    版本流变会把这条资源线索重新挂回此版所在的位置。
+                    版本流变会把这条馆藏线索重新挂回此版所在的位置。
                   </div>
                 </button>
               </div>
@@ -1545,10 +1545,10 @@ export function BookExplorer({
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                    来源归录
+                    来源卷录
                   </div>
                   <div className="mt-1 text-sm text-stone-300">
-                    将真实来源按人物、场馆、事件与机构资源归并成可核验的证据条目。
+                    将真实来源按人物、场馆、事件与馆藏资源归并成可核验的凭据条目。
                   </div>
                 </div>
                 <div className="rounded-full bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
@@ -1659,7 +1659,7 @@ export function BookExplorer({
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
                           <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                            证据卷轴
+                          凭据卷轴
                           </div>
                           <div className="mt-1 text-sm text-stone-300">
                             第 {Math.max(activeSourceEvidenceIndex + 1, 1)} / {Math.max(sourceEvidence.length, 1)} 类
@@ -1719,7 +1719,7 @@ export function BookExplorer({
                                 }`}
                               >
                                 <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">
-                                  {isActive ? "当前卷录" : "相邻卷录"}
+                                  {isActive ? "当前凭据" : "相邻凭据"}
                                 </div>
                                 <div className="mt-2 text-sm font-medium text-stone-100">
                                   {item.source}
@@ -1753,7 +1753,7 @@ export function BookExplorer({
                     </div>
                     <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
                       <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                        回看片段
+                        回查线索
                       </div>
                       <div className="mt-2 flex flex-wrap gap-2 text-sm leading-6 text-stone-300">
                         <span className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
@@ -1787,7 +1787,7 @@ export function BookExplorer({
                             : activeSourceEvidence.id === "event-samples"
                               ? "转入关联时间线"
                               : activeSourceEvidence.id === "institution-samples"
-                                ? "转入版本与资源线索"
+                                ? "转入版本与馆藏线索"
                                 : "前往相关视图"}
                       </button>
                     </div>
@@ -3600,7 +3600,7 @@ export function BookExplorer({
                                 <div className="flex items-center justify-between gap-3">
                                   <div className="text-sm font-medium text-stone-50">{item.title}</div>
                                   <div className="rounded-full bg-white/10 px-2 py-1 text-[10px] text-stone-300">
-                                    资源落点
+                                    馆藏去处
                                   </div>
                                 </div>
                                 <div className="mt-2 text-xs text-stone-400">
@@ -3655,7 +3655,7 @@ export function BookExplorer({
                             <div className="text-xs tracking-[0.2em] text-stone-400">
                               现实回声
                             </div>
-                            <div className="text-[10px] text-stone-500">机构回看片段</div>
+                            <div className="text-[10px] text-stone-500">机构回查线索</div>
                           </div>
                           <div className="mt-3 flex flex-wrap gap-2">
                             <button
