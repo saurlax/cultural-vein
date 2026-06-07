@@ -1350,6 +1350,52 @@ export function BookExplorer({
       onClick: () => setManualTab("versions"),
     },
   ] as const;
+  const passageStageSummary = activePassage
+    ? `${activePassage.section} 正作为卷心片段展开，本段已显出 ${activePassage.links.length} 条对读证据、${activePassage.tracePath?.length ?? 0} 层上游链路与 ${activePassage.downstreamInfluence?.length ?? 0} 条下游回声。`
+    : "微观溯源剧场正在等待卷心片段显影。";
+  const passageStageActions = [
+    {
+      label: activeLink ? "卷心证据" : "首层证据",
+      note: activeLink
+        ? `${activeLink.sourceTitle} 已被照亮，可直接回看对读证据。`
+        : "先从第一条证据切入这一段的文本对读。",
+      onClick: () => {
+        if (activeLink?.id) {
+          handleSelectLink(activeLink.id);
+          return;
+        }
+
+        const firstLink = activePassage?.links[0];
+        if (firstLink) {
+          handleSelectLink(firstLink.id);
+        }
+      },
+    },
+    {
+      label: tracePlaying ? "溯源进行中" : "逆流回看",
+      note: activePassage?.tracePath?.length
+        ? `已接出 ${activePassage.tracePath.length} 层上游，可沿光线回看更早源典。`
+        : "这一段暂未显出更早上游链路。",
+      onClick: () => {
+        if (activePassage?.tracePath?.length) {
+          handleStartTrace();
+        }
+      },
+    },
+    {
+      label: "下游回声",
+      note: activePassage?.downstreamInfluence?.length
+        ? `已有 ${activePassage.downstreamInfluence.length} 条后续承接线索。`
+        : "当前片段的下游分化尚未继续显影。",
+      onClick: () => {
+        const firstDownstream = activePassage?.downstreamInfluence?.[0];
+
+        if (firstDownstream) {
+          handleOpenDownstreamBook(firstDownstream.targetTitle);
+        }
+      },
+    },
+  ] as const;
 
   return (
     <div className="relative space-y-4">
@@ -4604,6 +4650,45 @@ export function BookExplorer({
             </div>
           ) : activePassage ? (
             <>
+              <div className="rounded-[26px] border border-[#ead8a6]/14 bg-[linear-gradient(135deg,rgba(88,58,19,0.92),rgba(33,22,9,0.96))] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.08)]">
+                <div className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
+                  <div>
+                    <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">微观溯源舞台</div>
+                    <div className="mt-2 text-lg font-semibold text-[#fbf3da]">
+                      {activePassage.section} · {passageLayout === "vertical" ? "竖排长卷" : "横排长卷"}
+                    </div>
+                    <div className="mt-2 text-sm leading-7 text-[#eadfbc]">{passageStageSummary}</div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="rounded-full border border-amber-300/22 bg-amber-300/10 px-3 py-1.5 text-xs text-amber-100">
+                        第 {Math.max(activePassageSequenceIndex + 1, 1)} / {Math.max(visiblePassages.length, 1)} 段
+                      </span>
+                      <span className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc]">
+                        {activePassage.links.length} 条证据
+                      </span>
+                      <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100">
+                        {activePassage.tracePath?.length ?? 0} 层上游
+                      </span>
+                      <span className="rounded-full border border-sky-300/18 bg-sky-300/10 px-3 py-1.5 text-xs text-sky-100">
+                        {activePassage.downstreamInfluence?.length ?? 0} 条下游
+                      </span>
+                    </div>
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-1">
+                    {passageStageActions.map((action) => (
+                      <button
+                        key={`passage-stage-action-${action.label}`}
+                        type="button"
+                        onClick={action.onClick}
+                        className="rounded-[20px] border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
+                      >
+                        <div className="text-sm font-medium text-[#fbf3da]">{action.label}</div>
+                        <div className="mt-2 text-xs leading-6 text-[#cdb98d]">{action.note}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_248px]">
                 <div className="rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.06)] px-4 py-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
@@ -5070,58 +5155,60 @@ export function BookExplorer({
                     </div>
                     <div className="mt-3 space-y-2">
                       {activePassage.links.map((link) => (
-                        <button
+                        <div
                           key={link.id}
-                          type="button"
-                          onClick={() => {
-                            if (activeLinkId === link.id) {
-                              handleOpenSpecificLinkedBook(link.sourceBookId);
-                              return;
-                            }
-
-                            handleSelectLink(link.id);
-                          }}
-                          className={`w-full rounded-2xl border px-3 py-3 text-left text-sm transition ${
+                          className={`rounded-2xl border px-3 py-3 text-sm transition ${
                             activeLinkId === link.id
                               ? "border-amber-300/35 bg-amber-300/10"
-                              : "border-white/10 bg-white/5 hover:bg-white/10"
+                              : "border-white/10 bg-white/5"
                           }`}
                         >
-                          <div className="flex items-start justify-between gap-3">
-                            <div>
-                              <span className="font-medium text-stone-50">
-                                {link.sourceTitle}
-                              </span>
-                              <div className="mt-2 flex flex-wrap gap-2">
-                                <button
-                                  type="button"
-                                  onClick={() => handleSelectLink(link.id)}
-                                  className={`rounded-full px-3 py-1.5 text-xs transition ${
-                                    activeLinkId === link.id
-                                      ? "bg-amber-300 text-stone-950"
-                                      : "border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] text-[#eadfbc] hover:bg-[rgba(255,244,214,0.12)]"
-                                  }`}
-                                >
-                                  {activeLinkId === link.id ? "卷心证据" : "照亮此证"}
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleOpenSpecificLinkedBook(link.sourceBookId)}
-                                  className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
-                                >
-                                  源典原卷
-                                </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (activeLinkId === link.id) {
+                                handleOpenSpecificLinkedBook(link.sourceBookId);
+                                return;
+                              }
+
+                              handleSelectLink(link.id);
+                            }}
+                            className="w-full text-left"
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <span className="font-medium text-stone-50">{link.sourceTitle}</span>
                               </div>
+                              <span
+                                className={`rounded-full border px-2 py-1 text-xs ${confidenceClass(link.confidenceLabel)}`}
+                              >
+                                {link.confidenceLabel}置信度
+                              </span>
                             </div>
-                            <span
-                              className={`rounded-full border px-2 py-1 text-xs ${confidenceClass(link.confidenceLabel)}`}
+                            <div className="mt-2 text-stone-200">{link.quote}</div>
+                            <p className="mt-2 text-stone-300">{link.evidence}</p>
+                          </button>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleSelectLink(link.id)}
+                              className={`rounded-full px-3 py-1.5 text-xs transition ${
+                                activeLinkId === link.id
+                                  ? "bg-amber-300 text-stone-950"
+                                  : "border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] text-[#eadfbc] hover:bg-[rgba(255,244,214,0.12)]"
+                              }`}
                             >
-                              {link.confidenceLabel}置信度
-                            </span>
+                              {activeLinkId === link.id ? "卷心证据" : "照亮此证"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleOpenSpecificLinkedBook(link.sourceBookId)}
+                              className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                            >
+                              源典原卷
+                            </button>
                           </div>
-                          <div className="mt-2 text-stone-200">{link.quote}</div>
-                          <p className="mt-2 text-stone-300">{link.evidence}</p>
-                        </button>
+                        </div>
                       ))}
                     </div>
 
