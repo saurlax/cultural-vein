@@ -2400,6 +2400,7 @@ function RiverWorld({
   const controlsRef = useRef<OrbitControlsInstance>(null);
   const userInteractingRef = useRef(false);
   const resumeAutoFrameRef = useRef<number | null>(null);
+  const [allowOrbitRotate, setAllowOrbitRotate] = useState(false);
   const desiredCameraPosition = useRef(new THREE.Vector3(2.3, 5.6, 13.8));
   const desiredCameraTarget = useRef(new THREE.Vector3(3.8, 0.3, 0.9));
   const initialControlsTarget = useMemo(() => new THREE.Vector3(3.8, 0.3, 0.9), []);
@@ -2535,6 +2536,20 @@ function RiverWorld({
       : sceneFocus?.active
         ? "#fde68a"
         : "#fcd34d";
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const media = window.matchMedia("(min-width: 768px)");
+    const syncViewportMode = () => setAllowOrbitRotate(media.matches);
+
+    syncViewportMode();
+    media.addEventListener("change", syncViewportMode);
+
+    return () => media.removeEventListener("change", syncViewportMode);
+  }, []);
   const sourceAtlasFlowPoints = useMemo(
     () => sourceAtlasPathPoints.map((point) => new THREE.Vector3(...point)),
     [sourceAtlasPathPoints],
@@ -3104,25 +3119,25 @@ function RiverWorld({
         screenSpacePanning
         enableDamping
         dampingFactor={0.08}
-        panSpeed={1.32}
-        rotateSpeed={0.38}
+        panSpeed={allowOrbitRotate ? 0.94 : 1.32}
+        rotateSpeed={0.34}
         zoomSpeed={0.82}
         maxDistance={15}
         minDistance={6.4}
-        minAzimuthAngle={-0.18}
-        maxAzimuthAngle={0.18}
-        minPolarAngle={Math.PI / 2.55}
-        maxPolarAngle={Math.PI / 2.18}
-        enableRotate={false}
+        minAzimuthAngle={allowOrbitRotate ? -0.62 : -0.18}
+        maxAzimuthAngle={allowOrbitRotate ? 0.62 : 0.18}
+        minPolarAngle={allowOrbitRotate ? Math.PI / 2.95 : Math.PI / 2.55}
+        maxPolarAngle={allowOrbitRotate ? Math.PI / 2.02 : Math.PI / 2.18}
+        enableRotate={allowOrbitRotate}
         enableZoom
         target={initialControlsTarget}
         mouseButtons={{
-          LEFT: THREE.MOUSE.PAN,
+          LEFT: allowOrbitRotate ? THREE.MOUSE.ROTATE : THREE.MOUSE.PAN,
           MIDDLE: THREE.MOUSE.DOLLY,
           RIGHT: THREE.MOUSE.PAN,
         }}
         touches={{
-          ONE: THREE.TOUCH.PAN,
+          ONE: allowOrbitRotate ? THREE.TOUCH.ROTATE : THREE.TOUCH.PAN,
           TWO: THREE.TOUCH.DOLLY_PAN,
         }}
       />
