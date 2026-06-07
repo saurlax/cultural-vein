@@ -818,7 +818,6 @@ export function CulturalVeinShell() {
         : transitionState === "returning"
           ? "translate-y-3 scale-[0.992] opacity-0"
           : "translate-y-0 scale-100 opacity-100";
-  const visibleNodePreview = filteredBooks.slice(0, 5);
   const resolvedSearchResult =
     searchResult?.query.trim() === searchTerm.trim() ? searchResult : null;
   const searchSuggestionChips =
@@ -1256,6 +1255,25 @@ export function CulturalVeinShell() {
                         </div>
                         <div className="text-[11px] text-[#c9b68a]">点层级切河道</div>
                       </div>
+                      <div className="mt-3 grid gap-2 text-[11px] text-[#eadfbc]">
+                        {(Object.keys(relationLayerMeta) as Array<keyof typeof relationLayerMeta>).map((layer) => (
+                          <div
+                            key={`desktop-layer-legend-${layer}`}
+                            className={`rounded-[14px] border px-3 py-2 ${relationLayerMeta[layer].tone}`}
+                          >
+                            <div className="font-medium">{relationLayerMeta[layer].label}</div>
+                            <div className="mt-1 text-[10px] leading-5 opacity-80">
+                              {layer === "metadata"
+                                ? "用于展示书目、版本与主线挂接关系。"
+                                : layer === "explicit"
+                                  ? "原文、注疏或目录中能够直接找到援引证据。"
+                                  : layer === "semantic"
+                                    ? "主题、义理或术语高度接近，构成中程支流。"
+                                    : "通过人物、时代与学术路径形成的间接回响。"}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                       <div className="mt-3 flex flex-wrap gap-2">
                         {relationSummary.map(({ layer, count }) => (
                           <button
@@ -1463,24 +1481,6 @@ export function CulturalVeinShell() {
                             ) : null}
                           </div>
                         ) : null}
-                      </div>
-                    ) : null}
-                    {viewMode === "river" && visibleNodePreview.length ? (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {visibleNodePreview.map((book) => (
-                          <button
-                            key={book.id}
-                            type="button"
-                            onClick={() => handleDiveToBook(book.slug)}
-                            className={`rounded-full border px-3 py-1.5 text-xs transition ${
-                              selectedBookSlug === book.slug
-                                ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
-                                : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
-                            }`}
-                          >
-                            {book.shortTitle}
-                          </button>
-                        ))}
                       </div>
                     ) : null}
                   </div>

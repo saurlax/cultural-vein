@@ -2364,16 +2364,8 @@ export function RiverScene(props: RiverSceneProps) {
                   : `${props.activeEra} 水位`}
         </span>
       </div>
-      <div className="pointer-events-none absolute left-1/2 top-16 z-10 hidden w-[min(420px,calc(100vw-2.5rem))] -translate-x-1/2 px-3 lg:block lg:top-20">
-        <div className="rounded-[26px] border border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(145,104,37,0.72),rgba(83,54,16,0.68))] px-5 py-3 text-center shadow-lg shadow-black/20 backdrop-blur-md">
-          <div className="text-[10px] tracking-[0.34em] text-[#f4e2b0]">卷首题签</div>
-          <div className="mt-2 text-[11px] leading-6 text-[#fbf1d2] sm:text-xs">
-            {sceneHint}
-          </div>
-        </div>
-      </div>
-      <div className="pointer-events-none absolute left-4 top-16 z-10 hidden rounded-full border border-[#e7c97b]/18 bg-[rgba(91,60,18,0.34)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md xl:flex">
-        {isInteracting ? "正在拖动画卷" : "拖移河面巡看文脉"}
+      <div className="pointer-events-none absolute right-4 top-16 z-10 hidden max-w-52 rounded-[20px] border border-[#e7c97b]/16 bg-[rgba(83,54,16,0.26)] px-4 py-3 text-[10px] leading-5 text-[#f0e0b8] backdrop-blur-md xl:block">
+        {sceneHint}
       </div>
       <div
         className={`pointer-events-none absolute left-1/2 top-5 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
