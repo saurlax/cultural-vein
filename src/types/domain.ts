@@ -192,7 +192,7 @@ export interface DatasetInsight {
     coverageLayers?: Array<{
       id: string;
       label: string;
-      status: "已接入" | "示范接入" | "待扩展";
+      status: "已显河面" | "正在铺开" | "后续可扩";
       scope: string;
       usage: string;
     }>;

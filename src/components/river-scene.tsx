@@ -2420,7 +2420,7 @@ export function RiverScene(props: RiverSceneProps) {
     <div
       ref={containerRef}
       onContextMenu={(event) => event.preventDefault()}
-      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#dfb55f]/60 bg-[#b77b2f] shadow-[0_0_110px_rgba(77,45,13,0.28)] [touch-action:none]"
+      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#dfb55f]/60 bg-[#b77b2f] shadow-[0_0_110px_rgba(77,45,13,0.28)] touch-none"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-36 bg-[linear-gradient(180deg,rgba(252,239,191,0.42),rgba(195,138,53,0))]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-44 bg-[linear-gradient(0deg,rgba(145,94,28,0.46),rgba(145,94,28,0))]" />
@@ -2441,11 +2441,11 @@ export function RiverScene(props: RiverSceneProps) {
         </span>
       </div>
       <div
-        className={`pointer-events-none absolute left-1/2 top-5 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
+        className={`pointer-events-none absolute left-1/2 top-4 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
           showMobileTouchHint || isInteracting ? "opacity-100" : "opacity-0"
         }`}
       >
-        <div className="rounded-full border border-[#e7c97b]/18 bg-[rgba(132,92,31,0.42)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
+        <div className="rounded-full border border-[#e7c97b]/18 bg-[rgba(132,92,31,0.36)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
           {isInteracting ? "正在拖移长河" : touchModeLabel}
         </div>
       </div>
@@ -2521,7 +2521,7 @@ export function RiverScene(props: RiverSceneProps) {
         }}
         onPointerUp={() => setIsInteracting(false)}
         onPointerLeave={() => setIsInteracting(false)}
-        className={isInteracting ? "cursor-grabbing touch-none" : "cursor-grab touch-none"}
+        className={isInteracting ? "cursor-grabbing !touch-none" : "cursor-grab !touch-none"}
       >
         <RiverWorld
           {...props}

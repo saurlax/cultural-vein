@@ -881,6 +881,17 @@ export function CulturalVeinShell() {
   ];
   const activeDesktopPanelConfig =
     desktopPanels.find((panel) => panel.id === activeDesktopPanel) ?? desktopPanels[0];
+  const coverageStatusClass = (status: NonNullable<typeof coverageLayers>[number]["status"]) => {
+    if (status === "已显河面") {
+      return "bg-emerald-300/14 text-emerald-100";
+    }
+
+    if (status === "正在铺开") {
+      return "bg-amber-300/14 text-amber-100";
+    }
+
+    return "bg-white/8 text-stone-300";
+  };
   const activeEraNarrative = eraNarratives[activeEra];
   const activePanelNarrative =
     activeDesktopPanel === "search"
@@ -1458,13 +1469,7 @@ export function CulturalVeinShell() {
                                       <div className="flex items-center justify-between gap-3">
                                         <div className="text-[11px] text-[#fbf3da]">{layer.label}</div>
                                         <div
-                                          className={`rounded-full px-2 py-0.5 text-[10px] ${
-                                            layer.status === "已接入"
-                                              ? "bg-emerald-300/14 text-emerald-100"
-                                              : layer.status === "示范接入"
-                                                ? "bg-amber-300/14 text-amber-100"
-                                                : "bg-white/8 text-stone-300"
-                                          }`}
+                                          className={`rounded-full px-2 py-0.5 text-[10px] ${coverageStatusClass(layer.status)}`}
                                         >
                                           {layer.status}
                                         </div>
@@ -1833,7 +1838,7 @@ export function CulturalVeinShell() {
 
         {showMobileControls ? (
           <div className="absolute inset-x-3 bottom-[4.35rem] z-40 md:hidden">
-            <div className={`pointer-events-auto max-h-[24vh] overflow-auto p-3 ${panelBaseClass}`}>
+            <div className={`pointer-events-auto max-h-[min(18rem,42vh)] overflow-auto p-3 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">河图</div>
@@ -1847,7 +1852,7 @@ export function CulturalVeinShell() {
                   收卷
                 </button>
               </div>
-              <div className="mt-3 rounded-[18px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-3 text-[12px] leading-6 text-[#eadfbc]">
+              <div className="mt-3 rounded-[18px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-2.5 text-[11px] leading-5 text-[#eadfbc]">
                 {activeDesktopPanel === "search"
                   ? `河面当前显出 ${filteredBooks.length} 部典籍，概念检索会把镜头直接带往对应河段。`
                   : activeDesktopPanel === "era"
@@ -2081,22 +2086,13 @@ export function CulturalVeinShell() {
                   </div>
                 </>
               ) : null}
-              <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(27,17,7,0.18)] px-3 py-3 text-sm leading-6 text-[#eadfbc]">
-                {activeDesktopPanel === "search"
-                  ? `${categoryFilter} 与 ${schoolFilter} 的主线节点正在河面并行显现。`
-                  : activeDesktopPanel === "era"
-                    ? `${activeEra} 的时代水位已经把这一段文脉河势完整托起。`
-                    : activeDesktopPanel === "category"
-                      ? `${categoryFilter} 与 ${schoolFilter} 的筛选结果已经让河道轮廓更集中。`
-                      : "关系层级、来源支流与河上码头正在同一卷面上彼此照应。"}
-              </div>
             </div>
           </div>
         ) : null}
 
         {showMobileDossier && selectedBook && selectedDetail ? (
           <div className="absolute inset-x-3 bottom-[4.35rem] z-40 md:hidden">
-            <div className={`pointer-events-auto max-h-[56vh] overflow-hidden p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
+            <div className={`pointer-events-auto max-h-[min(30rem,46vh)] overflow-hidden p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
               <div className="rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(245,231,188,0.16),rgba(104,72,25,0.14))] p-3">
                 <div className="rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(247,237,206,0.98),rgba(230,204,140,0.94))] px-4 py-4 text-[#42290a]">
                   <div className="rounded-[20px] border border-[#b89247]/16 bg-[rgba(255,255,255,0.18)] px-4 py-3">
@@ -2126,7 +2122,7 @@ export function CulturalVeinShell() {
                     {selectedBook.dynasty} 的这部典籍此刻正以 {focusModeLabel} 停驻卷心，卷内已牵出 {selectedBookCitations.length} 条关联
                     {selectedSources.length ? ` 与 ${selectedSources.length} 类来源回声。` : "。"}
                   </div>
-                  <div className="max-h-[calc(34vh-96px)] overflow-auto pr-1">
+                  <div className="max-h-[calc(28vh-96px)] overflow-auto pr-1">
                     <BookExplorer
                       key={`mobile-explorer-${selectedBook.slug}-${entryExplorerTab ?? "spread"}`}
                       book={selectedBook}
