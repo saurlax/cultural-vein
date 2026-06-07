@@ -352,6 +352,8 @@ export function CulturalVeinShell() {
     "idle" | "diving" | "settling" | "returning"
   >("idle");
   const [transitionTargetSlug, setTransitionTargetSlug] = useState<string | null>(null);
+  const isMobileViewport = () =>
+    typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
 
   const activeEraIndex = eras.indexOf(activeEra);
   const schools = useMemo(
@@ -592,7 +594,8 @@ export function CulturalVeinShell() {
         : null);
 
     if (selectedBookSlug === slug && viewMode === "book") {
-      setShowDesktopDossier(true);
+      const mobileViewport = isMobileViewport();
+      setShowDesktopDossier(!mobileViewport);
       setShowDesktopControls(false);
       setShowMobileControls(false);
       setShowMobileDossier(false);
@@ -606,7 +609,8 @@ export function CulturalVeinShell() {
     setTransitionTargetSlug(slug);
     setTransitionState("diving");
     window.setTimeout(() => {
-      setShowDesktopDossier(true);
+      const mobileViewport = isMobileViewport();
+      setShowDesktopDossier(!mobileViewport);
       setShowDesktopControls(false);
       setShowMobileControls(false);
       setShowMobileDossier(false);
@@ -1087,7 +1091,7 @@ export function CulturalVeinShell() {
     desktopPanels.find((panel) => panel.id === activeDesktopPanel) ?? desktopPanels[0];
   const activeEraNarrative = eraNarratives[activeEra];
   const landingNarrative = activeSourceAtlasEntry
-    ? `眼前先以《${activeSourceAtlasEntry.relatedBookSlugs?.length ? "主线典籍" : "河上节点"}》串起 ${activeSourceAtlasEntry.name} 这股来源支流，再顺着河册、时代与卷内细读逐段入画。`
+    ? `先让 ${activeSourceAtlasEntry.name} 这股来源支流映入河面，再顺着河册与时代水位择书入卷。`
     : "眼前先以主线典籍托住河身，再顺着来源河册、时代水位与卷内细读逐段入画。";
   const sourceAtlasNeighborEntries =
     activeSourceAtlasIndex >= 0
@@ -1176,24 +1180,16 @@ export function CulturalVeinShell() {
       ) : null}
 
       <div className="relative z-10 min-h-screen">
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 hidden items-start justify-between gap-3 px-4 py-4 md:flex sm:px-6 lg:px-8">
-          <div className={`pointer-events-auto max-w-[172px] px-4 py-3 sm:max-w-[188px] ${panelBaseClass}`}>
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className="text-[11px] tracking-[0.32em] text-[#f2dfab]/80">
-                  黄河长卷
-                </div>
-                <h1 className="mt-1 text-[clamp(1.25rem,2vw,1.65rem)] font-semibold text-[#fff4d6]">
-                  文脉溯源
-                </h1>
-              </div>
-              <div className="rounded-full border border-[#ead8a6]/24 bg-[rgba(255,248,220,0.08)] px-3 py-1 text-[11px] text-[#eadfbc]">
-                {viewMode === "river" ? "巡河" : "入卷"}
-              </div>
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 hidden px-4 py-4 md:block sm:px-6 lg:px-8">
+          <div
+            className={`pointer-events-auto inline-flex max-w-[min(34rem,calc(100vw-10rem))] items-center gap-4 rounded-full px-4 py-2.5 ${panelBaseClass}`}
+          >
+            <div>
+              <div className="text-[10px] tracking-[0.32em] text-[#f2dfab]/80">黄河长卷</div>
+              <h1 className="mt-0.5 text-[1.2rem] font-semibold text-[#fff4d6]">文脉溯源</h1>
             </div>
-            <div className="mt-3 rounded-[18px] border border-[#ead8a6]/12 bg-[rgba(76,49,16,0.22)] px-3 py-3 text-[11px] leading-6 text-[#f6e8bd]">
-              {landingNarrative}
-            </div>
+            <div className="h-8 w-px bg-[#c99d4f]/36" />
+            <div className="min-w-0 text-[11px] leading-6 text-[#f6e8bd]">{landingNarrative}</div>
           </div>
         </div>
 
@@ -1215,7 +1211,7 @@ export function CulturalVeinShell() {
                   : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#f5ebc8]"
               }`}
             >
-              河册
+              控卷
             </button>
             {selectedBook ? (
               <button
@@ -1230,14 +1226,14 @@ export function CulturalVeinShell() {
                     : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#f5ebc8]"
                 }`}
               >
-                文卷
+                卷内
               </button>
             ) : null}
           </div>
         </div>
 
         {showDesktopControls ? (
-          <div className="absolute right-[4.15rem] top-1/2 z-20 hidden w-[196px] -translate-y-1/2 md:block lg:right-[4.55rem] lg:w-[204px]">
+          <div className="absolute right-[4.15rem] top-1/2 z-20 hidden w-[184px] -translate-y-1/2 md:block lg:right-[4.55rem] lg:w-[196px]">
             <aside className="pointer-events-auto xl:pt-2">
               <div className={`relative overflow-hidden p-3.5 ${panelBaseClass}`}>
               <div className="pointer-events-none absolute inset-y-5 left-2 w-px bg-[linear-gradient(180deg,transparent,rgba(244,220,156,0.42),transparent)]" />
@@ -1281,11 +1277,7 @@ export function CulturalVeinShell() {
                     <div className="text-[10px] tracking-[0.22em] text-[#d8c9a3]">
                       {activeDesktopPanelConfig.summary}
                     </div>
-                    {viewMode === "river" ? (
-                      <div className="mt-2 text-[11px] leading-5 text-[#eadfbc]">
-                        先看来源河册辨认支流，再拖河巡看时代起伏，最后择一典籍入卷细读。
-                      </div>
-                    ) : null}
+                    {viewMode === "river" ? <div className="mt-2 text-[11px] leading-5 text-[#eadfbc]">拖河巡看，再择书入卷。</div> : null}
                   </div>
                   {viewMode === "book" ? (
                     <button
@@ -1977,13 +1969,16 @@ export function CulturalVeinShell() {
             onOpenEraPanel={() => handleOpenDesktopPanel("era")}
             onReturnToRiver={selectedBook ? handleReturnToRiver : null}
             mobilePanelOpen={showMobileControls || showMobileDossier}
+            overlayBusy={
+              showDesktopControls || showDesktopDossier || showMobileControls || showMobileDossier
+            }
           />
         </main>
 
         {showMobileControls ? (
           <div className="absolute inset-x-0 bottom-[4.8rem] z-40 px-3 md:hidden">
             <div
-              className={`pointer-events-auto mx-auto w-full max-w-[24rem] max-h-[min(15rem,34vh)] overflow-auto rounded-[28px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.18)] ${panelBaseClass}`}
+              className={`pointer-events-auto mx-auto w-full max-w-[22rem] max-h-[min(13rem,30vh)] overflow-auto rounded-[28px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.18)] ${panelBaseClass}`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -2034,16 +2029,6 @@ export function CulturalVeinShell() {
                       {activeSourceAtlasEntry?.stat ?? sourceAtlasMass.toLocaleString()}
                     </div>
                   </div>
-                  {atlasMeta ? (
-                    <div className="mt-2 text-[11px] leading-5 text-[#eadfbc]">
-                      先以 {atlasMeta.demoBookCount} 部主线典籍托住河身，已接入 {atlasMeta.activeSources} 股真实来源。
-                    </div>
-                  ) : null}
-                  {atlasMeta ? (
-                    <div className="mt-2 text-[10px] leading-5 text-[#d8c9a3]">
-                      同一装配链仍可续展至 {atlasMeta.totalBookCount.toLocaleString()} 种古籍。
-                    </div>
-                  ) : null}
                   <div className="mt-2 text-[11px] leading-5 text-[#eadfbc]">
                     {activeSourceAtlasEntry?.summary ?? "来源支流已映上河面。"}
                   </div>
@@ -2105,12 +2090,8 @@ export function CulturalVeinShell() {
                     className="w-full rounded-[22px] border border-[#b89247]/18 bg-[rgba(255,255,255,0.18)] px-4 py-3 text-left transition hover:bg-[rgba(255,255,255,0.24)]"
                   >
                     <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">文卷入口</div>
-                    <div className="mt-2 text-sm font-medium text-[#5b3a11]">
-                      展开《{selectedBook.shortTitle}》卷内细读
-                    </div>
-                    <div className="mt-1 text-[11px] leading-5 text-[#6f4b18]">
-                      地理传播、人物关系、版本流变、时间线与文本溯源都在卷内展开。
-                    </div>
+                    <div className="mt-2 text-sm font-medium text-[#5b3a11]">展开《{selectedBook.shortTitle}》卷内细读</div>
+                    <div className="mt-1 text-[11px] leading-5 text-[#6f4b18]">卷内细节放到这里再看，不挡河面。</div>
                   </button>
                 </div>
               ) : null}
@@ -2332,7 +2313,7 @@ export function CulturalVeinShell() {
                     : "border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(182,134,53,0.88),rgba(109,73,24,0.82))] text-[#fff0c7]"
                 }`}
               >
-                {selectedBook ? "河册与文卷" : "河册"}
+                {selectedBook ? `已选《${selectedBook.shortTitle}》` : "展开控卷"}
               </button>
             </div>
           </div>

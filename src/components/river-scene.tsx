@@ -106,6 +106,7 @@ interface RiverSceneProps {
   onOpenEraPanel?: (() => void) | null;
   onReturnToRiver?: (() => void) | null;
   mobilePanelOpen?: boolean;
+  overlayBusy?: boolean;
 }
 
 interface CruiseSnapshot {
@@ -2339,19 +2340,22 @@ function RiverWorld({
         screenSpacePanning
         enableDamping
         dampingFactor={0.08}
-        panSpeed={1.1}
-        rotateSpeed={0.72}
-        zoomSpeed={0.9}
-        maxDistance={16}
-        minDistance={6}
-        maxPolarAngle={Math.PI / 2.1}
-        enableRotate={cinematicState !== "diving"}
+        panSpeed={1.32}
+        rotateSpeed={0.38}
+        zoomSpeed={0.82}
+        maxDistance={15}
+        minDistance={6.4}
+        minAzimuthAngle={-0.18}
+        maxAzimuthAngle={0.18}
+        minPolarAngle={Math.PI / 2.55}
+        maxPolarAngle={Math.PI / 2.18}
+        enableRotate={false}
         enableZoom
         target={initialControlsTarget}
         mouseButtons={{
           LEFT: THREE.MOUSE.PAN,
           MIDDLE: THREE.MOUSE.DOLLY,
-          RIGHT: THREE.MOUSE.ROTATE,
+          RIGHT: THREE.MOUSE.PAN,
         }}
         touches={{
           ONE: THREE.TOUCH.PAN,
@@ -2377,6 +2381,7 @@ export function RiverScene(props: RiverSceneProps) {
     !props.searchFocusSlug;
   const cruiseRunning = canCruise && autoCruise;
   const mobilePanelOpen = props.mobilePanelOpen ?? false;
+  const overlayBusy = props.overlayBusy ?? false;
   const searchFocusBook =
     props.searchFocusSlug
       ? props.books.find((book) => book.slug === props.searchFocusSlug) ?? null
@@ -2579,9 +2584,9 @@ export function RiverScene(props: RiverSceneProps) {
           {isInteracting ? "正在拖移长河" : touchModeLabel}
         </div>
       </div>
-      {canCruise && (activeCruiseStory?.trunk || sceneHint) ? (
+      {canCruise && (activeCruiseStory?.trunk || sceneHint) && !overlayBusy ? (
         <div
-        className={`absolute bottom-5 left-5 z-20 hidden w-[min(214px,calc(100vw-2.5rem))] transition-all duration-300 xl:block ${
+        className={`absolute bottom-5 left-5 z-20 hidden w-[min(188px,calc(100vw-2.5rem))] transition-all duration-300 xl:block ${
           mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
         }`}
       >
