@@ -978,6 +978,23 @@ export function BookExplorer({
           Math.min(institutionRecords.length, activeInstitutionRecordIndex + 2),
         )
     : institutionPreview;
+  const activeVersionPrimaryRecord =
+    versionEvidenceSamples[0] ?? activeInstitutionRecord ?? institutionPreview[0] ?? null;
+  const activeVersionGalleryRecords = (
+    versionEvidenceSamples.length ? versionEvidenceSamples : activeInstitutionPreviewWindow
+  ).slice(0, 3);
+  const activeVersionVisualBadge = activeVersionPrimaryRecord?.imageRef
+    ? `影像号 ${activeVersionPrimaryRecord.imageRef}`
+    : activeVersionPrimaryRecord?.category ?? "馆藏卷录";
+  const activeVersionArchiveSummary = activeVersionPrimaryRecord
+    ? [
+        activeVersionPrimaryRecord.institution,
+        activeVersionPrimaryRecord.year,
+        activeVersionPrimaryRecord.category,
+      ]
+        .filter(Boolean)
+        .join(" · ")
+    : `${activeVersion?.place ?? "版本河段"} · ${activeVersion?.library ?? "版本系统"}`;
   const linkedVenueEventMap = new Map(
     venuePreview.map((venue) => {
       const matchedEvents = (detail.realWorldSignals?.eventSamples ?? []).filter(
@@ -2966,6 +2983,92 @@ export function BookExplorer({
                               回到版本链起点，顺着祖本到当前节点重新讲清传承位置。
                             </div>
                           </button>
+                        </div>
+
+                        <div className="mt-4 rounded-2xl border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4">
+                          <div className="flex flex-wrap items-start justify-between gap-3">
+                            <div>
+                              <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">馆藏卷录</div>
+                              <div className="mt-2 text-base font-semibold text-[#fbf3da]">
+                                {activeVersionPrimaryRecord?.title ?? activeVersion.label}
+                              </div>
+                              <div className="mt-2 text-sm text-stone-300">
+                                {activeVersionArchiveSummary}
+                              </div>
+                            </div>
+                            <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
+                              {activeVersionVisualBadge}
+                            </div>
+                          </div>
+                          <div className="mt-4 grid gap-3 xl:grid-cols-[1.05fr_0.95fr]">
+                            <div className="rounded-[22px] border border-white/10 bg-black/15 px-4 py-4">
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="text-xs tracking-[0.2em] text-stone-400">卷面图录</div>
+                                <div className="text-[10px] text-stone-400">
+                                  {activeVersionGalleryRecords.length} 条线索
+                                </div>
+                              </div>
+                              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                                {activeVersionGalleryRecords.map((item) => (
+                                  <button
+                                    key={`version-gallery-${item.institution}-${item.title}-${item.imageRef ?? item.sourceText ?? "trace"}`}
+                                    type="button"
+                                    onClick={() => handleSelectInstitutionRecord(item)}
+                                    className="rounded-[18px] border border-white/10 bg-[rgba(255,255,255,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,255,255,0.08)]"
+                                  >
+                                    <div className="flex h-28 items-end rounded-[14px] border border-amber-300/12 bg-[linear-gradient(180deg,rgba(245,229,188,0.16),rgba(77,51,18,0.28))] p-3">
+                                      <div className="w-full">
+                                        <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">
+                                          {item.imageRef ? "影像卷面" : "馆藏卷面"}
+                                        </div>
+                                        <div className="mt-2 line-clamp-2 text-sm font-medium text-[#fbf3da]">
+                                          {item.title}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="mt-3 text-xs text-stone-300">
+                                      {item.institution}
+                                    </div>
+                                    <div className="mt-1 text-[11px] text-stone-400">
+                                      {item.imageRef ?? item.category ?? item.year ?? "馆藏条目"}
+                                    </div>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="rounded-[22px] border border-amber-300/12 bg-amber-300/6 px-4 py-4">
+                              <div className="text-xs tracking-[0.2em] text-amber-100/75">藏馆落点</div>
+                              <div className="mt-2 text-sm leading-7 text-stone-200">
+                                {activeVersionPrimaryRecord?.sourceText ??
+                                  "这一层版本已经挂到可回查的馆藏或专题记录，版本流变与机构落点可以在同一卷面上对照观看。"}
+                              </div>
+                              <div className="mt-4 flex flex-wrap gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenSourceEvidence("institution-samples")}
+                                  className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                                >
+                                  打开馆藏总录
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (activeVersionPrimaryRecord) {
+                                      handleSelectInstitutionRecord(activeVersionPrimaryRecord);
+                                    }
+                                  }}
+                                  disabled={!activeVersionPrimaryRecord}
+                                  className={`rounded-full px-3 py-1.5 text-xs transition ${
+                                    activeVersionPrimaryRecord
+                                      ? "border border-white/10 bg-white/5 text-stone-200 hover:bg-white/10"
+                                      : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                                  }`}
+                                >
+                                  卷心馆藏
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
 
                         <div className="mt-4 grid gap-3 xl:grid-cols-[0.92fr_1.08fr]">
