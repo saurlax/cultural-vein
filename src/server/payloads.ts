@@ -593,7 +593,7 @@ export function getInsightsPayload(): DatasetInsight {
     realSupplements.artlibSample?.available
       ? {
           id: "artlib",
-          name: "Artlib 艺术库",
+          name: "世界艺术鉴赏库",
           summary: realSupplements.artlibSample.summary,
           stat: `${realSupplements.artlibSample.sampleTitles?.length ?? 0} 组艺术资源`,
           magnitude:
@@ -690,7 +690,7 @@ export function getInsightsPayload(): DatasetInsight {
           id: "art-image",
           label: "艺术图像",
           status: "已显河面",
-          scope: "Artlib 世界艺术鉴赏库",
+          scope: "世界艺术鉴赏库",
           usage: "近现代审美传播、人物图像与艺术品资源补充，可继续外推到展陈与图像叙事场景。",
         },
         {

@@ -319,7 +319,7 @@ function buildInstitutionAccessMeta(record: {
     };
   }
 
-  if (record.institution.includes("Artlib")) {
+  if (record.institution.includes("Artlib") || record.institution.includes("世界艺术鉴赏库")) {
     return {
       label: "艺术资源入口",
       href: "https://openapi.artlib.cn",

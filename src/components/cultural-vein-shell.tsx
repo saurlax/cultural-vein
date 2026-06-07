@@ -1001,7 +1001,10 @@ export function CulturalVeinShell() {
           return book.dynasty === "近现代";
         }
 
-        if (activeSourceAtlasEntry.name.includes("CBDB")) {
+        if (
+          activeSourceAtlasEntry.name.includes("CBDB") ||
+          activeSourceAtlasEntry.name.includes("纪传")
+        ) {
           return book.category === "史" || book.category === "经";
         }
 

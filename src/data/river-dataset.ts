@@ -6229,16 +6229,16 @@ if (artlibSample.available) {
       ...detail.realWorldSignals,
       sourceLabel: appendSourceLabel(
         detail.realWorldSignals?.sourceLabel,
-        "Artlib 世界艺术资料",
+        "世界艺术资料",
       ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
       ],
       venueSummary: detail.realWorldSignals?.venueSummary
-        ? `${detail.realWorldSignals.venueSummary} 同时已挂接 Artlib 世界艺术鉴赏库，可继续把近现代审美传播外推到人物图像与艺术品资源。`
+        ? `${detail.realWorldSignals.venueSummary} 同时已挂接世界艺术鉴赏库，可继续把近现代审美传播外推到人物图像与艺术品资源。`
         : artlibSample.summary ??
-          "Artlib 世界艺术鉴赏库资料已映入这段河面。",
+          "世界艺术鉴赏库资料已映入这段河面。",
     };
   }
 }
