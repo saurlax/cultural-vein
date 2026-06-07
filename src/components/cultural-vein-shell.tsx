@@ -555,7 +555,7 @@ export function CulturalVeinShell() {
 
     const timer = window.setTimeout(() => {
       setTransitionState("idle");
-    }, transitionState === "settling" ? 650 : 420);
+    }, transitionState === "settling" ? 650 : 620);
 
     return () => window.clearTimeout(timer);
   }, [transitionState]);
@@ -650,7 +650,7 @@ export function CulturalVeinShell() {
         setActiveDesktopPanel("branch");
       }
       resetSelection();
-    }, 120);
+    }, 280);
   };
   const handleEraFocus = useCallback(
     (era: (typeof eras)[number]) => {
@@ -1133,6 +1133,8 @@ export function CulturalVeinShell() {
     ? "border-amber-200/24 bg-[linear-gradient(135deg,rgba(125,82,18,0.4),rgba(37,24,8,0.9))]"
     : transitionState === "diving" || transitionState === "settling"
       ? "border-amber-300/22 bg-[linear-gradient(135deg,rgba(133,84,18,0.48),rgba(52,32,10,0.92))]"
+      : transitionState === "returning"
+        ? "border-amber-200/20 bg-[linear-gradient(135deg,rgba(115,73,16,0.34),rgba(40,25,8,0.84))]"
       : "border-amber-200/18 bg-[linear-gradient(135deg,rgba(97,63,14,0.42),rgba(34,22,8,0.9))]";
   const dossierMotionClass =
     transitionState === "diving"
@@ -1140,11 +1142,13 @@ export function CulturalVeinShell() {
       : transitionState === "settling"
         ? "translate-y-0 scale-100 opacity-100"
         : transitionState === "returning"
-          ? "translate-x-12 -translate-y-2 scale-x-[0.9] scale-y-[1.01] opacity-0 blur-[2px]"
+          ? "translate-x-16 translate-y-1 scale-x-[0.82] scale-y-[1.01] opacity-0 blur-[3px]"
           : "translate-y-0 scale-100 opacity-100";
   const dossierShellClass =
     transitionState === "diving" || transitionState === "settling"
       ? "shadow-[0_0_42px_rgba(245,158,11,0.16)]"
+      : transitionState === "returning"
+        ? "shadow-[0_0_24px_rgba(245,158,11,0.1)]"
       : "shadow-[0_18px_48px_rgba(41,22,5,0.18)]";
   const resolvedSearchResult =
     searchResult?.query.trim() === searchTerm.trim() ? searchResult : null;
@@ -1297,7 +1301,9 @@ export function CulturalVeinShell() {
                 ? "bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.22),rgba(4,8,7,0.9)_68%)] backdrop-blur-[3px]"
                 : transitionState === "settling"
                   ? "bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.18),rgba(38,24,8,0.74)_72%)]"
-                  : "bg-[radial-gradient(circle_at_center,rgba(243,212,123,0.08),rgba(4,8,7,0.84)_70%)]"
+                  : transitionState === "returning"
+                    ? "bg-[radial-gradient(circle_at_62%_46%,rgba(243,212,123,0.16),rgba(4,8,7,0.86)_72%)] backdrop-blur-[2px]"
+                    : "bg-[radial-gradient(circle_at_center,rgba(243,212,123,0.08),rgba(4,8,7,0.84)_70%)]"
             }`}
           />
           <div
@@ -1306,7 +1312,9 @@ export function CulturalVeinShell() {
                 ? "translate-x-10 opacity-100 blur-[6px] scale-x-[0.86]"
                 : transitionState === "settling"
                   ? "translate-x-0 opacity-70 blur-[10px] scale-x-100"
-                  : "translate-x-14 opacity-0 blur-[18px] scale-x-[0.82]"
+                  : transitionState === "returning"
+                    ? "translate-x-18 opacity-84 blur-[8px] scale-x-[0.72]"
+                    : "translate-x-14 opacity-0 blur-[18px] scale-x-[0.82]"
             }`}
           />
           <div
@@ -1324,7 +1332,9 @@ export function CulturalVeinShell() {
                 ? "opacity-100 blur-[10px] scale-y-[1.08]"
                 : transitionState === "settling"
                   ? "opacity-66 blur-[12px] scale-y-100"
-                  : "opacity-0 blur-[18px] scale-y-[0.92]"
+                  : transitionState === "returning"
+                    ? "opacity-38 blur-[14px] scale-y-[0.96]"
+                    : "opacity-0 blur-[18px] scale-y-[0.92]"
             }`}
           />
           <div
@@ -1333,7 +1343,9 @@ export function CulturalVeinShell() {
                 ? "translate-x-10 opacity-95 blur-[1px]"
                 : transitionState === "settling"
                   ? "translate-x-0 opacity-68 blur-[2px]"
-                  : "translate-x-12 opacity-0 blur-[6px]"
+                  : transitionState === "returning"
+                    ? "translate-x-18 opacity-88 blur-[1px]"
+                    : "translate-x-12 opacity-0 blur-[6px]"
             }`}
           />
           <div
@@ -1342,7 +1354,9 @@ export function CulturalVeinShell() {
                 ? "translate-x-8 opacity-90 blur-[4px]"
                 : transitionState === "settling"
                   ? "translate-x-0 opacity-54 blur-[8px]"
-                  : "translate-x-12 opacity-0 blur-[16px]"
+                  : transitionState === "returning"
+                    ? "translate-x-18 opacity-72 blur-[6px]"
+                    : "translate-x-12 opacity-0 blur-[16px]"
             }`}
           />
           {transitionLabel ? (
