@@ -417,6 +417,12 @@ export function BookExplorer({
   const activeTimelineIndex = activeTimelineItem
     ? visibleTimeline.findIndex((item) => item.id === activeTimelineItem.id)
     : -1;
+  const activeTimelineWindow = activeTimelineItem
+    ? visibleTimeline.slice(
+        Math.max(0, activeTimelineIndex - 1),
+        Math.min(visibleTimeline.length, activeTimelineIndex + 2),
+      )
+    : visibleTimeline.slice(0, 3);
   const activeSpreadPlaces = useMemo(() => {
     if (!activeSpread) {
       return null;
@@ -3556,8 +3562,52 @@ export function BookExplorer({
                               : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
                           }`}
                         >
-                          后一事
+                            后一事
                         </button>
+                      </div>
+                      <div className="mt-4 rounded-2xl border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-4 py-4">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <div>
+                            <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">时间卷轴</div>
+                            <div className="mt-1 text-sm text-[#eadfbc]">
+                              第 {Math.max(activeTimelineIndex + 1, 1)} / {Math.max(visibleTimeline.length, 1)} 事
+                            </div>
+                          </div>
+                          <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] text-stone-300">
+                            顺时推看
+                          </div>
+                        </div>
+                        {activeTimelineWindow.length > 1 ? (
+                          <div className="mt-4 grid gap-3 md:grid-cols-3">
+                            {activeTimelineWindow.map((item) => {
+                              const isActive = item.id === activeTimelineItem.id;
+
+                              return (
+                                <button
+                                  key={`timeline-window-${item.id}`}
+                                  type="button"
+                                  onClick={() => handleSelectTimelineItem(item.id)}
+                                  className={`rounded-[18px] border px-3 py-3 text-left transition ${
+                                    isActive
+                                      ? "border-amber-300/30 bg-amber-300/10"
+                                      : "border-white/10 bg-white/5 hover:bg-white/10"
+                                  }`}
+                                >
+                                  <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">
+                                    {isActive ? "当前事件" : "相邻事件"}
+                                  </div>
+                                  <div className="mt-2 text-sm font-medium text-[#fbf3da]">
+                                    {item.title}
+                                  </div>
+                                  <div className="mt-2 text-[11px] text-amber-100">{item.year}</div>
+                                  <div className="mt-2 line-clamp-2 text-[11px] leading-5 text-stone-300">
+                                    {item.detail}
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        ) : null}
                       </div>
                       <p className="mt-4 text-sm leading-7 text-stone-300">
                         {activeTimelineItem.detail}
