@@ -541,6 +541,9 @@ export function CulturalVeinShell() {
       .filter((route): route is NonNullable<typeof route> => Boolean(route));
   })();
   const sourceAtlasRouteMap = new Map(sourceAtlasRoutes.map((route) => [route.id, route]));
+  const activeSourceRoute = activeSourceAtlasEntry
+    ? sourceAtlasRouteMap.get(activeSourceAtlasEntry.id) ?? null
+    : null;
   const activeSourceDock =
     sourceAtlasDockMarkers.find((dock) => dock.id === selectedDockId) ??
     sourceAtlasDockMarkers.find((dock) => dock.id === hoveredDockId) ??
@@ -1149,34 +1152,57 @@ export function CulturalVeinShell() {
                             </div>
                           </button>
                         ) : null}
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {sourceAtlasEntries.slice(0, 6).map((entry) => (
-                            <button
-                              key={entry.id}
-                              type="button"
-                              onClick={() => handleSourceAtlasSelect(entry.id)}
-                              className={`rounded-full px-3 py-1.5 text-[11px] transition ${
-                                activeSourceAtlasEntry?.id === entry.id
-                                  ? "bg-[#f3dfab] text-[#42290a]"
-                                  : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
-                              }`}
-                            >
-                              {entry.name}
-                            </button>
-                          ))}
+                        <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.26)] px-3 py-3">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="text-[11px] tracking-[0.2em] text-[#d8c9a3]">来源河册</div>
+                            <div className="text-[10px] text-[#c9b68a]">顺着样本切河段</div>
+                          </div>
+                          <div className="mt-3 space-y-2">
+                            {sourceAtlasEntries.slice(0, 6).map((entry) => {
+                              const route = sourceAtlasRouteMap.get(entry.id);
+                              const isActive = activeSourceAtlasEntry?.id === entry.id;
+
+                              return (
+                                <button
+                                  key={`desktop-source-route-${entry.id}`}
+                                  type="button"
+                                  onClick={() => handleSourceAtlasSelect(entry.id)}
+                                  className={`flex w-full items-center justify-between gap-3 rounded-[14px] border px-3 py-2.5 text-left transition ${
+                                    isActive
+                                      ? "border-amber-300/28 bg-[rgba(120,81,26,0.4)]"
+                                      : "border-[#ead8a6]/10 bg-[rgba(255,248,220,0.03)] hover:bg-[rgba(255,248,220,0.07)]"
+                                  }`}
+                                >
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-2">
+                                      <span
+                                        className="h-2.5 w-2.5 shrink-0 rounded-full"
+                                        style={{ backgroundColor: route?.color ?? "#d6a33d" }}
+                                      />
+                                      <span className="truncate text-[11px] text-[#fbf3da]">
+                                        {entry.name}
+                                      </span>
+                                    </div>
+                                    <div className="mt-1 truncate text-[10px] text-[#d8c9a3]">
+                                      {entry.stat ?? "真实来源样本"}
+                                    </div>
+                                  </div>
+                                  <div className="shrink-0 text-[10px] text-[#f2dfab]">
+                                    {isActive ? "已映照" : route ? "在河上" : "待切入"}
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
                         {activeSourceAtlasEntry ? (
-                          <button
-                            type="button"
-                            onClick={() => handleSourceAtlasSelect(activeSourceAtlasEntry.id)}
-                            className="mt-3 w-full rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
-                          >
+                          <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3">
                             <div className="flex items-start justify-between gap-3">
                               <div className="min-w-0">
                                 <div className="truncate text-xs font-medium text-[#fbf3da]">
                                   {activeSourceAtlasEntry.name}
                                 </div>
-                                <div className="mt-1 text-[11px] leading-5 text-[#e6d7ae] line-clamp-3">
+                                <div className="mt-1 text-[11px] leading-5 text-[#e6d7ae]">
                                   {activeSourceAtlasEntry.summary ?? "真实来源样本"}
                                 </div>
                               </div>
@@ -1184,10 +1210,73 @@ export function CulturalVeinShell() {
                                 {activeSourceAtlasEntry.stat}
                               </div>
                             </div>
-                            <div className="mt-3 text-[11px] text-[#e6d7ae]">
-                              继续把这组真实来源映上河面，并顺着样本码头切入对应河段。
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => handleSourceAtlasSelect(activeSourceAtlasEntry.id)}
+                                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                              >
+                                映到河面
+                              </button>
+                              {activeSourceAtlasEntry.sampleRecords?.slice(0, 4).map((record, index) => {
+                                const dockId = getSourceAtlasDockId(index);
+                                const isDockActive = dockId !== null && activeSourceDock?.id === dockId;
+
+                                return (
+                                  <button
+                                    key={`desktop-source-record-${activeSourceAtlasEntry.id}-${record.title}`}
+                                    type="button"
+                                    onClick={() => handleSourceRecordFocus(index)}
+                                    className={`rounded-full px-3 py-1.5 text-[10px] transition ${
+                                      isDockActive
+                                        ? "bg-[#f3dfab] text-[#42290a]"
+                                        : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                                    }`}
+                                  >
+                                    {record.title}
+                                  </button>
+                                );
+                              })}
                             </div>
-                          </button>
+                            {activeSourceRoute ? (
+                              <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.26)] px-3 py-2.5 text-[11px] text-[#dccb9c]">
+                                这股来源支流当前沿
+                                <span className="px-1 text-[#fbf3da]">
+                                  {activeSourceRoute.points.length}
+                                </span>
+                                个样本码头铺开，可直接点样本题签把镜头停到对应河段。
+                              </div>
+                            ) : null}
+                            {activeSourceRecord ? (
+                              <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.34)] px-3 py-2.5">
+                                <div className="text-[11px] font-medium leading-5 text-[#fbf3da]">
+                                  {activeSourceRecord.title}
+                                </div>
+                                <div className="mt-1 text-[10px] text-[#f2dfab]">
+                                  {[activeSourceRecord.category, activeSourceRecord.year]
+                                    .filter(Boolean)
+                                    .join(" · ") || "样本条目"}
+                                </div>
+                                {activeSourceRecord.note ? (
+                                  <div className="mt-1 text-[11px] leading-5 text-[#dccb9c] line-clamp-4">
+                                    {activeSourceRecord.note}
+                                  </div>
+                                ) : null}
+                              </div>
+                            ) : null}
+                            {activeSourceDock ? (
+                              <div className="mt-2 rounded-[14px] border border-amber-300/18 bg-[rgba(89,60,19,0.34)] px-3 py-2.5">
+                                <div className="text-[11px] font-medium leading-5 text-[#fbf3da]">
+                                  {activeSourceDock.label}
+                                </div>
+                                {activeSourceDock.note ? (
+                                  <div className="mt-1 text-[11px] leading-5 text-[#dccb9c] line-clamp-4">
+                                    {activeSourceDock.note}
+                                  </div>
+                                ) : null}
+                              </div>
+                            ) : null}
+                          </div>
                         ) : null}
                       </div>
                     ) : null}
