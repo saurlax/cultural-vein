@@ -39,6 +39,35 @@ export interface ExplorerOpenOptions {
   entryTab?: ExplorerTab | null;
 }
 
+const tabNarratives: Record<
+  ExplorerTab,
+  {
+    lead: string;
+    next: ExplorerTab[];
+  }
+> = {
+  spread: {
+    lead: "先从传播河段看这部典籍如何离开原点，哪些地理落点把它托成一条可见长河。",
+    next: ["people", "timeline"],
+  },
+  people: {
+    lead: "再看人物关系，辨认是谁把这部书带入不同语境，谁又让它在别的河段继续显影。",
+    next: ["versions", "passages"],
+  },
+  versions: {
+    lead: "版本流变负责把抽象文脉压到具体卷录，祖本、刻本与馆藏会把源流关系钉在卷面上。",
+    next: ["passages", "timeline"],
+  },
+  timeline: {
+    lead: "时间线把事件、纪传与馆藏线索串成前后次序，让整部书在时代里真正移动起来。",
+    next: ["versions", "passages"],
+  },
+  passages: {
+    lead: "最后回到文字本身，对读片段、上游源流与下游回声，让文脉落到可逐字辨认的证据上。",
+    next: ["timeline", "spread"],
+  },
+};
+
 const eraOrder: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
 const eraYearRange: Record<RiverEra, { start: number; end: number }> = {
   "先秦": { start: -2000, end: -221 },
@@ -269,7 +298,7 @@ export function BookExplorer({
   onSceneFocusChange?: (focus: SceneFocusState | null) => void;
   onOpenBook?: (slug: string, options?: ExplorerOpenOptions) => void;
 }) {
-  const [tab, setTab] = useState<ExplorerTab>(forcedTab ?? "spread");
+  const [manualTab, setManualTab] = useState<ExplorerTab | null>(null);
   const [passageLayout, setPassageLayout] = useState<"horizontal" | "vertical">("horizontal");
   const [selectedSpreadId, setSelectedSpreadId] = useState<string | null>(null);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
@@ -468,7 +497,7 @@ export function BookExplorer({
       link: activePassage.links[index] ?? null,
     }));
   }, [activePassage]);
-  const activeTab = tab;
+  const activeTab = forcedTab ?? manualTab ?? "spread";
   const activeTraceFocus = useMemo<TraceFocusState | null>(() => {
     if (activeTab !== "passages" || !activePassage?.tracePath?.length || !tracePlaying) {
       return null;
@@ -614,20 +643,23 @@ export function BookExplorer({
   const dossierEntryCards = [
     {
       label: `${book.dynasty} · ${book.category}`,
-      onClick: () => setTab("timeline"),
+      onClick: () => setManualTab("timeline"),
     },
     {
       label: book.school,
-      onClick: () => setTab("people"),
+      onClick: () => setManualTab("people"),
     },
   ] as const;
-  const eraLinkedSummary = {
-    spread: visibleSpread.length,
-    people: visiblePeople.length,
-    versions: visibleVersions.length,
-    timeline: visibleTimeline.length,
-    passages: visiblePassages.length,
-  };
+  const eraLinkedSummary = useMemo(
+    () => ({
+      spread: visibleSpread.length,
+      people: visiblePeople.length,
+      versions: visibleVersions.length,
+      timeline: visibleTimeline.length,
+      passages: visiblePassages.length,
+    }),
+    [visiblePassages.length, visiblePeople.length, visibleSpread.length, visibleTimeline.length, visibleVersions.length],
+  );
   const handleSelectPassage = (passageId: string) => {
     setSelectedPassageId(passageId);
     setSelectedLinkId(null);
@@ -732,7 +764,7 @@ export function BookExplorer({
       if (visiblePeople[0]?.id) {
         setSelectedPersonId(visiblePeople[0].id);
       }
-      setTab("people");
+      setManualTab("people");
       return;
     }
 
@@ -740,7 +772,7 @@ export function BookExplorer({
       if (visibleSpread[0]?.id) {
         setSelectedSpreadId(visibleSpread[0].id);
       }
-      setTab("spread");
+      setManualTab("spread");
       return;
     }
 
@@ -748,7 +780,7 @@ export function BookExplorer({
       if (visibleTimeline[0]?.id) {
         handleSelectTimelineItem(visibleTimeline[0].id);
       }
-      setTab("timeline");
+      setManualTab("timeline");
       return;
     }
 
@@ -762,7 +794,7 @@ export function BookExplorer({
       if (visibleVersions[0]?.id) {
         setSelectedVersionId(visibleVersions[0].id);
       }
-      setTab("versions");
+      setManualTab("versions");
     }
   };
   const handleOpenSourceSample = (evidenceId: string, sample: { label: string; detail?: string }) => {
@@ -776,7 +808,7 @@ export function BookExplorer({
       }
 
       setSelectedSourceEvidenceId("cbdb-people");
-      setTab("people");
+      setManualTab("people");
       return;
     }
 
@@ -789,7 +821,7 @@ export function BookExplorer({
       }
 
       setSelectedSourceEvidenceId("venue-samples");
-      setTab("spread");
+      setManualTab("spread");
       return;
     }
 
@@ -802,7 +834,7 @@ export function BookExplorer({
         setSelectedSourceEvidenceId("event-samples");
       }
 
-      setTab("timeline");
+      setManualTab("timeline");
       return;
     }
 
@@ -817,7 +849,7 @@ export function BookExplorer({
         setSelectedVersionId(visibleVersions[0].id);
       }
 
-      setTab("versions");
+      setManualTab("versions");
     }
   };
   const handleSelectSpreadIndex = (index: number) => {
@@ -1047,6 +1079,25 @@ export function BookExplorer({
     showSecondaryPeople || (activePerson?.relationTier ?? 2) === 2;
   const visibleSecondaryPeople = secondaryPeopleExpanded ? secondaryPeople : [];
   const activeTabMeta = tabs.find((item) => item.id === activeTab) ?? tabs[0];
+  const readingSequence = useMemo<ExplorerTab[]>(() => {
+    const order: ExplorerTab[] = ["spread", "people", "versions", "timeline", "passages"];
+    const available = order.filter((item) => eraLinkedSummary[item] > 0);
+    return available.length ? available : ["spread"];
+  }, [eraLinkedSummary]);
+  const activeSequenceIndex = Math.max(readingSequence.indexOf(activeTab), 0);
+  const currentNarrative = tabNarratives[activeTab];
+  const suggestedNextTabs = useMemo<ExplorerTab[]>(
+    () =>
+      currentNarrative.next.filter(
+        (item): item is ExplorerTab => item !== activeTab && eraLinkedSummary[item] > 0,
+      ),
+    [activeTab, currentNarrative.next, eraLinkedSummary],
+  );
+  const fallbackNextTab =
+    readingSequence[(activeSequenceIndex + 1) % Math.max(readingSequence.length, 1)] ?? activeTab;
+  const nextReadingTabs: ExplorerTab[] = suggestedNextTabs.length
+    ? suggestedNextTabs
+    : [fallbackNextTab];
 
   return (
     <div className="relative space-y-4">
@@ -1063,17 +1114,40 @@ export function BookExplorer({
               {book.title}
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#6b4b1d]">{book.summary}</p>
+            <div className="mt-4 rounded-[22px] border border-[#d8bb78]/30 bg-[linear-gradient(180deg,rgba(255,250,238,0.58),rgba(255,245,214,0.34))] px-4 py-3">
+              <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">卷内导读</div>
+              <div className="mt-2 text-sm leading-7 text-[#6b4b1d]">{currentNarrative.lead}</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <div className="rounded-full border border-[#caa45b]/24 bg-white/45 px-3 py-1.5 text-xs text-[#6b4b1d]">
+                  当前卷心：{activeTabMeta.label}
+                </div>
+                {nextReadingTabs.slice(0, 2).map((item) => {
+                  const tabMeta = tabs.find((tabItem) => tabItem.id === item) ?? tabs[0];
+
+                  return (
+                    <button
+                      key={`guide-next-${item}`}
+                      type="button"
+                      onClick={() => setManualTab(item)}
+                      className="rounded-full border border-[#caa45b]/24 bg-[#f3dfab]/70 px-3 py-1.5 text-xs text-[#6b4b1d] transition hover:bg-[#f3dfab]"
+                    >
+                      顺看 {tabMeta.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
             <div className="mt-4 flex flex-wrap gap-2">
               <button
                 type="button"
-                onClick={() => setTab("spread")}
+                onClick={() => setManualTab("spread")}
                 className="rounded-full border border-[#caa45b]/24 bg-white/35 px-3 py-1.5 text-xs text-[#6b4b1d] transition hover:bg-white/50"
               >
                 传播河段
               </button>
               <button
                 type="button"
-                onClick={() => setTab("passages")}
+                onClick={() => setManualTab("passages")}
                 className="rounded-full border border-[#caa45b]/24 bg-white/35 px-3 py-1.5 text-xs text-[#6b4b1d] transition hover:bg-white/50"
               >
                 文本溯源
@@ -1107,7 +1181,7 @@ export function BookExplorer({
           </div>
           <button
             type="button"
-            onClick={() => setTab("timeline")}
+            onClick={() => setManualTab("timeline")}
             className="rounded-full border border-[#d7b066]/24 bg-[rgba(252,220,124,0.12)] px-3 py-1 text-xs text-[#f7e4a7] transition hover:bg-[rgba(252,220,124,0.18)]"
           >
             可见年段 {eraLinkedSummary.timeline || 1} 条
@@ -1118,11 +1192,32 @@ export function BookExplorer({
           此刻卷心落在 {activeTabMeta.label}。
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
+          {readingSequence.map((item, index) => {
+            const tabMeta = tabs.find((tabItem) => tabItem.id === item) ?? tabs[0];
+            const isActive = activeTab === item;
+
+            return (
+              <button
+                key={`reading-sequence-${item}`}
+                type="button"
+                onClick={() => setManualTab(item)}
+                className={`rounded-full px-3 py-1.5 text-xs transition ${
+                  isActive
+                    ? "bg-[#f3dfab] text-[#42290a]"
+                    : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                }`}
+              >
+                第 {index + 1} 段 · {tabMeta.label}
+              </button>
+            );
+          })}
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
           {tabs.map((item) => (
             <button
               key={item.id}
               type="button"
-              onClick={() => setTab(item.id)}
+              onClick={() => setManualTab(item.id)}
               className={`rounded-full px-3 py-2 text-xs transition ${
                 activeTab === item.id
                   ? "bg-[#f3dfab] text-[#42290a]"
@@ -1245,14 +1340,14 @@ export function BookExplorer({
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
-                        onClick={() => setTab("timeline")}
+                        onClick={() => setManualTab("timeline")}
                         className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                       >
                         时间回声
                       </button>
                       <button
                         type="button"
-                        onClick={() => setTab("spread")}
+                        onClick={() => setManualTab("spread")}
                         className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                       >
                         传播河势
@@ -1279,7 +1374,7 @@ export function BookExplorer({
                       type="button"
                       onClick={() => {
                         handleSelectEventSample(event);
-                        setTab("timeline");
+                        setManualTab("timeline");
                       }}
                       className="w-full rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-3 text-left text-sm transition hover:bg-[rgba(255,244,214,0.12)]"
                     >
@@ -1295,14 +1390,14 @@ export function BookExplorer({
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
-                        onClick={() => setTab("spread")}
+                        onClick={() => setManualTab("spread")}
                         className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                       >
                         传播河势
                       </button>
                       <button
                         type="button"
-                        onClick={() => setTab("people")}
+                        onClick={() => setManualTab("people")}
                         className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                       >
                         人物关系
@@ -1357,7 +1452,7 @@ export function BookExplorer({
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
-                        onClick={() => setTab("versions")}
+                        onClick={() => setManualTab("versions")}
                         className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                       >
                         版本流变
@@ -1405,7 +1500,7 @@ export function BookExplorer({
                     type="button"
                     onClick={() => {
                       setSelectedVersionId(linkedVersionFromInstitution.id);
-                      setTab("versions");
+                      setManualTab("versions");
                     }}
                     className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                   >
@@ -1417,7 +1512,7 @@ export function BookExplorer({
                     type="button"
                     onClick={() => {
                       handleSelectTimelineItem(linkedTimelineFromInstitution.id);
-                      setTab("timeline");
+                      setManualTab("timeline");
                     }}
                     className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
                   >
@@ -1559,7 +1654,7 @@ export function BookExplorer({
                 </button>
                 <button
                   type="button"
-                  onClick={() => setTab("versions")}
+                  onClick={() => setManualTab("versions")}
                   className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
                 >
                   <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
@@ -1911,7 +2006,7 @@ export function BookExplorer({
                         type="button"
                         onClick={(event) => {
                           event.stopPropagation();
-                          setTab("versions");
+                          setManualTab("versions");
                         }}
                         className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,244,214,0.12)]"
                       >
@@ -1939,14 +2034,14 @@ export function BookExplorer({
               <div className="mt-3 flex flex-wrap gap-2">
                 <button
                   type="button"
-                  onClick={() => setTab("timeline")}
+                  onClick={() => setManualTab("timeline")}
                   className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                 >
                   转看时间回声
                 </button>
                 <button
                   type="button"
-                  onClick={() => setTab("people")}
+                  onClick={() => setManualTab("people")}
                   className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                 >
                   转看人物关系
@@ -2140,7 +2235,7 @@ export function BookExplorer({
                         <div className="mt-4 space-y-3">
                           <button
                             type="button"
-                            onClick={() => setTab("timeline")}
+                            onClick={() => setManualTab("timeline")}
                             className="w-full rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
                           >
                             <div className="flex items-center justify-between gap-3">
@@ -2195,7 +2290,7 @@ export function BookExplorer({
                             </button>
                             <button
                               type="button"
-                              onClick={() => setTab("people")}
+                              onClick={() => setManualTab("people")}
                               className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
                             >
                               <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
@@ -2274,7 +2369,7 @@ export function BookExplorer({
                   return;
                 }
 
-                setTab("timeline");
+                setManualTab("timeline");
               }}
               className="rounded-[24px] border border-amber-300/14 bg-[linear-gradient(180deg,rgba(191,140,40,0.16),rgba(56,35,11,0.24))] px-4 py-4 text-left transition hover:bg-[linear-gradient(180deg,rgba(191,140,40,0.22),rgba(56,35,11,0.3))]"
             >
@@ -2347,7 +2442,7 @@ export function BookExplorer({
                           }
 
                           handleFocusEventEvidence();
-                          setTab("timeline");
+                          setManualTab("timeline");
                         }}
                         className="rounded-full border border-amber-300/25 bg-amber-300/12 px-3 py-1.5 text-xs text-amber-100 transition hover:bg-amber-300/18"
                       >
@@ -2395,7 +2490,7 @@ export function BookExplorer({
                 </button>
                 <button
                   type="button"
-                  onClick={() => setTab("spread")}
+                  onClick={() => setManualTab("spread")}
                   className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                 >
                   传播河段
@@ -2490,7 +2585,7 @@ export function BookExplorer({
                                 </button>
                                 <button
                                   type="button"
-                                  onClick={() => setTab("spread")}
+                                  onClick={() => setManualTab("spread")}
                                   className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                                 >
                                   传播河段
@@ -2595,7 +2690,7 @@ export function BookExplorer({
                                   type="button"
                                   onClick={() => {
                                     setSelectedSpreadId(linkedPersonSpread.id);
-                                    setTab("spread");
+                                    setManualTab("spread");
                                   }}
                                   className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-xs text-amber-100 transition hover:bg-amber-300/15"
                                 >
@@ -2640,7 +2735,7 @@ export function BookExplorer({
                                   <div className="mt-3 flex flex-wrap gap-2">
                                     <button
                                       type="button"
-                                      onClick={() => setTab("spread")}
+                                      onClick={() => setManualTab("spread")}
                                       className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                                     >
                                       传播河势
@@ -2681,7 +2776,7 @@ export function BookExplorer({
                             {activePerson.activityPlaces?.[0] ? (
                               <button
                                 type="button"
-                                onClick={() => setTab("spread")}
+                                onClick={() => setManualTab("spread")}
                                 className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                               >
                                 人物河势
@@ -2728,7 +2823,7 @@ export function BookExplorer({
                 </button>
                 <button
                   type="button"
-                  onClick={() => setTab("passages")}
+                  onClick={() => setManualTab("passages")}
                   className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                 >
                   原文证据
@@ -2902,7 +2997,7 @@ export function BookExplorer({
                               </button>
                               <button
                                 type="button"
-                                onClick={() => setTab("timeline")}
+                                onClick={() => setManualTab("timeline")}
                                 className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                               >
                                 转看时间回声
@@ -2932,7 +3027,7 @@ export function BookExplorer({
                               </button>
                               <button
                                 type="button"
-                                onClick={() => setTab("passages")}
+                                onClick={() => setManualTab("passages")}
                                 className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                               >
                                 转看原文证据
@@ -3142,7 +3237,7 @@ export function BookExplorer({
                                   </button>
                                   <button
                                     type="button"
-                                    onClick={() => setTab("passages")}
+                                    onClick={() => setManualTab("passages")}
                                     className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                                   >
                                     原文证据
@@ -3173,21 +3268,21 @@ export function BookExplorer({
                                   <div className="mt-3 flex flex-wrap gap-2">
                                     <button
                                       type="button"
-                                      onClick={() => setTab("timeline")}
+                                      onClick={() => setManualTab("timeline")}
                                       className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                                     >
                                       时间回声
                                     </button>
                                     <button
                                       type="button"
-                                      onClick={() => setTab("people")}
+                                      onClick={() => setManualTab("people")}
                                       className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                                     >
                                       人物承接
                                     </button>
                                     <button
                                       type="button"
-                                      onClick={() => setTab("passages")}
+                                      onClick={() => setManualTab("passages")}
                                       className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
                                     >
                                       原文证据
@@ -3260,14 +3355,14 @@ export function BookExplorer({
                                     </button>
                                     <button
                                       type="button"
-                                      onClick={() => setTab("spread")}
+                                      onClick={() => setManualTab("spread")}
                                       className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                                     >
                                       传播河势
                                     </button>
                                     <button
                                       type="button"
-                                      onClick={() => setTab("timeline")}
+                                      onClick={() => setManualTab("timeline")}
                                       className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
                                     >
                                       时间回声
@@ -3338,7 +3433,7 @@ export function BookExplorer({
                               type="button"
                               onClick={() => {
                                 if (activeVersion.note) {
-                                  setTab("timeline");
+                                  setManualTab("timeline");
                                   return;
                                 }
 
@@ -3639,7 +3734,7 @@ export function BookExplorer({
                         </button>
                         <button
                           type="button"
-                          onClick={() => setTab("versions")}
+                          onClick={() => setManualTab("versions")}
                           className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                         >
                           版本流变
@@ -3660,7 +3755,7 @@ export function BookExplorer({
                           <div className="mt-3 flex flex-wrap gap-2">
                             <button
                               type="button"
-                              onClick={() => setTab("passages")}
+                              onClick={() => setManualTab("passages")}
                               className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                             >
                               文本溯源
@@ -3739,7 +3834,7 @@ export function BookExplorer({
                                     type="button"
                                     onClick={(event) => {
                                       event.stopPropagation();
-                                      setTab("people");
+                                      setManualTab("people");
                                     }}
                                     className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,244,214,0.12)]"
                                   >
@@ -3749,7 +3844,7 @@ export function BookExplorer({
                                     type="button"
                                     onClick={(event) => {
                                       event.stopPropagation();
-                                      setTab("passages");
+                                      setManualTab("passages");
                                     }}
                                     className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                                   >
@@ -3788,7 +3883,7 @@ export function BookExplorer({
                             </button>
                             <button
                               type="button"
-                              onClick={() => setTab("versions")}
+                              onClick={() => setManualTab("versions")}
                               className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                             >
                               版本流变
@@ -3813,7 +3908,7 @@ export function BookExplorer({
                                     type="button"
                                     onClick={(event) => {
                                       event.stopPropagation();
-                                      setTab("people");
+                                      setManualTab("people");
                                     }}
                                     className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,244,214,0.12)]"
                                   >
@@ -3823,7 +3918,7 @@ export function BookExplorer({
                                     type="button"
                                     onClick={(event) => {
                                       event.stopPropagation();
-                                      setTab("passages");
+                                      setManualTab("passages");
                                     }}
                                     className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                                   >
@@ -3921,7 +4016,7 @@ export function BookExplorer({
                           }
 
                           setSelectedSourceEvidenceId("venue-samples");
-                          setTab("spread");
+                          setManualTab("spread");
                         }}
                         className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,244,214,0.12)]"
                       >
@@ -3948,14 +4043,14 @@ export function BookExplorer({
               <div className="mt-3 flex flex-wrap gap-2">
                 <button
                   type="button"
-                  onClick={() => setTab("versions")}
+                  onClick={() => setManualTab("versions")}
                   className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                 >
                   版本流变
                 </button>
                 <button
                   type="button"
-                  onClick={() => setTab("timeline")}
+                  onClick={() => setManualTab("timeline")}
                   className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                 >
                   时间回声
@@ -4202,7 +4297,7 @@ export function BookExplorer({
                   ) : null}
                   <button
                     type="button"
-                    onClick={() => setTab("timeline")}
+                    onClick={() => setManualTab("timeline")}
                     className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                   >
                     时间回声
@@ -4626,14 +4721,14 @@ export function BookExplorer({
                           ) : null}
                           <button
                             type="button"
-                            onClick={() => setTab("versions")}
+                            onClick={() => setManualTab("versions")}
                             className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                           >
                             版本续脉
                           </button>
                           <button
                             type="button"
-                            onClick={() => setTab("timeline")}
+                            onClick={() => setManualTab("timeline")}
                             className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                           >
                             时间回声
@@ -4697,7 +4792,7 @@ export function BookExplorer({
                                   ) : null}
                                   <button
                                     type="button"
-                                    onClick={() => setTab("timeline")}
+                                    onClick={() => setManualTab("timeline")}
                                     className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                                   >
                                     时间回声
@@ -4739,14 +4834,14 @@ export function BookExplorer({
                           ) : null}
                           <button
                             type="button"
-                            onClick={() => setTab("people")}
+                            onClick={() => setManualTab("people")}
                             className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                           >
                             人物余波
                           </button>
                           <button
                             type="button"
-                            onClick={() => setTab("spread")}
+                            onClick={() => setManualTab("spread")}
                             className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                           >
                             传播河势
