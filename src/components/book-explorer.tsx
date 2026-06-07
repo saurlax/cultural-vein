@@ -1930,7 +1930,7 @@ export function BookExplorer({
       {activeTab === "spread" ? (
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">地理传播图</h3>
+            <h3 className="text-lg font-medium">地理传播</h3>
             <span className="text-xs text-[#d8c9a3]">河段显影</span>
           </div>
           {visibleSpread.length === 0 ? (
@@ -2225,7 +2225,7 @@ export function BookExplorer({
                       传播地球
                     </div>
                     <div className="mt-1 text-sm text-[#eadfbc]">
-                      在 3D 地球上查看典籍传播落点、航线抬升与方向
+                      在卷面地球上查看典籍传播落点、航线抬升与流向
                     </div>
                   </div>
                   <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
@@ -2954,7 +2954,7 @@ export function BookExplorer({
                               {activeVersion.place}
                             </div>
                             <div className="mt-2 text-sm text-stone-300">
-                              藏馆 / 系统：{activeVersion.library}
+                              藏馆题录：{activeVersion.library}
                             </div>
                             <div className="mt-3 text-xs text-amber-100/80">
                               打开机构归录，把这一版的位置重新挂回馆藏与影像线索。
@@ -3303,7 +3303,7 @@ export function BookExplorer({
                               }}
                               className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left transition hover:bg-white/10"
                             >
-                              <div className="text-xs tracking-[0.2em] text-stone-400">馆藏 / 系统</div>
+                              <div className="text-xs tracking-[0.2em] text-stone-400">馆藏题录</div>
                               <div className="mt-1 font-medium text-stone-100">{activeVersion.library}</div>
                               <div className="mt-2 text-sm leading-6 text-stone-300">
                                 {versionEvidenceSamples.length || institutionPreview.length
@@ -3940,7 +3940,7 @@ export function BookExplorer({
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">文本对读与溯源</h3>
-            <span className="text-xs text-stone-400">微观视图</span>
+            <span className="text-xs text-stone-400">微观显影</span>
           </div>
           {visiblePassages.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6">
