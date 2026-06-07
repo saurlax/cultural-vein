@@ -5919,7 +5919,7 @@ if (shanghaiLibraryActivity.available) {
         detail.realWorldSignals?.venueSummary ??
         (venueSamples.length > 0
           ? `上图活动资料当前集中在 ${venueSamples[0].name}，可作为“文化传播现场”辅助信号。`
-          : "已接入上海图书馆活动资料。"),
+          : "上海图书馆活动资料已映入这段河面。"),
       venueSamples,
       eventSamples: eventSamples.slice(0, 3),
     };
@@ -5958,7 +5958,7 @@ if (fudanArchiveSample.available) {
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         fudanArchiveSample.summary ??
-        "已接入复旦大学图书馆馆藏资料。",
+        "复旦大学图书馆馆藏资料已映入这段河面。",
     };
   }
 }
@@ -5980,7 +5980,7 @@ if (nanhuArchiveSample.available) {
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         nanhuArchiveSample.summary ??
-        "已接入南湖文献数据库专题资料。",
+        "南湖专题文献资料已映入这段河面。",
     };
   }
 }
@@ -6002,7 +6002,7 @@ if (videoTopicSample.available) {
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         videoTopicSample.summary ??
-        "已接入近代上海城市文化专题片资料。",
+        "近代上海城市文化专题片资料已映入这段河面。",
     };
   }
 }
@@ -6015,7 +6015,7 @@ if (shenzhenLibrarySample.available) {
       ...detail.realWorldSignals,
       sourceLabel: appendSourceLabel(
         detail.realWorldSignals?.sourceLabel,
-        "深圳图书馆专题接口资料",
+        "深圳图书馆专题资料",
       ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
@@ -6024,7 +6024,7 @@ if (shenzhenLibrarySample.available) {
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         shenzhenLibrarySample.summary ??
-        "已接入深圳图书馆专题文化接口资料。",
+        "深圳图书馆专题文化资料已映入这段河面。",
     };
   }
 }
@@ -6037,7 +6037,7 @@ if (taofenMuseumSample.available) {
       ...detail.realWorldSignals,
       sourceLabel: appendSourceLabel(
         detail.realWorldSignals?.sourceLabel,
-        "韬奋纪念馆 API 资料",
+        "韬奋纪念馆出版资料",
       ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
@@ -6046,7 +6046,7 @@ if (taofenMuseumSample.available) {
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         taofenMuseumSample.summary ??
-        "已接入韬奋纪念馆近现代出版文化 API 资料。",
+        "韬奋纪念馆近现代出版资料已映入这段河面。",
     };
   }
 }
@@ -6059,7 +6059,7 @@ if (soongLiteratureSample.available) {
       ...detail.realWorldSignals,
       sourceLabel: appendSourceLabel(
         detail.realWorldSignals?.sourceLabel,
-        "宋庆龄文献 API 资料",
+        "宋庆龄人物文献资料",
       ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
@@ -6068,7 +6068,7 @@ if (soongLiteratureSample.available) {
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         soongLiteratureSample.summary ??
-        "已接入宋庆龄文献人物与事件字段 API 资料。",
+        "宋庆龄人物与事件资料已映入这段河面。",
     };
   }
 }
@@ -6081,16 +6081,16 @@ if (souyunKnowledgeGraphSample.available) {
       ...detail.realWorldSignals,
       sourceLabel: appendSourceLabel(
         detail.realWorldSignals?.sourceLabel,
-        "搜韵知识图谱 API 资料",
+        "搜韵知识图谱资料",
       ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
         ...institutionSamples,
       ],
       venueSummary: detail.realWorldSignals?.venueSummary
-        ? `${detail.realWorldSignals.venueSummary} 同时已挂接搜韵知识图谱接口资料，可继续外推到诗文库、古籍库和文本比对能力。`
+        ? `${detail.realWorldSignals.venueSummary} 同时已挂接搜韵知识图谱资料，可继续外推到诗文库、古籍库和文本比对能力。`
         : souyunKnowledgeGraphSample.summary ??
-          "已接入搜韵网古典诗词知识图谱 API 资料。",
+          "搜韵网古典诗词知识图谱资料已映入这段河面。",
     };
   }
 }
@@ -6103,7 +6103,7 @@ if (periodicalIndexSample.available) {
       ...detail.realWorldSignals,
       sourceLabel: appendSourceLabel(
         detail.realWorldSignals?.sourceLabel,
-        "全国报刊索引 API 资料",
+        "全国报刊索引资料",
       ),
       institutionSamples: [
         ...(detail.realWorldSignals?.institutionSamples ?? []),
@@ -6112,7 +6112,7 @@ if (periodicalIndexSample.available) {
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
         periodicalIndexSample.summary ??
-        "已接入全国报刊索引近现代研究文献 API 资料。",
+        "全国报刊索引近现代研究文献资料已映入这段河面。",
     };
   }
 }

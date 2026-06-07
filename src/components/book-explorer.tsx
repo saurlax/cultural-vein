@@ -1817,7 +1817,7 @@ export function BookExplorer({
             <div className="mt-4 rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                  机构图像资源资料
+                  馆藏图像与卷旁线索
                 </div>
                 <div className="rounded-full bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
                   {detail.realWorldSignals.institutionSamples.length} 条
@@ -2544,7 +2544,7 @@ export function BookExplorer({
                             </div>
                             <div className="mt-2 text-sm text-stone-300">
                               {activePerson.source === "cbdb"
-                                ? `这位人物已接入真实人物纪传数据${activePerson.matchedAlias ? `，匹配别名为 ${activePerson.matchedAlias}` : ""}。`
+                                ? `这位人物已经在真实纪传中显影${activePerson.matchedAlias ? `，匹配别名为 ${activePerson.matchedAlias}` : ""}。`
                                 : "这一人物已先作为关系节点入网，人物轨迹会在传播与证据之间继续显影。"}
                             </div>
                             <div className="mt-3 flex flex-wrap gap-2">
@@ -3254,7 +3254,7 @@ export function BookExplorer({
                 版本源头由 {activeVersionTrail[0]?.label ?? "祖本卷首"} 托出，
                 {versionEvidenceSamples[0]?.title ?? institutionPreview[0]?.title
                   ? ` ${versionEvidenceSamples[0]?.title ?? institutionPreview[0]?.title} 已在卷旁显出馆藏落点。`
-                  : " 这一层尚未落到更细的馆藏或影像样本。"}
+                  : " 这一层尚未落到更细的馆藏或影像线索。"}
                 {activeVersionChildren.length
                   ? ` ${activeVersionChildren[0]?.label ?? "下游版本"} 正把后续分化继续向下游展开。`
                   : " 更晚的分化层在这一时代河段里尚未继续浮出。"}

@@ -178,13 +178,13 @@ export function getInsightsPayload(): DatasetInsight {
           id: "shenzhen-library",
           name: "深圳图书馆",
           summary: realSupplements.shenzhenLibrarySample.summary,
-          stat: `${realSupplements.shenzhenLibrarySample.sampleTitles?.length ?? 0} 组接口`,
+          stat: `${realSupplements.shenzhenLibrarySample.sampleTitles?.length ?? 0} 组专题线索`,
           magnitude:
             realSupplements.shenzhenLibrarySample.sampleRecords?.length ??
             realSupplements.shenzhenLibrarySample.sampleTitles?.length ??
             0,
-          evidenceLabel: realSupplements.shenzhenLibrarySample.collectionTitle ?? "接口资料",
-          evidenceNote: "当前保留专题库接口名称、类别、年代与来源文本。",
+          evidenceLabel: realSupplements.shenzhenLibrarySample.collectionTitle ?? "专题库线索",
+          evidenceNote: "当前保留专题库名称、类别、年代与来源文本。",
           sampleTitles: realSupplements.shenzhenLibrarySample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.shenzhenLibrarySample.sampleRecords ?? [])
             .slice(0, 3)
@@ -206,8 +206,8 @@ export function getInsightsPayload(): DatasetInsight {
             realSupplements.taofenMuseumSample.sampleRecords?.length ??
             realSupplements.taofenMuseumSample.sampleTitles?.length ??
             0,
-          evidenceLabel: realSupplements.taofenMuseumSample.collectionTitle ?? "馆方接口条目",
-          evidenceNote: "原始资料包含机构年表、人物年表与图书列表等接口方向。",
+          evidenceLabel: realSupplements.taofenMuseumSample.collectionTitle ?? "馆方资料条目",
+          evidenceNote: "原始资料包含机构年表、人物年表与图书列表等线索。",
           sampleTitles: realSupplements.taofenMuseumSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.taofenMuseumSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -270,13 +270,13 @@ export function getInsightsPayload(): DatasetInsight {
           id: "souyun",
           name: "搜韵图谱",
           summary: realSupplements.souyunKnowledgeGraphSample.summary,
-          stat: `${realSupplements.souyunKnowledgeGraphSample.sampleTitles?.length ?? 0} 组接口`,
+          stat: `${realSupplements.souyunKnowledgeGraphSample.sampleTitles?.length ?? 0} 组图谱线索`,
           magnitude:
             realSupplements.souyunKnowledgeGraphSample.sampleRecords?.length ??
             realSupplements.souyunKnowledgeGraphSample.sampleTitles?.length ??
             0,
-          evidenceLabel: realSupplements.souyunKnowledgeGraphSample.collectionTitle ?? "OpenAPI / 古籍库",
-          evidenceNote: "原始资料保留开放接口、诗文库与古籍库的字段说明。",
+          evidenceLabel: realSupplements.souyunKnowledgeGraphSample.collectionTitle ?? "诗文图谱 / 古籍库",
+          evidenceNote: "原始资料保留诗文库与古籍库的字段说明。",
           sampleTitles: realSupplements.souyunKnowledgeGraphSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.souyunKnowledgeGraphSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -379,7 +379,7 @@ export function getInsightsPayload(): DatasetInsight {
           id: "poetry-graph",
           label: "诗词图谱",
           status: "已显河面",
-          scope: "搜韵接口与古典诗学外推",
+          scope: "搜韵图谱与古典诗学外推",
           usage: "诗学支流、文本比对与古籍关联外推",
         },
         {
@@ -387,7 +387,7 @@ export function getInsightsPayload(): DatasetInsight {
           label: "家谱文献",
           status: "正在铺开",
           scope: "家礼、家学与家族传播落点",
-          usage: "已在《孝经》等河段预留家族传播叙事接口，可继续挂接家谱资料。",
+          usage: "已在《孝经》等河段预留家族传播叙事脉络，可继续挂接家谱资料。",
         },
         {
           id: "red-archives",
@@ -401,7 +401,7 @@ export function getInsightsPayload(): DatasetInsight {
           label: "全域扩展",
           status: "后续可扩",
           scope: "130 万种古籍与更大关系网",
-          usage: "当前以前景示范域为主，后续可沿统一装配链增量扩入更大规模书目与关系。",
+          usage: "当前已先托住核心河段，后续可沿统一装配链增量扩入更大规模书目与关系。",
         },
       ],
     },

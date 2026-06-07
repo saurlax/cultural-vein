@@ -1389,7 +1389,7 @@ export function CulturalVeinShell() {
                                 <div className="mt-1 text-[10px] text-[#dccb9c]">目标全域书目底盘</div>
                               </div>
                               <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
-                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">示范关系</div>
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">河上关系</div>
                                 <div className="mt-1 text-sm font-medium text-[#fbf3da]">
                                   {atlasMeta.totalCitationCount.toLocaleString()}
                                 </div>
@@ -1400,7 +1400,7 @@ export function CulturalVeinShell() {
                                 <div className="mt-1 text-sm font-medium text-[#fbf3da]">
                                   {cbdbPersonCount?.toLocaleString() ?? "--"}
                                 </div>
-                                <div className="mt-1 text-[10px] text-[#dccb9c]">CBDB 纪传可用人物</div>
+                                <div className="mt-1 text-[10px] text-[#dccb9c]">CBDB 纪传人物底盘</div>
                               </div>
                             </div>
                             <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
@@ -1754,7 +1754,7 @@ export function CulturalVeinShell() {
                       </span>
                       {selectedSources.length ? (
                         <span className="rounded-full border border-[#ead8a6]/18 bg-[rgba(233,191,86,0.1)] px-3 py-1.5 text-[#fbf3da]">
-                          来源 {selectedSources.length} 类
+                          实证线索 {selectedSources.length} 类
                         </span>
                       ) : null}
                     </div>
@@ -2120,7 +2120,7 @@ export function CulturalVeinShell() {
                   </div>
                   <div className="mb-3 mt-3 rounded-[18px] border border-[#b89247]/14 bg-[rgba(255,255,255,0.2)] px-4 py-3 text-[12px] leading-6 text-[#5b3a11]">
                     {selectedBook.dynasty} 的这部典籍此刻正以 {focusModeLabel} 停驻卷心，卷内已牵出 {selectedBookCitations.length} 条关联
-                    {selectedSources.length ? ` 与 ${selectedSources.length} 类来源回声。` : "。"}
+                    {selectedSources.length ? ` 与 ${selectedSources.length} 类实证回声。` : "。"}
                   </div>
                   <div className="max-h-[calc(28vh-96px)] overflow-auto pr-1">
                     <BookExplorer
