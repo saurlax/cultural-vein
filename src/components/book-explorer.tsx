@@ -4307,6 +4307,93 @@ export function BookExplorer({
                 </div>
               </div>
 
+              <div className="rounded-[24px] border border-[#e1bd6e]/18 bg-[linear-gradient(180deg,rgba(194,140,42,0.18),rgba(62,39,12,0.26))] px-4 py-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <div className="text-xs tracking-[0.22em] text-amber-100/75">
+                      逐字探源工作台
+                    </div>
+                    <div className="mt-1 text-sm font-medium text-amber-50">
+                      先对读，再逆流，最后看下游分化
+                    </div>
+                  </div>
+                  <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
+                    当前片段 · {activePassage.section}
+                  </div>
+                </div>
+                <div className="mt-4 grid gap-3 xl:grid-cols-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const firstLink = activePassage.links[0];
+
+                      if (firstLink) {
+                        handleSelectLink(firstLink.id);
+                      }
+                    }}
+                    className="rounded-[20px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                  >
+                    <div className="text-[10px] tracking-[0.2em] text-[#d8c9a3]">第一步 · 对读判读</div>
+                    <div className="mt-2 text-sm font-medium text-[#fbf3da]">
+                      {activeLink?.sourceTitle ?? activePassage.links[0]?.sourceTitle ?? "先看当前证据"}
+                    </div>
+                    <div className="mt-2 text-[11px] leading-5 text-[#eadfbc]">
+                      {activeLink
+                        ? `${activeLink.confidenceLabel} 置信度，点击原文高亮即可聚焦这一条证据。`
+                        : `当前片段共 ${activePassage.links.length} 条证据，先从首条起读最顺手。`}
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleStartTrace}
+                    disabled={!activePassage.tracePath?.length}
+                    className={`rounded-[20px] border px-4 py-4 text-left transition ${
+                      activePassage.tracePath?.length
+                        ? "border-amber-300/18 bg-[rgba(255,248,220,0.06)] hover:bg-[rgba(255,248,220,0.1)]"
+                        : "cursor-not-allowed border-white/10 bg-white/5"
+                    }`}
+                  >
+                    <div className="text-[10px] tracking-[0.2em] text-[#d8c9a3]">第二步 · 逆流回看</div>
+                    <div className="mt-2 text-sm font-medium text-[#fbf3da]">
+                      {activePassage.tracePath?.[0]?.title ?? "等待上游链路"}
+                    </div>
+                    <div className="mt-2 text-[11px] leading-5 text-[#eadfbc]">
+                      {activePassage.tracePath?.length
+                        ? `当前已接出 ${activePassage.tracePath.length} 层上游，启动后会沿光线逐层回看。`
+                        : "这一段暂时没有更早上游时，可回版本或时间线补证。"}
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const firstDownstream = activePassage.downstreamInfluence?.[0];
+
+                      if (!firstDownstream) {
+                        return;
+                      }
+
+                      handleOpenDownstreamBook(firstDownstream.targetTitle);
+                    }}
+                    disabled={!activePassage.downstreamInfluence?.length}
+                    className={`rounded-[20px] border px-4 py-4 text-left transition ${
+                      activePassage.downstreamInfluence?.length
+                        ? "border-emerald-300/18 bg-[rgba(18,68,50,0.16)] hover:bg-[rgba(18,68,50,0.24)]"
+                        : "cursor-not-allowed border-white/10 bg-white/5"
+                    }`}
+                  >
+                    <div className="text-[10px] tracking-[0.2em] text-[#cfe8dc]">第三步 · 下游分化</div>
+                    <div className="mt-2 text-sm font-medium text-[#f3f0de]">
+                      {activePassage.downstreamInfluence?.[0]?.targetTitle ?? "等待下游回声"}
+                    </div>
+                    <div className="mt-2 text-[11px] leading-5 text-[#dbe6d9]">
+                      {activePassage.downstreamInfluence?.length
+                        ? `当前可见 ${activePassage.downstreamInfluence.length} 条下游影响，可继续钻入后续典籍。`
+                        : "这一段暂时没有下游扩散时，可先把证据与上游链讲透。"}
+                    </div>
+                  </button>
+                </div>
+              </div>
+
               <div className="rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.06)] px-4 py-4">
                 <div className="mt-1 grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
                   <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(36,22,8,0.42)] px-4 py-4">
