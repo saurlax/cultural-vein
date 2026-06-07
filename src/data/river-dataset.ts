@@ -424,6 +424,22 @@ const coreClassicExtensions: RealSupplementBook[] = [
     coordinates: [7.18, 0.62, -0.76],
   },
   {
+    id: "book-shipin",
+    slug: "shipin",
+    title: "诗品",
+    shortTitle: "诗品",
+    dynasty: "魏晋",
+    year: 515,
+    category: "集",
+    school: "诗学批评",
+    influence: 76,
+    velocity: 0.41,
+    branchLevel: 2,
+    summary: "钟嵘以品第与风格批评重排汉魏诗歌谱系，使诗学支流从抽象文论进一步沉到具体诗人、体格与审美判断层。",
+    concepts: ["诗学", "品第", "风骨", "审美"],
+    coordinates: [7.82, 0.38, -1.26],
+  },
+  {
     id: "book-wenxuan",
     slug: "wenxuan",
     title: "昭明文选",
@@ -639,6 +655,33 @@ const coreClassicCitationExtensions: RealSupplementCitation[] = [
     confidence: 0.73,
     label: "骚体评述",
     evidence: "《文心雕龙》对骚体、风骨与辞采的总结，与《楚辞章句》的注释脉络构成诗学双支流。",
+  },
+  {
+    id: "edge-shipin-1",
+    source: "book-shipin",
+    target: "book-shijing",
+    layer: "semantic",
+    confidence: 0.75,
+    label: "风雅品评",
+    evidence: "《诗品》以风雅传统作为汉魏诗歌高下判断的重要背景，把诗教资源转成具体的品第与风格批评。",
+  },
+  {
+    id: "edge-shipin-2",
+    source: "book-shipin",
+    target: "book-wenxin-diaolong",
+    layer: "semantic",
+    confidence: 0.78,
+    label: "批评并流",
+    evidence: "《诗品》与《文心雕龙》同处六朝诗学高峰，一个偏重品第与诗人，一个偏重体类与理论，构成并行批评支流。",
+  },
+  {
+    id: "edge-rjch-shipin-1",
+    source: "book-ren-jian-ci-hua",
+    target: "book-shipin",
+    layer: "influence",
+    confidence: 0.62,
+    label: "品评回响",
+    evidence: "《人间词话》的境界与高下判断，延续了《诗品》以来以审美层级重排诗歌谱系的批评传统。",
   },
   {
     id: "edge-rjch-2",
@@ -3076,6 +3119,261 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
     realWorldSignals: {
       sourceLabel: "南湖文献 + 城市专题片资料",
       venueSummary: "补入《昭明文选》后，诗学支流不再只停在《诗经》与近代词话之间，而能清楚看见“注释—总集—近代回读”的中段链路。",
+    },
+  },
+  shipin: {
+    bookId: "book-shipin",
+    heroMetric: {
+      directCitations: 74,
+      downstreamInfluence: 194,
+      coveredRegions: 5,
+    },
+    spread: [
+      {
+        id: "spread-sp-1",
+        fromPlaceId: "place-jiankang-sp",
+        toPlaceId: "place-changan-sp",
+        startYear: 515,
+        endYear: 760,
+        volume: 72,
+      },
+      {
+        id: "spread-sp-2",
+        fromPlaceId: "place-changan-sp",
+        toPlaceId: "place-hangzhou-sp",
+        startYear: 900,
+        endYear: 1900,
+        volume: 82,
+      },
+    ],
+    people: [
+      {
+        id: "person-zhong-rong-sp",
+        name: "钟嵘",
+        role: "作者",
+        birthYear: 468,
+        deathYear: 518,
+        era: "魏晋",
+        bio: "《诗品》作者，以品第方式重排汉魏以来诗歌谱系，把风格判断与诗人层级压成可见的批评秩序。",
+        source: "curated",
+        sourceStatus: "curated",
+        relationTier: 1,
+        relationType: "著",
+      },
+      {
+        id: "person-liu-xie-sp",
+        name: "刘勰",
+        role: "评论者",
+        birthYear: 465,
+        deathYear: 522,
+        era: "魏晋",
+        bio: "与钟嵘同处六朝诗学高峰，《文心雕龙》的体类理论与《诗品》的品第批评彼此对照、互为背景。",
+        source: "curated",
+        sourceStatus: "curated",
+        relationTier: 2,
+        relationType: "评",
+      },
+      {
+        id: "person-wang-guowei-sp",
+        name: "王国维",
+        role: "评论者",
+        birthYear: 1877,
+        deathYear: 1927,
+        era: "近现代",
+        bio: "近代词学批评不断回响《诗品》式高下、境界与风格判断，使六朝品评传统继续进入现代审美话语。",
+        source: "curated",
+        sourceStatus: "curated",
+        relationTier: 2,
+        relationType: "评",
+      },
+    ],
+    places: [
+      {
+        id: "place-jiankang-sp",
+        name: "建康",
+        lat: 32.0603,
+        lng: 118.7969,
+        note: "六朝诗文批评、人物品藻与风格判断的重要中心。",
+      },
+      {
+        id: "place-changan-sp",
+        name: "长安",
+        lat: 34.3416,
+        lng: 108.9398,
+        note: "唐代诗学阅读继续把六朝批评标准带入选本、注释与科举讨论。",
+      },
+      {
+        id: "place-hangzhou-sp",
+        name: "杭州",
+        lat: 30.2741,
+        lng: 120.1551,
+        note: "宋以后诗话、词话与近代审美批评持续回读《诗品》的高下判断。",
+      },
+    ],
+    versions: [
+      {
+        id: "version-sp-1",
+        label: "《诗品》六朝写本系",
+        year: 515,
+        place: "建康",
+        library: "诗学批评传抄系统",
+        status: "佚失",
+        editionType: "祖本",
+        note: "六朝诗学评论资源先在写本层形成稳定批评谱系。",
+      },
+      {
+        id: "version-sp-2",
+        label: "宋刊《诗品》本",
+        year: 1100,
+        place: "杭州",
+        library: "诗话整理系统",
+        status: "存世",
+        parentId: "version-sp-1",
+        editionType: "刻本",
+        note: "宋代重刊让《诗品》重新进入诗话、选本与诗学讲习主线。",
+      },
+      {
+        id: "version-sp-3",
+        label: "清校《诗品》评注本",
+        year: 1750,
+        place: "杭州",
+        library: "诗学整理系统",
+        status: "存世",
+        parentId: "version-sp-2",
+        editionType: "整理本",
+        note: "清代评注把《诗品》的高下判断继续接入目录、考据与审美讨论网络。",
+      },
+    ],
+    timeline: [
+      {
+        id: "tl-sp-1",
+        year: 515,
+        title: "《诗品》形成六朝品第秩序",
+        detail: "钟嵘把诗人、风格与高下判断组织成可被后世反复调用的批评谱系。",
+      },
+      {
+        id: "tl-sp-2",
+        year: 1100,
+        title: "宋刊本重启诗品阅读",
+        detail: "《诗品》重新进入诗话、选本与古典诗学整理链路。",
+      },
+      {
+        id: "tl-sp-3",
+        year: 1750,
+        title: "清校评注放大品评传统",
+        detail: "校勘与评注继续把《诗品》的高下标准带入近世诗学和目录学讨论。",
+      },
+    ],
+    passages: [
+      {
+        id: "passage-sp-1",
+        section: "品第之义",
+        original: "诗之高下，不只在辞采繁简，更在风骨、气韵与源流所归能否彼此扣合。",
+        links: [
+          {
+            id: "passage-sp-1-link-1",
+            quote: "风雅传统转入诗歌高下",
+            sourceBookId: "book-shijing",
+            sourceTitle: "诗经",
+            layer: "semantic",
+            confidenceLabel: "中",
+            evidence: "《诗品》延续《诗经》以来的风雅诗教，把源头传统压成对诗人高下与体格的判断标准。",
+          },
+          {
+            id: "passage-sp-1-link-2",
+            quote: "体类理论并入风格品评",
+            sourceBookId: "book-wenxin-diaolong",
+            sourceTitle: "文心雕龙",
+            layer: "semantic",
+            confidenceLabel: "中",
+            evidence: "《诗品》与《文心雕龙》同处六朝诗学高峰，一个偏重品第，一个偏重体类，共同构成系统诗学框架。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-sp-1",
+            title: "诗经",
+            relation: "风雅源头",
+            note: "诗教与风雅资源提供最早的审美判断背景。",
+          },
+          {
+            id: "trace-sp-2",
+            title: "文心雕龙",
+            relation: "理论并流",
+            note: "先把体类、风骨与辞采问题理论化。",
+          },
+          {
+            id: "trace-sp-3",
+            title: "诗品",
+            relation: "品第落实",
+            note: "再把抽象诗学压成对诗人与作品层级的具体判断。",
+          },
+          {
+            id: "trace-sp-4",
+            title: "人间词话",
+            relation: "近代回响",
+            note: "境界论继续回看高下、风格与源流判断。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-sp-1",
+            targetTitle: "人间词话",
+            relation: "境界回声",
+            note: "《诗品》式高下与风格判断为近代词学批评保留了可持续转写的审美框架。",
+            confidenceLabel: "中",
+          },
+        ],
+      },
+      {
+        id: "passage-sp-2",
+        section: "诗脉转折",
+        original: "品诗之法，实在把散落的诗人、诗体与世代声气压成一条可回看的诗学长河。",
+        links: [
+          {
+            id: "passage-sp-2-link-1",
+            quote: "总集阅读继续放大品评标准",
+            sourceBookId: "book-wenxuan",
+            sourceTitle: "昭明文选",
+            layer: "semantic",
+            confidenceLabel: "中",
+            evidence: "《昭明文选》的总集阅读方式继续放大《诗品》中的高下与体格判断，使其进入更大的阅读共同体。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-sp-5",
+            title: "诗品",
+            relation: "批评定型",
+            note: "把诗人层级和风格判断固定成可流通的批评框架。",
+          },
+          {
+            id: "trace-sp-6",
+            title: "昭明文选",
+            relation: "选本扩散",
+            note: "总集编排把这些判断带进更大阅读和教学环境。",
+          },
+          {
+            id: "trace-sp-7",
+            title: "人间词话",
+            relation: "近代再判",
+            note: "近代词话继续沿着高下、风格与境界重排古典资源。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-sp-2",
+            targetTitle: "昭明文选",
+            relation: "选本并流",
+            note: "《诗品》的高下标准与《文选》的编排秩序一起构成后世公共阅读的双重框架。",
+            confidenceLabel: "中",
+          },
+        ],
+      },
+    ],
+    realWorldSignals: {
+      sourceLabel: "搜韵知识图谱资料 + 全国报刊索引资料",
+      venueSummary: "补入《诗品》后，诗学支流从六朝文论进一步落到具体诗歌高下与风格品评，不再只停在抽象体类层。",
     },
   },
 };
@@ -5625,6 +5923,7 @@ const peopleMergePlan: Partial<Record<string, string[]>> = {
   "zi-zhi-tong-jian": ["司马光", "刘恕"],
   "ri-zhi-lu": ["顾炎武"],
   "ren-jian-ci-hua": ["王国维"],
+  shipin: ["钟嵘"],
 };
 
 for (const [slug, names] of Object.entries(peopleMergePlan)) {
@@ -5897,6 +6196,34 @@ const curatedPeopleSupplements: Partial<Record<string, PersonNode[]>> = {
       relationType: "承",
     } as PersonNode,
   ],
+  shipin: [
+    {
+      id: "person-liu-xie-shipin",
+      name: "刘勰",
+      role: "评论者",
+      birthYear: 465,
+      deathYear: 522,
+      era: "魏晋",
+      bio: "《文心雕龙》与《诗品》共同把六朝诗学推到高峰，使体类理论和品第批评形成双线并流的河道结构。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "评",
+    } as PersonNode,
+    {
+      id: "person-si-kong-tu-shipin",
+      name: "司空图",
+      role: "承继者",
+      birthYear: 837,
+      deathYear: 908,
+      era: "隋唐",
+      bio: "晚唐诗论继续把风格、品第与审美层级问题推深，使《诗品》式批评不止停在六朝一段。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+  ],
 };
 
 for (const [slug, people] of Object.entries(curatedPeopleSupplements)) {
@@ -5916,7 +6243,7 @@ if (shanghaiLibraryActivity.available) {
     startTime: record["预约开始时间"] ?? "",
   }));
 
-  for (const slug of ["shijing", "shangshu", "mengzi", "sishu-zhangju", "lunyu", "liji", "daxue", "zhongyong", "zhouyi", "xiaojing", "gongyang-zhuan", "chuci-zhangju", "wenxin-diaolong", "wenxuan"] as const) {
+  for (const slug of ["shijing", "shangshu", "mengzi", "sishu-zhangju", "lunyu", "liji", "daxue", "zhongyong", "zhouyi", "xiaojing", "gongyang-zhuan", "chuci-zhangju", "wenxin-diaolong", "shipin", "wenxuan"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -6091,7 +6418,7 @@ if (nanhuArchiveSample.available) {
 
 if (videoTopicSample.available) {
   const institutionSamples = (videoTopicSample.sampleRecords ?? []).slice(0, 4);
-  for (const slug of ["ren-jian-ci-hua", "wenxuan", "wenxin-diaolong"] as const) {
+  for (const slug of ["ren-jian-ci-hua", "wenxuan", "wenxin-diaolong", "shipin"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -6179,7 +6506,7 @@ if (soongLiteratureSample.available) {
 
 if (souyunKnowledgeGraphSample.available) {
   const institutionSamples = (souyunKnowledgeGraphSample.sampleRecords ?? []).slice(0, 3);
-  for (const slug of ["shijing", "lunyu", "liji", "daxue", "zhongyong", "zhouyi", "mengzi", "sishu-zhangju", "ren-jian-ci-hua", "chuci-zhangju", "wenxin-diaolong", "wenxuan"] as const) {
+  for (const slug of ["shijing", "lunyu", "liji", "daxue", "zhongyong", "zhouyi", "mengzi", "sishu-zhangju", "ren-jian-ci-hua", "chuci-zhangju", "wenxin-diaolong", "shipin", "wenxuan"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -6201,7 +6528,7 @@ if (souyunKnowledgeGraphSample.available) {
 
 if (periodicalIndexSample.available) {
   const institutionSamples = (periodicalIndexSample.sampleRecords ?? []).slice(0, 3);
-  for (const slug of ["ren-jian-ci-hua", "ri-zhi-lu", "wenxin-diaolong"] as const) {
+  for (const slug of ["ren-jian-ci-hua", "ri-zhi-lu", "wenxin-diaolong", "shipin"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -6267,6 +6594,7 @@ if (cbdbSummary.available) {
     "zi-zhi-tong-jian",
     "chuci-zhangju",
     "wenxin-diaolong",
+    "shipin",
     "wenxuan",
   ] as const) {
     const detail = details[slug];
