@@ -3229,6 +3229,60 @@ export function RiverScene(props: RiverSceneProps) {
       })
       .slice(0, 10);
   }, [props.books, props.branchAnnotations]);
+  const activeCruiseAnchor = useMemo(() => {
+    if (!cruiseAnchorMoments.length) {
+      return null;
+    }
+
+    return cruiseAnchorMoments.reduce<CruiseAnchorMoment | null>((closest, anchor) => {
+      if (!closest) {
+        return anchor;
+      }
+
+      const closestDistance = Math.abs(closest.progress - cruiseProgress);
+      const nextDistance = Math.abs(anchor.progress - cruiseProgress);
+      return nextDistance < closestDistance ? anchor : closest;
+    }, null);
+  }, [cruiseAnchorMoments, cruiseProgress]);
+  const stageLead =
+    !props.selectedBookSlug && cruiseRunning && activeCruiseAnchor
+      ? activeCruiseAnchor.kind === "book"
+        ? `巡航正掠过《${activeCruiseAnchor.label}》，可顺势入卷细看这一段主干。`
+        : activeCruiseAnchor.kind === "branch"
+          ? `${activeCruiseAnchor.label} 正临近镜头，这股文脉支流正在河面显影。`
+          : `${activeCruiseAnchor.label} 正在眼前铺开，可沿这一段河势继续巡看。`
+      : riverStageLead;
+  const stageDetail =
+    !props.selectedBookSlug && cruiseRunning && activeCruiseAnchor
+      ? activeCruiseAnchor.detail
+      : riverStageDetail;
+  const handleCruiseToggle = () => {
+    if (!canCruise) {
+      return;
+    }
+
+    setAutoCruise((current) => !current);
+  };
+  const handleCruiseJump = (direction: -1 | 1) => {
+    if (!cruiseAnchorMoments.length) {
+      return;
+    }
+
+    const currentIndex = activeCruiseAnchor
+      ? cruiseAnchorMoments.findIndex((anchor) => anchor.id === activeCruiseAnchor.id)
+      : -1;
+    const fallbackIndex = direction > 0 ? 0 : cruiseAnchorMoments.length - 1;
+    const baseIndex = currentIndex >= 0 ? currentIndex : fallbackIndex;
+    const nextIndex = THREE.MathUtils.clamp(baseIndex + direction, 0, cruiseAnchorMoments.length - 1);
+    const nextAnchor = cruiseAnchorMoments[nextIndex];
+
+    if (!nextAnchor) {
+      return;
+    }
+
+    setAutoCruise(false);
+    setCruiseProgress(nextAnchor.progress);
+  };
   useEffect(() => {
     if (previousEraRef.current === props.activeEra) {
       return;
@@ -3345,10 +3399,50 @@ export function RiverScene(props: RiverSceneProps) {
                   {riverStageModeLabel}
                 </span>
               </div>
-              <div className="mt-2 text-sm font-medium text-[#fbf3da]">{riverStageLead}</div>
-              <div className="mt-1 line-clamp-2 text-[12px] leading-6 text-[#e8d7a9]">{riverStageDetail}</div>
+              <div className="mt-2 text-sm font-medium text-[#fbf3da]">{stageLead}</div>
+              <div className="mt-1 line-clamp-2 text-[12px] leading-6 text-[#e8d7a9]">{stageDetail}</div>
+              {!props.selectedBookSlug && activeCruiseAnchor ? (
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-[10px] text-[#e8d7a9]">
+                  <span className="rounded-full border border-[#e6c77f]/16 bg-[rgba(255,244,214,0.05)] px-2.5 py-1">
+                    巡河锚点
+                  </span>
+                  <span className="rounded-full border border-[#e6c77f]/16 bg-[rgba(255,244,214,0.05)] px-2.5 py-1">
+                    {activeCruiseAnchor.label}
+                  </span>
+                  {activeCruiseAnchor.era ? (
+                    <span className="rounded-full border border-[#e6c77f]/16 bg-[rgba(255,244,214,0.05)] px-2.5 py-1">
+                      {activeCruiseAnchor.era}
+                    </span>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
             <div className="flex shrink-0 flex-wrap gap-2">
+              {!props.selectedBookSlug && canCruise ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => handleCruiseJump(-1)}
+                    className="rounded-full border border-[#e6c77f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.14)]"
+                  >
+                    上一锚点
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCruiseToggle}
+                    className="rounded-full border border-amber-300/22 bg-amber-300/12 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/18"
+                  >
+                    {cruiseRunning ? "停舟驻看" : "继续巡航"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleCruiseJump(1)}
+                    className="rounded-full border border-[#e6c77f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.14)]"
+                  >
+                    下一锚点
+                  </button>
+                </>
+              ) : null}
               {!props.selectedBookSlug && props.onOpenEraPanel ? (
                 <button
                   type="button"
