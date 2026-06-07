@@ -261,6 +261,22 @@ const coreClassicExtensions: RealSupplementBook[] = [
     coordinates: [-1.2, 0.95, 0.25],
   },
   {
+    id: "book-liji",
+    slug: "liji",
+    title: "礼记",
+    shortTitle: "礼记",
+    dynasty: "两汉",
+    year: 80,
+    category: "经",
+    school: "礼学经典",
+    influence: 89,
+    velocity: 0.34,
+    branchLevel: 0,
+    summary: "汇聚先秦至两汉礼学篇章，是《大学》《中庸》析出之前的制度与教化母体，也构成礼治秩序的主河段底座。",
+    concepts: ["礼治", "教化", "制度", "家国秩序"],
+    coordinates: [0.25, 0.98, 0.96],
+  },
+  {
     id: "book-daxue",
     slug: "daxue",
     title: "大学",
@@ -5443,6 +5459,7 @@ const peopleMergePlan: Partial<Record<string, string[]>> = {
   shijing: ["孔颖达", "朱熹", "王国维"],
   shangshu: ["孔颖达", "蔡沈"],
   lunyu: ["朱熹"],
+  liji: ["郑玄", "孔颖达"],
   daxue: ["朱熹"],
   zhongyong: ["朱熹"],
   zhouyi: ["孔颖达", "朱熹"],
@@ -5593,7 +5610,7 @@ if (shanghaiLibraryActivity.available) {
     startTime: record["预约开始时间"] ?? "",
   }));
 
-  for (const slug of ["shijing", "shangshu", "mengzi", "sishu-zhangju", "lunyu", "daxue", "zhongyong", "zhouyi", "xiaojing", "gongyang-zhuan", "chuci-zhangju", "wenxin-diaolong", "wenxuan"] as const) {
+  for (const slug of ["shijing", "shangshu", "mengzi", "sishu-zhangju", "lunyu", "liji", "daxue", "zhongyong", "zhouyi", "xiaojing", "gongyang-zhuan", "chuci-zhangju", "wenxin-diaolong", "wenxuan"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -5761,7 +5778,7 @@ if (soongLiteratureSample.available) {
 
 if (souyunKnowledgeGraphSample.available) {
   const institutionSamples = (souyunKnowledgeGraphSample.sampleRecords ?? []).slice(0, 3);
-  for (const slug of ["shijing", "lunyu", "daxue", "zhongyong", "zhouyi", "mengzi", "sishu-zhangju", "ren-jian-ci-hua", "chuci-zhangju", "wenxin-diaolong", "wenxuan"] as const) {
+  for (const slug of ["shijing", "lunyu", "liji", "daxue", "zhongyong", "zhouyi", "mengzi", "sishu-zhangju", "ren-jian-ci-hua", "chuci-zhangju", "wenxin-diaolong", "wenxuan"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -5814,6 +5831,7 @@ if (cbdbSummary.available) {
     "shangshu",
     "shangshu-zhengyi",
     "lunyu",
+    "liji",
     "daxue",
     "zhongyong",
     "zhouyi",
