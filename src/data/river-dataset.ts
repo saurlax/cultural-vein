@@ -6009,6 +6009,44 @@ if (nanhuArchiveSample.available) {
         "南湖专题文献资料已映入这段河面。",
     };
   }
+
+  const redInstitutionSamples = (nanhuArchiveSample.sampleRecords ?? [])
+    .filter((record) => {
+      const text = `${record.title ?? ""} ${record.sourceText ?? ""}`;
+      return (
+        text.includes("一大") ||
+        text.includes("南湖会议") ||
+        text.includes("题字") ||
+        text.includes("题诗") ||
+        text.includes("题词") ||
+        text.includes("代表简介")
+      );
+    })
+    .slice(0, 3)
+    .map((record) => ({
+      ...record,
+      category: "红色专题 / 人物 / 题词",
+    }));
+  const redVenueSummary =
+    "南湖专题中的中共“一大”、代表人物与题词题诗线索，已经把近现代回望主线牵成一股可回查的红色支流。";
+
+  for (const slug of ["shiji", "zi-zhi-tong-jian", "ren-jian-ci-hua"] as const) {
+    const detail = details[slug];
+    detail.realWorldSignals = {
+      ...detail.realWorldSignals,
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel,
+        "红色文献线索",
+      ),
+      institutionSamples: [
+        ...(detail.realWorldSignals?.institutionSamples ?? []),
+        ...redInstitutionSamples,
+      ],
+      venueSummary: detail.realWorldSignals?.venueSummary
+        ? `${detail.realWorldSignals.venueSummary} 同时已由南湖专题中的人物与题词线索牵出近现代红色支流。`
+        : redVenueSummary,
+    };
+  }
 }
 
 if (videoTopicSample.available) {

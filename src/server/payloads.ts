@@ -642,9 +642,9 @@ export function getInsightsPayload(): DatasetInsight {
         {
           id: "red-archives",
           label: "红色文献",
-          status: "正在铺开",
+          status: "已显河面",
           scope: "近现代专题文献支流",
-          usage: "已由南湖等专题资料托住近现代支流，后续可继续扩到红色文献全域。",
+          usage: "已由南湖专题中的中共“一大”、代表人物与题词题诗线索接入《史记》《资治通鉴》《人间词话》等近现代回望河段，形成可回查的红色支流。",
         },
         {
           id: "full-atlas",
