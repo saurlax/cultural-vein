@@ -331,7 +331,7 @@ export function getInsightsPayload(): DatasetInsight {
         "红色文献",
       ],
       expansionNote:
-        "首页长卷已将主线典籍、真实来源与样本码头汇成一河，能够直接顺流检索、入卷、回查来源。",
+        "首页长卷已将主线典籍、真实来源与河上落点汇成一河，能够直接顺流检索、入卷、回查来源。",
       coverageLayers: [
         {
           id: "core-classics",
@@ -351,21 +351,21 @@ export function getInsightsPayload(): DatasetInsight {
           id: "bibliography",
           label: "书目版本",
           status: "已接入",
-          scope: "版本链与馆藏样本",
+          scope: "版本链与馆藏落点",
           usage: "版本流变树、馆藏落点与资源回查",
         },
         {
           id: "geo-events",
           label: "地名事件",
           status: "已接入",
-          scope: "场馆、活动、专题片与事件样本",
+          scope: "场馆、活动、专题片与事件落点",
           usage: "地理传播、时间回声与真实场景挂接",
         },
         {
           id: "public-circulation",
           label: "公共流通",
           status: "已接入",
-          scope: "上图借阅流通样本",
+          scope: "上图借阅流通记录",
           usage: "现实阅读传播、馆际落点与公共借阅证据",
         },
         {
@@ -373,7 +373,7 @@ export function getInsightsPayload(): DatasetInsight {
           label: "专题文献",
           status: "已接入",
           scope: "南湖、宋庆龄、韬奋等专题资料",
-          usage: "近现代支流、机构样本与来源证据总表",
+          usage: "近现代支流、机构落点与来源证据总表",
         },
         {
           id: "poetry-graph",
@@ -387,7 +387,7 @@ export function getInsightsPayload(): DatasetInsight {
           label: "家谱文献",
           status: "示范接入",
           scope: "家礼、家学与家族传播落点",
-          usage: "已在《孝经》等河段预留家族传播叙事接口，可继续挂接家谱样本。",
+          usage: "已在《孝经》等河段预留家族传播叙事接口，可继续挂接家谱资料。",
         },
         {
           id: "red-archives",

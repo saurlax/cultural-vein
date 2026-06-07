@@ -787,7 +787,7 @@ export function CulturalVeinShell() {
               mode: "source",
               currentTitle: focusBook.title,
               contextLabel: `来源联动：${selectedEntry.name}`,
-              detail: `${selectedEntry.name} 的样本资料正在驱动主河道镜头聚焦 ${focusBook.shortTitle} 所在河段。`,
+              detail: `${selectedEntry.name} 的来源线索正在驱动主河道镜头聚焦 ${focusBook.shortTitle} 所在河段。`,
             }
           : null,
       );
