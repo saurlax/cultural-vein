@@ -1287,6 +1287,19 @@ export function CulturalVeinShell() {
               <div className="mt-1 text-[10px] leading-5 text-[#e8d7ab]">
                 {getSourceThemeLabel(activeSourceAtlasEntry.name)} · {activeSourceAtlasEntry.stat ?? "来源支流"}
               </div>
+              {atlasMeta ? (
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
+                    主线 {atlasMeta.demoBookCount} 部
+                  </span>
+                  <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
+                    来源 {atlasMeta.activeSources} 股
+                  </span>
+                  <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
+                    可扩至 {atlasMeta.totalBookCount.toLocaleString()}
+                  </span>
+                </div>
+              ) : null}
               {atlasCoverageHighlights.length ? (
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {atlasCoverageHighlights.map((label) => (
