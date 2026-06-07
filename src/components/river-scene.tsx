@@ -1339,9 +1339,9 @@ function RiverWorld({
   const controlsRef = useRef<OrbitControlsInstance>(null);
   const userInteractingRef = useRef(false);
   const resumeAutoFrameRef = useRef<number | null>(null);
-  const desiredCameraPosition = useRef(new THREE.Vector3(3.5, 3.8, 11));
-  const desiredCameraTarget = useRef(new THREE.Vector3(3.5, 0, 0));
-  const initialControlsTarget = useMemo(() => new THREE.Vector3(3.5, 0, 0), []);
+  const desiredCameraPosition = useRef(new THREE.Vector3(2.3, 5.6, 13.8));
+  const desiredCameraTarget = useRef(new THREE.Vector3(3.8, 0.3, 0.9));
+  const initialControlsTarget = useMemo(() => new THREE.Vector3(3.8, 0.3, 0.9), []);
   const mainStream = useMemo(
     () =>
       books
@@ -1499,8 +1499,8 @@ function RiverWorld({
       ? cameraTarget.clone()
       : selectedBookPosition ?? new THREE.Vector3(3.5, 0, 0);
 
-    let nextTarget = new THREE.Vector3(3.5, 0, 0);
-    let nextPosition = new THREE.Vector3(3.5, 3.8, 11);
+    let nextTarget = new THREE.Vector3(3.8, 0.3, 0.9);
+    let nextPosition = new THREE.Vector3(2.3, 5.6, 13.8);
 
     if (traceFocus?.active) {
       nextTarget = focusPoint;
@@ -1522,13 +1522,14 @@ function RiverWorld({
       const side = new THREE.Vector3()
         .crossVectors(up, cruiseSnapshot.tangent)
         .normalize()
-        .multiplyScalar(2.4);
-      const back = cruiseSnapshot.tangent.clone().multiplyScalar(-4.8);
-      const lift = new THREE.Vector3(0, 2.3, 0);
+        .multiplyScalar(3.15);
+      const back = cruiseSnapshot.tangent.clone().multiplyScalar(-6.4);
+      const lift = new THREE.Vector3(0, 3.05, 0);
 
       nextTarget = cruiseSnapshot.point
         .clone()
-        .add(cruiseSnapshot.tangent.clone().multiplyScalar(1.85));
+        .add(cruiseSnapshot.tangent.clone().multiplyScalar(2.35))
+        .add(new THREE.Vector3(0, 0.22, 0));
       nextPosition = cruiseSnapshot.point.clone().add(side).add(back).add(lift);
     }
 
@@ -1623,8 +1624,11 @@ function RiverWorld({
     <>
       <color attach="background" args={[backgroundColor]} />
       <fog attach="fog" args={[fogColor, 7.5 - scenePulse * 0.35, 22 - scenePulse * 2.4]} />
-      <PerspectiveCamera ref={cameraRef} makeDefault position={[3.5, 3.8, 11]} fov={42} />
-      <ambientLight intensity={1.08 + eraWarmth * 0.3 + scenePulse * 0.18} color={eraWarmth > 0.55 ? "#fff4cf" : "#f3e3b2"} />
+      <PerspectiveCamera ref={cameraRef} makeDefault position={[2.3, 5.6, 13.8]} fov={38} />
+      <ambientLight
+        intensity={1.14 + eraWarmth * 0.34 + scenePulse * 0.18}
+        color={eraWarmth > 0.55 ? "#fff1c7" : "#f4e0aa"}
+      />
       <directionalLight
         position={[4, 8, 6]}
         intensity={1.45 + eraWarmth * 0.42 + scenePulse * 0.34}
@@ -1870,8 +1874,8 @@ function RiverWorld({
 export function RiverScene(props: RiverSceneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [eventSource, setEventSource] = useState<HTMLElement | null>(null);
-  const [cruiseProgress, setCruiseProgress] = useState(0.18);
-  const [autoCruise, setAutoCruise] = useState(false);
+  const [cruiseProgress, setCruiseProgress] = useState(0.1);
+  const [autoCruise, setAutoCruise] = useState(true);
   const [isInteracting, setIsInteracting] = useState(false);
   const [showMobileTouchHint, setShowMobileTouchHint] = useState(true);
   const canCruise =
@@ -1888,7 +1892,7 @@ export function RiverScene(props: RiverSceneProps) {
     : props.sceneFocus?.active
       ? props.sceneFocus.detail
       : isInteracting
-        ? "河面正在缓缓转景，松手后可继续点选典籍与码头。"
+        ? "长河正在掌中转景，松手后可继续点选典籍与码头。"
       : hoveredDock
         ? `${hoveredDock.label} 正从河面浮起。${hoveredDock.note ? ` ${hoveredDock.note}` : ""}`
       : props.sourceAtlasLabel && props.dockMarkers?.length
@@ -1900,7 +1904,7 @@ export function RiverScene(props: RiverSceneProps) {
           : props.selectedBookSlug
             ? "典籍已经停驻岸边，可续展文卷，亦可归河巡看。"
             : cruiseRunning
-              ? "镜头正沿长河缓缓前行，可随时停下改为手动巡看。"
+              ? "长河正自上游缓缓展开，镜头会顺水带你进入文脉世界。"
               : "拖动长河巡看文脉起伏，点中节点便可入卷。";
 
   useEffect(() => {
@@ -1926,10 +1930,10 @@ export function RiverScene(props: RiverSceneProps) {
 
     const timer = window.setInterval(() => {
       setCruiseProgress((current) => {
-        const next = current + 0.012;
+        const next = current + 0.0065;
         return next >= 0.99 ? 0.04 : next;
       });
-    }, 110);
+    }, 120);
 
     return () => window.clearInterval(timer);
   }, [cruiseRunning]);
@@ -1965,7 +1969,7 @@ export function RiverScene(props: RiverSceneProps) {
         <div className="rounded-[26px] border border-[#f2dfab]/18 bg-[linear-gradient(180deg,rgba(115,78,27,0.78),rgba(70,45,14,0.72))] px-5 py-3 text-center shadow-lg shadow-black/20 backdrop-blur-md">
           <div className="text-[10px] tracking-[0.34em] text-[#f4e2b0]">卷首题签</div>
           <div className="mt-2 text-[11px] leading-6 text-[#fbf1d2] sm:text-xs">
-          {sceneHint}
+            {sceneHint}
           </div>
         </div>
       </div>
@@ -1992,10 +1996,10 @@ export function RiverScene(props: RiverSceneProps) {
               <div>
                 <div className="text-[10px] tracking-[0.26em] text-[#e5d1a1]">巡河题签</div>
                 <div className="mt-1 text-xs text-[#fbf3da] sm:text-sm">
-                  顺流看典籍浮沉
+                  从上游缓缓入画
                 </div>
                 <div className="mt-2 hidden text-[10px] leading-5 text-[#e8d6aa] sm:block">
-                  先让镜头缓行找河段，再停在要讲的节点附近。
+                  让镜头顺着黄河文脉徐徐铺展，再停到要讲的节点附近。
                 </div>
               </div>
               <button
