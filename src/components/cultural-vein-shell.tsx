@@ -1246,19 +1246,25 @@ export function CulturalVeinShell() {
               </div>
               <div className="h-6 w-px bg-[#c99d4f]/28" />
               <div className="min-w-0">
-                <div className="text-[10px] leading-5 text-[#fff0c7] line-clamp-1">{openingLead}</div>
-                <div className="text-[9px] leading-4 text-[#f4d892]/86 line-clamp-1">{openingSourceLead}</div>
-                <div className="text-[9px] leading-4 text-[#f6e8bd]/80 line-clamp-1">{landingNarrative}</div>
-              </div>
+              <div className="text-[10px] leading-5 text-[#fff0c7] line-clamp-1">{openingLead}</div>
+              <div className="text-[9px] leading-4 text-[#f4d892]/86 line-clamp-1">{openingSourceLead}</div>
+              <div className="text-[9px] leading-4 text-[#f6e8bd]/80 line-clamp-1">{landingNarrative}</div>
             </div>
+          </div>
             {openingSourcePreviewBooks.length ? (
               <div className="flex flex-wrap gap-2 pl-2">
                 {openingSourcePreviewBooks.map((book) => (
                   <button
                     key={`opening-source-preview-${book.slug}`}
                     type="button"
+                    onPointerEnter={() => setHoveredBookSlug(book.slug)}
+                    onPointerLeave={() => setHoveredBookSlug((current) => (current === book.slug ? null : current))}
                     onClick={() => handleDiveToBook(book.slug)}
-                    className="rounded-full border border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(109,73,24,0.52),rgba(78,50,16,0.5))] px-3 py-1.5 text-[10px] text-[#fff0c7] shadow-[0_8px_18px_rgba(61,34,8,0.08)] backdrop-blur-xl transition hover:bg-[linear-gradient(180deg,rgba(130,86,28,0.64),rgba(92,58,19,0.58))]"
+                    className={`rounded-full border px-3 py-1.5 text-[10px] shadow-[0_8px_18px_rgba(61,34,8,0.08)] backdrop-blur-xl transition ${
+                      hoveredBookSlug === book.slug
+                        ? "border-[#f5dfab]/40 bg-[linear-gradient(180deg,rgba(146,99,32,0.86),rgba(104,66,22,0.82))] text-[#fff7dc] translate-y-[-1px]"
+                        : "border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(109,73,24,0.52),rgba(78,50,16,0.5))] text-[#fff0c7] hover:bg-[linear-gradient(180deg,rgba(130,86,28,0.64),rgba(92,58,19,0.58))]"
+                    }`}
                   >
                     {book.title}
                   </button>
