@@ -684,9 +684,9 @@ export function CulturalVeinShell() {
     ? "逆流溯源"
     : sceneFocus?.active
       ? "场景联动"
-    : viewMode === "book"
-      ? "典籍钻入"
-      : "河流巡航";
+      : viewMode === "book"
+      ? "入卷细览"
+      : "顺河入画";
   const dossierToneClass = traceFocus?.active
     ? "border-amber-200/24 bg-[linear-gradient(135deg,rgba(125,82,18,0.4),rgba(37,24,8,0.9))]"
     : transitionState === "diving" || transitionState === "settling"
@@ -716,7 +716,7 @@ export function CulturalVeinShell() {
   }> = [
     {
       id: "search",
-      label: "检索",
+      label: "寻章",
       summary: resolvedSearchResult?.query
         ? `命中 ${resolvedSearchResult.total} 本`
         : "概念联想",
@@ -737,11 +737,25 @@ export function CulturalVeinShell() {
     {
       id: "branch",
       label: "支流",
-      summary: activeBranchAnnotation?.label ?? "主河道",
+      summary: activeBranchAnnotation?.label ?? "来源与主河道",
     },
   ];
   const activeDesktopPanelConfig =
     desktopPanels.find((panel) => panel.id === activeDesktopPanel) ?? desktopPanels[0];
+  const activePanelNarrative =
+    activeDesktopPanel === "search"
+      ? resolvedSearchResult?.query
+        ? `先由“${resolvedSearchResult.query}”照见河上典籍，再顺势入卷细读其文脉来路。`
+        : "先从概念起笔，在河面上找到可切入的典籍节点。"
+      : activeDesktopPanel === "era"
+        ? `这道河段当前停在${activeEra}，可沿时代水位前后推移，看文脉如何层层接续。`
+        : activeDesktopPanel === "category"
+          ? `先收束门类与学派，再沿筛出的主线节点进入更清晰的讲述路径。`
+          : activeSourceAtlasEntry
+            ? `这股来源支流已经映上河面，可先看来源，再点样本，最后回到河上码头。`
+            : activeBranchAnnotation
+              ? `${activeBranchAnnotation.description} 点中对应支流后，可直接入卷接着讲。`
+              : "先看主河道与来源支流如何交汇，再挑一处节点入卷展开。";
   const compactStatButtons = [
     {
       label: "典籍",
@@ -901,6 +915,9 @@ export function CulturalVeinShell() {
                   <div className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">
                     长卷题签
                   </div>
+                </div>
+                <div className="mt-3 rounded-2xl border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-[12px] leading-6 text-[#e8d8af]">
+                  {activePanelNarrative}
                 </div>
 
                 {activeDesktopPanel === "search" ? (
@@ -1833,8 +1850,14 @@ export function CulturalVeinShell() {
                   </div>
                 </>
               ) : null}
-              <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(27,17,7,0.18)] px-3 py-3 text-sm text-[#eadfbc]">
-                这道河段推进到 {activeEra}，河上保留 {categoryFilter} 与 {schoolFilter} 的主线节点。
+              <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(27,17,7,0.18)] px-3 py-3 text-sm leading-6 text-[#eadfbc]">
+                {activeDesktopPanel === "search"
+                  ? `此刻河上保留 ${categoryFilter} 与 ${schoolFilter} 的主线节点，找到想讲的概念后就能顺势入卷。`
+                  : activeDesktopPanel === "era"
+                    ? `这道河段推进到 ${activeEra}，镜头会围绕这层时代水位继续铺开节点与支流。`
+                    : activeDesktopPanel === "category"
+                      ? `筛到 ${categoryFilter} 与 ${schoolFilter} 后，河道已经更收束，适合直接挑主线节点展开讲述。`
+                      : "先顺着关系层级与来源河册找到入口，再从河面码头进入具体典籍与样本。"}
               </div>
             </div>
           </div>
