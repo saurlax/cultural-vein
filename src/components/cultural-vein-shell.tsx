@@ -1403,51 +1403,37 @@ export function CulturalVeinShell() {
                 </div>
               </div>
 
-              <div className="mt-3 rounded-[20px] border border-[#d9b86b]/16 bg-[rgba(255,252,240,0.24)] px-3 py-3 text-[#6f4b18]">
+              <div className="mt-3 rounded-[20px] border border-[#d9b86b]/16 bg-[rgba(255,252,240,0.2)] px-3 py-3 text-[#6f4b18]">
                 <div className="text-[12px] leading-6">{openingLead}</div>
                 <div className="mt-2 line-clamp-2 text-[11px] leading-5 text-[#8d6a2c]">{openingPreviewLead}</div>
-                {openingSourcePreviewBooks.length ? (
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {openingSourcePreviewBooks.slice(0, 1).map((book) => (
-                      <button
-                        key={`opening-source-preview-${book.slug}`}
-                        type="button"
-                        onPointerEnter={() => setHoveredBookSlug(book.slug)}
-                        onPointerLeave={() => setHoveredBookSlug((current) => (current === book.slug ? null : current))}
-                        onClick={() => handleDiveToBook(book.slug)}
-                        className={`rounded-full border px-3 py-1.5 text-[10px] transition ${
-                          hoveredBookSlug === book.slug
-                            ? "border-[#c99d4f]/35 bg-[#f3dfab] text-[#42290a]"
-                            : "border-[#d9b86b]/22 bg-[rgba(255,255,255,0.16)] text-[#6f4b18] hover:bg-[rgba(255,255,255,0.22)]"
-                        }`}
-                      >
-                        {book.title}
-                      </button>
-                    ))}
-                  </div>
-                ) : null}
-                {homepageShortcuts.length ? (
-                  <div className="mt-3 rounded-[16px] border border-[#d9b86b]/14 bg-[rgba(255,248,223,0.28)] px-3 py-3">
-                    <div className="text-[10px] tracking-[0.22em] text-[#8d6a2c]">入画捷径</div>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {homepageShortcuts.map((shortcut) => (
-                        <button
-                          key={shortcut.id}
-                          type="button"
-                          onClick={shortcut.onClick}
-                          className="rounded-full border border-[#d9b86b]/22 bg-[rgba(255,255,255,0.16)] px-3 py-1.5 text-[10px] text-[#6f4b18] transition hover:bg-[rgba(255,255,255,0.24)]"
-                        >
-                          {shortcut.label}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="mt-2 line-clamp-2 text-[10px] leading-5 text-[#8d6a2c]">
-                      {homepageShortcuts[0]?.note}
-                      {homepageShortcuts.length > 1 ? `；${homepageShortcuts[1]?.note}` : ""}
-                      {homepageShortcuts.length > 2 ? `；${homepageShortcuts[2]?.note}` : ""}
-                    </div>
-                  </div>
-                ) : null}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {openingSourcePreviewBooks.slice(0, 1).map((book) => (
+                    <button
+                      key={`opening-source-preview-${book.slug}`}
+                      type="button"
+                      onPointerEnter={() => setHoveredBookSlug(book.slug)}
+                      onPointerLeave={() => setHoveredBookSlug((current) => (current === book.slug ? null : current))}
+                      onClick={() => handleDiveToBook(book.slug)}
+                      className={`rounded-full border px-3 py-1.5 text-[10px] transition ${
+                        hoveredBookSlug === book.slug
+                          ? "border-[#c99d4f]/35 bg-[#f3dfab] text-[#42290a]"
+                          : "border-[#d9b86b]/22 bg-[rgba(255,255,255,0.14)] text-[#6f4b18] hover:bg-[rgba(255,255,255,0.22)]"
+                      }`}
+                    >
+                      入看《{book.title}》
+                    </button>
+                  ))}
+                  {homepageShortcuts.slice(0, 2).map((shortcut) => (
+                    <button
+                      key={shortcut.id}
+                      type="button"
+                      onClick={shortcut.onClick}
+                      className="rounded-full border border-[#d9b86b]/22 bg-[rgba(255,255,255,0.14)] px-3 py-1.5 text-[10px] text-[#6f4b18] transition hover:bg-[rgba(255,255,255,0.24)]"
+                    >
+                      {shortcut.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="mt-3 flex flex-wrap gap-1.5">
