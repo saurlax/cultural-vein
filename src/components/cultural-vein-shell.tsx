@@ -2183,38 +2183,38 @@ export function CulturalVeinShell() {
         ) : !showDesktopDossier ? (
           <div className="absolute left-4 top-4 z-20 hidden md:block lg:left-6 lg:top-6">
             <aside className="pointer-events-auto">
-              <div className="group relative w-[12.5rem] overflow-hidden rounded-[26px] border border-[#c89b43]/22 bg-[linear-gradient(180deg,rgba(247,236,198,0.86),rgba(219,182,99,0.72))] px-3 py-3 shadow-[0_14px_42px_rgba(92,58,16,0.12)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:shadow-[0_18px_54px_rgba(92,58,16,0.18)]">
-                <div className="pointer-events-none absolute inset-y-3 left-2 w-[3px] rounded-full bg-[linear-gradient(180deg,rgba(245,223,165,0.2),rgba(180,127,39,0.9),rgba(245,223,165,0.2))]" />
-                <div className="pointer-events-none absolute inset-y-4 right-2 w-px bg-[linear-gradient(180deg,transparent,rgba(213,167,70,0.3),transparent)]" />
+              <div className="group relative w-[11rem] overflow-hidden rounded-[22px] border border-[#c89b43]/20 bg-[linear-gradient(180deg,rgba(250,241,210,0.88),rgba(228,191,108,0.68))] px-3 py-2.5 shadow-[0_12px_34px_rgba(92,58,16,0.1)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:shadow-[0_16px_42px_rgba(92,58,16,0.16)]">
+                <div className="pointer-events-none absolute inset-y-2.5 left-2 w-[3px] rounded-full bg-[linear-gradient(180deg,rgba(245,223,165,0.16),rgba(180,127,39,0.88),rgba(245,223,165,0.16))]" />
+                <div className="pointer-events-none absolute inset-y-3 right-2 w-px bg-[linear-gradient(180deg,transparent,rgba(213,167,70,0.22),transparent)]" />
                 <div className="pl-2">
                   <div className="text-[10px] tracking-[0.28em] text-[#8d6a2c]">河岸题签</div>
-                  <div className="mt-2 text-sm font-semibold text-[#5b3a11]">文脉溯源</div>
-                  <div className="mt-1 text-[11px] font-medium text-[#6d4a18]">{collapsedDesktopLead}</div>
-                  <div className="mt-1 text-[10px] text-[#8d6a2c]">{collapsedDesktopNote}</div>
+                  <div className="mt-1.5 text-sm font-semibold text-[#5b3a11]">文脉溯源</div>
+                  <div className="mt-1 text-[10px] font-medium leading-5 text-[#6d4a18]">{collapsedDesktopLead}</div>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-1.5 pl-2">
+                <div className="mt-2 flex flex-wrap gap-1.5 pl-2">
                   <button
                     type="button"
                     onClick={() => handleOpenDesktopPanel("branch")}
-                    className="rounded-full border border-[#d6b166]/24 bg-[rgba(255,248,220,0.66)] px-2.5 py-1 text-[10px] text-[#42290a] transition hover:bg-[#f7e7bc]"
+                    className="rounded-full border border-[#d6b166]/20 bg-[rgba(255,248,220,0.52)] px-2.5 py-1 text-[10px] text-[#42290a] transition hover:bg-[#f7e7bc]"
                   >
-                    支流巡签
+                    开河册
                   </button>
                   <button
                     type="button"
                     onClick={() => handleOpenDesktopPanel("era")}
-                    className="rounded-full border border-[#d8b56c]/24 bg-[rgba(255,255,255,0.14)] px-2.5 py-1 text-[10px] text-[#7a571d] transition hover:bg-[rgba(255,255,255,0.24)]"
+                    className="rounded-full border border-[#d8b56c]/20 bg-[rgba(255,255,255,0.12)] px-2.5 py-1 text-[10px] text-[#7a571d] transition hover:bg-[rgba(255,255,255,0.24)]"
                   >
                     {activeEra}
                   </button>
                 </div>
+                <div className="mt-1 pl-2 text-[9px] text-[#8d6a2c]">{collapsedDesktopNote}</div>
                 {selectedBook ? (
                   <button
                     type="button"
                     onClick={() => setShowDesktopDossier(true)}
-                    className="mt-3 ml-2 w-[calc(100%-0.5rem)] rounded-full border border-[#d8b56c]/24 bg-[rgba(255,255,255,0.16)] px-3 py-1.5 text-[10px] text-[#7a571d] transition hover:bg-[rgba(255,255,255,0.24)]"
+                    className="mt-2 ml-2 w-[calc(100%-0.5rem)] rounded-full border border-[#d8b56c]/22 bg-[rgba(255,255,255,0.14)] px-3 py-1.5 text-[10px] text-[#7a571d] transition hover:bg-[rgba(255,255,255,0.24)]"
                   >
-                    展开卷内
+                    入卷细看
                   </button>
                 ) : null}
               </div>
@@ -2736,7 +2736,7 @@ export function CulturalVeinShell() {
         ) : null}
         <div className="pointer-events-none absolute bottom-3 inset-x-0 z-30 md:hidden">
           <div className="pointer-events-auto">
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center">
               <button
                 type="button"
                 onClick={() => {
@@ -2749,27 +2749,19 @@ export function CulturalVeinShell() {
                   setShowMobileDossier(false);
                   setShowMobileControls((current) => !current);
                 }}
-                className={`rounded-full border px-4 py-2 text-[10px] shadow-[0_10px_22px_rgba(52,28,6,0.18)] backdrop-blur-xl transition ${
+                className={`min-w-[4.75rem] rounded-[999px] border px-4 py-2 text-center shadow-[0_10px_22px_rgba(52,28,6,0.16)] backdrop-blur-xl transition ${
                   showMobileSheet
-                    ? "border-[#f0cf75]/34 bg-[#f3dfab] text-[#42290a]"
-                    : "border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(182,134,53,0.88),rgba(109,73,24,0.82))] text-[#fff0c7]"
+                    ? "border-[#f0cf75]/30 bg-[linear-gradient(180deg,rgba(244,223,166,0.96),rgba(207,162,70,0.92))] text-[#42290a]"
+                    : "border-[#e7c97b]/18 bg-[linear-gradient(180deg,rgba(174,126,46,0.82),rgba(112,75,24,0.78))] text-[#fff0c7]"
                 }`}
               >
-                {selectedBook ? `卷内《${selectedBook.shortTitle}》` : "控卷"}
+                <div className="text-[9px] tracking-[0.24em]">
+                  {selectedBook ? "卷心印" : "河印"}
+                </div>
+                <div className="mt-0.5 text-[12px] font-medium">
+                  {selectedBook ? selectedBook.shortTitle : "开卷"}
+                </div>
               </button>
-              {!selectedBook ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowMobileDossier(false);
-                    setShowMobileControls(true);
-                    setActiveDesktopPanel("era");
-                  }}
-                  className="rounded-full border border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(182,134,53,0.78),rgba(109,73,24,0.74))] px-4 py-2 text-[10px] text-[#fff0c7] shadow-[0_10px_22px_rgba(52,28,6,0.16)] backdrop-blur-xl"
-                >
-                  时代水位
-                </button>
-              ) : null}
             </div>
           </div>
         </div>
