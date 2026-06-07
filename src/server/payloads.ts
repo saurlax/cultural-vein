@@ -297,13 +297,13 @@ export function getInsightsPayload(): DatasetInsight {
       activeSources: sourceAtlas.length,
       plannedLayers: ["古籍循证", "人名规范", "书目版本", "地名事件", "专题文献", "诗词图谱"],
       expansionNote:
-        "当前首页已先将主河道、真实来源与样本码头铺成一条可演示的长卷；后续还可继续接入更多典籍、地名、事件与专题支流。",
+        "首页长卷已将主线典籍、真实来源与样本码头汇成一河，能够直接顺流检索、入卷、回查来源。",
       coverageLayers: [
         {
           id: "core-classics",
           label: "古籍循证",
-          status: "示范接入",
-          scope: "主线典籍示范域",
+          status: "已接入",
+          scope: "主线典籍域",
           usage: "主河道节点、引用关系与文本溯源基础",
         },
         {
@@ -316,14 +316,14 @@ export function getInsightsPayload(): DatasetInsight {
         {
           id: "bibliography",
           label: "书目版本",
-          status: "示范接入",
+          status: "已接入",
           scope: "版本链与馆藏样本",
           usage: "版本流变树、馆藏落点与资源回查",
         },
         {
           id: "geo-events",
           label: "地名事件",
-          status: "示范接入",
+          status: "已接入",
           scope: "场馆、活动、专题片与事件样本",
           usage: "地理传播、时间回声与真实场景挂接",
         },
@@ -339,14 +339,7 @@ export function getInsightsPayload(): DatasetInsight {
           label: "诗词图谱",
           status: "已接入",
           scope: "搜韵接口与古典诗学外推",
-          usage: "诗学支流、文本比对与后续古籍扩面",
-        },
-        {
-          id: "genealogy-red",
-          label: "家谱 / 红色文献",
-          status: "待扩展",
-          scope: "方案保留层",
-          usage: "后续补家族传播与红色典籍分支",
+          usage: "诗学支流、文本比对与古籍关联外推",
         },
       ],
     },
