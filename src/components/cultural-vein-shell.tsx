@@ -718,6 +718,14 @@ export function CulturalVeinShell() {
       return matchesTheme && matchesEra;
     });
   }, [inferSourceAtlasEra, sourceAtlasEntries, sourceAtlasEraFilter, sourceAtlasThemeFilter]);
+  const sourceAtlasFilterActive =
+    sourceAtlasThemeFilter !== "全部" || sourceAtlasEraFilter !== "全部";
+  const sourceAtlasFilterSummary = [
+    sourceAtlasThemeFilter !== "全部" ? sourceAtlasThemeFilter : null,
+    sourceAtlasEraFilter !== "全部" ? sourceAtlasEraFilter : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
   const prioritizedSourceAtlasEntries = useMemo(() => {
     return [...filteredSourceAtlasEntries].sort((left, right) => {
       const leftEra = inferSourceAtlasEra(left);
@@ -1739,6 +1747,32 @@ export function CulturalVeinShell() {
                         <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">来源河册</div>
                         <div className="text-[10px] text-[#f2dfab]">{sourceAtlasMass.toLocaleString()}</div>
                         </div>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
+                            当前可见 {prioritizedSourceAtlasEntries.length} 股
+                          </span>
+                          {sourceAtlasFilterActive ? (
+                            <>
+                              <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-2.5 py-1 text-[10px] text-amber-100">
+                                已筛 {sourceAtlasFilterSummary}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSourceAtlasThemeFilter("全部");
+                                  setSourceAtlasEraFilter("全部");
+                                }}
+                                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                              >
+                                归零筛选
+                              </button>
+                            </>
+                          ) : (
+                            <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#dccb9c]">
+                              未加筛选
+                            </span>
+                          )}
+                        </div>
                         {atlasMeta ? (
                           <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3">
                             <div className="text-[11px] leading-5 text-[#f2e4bb]">
@@ -2243,6 +2277,32 @@ export function CulturalVeinShell() {
                     <div className="text-[10px] text-[#f2dfab]">
                       {activeSourceAtlasEntry?.stat ?? sourceAtlasMass.toLocaleString()}
                     </div>
+                  </div>
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
+                      当前可见 {prioritizedSourceAtlasEntries.length} 股
+                    </span>
+                    {sourceAtlasFilterActive ? (
+                      <>
+                        <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-2.5 py-1 text-[10px] text-amber-100">
+                          已筛 {sourceAtlasFilterSummary}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSourceAtlasThemeFilter("全部");
+                            setSourceAtlasEraFilter("全部");
+                          }}
+                          className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#eadfbc]"
+                        >
+                          归零筛选
+                        </button>
+                      </>
+                    ) : (
+                      <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#dccb9c]">
+                        未加筛选
+                      </span>
+                    )}
                   </div>
                   <div className="mt-2 text-[11px] leading-5 text-[#eadfbc]">
                     {activeSourceAtlasEntry?.summary ?? "来源支流已映上河面。"}
