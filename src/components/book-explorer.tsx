@@ -1955,9 +1955,9 @@ export function BookExplorer({
             </div>
           ) : (
             <>
-              <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(79,53,18,0.82),rgba(33,21,8,0.92))] p-4">
+              <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(96,66,22,0.72),rgba(42,27,9,0.8))] p-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.06)]">
                 <div className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
-                  <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(37,24,8,0.52)] px-4 py-4">
+                  <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(70,45,14,0.46),rgba(37,24,8,0.4))] px-4 py-4">
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
@@ -2015,7 +2015,7 @@ export function BookExplorer({
                       })}
                     </div>
                     {visibleSpread.length > 1 ? (
-                      <div className="mt-4 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                      <div className="mt-4 rounded-2xl border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4">
                         <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-stone-400">
                           <span>传播时间轴</span>
                           <span className="text-amber-100">
@@ -2404,9 +2404,9 @@ export function BookExplorer({
             </div>
           ) : (
             <>
-              <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(79,53,18,0.82),rgba(33,21,8,0.92))] p-4">
+              <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(96,66,22,0.72),rgba(42,27,9,0.8))] p-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.06)]">
                 <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
-                  <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(37,24,8,0.52)] px-4 py-4">
+                  <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(70,45,14,0.46),rgba(37,24,8,0.4))] px-4 py-4">
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
@@ -2431,7 +2431,7 @@ export function BookExplorer({
                       />
                     </div>
                     <div className="mt-4 grid gap-3 md:grid-cols-2">
-                      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                      <div className="rounded-2xl border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4">
                         <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
                           一级关联
                         </div>
@@ -2452,7 +2452,7 @@ export function BookExplorer({
                           ))}
                         </div>
                       </div>
-                      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                      <div className="rounded-2xl border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4">
                         <div className="flex items-center justify-between gap-3">
                           <div className="text-xs uppercase tracking-[0.22em] text-stone-400">
                             二级关联
@@ -2737,7 +2737,7 @@ export function BookExplorer({
             </div>
           ) : (
             <>
-              <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(79,53,18,0.82),rgba(33,21,8,0.92))] p-4">
+              <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(96,66,22,0.72),rgba(42,27,9,0.8))] p-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.06)]">
                 <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
                   <VersionTree
                     versions={visibleVersions}
@@ -3392,8 +3392,8 @@ export function BookExplorer({
             <span className="text-xs text-[#d8c9a3]">时间显影</span>
           </div>
           {visibleTimeline.length > 0 ? (
-            <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(79,53,18,0.82),rgba(33,21,8,0.92))] p-4">
-              <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(37,24,8,0.52)] px-4 py-4">
+            <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(96,66,22,0.72),rgba(42,27,9,0.8))] p-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.06)]">
+              <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(70,45,14,0.46),rgba(37,24,8,0.4))] px-4 py-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
@@ -3445,7 +3445,7 @@ export function BookExplorer({
               </div>
 
               <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
-                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(37,24,8,0.52)] px-4 py-4">
+                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(70,45,14,0.46),rgba(37,24,8,0.4))] px-4 py-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
