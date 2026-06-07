@@ -3137,12 +3137,36 @@ export function RiverScene(props: RiverSceneProps) {
   const [isInteracting, setIsInteracting] = useState(false);
   const [eraTransitionProgress, setEraTransitionProgress] = useState(1);
   const previousEraRef = useRef<RiverEra>(props.activeEra);
+  const activeEraStory = RIVER_ERA_STORIES[props.activeEra];
   const canCruise =
     props.viewMode === "river" &&
     !props.traceFocus?.active &&
     !props.sceneFocus?.active &&
     !props.searchFocusSlug;
   const cruiseRunning = canCruise && autoCruise;
+  const visibleNodeCount = props.visibleNodeCount ?? props.books.length;
+  const totalNodeCount = props.totalNodeCount ?? props.books.length;
+  const riverStageLead = props.selectedBookSlug
+    ? "文卷已入河心，可沿右侧卷内继续细读。"
+    : props.sourceAtlasLabel
+      ? `${props.sourceAtlasLabel} 这股来源支流正映入主河。`
+      : activeEraStory.lead;
+  const riverStageDetail = props.selectedBookSlug
+    ? props.traceFocus?.active
+      ? `溯源光线已推进 ${props.traceFocus.progress}/${props.traceFocus.total} 层，主河镜头正随卷内回看源头。`
+      : props.sceneFocus?.active
+        ? `${props.sceneFocus.contextLabel} 已与主河镜头相接。`
+        : "右侧文卷与主河已保持联动，读卷时不会再挤占整幅河面。"
+    : props.sourceAtlasSummary ?? activeEraStory.trunk;
+  const riverStageModeLabel = props.traceFocus?.active
+    ? "逆流溯源"
+    : props.sceneFocus?.active
+      ? "场景联动"
+      : props.selectedBookSlug
+        ? "入卷细览"
+        : cruiseRunning
+          ? "顺河巡航"
+          : "河面驻看";
   const cruiseAnchorMoments = useMemo<CruiseAnchorMoment[]>(() => {
     const eraAnchors = RIVER_ERA_ORDER.map((era) => {
       const eraBooks = props.books
@@ -3299,6 +3323,63 @@ export function RiverScene(props: RiverSceneProps) {
           onInteractionEnd={() => setIsInteracting(false)}
         />
       </Canvas>
+      <div
+        className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center px-3 pb-3 transition-all duration-500 sm:px-4 sm:pb-4 ${
+          props.mobilePanelOpen ? "translate-y-6 opacity-0" : "translate-y-0 opacity-100"
+        }`}
+      >
+        <div className="pointer-events-auto w-full max-w-[min(58rem,calc(100vw-1.5rem))] rounded-[24px] border border-[#e6c77f]/26 bg-[linear-gradient(180deg,rgba(84,54,17,0.82),rgba(46,29,8,0.86))] px-4 py-3 shadow-[0_18px_40px_rgba(53,31,7,0.22)] backdrop-blur-md sm:px-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full border border-amber-300/22 bg-amber-300/10 px-3 py-1 text-[10px] tracking-[0.24em] text-amber-100">
+                  河势题签
+                </span>
+                <span className="rounded-full border border-[#e6c77f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-[10px] text-[#f1e0b4]">
+                  {props.activeEra}
+                </span>
+                <span className="rounded-full border border-[#e6c77f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-[10px] text-[#f1e0b4]">
+                  节点 {visibleNodeCount}/{totalNodeCount}
+                </span>
+                <span className="rounded-full border border-[#e6c77f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-[10px] text-[#f1e0b4]">
+                  {riverStageModeLabel}
+                </span>
+              </div>
+              <div className="mt-2 text-sm font-medium text-[#fbf3da]">{riverStageLead}</div>
+              <div className="mt-1 line-clamp-2 text-[12px] leading-6 text-[#e8d7a9]">{riverStageDetail}</div>
+            </div>
+            <div className="flex shrink-0 flex-wrap gap-2">
+              {!props.selectedBookSlug && props.onOpenEraPanel ? (
+                <button
+                  type="button"
+                  onClick={props.onOpenEraPanel}
+                  className="rounded-full border border-[#e6c77f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.14)]"
+                >
+                  时代河段
+                </button>
+              ) : null}
+              {props.onOpenControlPanel ? (
+                <button
+                  type="button"
+                  onClick={props.onOpenControlPanel}
+                  className="rounded-full border border-amber-300/22 bg-amber-300/12 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/18"
+                >
+                  {props.selectedBookSlug ? "河册题签" : "来源河册"}
+                </button>
+              ) : null}
+              {props.selectedBookSlug && props.onReturnToRiver ? (
+                <button
+                  type="button"
+                  onClick={props.onReturnToRiver}
+                  className="rounded-full border border-emerald-300/18 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/16"
+                >
+                  归河巡看
+                </button>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
