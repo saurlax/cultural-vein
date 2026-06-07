@@ -421,17 +421,6 @@ export function CulturalVeinShell() {
     setSearchResult(null);
     setSearchTerm("");
   }, [setSearchTerm]);
-  const handleSearchShortcut = useCallback(
-    (value: string) => {
-      handleSearchTermChange(value);
-      setShowDesktopDossier(false);
-      setShowMobileDossier(false);
-      setActiveDesktopPanel("search");
-      setShowDesktopControls(true);
-      setShowMobileControls(false);
-    },
-    [handleSearchTermChange],
-  );
 
   const filteredBooks = useMemo(() => {
     return riverDataset.books.filter((book) => {
@@ -1161,6 +1150,8 @@ export function CulturalVeinShell() {
       : defaultConceptSuggestions;
   const panelBaseClass =
     "rounded-[28px] border border-[#c89b43]/30 bg-[linear-gradient(180deg,rgba(245,232,189,0.96),rgba(225,191,112,0.92))] shadow-[0_18px_56px_rgba(92,58,16,0.16)] backdrop-blur-xl";
+  const desktopControlPanelClass =
+    "rounded-[24px] border border-[#c89b43]/22 bg-[linear-gradient(180deg,rgba(248,238,206,0.94),rgba(224,189,104,0.88))] shadow-[0_14px_40px_rgba(92,58,16,0.12)] backdrop-blur-xl";
   const mobileSheetClass =
     "rounded-[24px] border border-[#c89b43]/24 bg-[linear-gradient(180deg,rgba(250,242,216,0.97),rgba(229,197,118,0.94))] shadow-[0_18px_38px_rgba(92,58,16,0.12)] backdrop-blur-xl";
   const showMobileSheet = showMobileControls || showMobileDossier;
@@ -1289,40 +1280,6 @@ export function CulturalVeinShell() {
     : activeSourceAtlasEntry
       ? `${getSourceThemeLabel(activeSourceAtlasEntry.name)} · ${activeEra}`
       : `${activeEra} · 河岸巡看`;
-  const homepageShortcuts = [
-    searchSuggestionChips[0]
-      ? {
-          id: `search-${searchSuggestionChips[0]}`,
-          label: `寻章 ${searchSuggestionChips[0]}`,
-          note: "从概念切入主河",
-          onClick: () => handleSearchShortcut(searchSuggestionChips[0]!),
-        }
-      : null,
-    {
-      id: `era-${activeEra}`,
-      label: `${activeEra}河段`,
-      note: "直接切到当前时代水位",
-      onClick: () => handleOpenDesktopPanel("era"),
-    },
-    activeSourceAtlasEntry
-      ? {
-          id: `branch-${activeSourceAtlasEntry.id}`,
-          label: activeSourceAtlasEntry.name,
-          note: "顺着这股真实来源入画",
-          onClick: () => handleSourceAtlasSelect(activeSourceAtlasEntry.id),
-        }
-      : null,
-  ].filter(
-    (
-      item,
-    ): item is {
-      id: string;
-      label: string;
-      note: string;
-      onClick: () => void;
-    } => Boolean(item),
-  );
-
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#e7c978] text-stone-100">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(255,250,224,0.72),transparent_24%),radial-gradient(circle_at_84%_12%,rgba(240,199,92,0.34),transparent_24%),radial-gradient(circle_at_50%_100%,rgba(176,118,34,0.2),transparent_38%),linear-gradient(180deg,#fbf1cf_0%,#f0dc9f_24%,#d8ac54_56%,#8e591f_100%)]" />
@@ -1374,62 +1331,51 @@ export function CulturalVeinShell() {
 
       <div className="relative z-10 min-h-screen">
         {showDesktopControls ? (
-          <div className="absolute left-4 top-4 z-20 hidden w-[min(12.5rem,calc(100vw-38rem))] md:block lg:left-6 lg:top-6 lg:w-[12.75rem]">
+          <div className="absolute left-4 top-4 z-20 hidden w-[min(11.75rem,calc(100vw-39rem))] md:block lg:left-6 lg:top-6 lg:w-[12rem]">
             <aside className="pointer-events-auto xl:pt-2">
-              <div className={`relative max-h-[min(68vh,40rem)] overflow-hidden p-3 ${panelBaseClass}`}>
-              <div className="pointer-events-none absolute inset-y-5 left-2 w-px bg-[linear-gradient(180deg,transparent,rgba(244,220,156,0.42),transparent)]" />
-              <div className="pointer-events-none absolute inset-y-5 right-2 w-px bg-[linear-gradient(180deg,transparent,rgba(213,167,70,0.34),transparent)]" />
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <div className="text-[10px] tracking-[0.28em] text-[#8d6a2c]">黄河长卷</div>
-                  <div className="mt-1 text-[15px] font-semibold text-[#5b3a11]">文脉溯源</div>
-                  <div className="mt-1 text-[11px] text-[#8d6a2c]">{activeDesktopPanelConfig.label}</div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="rounded-full border border-[#b89247]/16 bg-[rgba(255,255,255,0.14)] px-2.5 py-1 text-[10px] text-[#7a571d]">
-                    {focusModeLabel}
+              <div className={`relative max-h-[min(68vh,40rem)] overflow-hidden px-3 py-3 ${desktopControlPanelClass}`}>
+              <div className="pointer-events-none absolute inset-y-4 left-2 w-[3px] rounded-full bg-[linear-gradient(180deg,rgba(244,220,156,0.12),rgba(180,127,39,0.82),rgba(244,220,156,0.12))]" />
+              <div className="pointer-events-none absolute inset-y-4 right-2 w-px bg-[linear-gradient(180deg,transparent,rgba(213,167,70,0.34),transparent)]" />
+              <div className="pl-2">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="text-[9px] tracking-[0.28em] text-[#8d6a2c]">岸边卷签</div>
+                    <div className="mt-1 text-[13px] font-semibold text-[#5b3a11]">文脉溯源</div>
+                    <div className="mt-1 text-[10px] text-[#8d6a2c]">{activeDesktopPanelConfig.label}</div>
                   </div>
                   <button
                     type="button"
                     onClick={() => setShowDesktopControls(false)}
-                    className="rounded-full border border-[#b89247]/16 bg-[rgba(255,255,255,0.14)] px-2.5 py-1 text-[10px] text-[#7a571d] transition hover:bg-[rgba(255,255,255,0.24)]"
+                    className="rounded-full border border-[#b89247]/16 bg-[rgba(255,255,255,0.16)] px-2 py-1 text-[9px] text-[#7a571d] transition hover:bg-[rgba(255,255,255,0.24)]"
                   >
-                    收卷
+                    收起
                   </button>
                 </div>
-              </div>
 
-              <div className="mt-3 rounded-[18px] border border-[#d9b86b]/16 bg-[rgba(255,252,240,0.18)] px-3 py-2.5 text-[#6f4b18]">
-                <div className="text-[11px] leading-5">{openingLead}</div>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {openingSourcePreviewBooks.slice(0, 1).map((book) => (
-                    <button
-                      key={`opening-source-preview-${book.slug}`}
-                      type="button"
-                      onPointerEnter={() => setHoveredBookSlug(book.slug)}
-                      onPointerLeave={() => setHoveredBookSlug((current) => (current === book.slug ? null : current))}
-                      onClick={() => handleDiveToBook(book.slug)}
-                      className={`rounded-full border px-2.5 py-1 text-[10px] transition ${
-                        hoveredBookSlug === book.slug
-                          ? "border-[#c99d4f]/35 bg-[#f3dfab] text-[#42290a]"
-                          : "border-[#d9b86b]/22 bg-[rgba(255,255,255,0.14)] text-[#6f4b18] hover:bg-[rgba(255,255,255,0.22)]"
-                      }`}
-                    >
-                      入看《{book.title}》
-                    </button>
-                  ))}
-                  {homepageShortcuts.slice(0, 1).map((shortcut) => (
-                    <button
-                      key={shortcut.id}
-                      type="button"
-                      onClick={shortcut.onClick}
-                      className="rounded-full border border-[#d9b86b]/22 bg-[rgba(255,255,255,0.14)] px-2.5 py-1 text-[10px] text-[#6f4b18] transition hover:bg-[rgba(255,255,255,0.24)]"
-                    >
-                      {shortcut.label}
-                    </button>
-                  ))}
+                <div className="mt-3 rounded-[16px] border border-[#d9b86b]/14 bg-[rgba(255,252,240,0.18)] px-3 py-2.5 text-[#6f4b18]">
+                  <div className="text-[10px] leading-5">{openingLead}</div>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    <span className="rounded-full border border-[#d9b86b]/20 bg-[rgba(255,255,255,0.16)] px-2.5 py-1 text-[9px] text-[#7a571d]">
+                      {focusModeLabel}
+                    </span>
+                    {openingSourcePreviewBooks.slice(0, 1).map((book) => (
+                      <button
+                        key={`opening-source-preview-${book.slug}`}
+                        type="button"
+                        onPointerEnter={() => setHoveredBookSlug(book.slug)}
+                        onPointerLeave={() => setHoveredBookSlug((current) => (current === book.slug ? null : current))}
+                        onClick={() => handleDiveToBook(book.slug)}
+                        className={`rounded-full border px-2.5 py-1 text-[9px] transition ${
+                          hoveredBookSlug === book.slug
+                            ? "border-[#c99d4f]/35 bg-[#f3dfab] text-[#42290a]"
+                            : "border-[#d9b86b]/22 bg-[rgba(255,255,255,0.14)] text-[#6f4b18] hover:bg-[rgba(255,255,255,0.22)]"
+                        }`}
+                      >
+                        《{book.title}》
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {desktopPanels.map((panel) => (
@@ -1448,7 +1394,7 @@ export function CulturalVeinShell() {
                 ))}
               </div>
 
-              <section className={`mt-3 max-h-[min(38vh,21rem)] overflow-auto rounded-[20px] border border-[#ead8a6]/12 bg-[rgba(93,62,18,0.16)] px-3 py-3 pr-2 transition-all duration-500 ease-out ${showDesktopControls ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}>
+              <section className={`mt-3 max-h-[min(40vh,22rem)] overflow-auto rounded-[18px] border border-[#ead8a6]/10 bg-[rgba(93,62,18,0.12)] px-3 py-3 pr-2 transition-all duration-500 ease-out ${showDesktopControls ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-[10px] tracking-[0.22em] text-[#d8c9a3]">
@@ -2009,6 +1955,7 @@ export function CulturalVeinShell() {
                   </div>
                 ) : null}
               </section>
+              </div>
             </div>
           </aside>
         </div>
