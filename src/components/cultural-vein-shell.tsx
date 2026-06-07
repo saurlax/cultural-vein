@@ -1120,7 +1120,10 @@ export function CulturalVeinShell() {
       : prioritizedSourceAtlasEntries.slice(1, 2);
   const visibleSourceAtlasDetail =
     activeSourceAtlasDetail?.entry.id === activeSourceAtlasEntry?.id ? activeSourceAtlasDetail : null;
-  const activeSourceRelatedBooks = visibleSourceAtlasDetail?.relatedBooks ?? [];
+  const activeSourceRelatedBooks = useMemo(
+    () => visibleSourceAtlasDetail?.relatedBooks ?? [],
+    [visibleSourceAtlasDetail?.relatedBooks],
+  );
   const cbdbPersonCount = insights?.cbdbSummary?.personCount ?? null;
   const eraRecommendedBooks = useMemo(() => {
     return filteredBooks
@@ -1159,6 +1162,29 @@ export function CulturalVeinShell() {
     activeSourceAtlasEntry?.name
       ? `当前高光正牵向 ${activeSourceAtlasEntry.name} 这股真实来源支流。`
       : "首屏高光节点已优先牵到真实来源可落点的河段。";
+  const openingSourcePreviewBooks = useMemo(() => {
+    if (selectedBook) {
+      return [];
+    }
+
+    const previewBooks =
+      activeSourceRelatedBooks.length > 0
+        ? activeSourceRelatedBooks
+        : activeSourceAtlasEntry
+          ? getEntryAnchorBooks(activeSourceAtlasEntry)
+              .sort((left, right) => right.influence - left.influence)
+              .slice(0, 3)
+              .map((book) => ({
+                id: book.id,
+                slug: book.slug,
+                title: book.title,
+                dynasty: book.dynasty,
+                category: book.category,
+              }))
+          : [];
+
+    return previewBooks.slice(0, 3);
+  }, [activeSourceAtlasEntry, activeSourceRelatedBooks, getEntryAnchorBooks, selectedBook]);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#e2c372] text-stone-100">
@@ -1210,19 +1236,35 @@ export function CulturalVeinShell() {
 
       <div className="relative z-10 min-h-screen">
         <div className="pointer-events-none absolute inset-x-0 top-0 z-30 hidden px-4 py-3 md:block sm:px-6 lg:px-8">
-          <div
-            className={`pointer-events-auto inline-flex max-w-[min(31rem,calc(100vw-10rem))] items-center gap-3 rounded-full border border-[#e7c97b]/26 bg-[linear-gradient(180deg,rgba(116,77,24,0.6),rgba(78,50,16,0.56))] px-3 py-2 shadow-[0_10px_28px_rgba(61,34,8,0.1)] backdrop-blur-xl`}
-          >
-            <div>
-              <div className="text-[9px] tracking-[0.28em] text-[#f2dfab]/70">黄河长卷</div>
-              <h1 className="mt-0.5 text-[1rem] font-semibold text-[#fff4d6]">文脉溯源</h1>
+          <div className="pointer-events-auto flex max-w-[min(31rem,calc(100vw-10rem))] flex-col gap-2">
+            <div
+              className={`inline-flex items-center gap-3 rounded-full border border-[#e7c97b]/26 bg-[linear-gradient(180deg,rgba(116,77,24,0.6),rgba(78,50,16,0.56))] px-3 py-2 shadow-[0_10px_28px_rgba(61,34,8,0.1)] backdrop-blur-xl`}
+            >
+              <div>
+                <div className="text-[9px] tracking-[0.28em] text-[#f2dfab]/70">黄河长卷</div>
+                <h1 className="mt-0.5 text-[1rem] font-semibold text-[#fff4d6]">文脉溯源</h1>
+              </div>
+              <div className="h-6 w-px bg-[#c99d4f]/28" />
+              <div className="min-w-0">
+                <div className="text-[10px] leading-5 text-[#fff0c7] line-clamp-1">{openingLead}</div>
+                <div className="text-[9px] leading-4 text-[#f4d892]/86 line-clamp-1">{openingSourceLead}</div>
+                <div className="text-[9px] leading-4 text-[#f6e8bd]/80 line-clamp-1">{landingNarrative}</div>
+              </div>
             </div>
-            <div className="h-6 w-px bg-[#c99d4f]/28" />
-            <div className="min-w-0">
-              <div className="text-[10px] leading-5 text-[#fff0c7] line-clamp-1">{openingLead}</div>
-              <div className="text-[9px] leading-4 text-[#f4d892]/86 line-clamp-1">{openingSourceLead}</div>
-              <div className="text-[9px] leading-4 text-[#f6e8bd]/80 line-clamp-1">{landingNarrative}</div>
-            </div>
+            {openingSourcePreviewBooks.length ? (
+              <div className="flex flex-wrap gap-2 pl-2">
+                {openingSourcePreviewBooks.map((book) => (
+                  <button
+                    key={`opening-source-preview-${book.slug}`}
+                    type="button"
+                    onClick={() => handleDiveToBook(book.slug)}
+                    className="rounded-full border border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(109,73,24,0.52),rgba(78,50,16,0.5))] px-3 py-1.5 text-[10px] text-[#fff0c7] shadow-[0_8px_18px_rgba(61,34,8,0.08)] backdrop-blur-xl transition hover:bg-[linear-gradient(180deg,rgba(130,86,28,0.64),rgba(92,58,19,0.58))]"
+                  >
+                    {book.title}
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
         </div>
 
