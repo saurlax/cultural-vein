@@ -1053,6 +1053,14 @@ function CitationArcs({
         const searchLinked =
           highlightedSlugSet.has(source.slug) || highlightedSlugSet.has(target.slug);
         const isFocusedArc = sourceSelected || targetSelected || traceLinked || sceneLinked;
+        const searchFlowColor =
+          citation.layer === "explicit"
+            ? "#6ee7b7"
+            : citation.layer === "semantic"
+              ? "#fde68a"
+              : citation.layer === "influence"
+                ? "#cbd5e1"
+                : "#fef3c7";
         const style =
           citation.layer === "metadata"
             ? {
@@ -1125,6 +1133,18 @@ function CitationArcs({
                         : 0.08
                 }
                 lineWidth={style.lineWidth + 3.2}
+                dashed={style.dashed}
+                dashSize={style.dashSize}
+                gapSize={style.gapSize}
+              />
+            ) : null}
+            {hasSearchHighlight && searchLinked && !isFocusedArc ? (
+              <Line
+                points={points}
+                color={searchFlowColor}
+                transparent
+                opacity={0.18}
+                lineWidth={style.lineWidth + 5.2}
                 dashed={style.dashed}
                 dashSize={style.dashSize}
                 gapSize={style.gapSize}
