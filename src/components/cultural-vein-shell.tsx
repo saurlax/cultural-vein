@@ -2139,15 +2139,38 @@ export function CulturalVeinShell() {
                       {selectedBook.dynasty} · {focusModeLabel}
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowMobileDossier(false)}
-                    className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-xs text-[#eadfbc]"
-                  >
-                    收卷
-                  </button>
+                  <div className="flex flex-col gap-2">
+                    <button
+                      type="button"
+                      onClick={handleReturnToRiver}
+                      className="rounded-full border border-amber-300/22 bg-amber-300/10 px-3 py-1.5 text-xs text-amber-100"
+                    >
+                      归河
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowMobileDossier(false)}
+                      className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-xs text-[#ead8bc]"
+                    >
+                      收卷
+                    </button>
+                  </div>
                 </div>
                 <div className="mt-3 rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(247,237,206,0.98),rgba(230,204,140,0.94))] px-4 py-4 text-[#42290a]">
+                  <div className="rounded-[20px] border border-[#b89247]/16 bg-[rgba(255,255,255,0.18)] px-4 py-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="text-[11px] tracking-[0.22em] text-[#8d6a2c]">卷首题签</div>
+                        <div className="mt-2 text-lg font-semibold leading-tight text-[#5b3a11]">{selectedBook.title}</div>
+                        <div className="mt-2 text-xs text-[#6f4b18]">
+                          {selectedBook.category} · {selectedBook.school}
+                        </div>
+                      </div>
+                      <div className="rounded-full border border-[#b89247]/18 bg-[rgba(255,255,255,0.22)] px-3 py-1 text-[10px] text-[#7a571d]">
+                        {focusModeLabel}
+                      </div>
+                    </div>
+                  </div>
                   <div className="mb-3 flex flex-wrap gap-2 text-xs">
                     <span className="rounded-full border border-[#b89247]/20 bg-[rgba(255,255,255,0.24)] px-3 py-1 text-[#5b3a11]">
                       关联 {selectedBookCitations.length} 条
@@ -2158,7 +2181,7 @@ export function CulturalVeinShell() {
                       </span>
                     ) : null}
                   </div>
-                  <div className="max-h-[calc(34vh-112px)] overflow-auto pr-1">
+                  <div className="mt-3 max-h-[calc(34vh-112px)] overflow-auto pr-1">
                     <BookExplorer
                       key={`mobile-explorer-${selectedBook.slug}-${entryExplorerTab ?? "spread"}`}
                       book={selectedBook}
