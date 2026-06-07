@@ -11,7 +11,7 @@ import type { RiverEra, ViewMode } from "@/types/domain";
 
 type OrbitControlsInstance = ElementRef<typeof OrbitControls>;
 const RIVER_ERA_ORDER: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
-const touchModeLabel = "单指拖移河面 · 双指缩放并旋看";
+const touchModeLabel = "单指拖动画卷，双指缩放河势";
 const RIVER_ERA_STORIES: Record<
   RiverEra,
   {
@@ -2421,11 +2421,11 @@ export function RiverScene(props: RiverSceneProps) {
     <div
       ref={containerRef}
       onContextMenu={(event) => event.preventDefault()}
-      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#edd08a]/45 bg-[#3a2208] shadow-[0_0_80px_rgba(0,0,0,0.42)] [touch-action:none]"
+      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#d7ad57]/55 bg-[#6f4516] shadow-[0_0_80px_rgba(0,0,0,0.34)] [touch-action:none]"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(146,102,36,0.4),rgba(78,51,15,0))]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(44,26,8,0.74),rgba(44,26,8,0))]" />
-      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#e7c97b]/28 bg-[rgba(128,88,28,0.44)] px-4 py-2 text-[10px] text-[#f8efd4] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(243,219,149,0.24),rgba(126,83,29,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(76,45,13,0.56),rgba(76,45,13,0))]" />
+      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#efd38f]/34 bg-[rgba(132,88,27,0.34)] px-4 py-2 text-[10px] text-[#fff3d0] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
         <span className="tracking-[0.28em] text-[#fff0c2]">黄河文脉长卷</span>
         <span className="hidden h-3 w-px bg-[#ead8a6]/24 sm:block" />
         <span className="truncate text-[#f1e3bd]">
@@ -2440,7 +2440,7 @@ export function RiverScene(props: RiverSceneProps) {
                   : `${props.activeEra} 水位`}
         </span>
       </div>
-      <div className="pointer-events-none absolute right-4 top-16 z-10 hidden max-w-52 rounded-[20px] border border-[#e7c97b]/16 bg-[rgba(83,54,16,0.26)] px-4 py-3 text-[10px] leading-5 text-[#f0e0b8] backdrop-blur-md xl:block">
+      <div className="pointer-events-none absolute right-4 top-16 z-10 hidden max-w-52 rounded-[20px] border border-[#e7c97b]/16 bg-[rgba(83,54,16,0.26)] px-4 py-3 text-[10px] leading-5 text-[#f0e0b8] backdrop-blur-md 2xl:block">
         {sceneHint}
       </div>
       <div
@@ -2539,6 +2539,10 @@ export function RiverScene(props: RiverSceneProps) {
         dpr={[1, 1.8]}
         eventSource={eventSource ?? undefined}
         eventPrefix="client"
+        onPointerDown={() => {
+          setAutoCruise(false);
+          setIsInteracting(true);
+        }}
         onPointerMissed={() => {
           setAutoCruise(false);
           setIsInteracting(true);
