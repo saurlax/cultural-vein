@@ -1105,7 +1105,7 @@ export function BookExplorer({
           <div className="flex items-center justify-between gap-3">
             <div>
               <div className="text-xs tracking-[0.2em] text-amber-100/80">
-                真实来源
+                卷旁实证
               </div>
               <button
                 type="button"
@@ -1120,7 +1120,7 @@ export function BookExplorer({
               onClick={() => handleOpenSourceEvidence(activeSourceEvidence?.id ?? "institution-samples")}
               className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100 transition hover:bg-amber-300/18"
             >
-              正在映照
+              卷旁映照
             </button>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -1147,7 +1147,7 @@ export function BookExplorer({
               className="rounded-2xl border border-amber-300/10 bg-black/15 px-3 py-3 text-left transition hover:bg-white/10"
             >
               <div className="text-xs tracking-[0.2em] text-amber-100/70">
-                人物线索
+                人物纪传
               </div>
               <div className="mt-2 text-sm text-stone-100">
                 纪传库对照 {detail.realWorldSignals.cbdbMatchedPeople ?? 0} 人
@@ -1162,7 +1162,7 @@ export function BookExplorer({
               className="rounded-2xl border border-amber-300/10 bg-black/15 px-3 py-3 text-left transition hover:bg-white/10"
             >
               <div className="text-xs tracking-[0.2em] text-amber-100/70">
-                传播信号
+                传播现场
               </div>
               <div className="mt-2 text-sm text-stone-100">
                 {detail.realWorldSignals.venueSamples?.length
@@ -1279,8 +1279,8 @@ export function BookExplorer({
             </div>
             <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between gap-3">
-                <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                  机构馆藏
+              <div className="text-xs tracking-[0.2em] text-amber-100/75">
+                  馆藏落点
                 </div>
                 <div className="rounded-full bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
                   {detail.realWorldSignals.institutionSamples?.length ?? 0} 条

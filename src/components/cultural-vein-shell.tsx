@@ -1044,7 +1044,7 @@ export function CulturalVeinShell() {
               <div className={`p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">河图</div>
+                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">卷边题签</div>
                   <div className="mt-1 text-base font-medium text-[#fbf3da]">河上长卷</div>
                 </div>
                 {viewMode === "book" ? (
@@ -1058,13 +1058,13 @@ export function CulturalVeinShell() {
                 ) : null}
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 {desktopPanels.map((panel) => (
                   <button
                     key={panel.id}
                     type="button"
                     onClick={() => setActiveDesktopPanel(panel.id)}
-                    className={`rounded-[14px] px-3 py-2 text-[11px] transition ${
+                    className={`rounded-full px-3 py-1.5 text-[11px] transition ${
                       activeDesktopPanel === panel.id
                         ? "bg-[#f3dfab] text-[#42290a]"
                         : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
@@ -1085,7 +1085,7 @@ export function CulturalVeinShell() {
                       {activeDesktopPanelConfig.summary}
                     </div>
                   </div>
-                  <div className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">卷面</div>
+                  <div className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">旁注</div>
                 </div>
                 <div className="mt-3 rounded-2xl border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-[12px] leading-6 text-[#e8d8af]">
                   {activePanelNarrative}
@@ -1095,7 +1095,7 @@ export function CulturalVeinShell() {
                   <div className="mt-4">
                     <label className="block">
                       <span className="text-xs tracking-[0.22em] text-[#d8c9a3]">
-                        概念检索
+                        寻章入河
                       </span>
                       <input
                         value={searchTerm}
@@ -1772,8 +1772,8 @@ export function CulturalVeinShell() {
                   <div className="mt-3 rounded-[28px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(244,230,188,0.96),rgba(224,200,146,0.92))] px-4 py-4 text-[#42290a] shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
                     <div className="mb-3 flex items-center justify-between gap-3 border-b border-[#b89247]/20 pb-3">
                       <div>
-                        <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">
-                          卷内脉络
+                      <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">
+                          卷内细看
                         </div>
                         <div className="mt-1 text-sm font-medium text-[#5b3a11]">
                           沿卷细看传播、人物、版本与溯源回声
