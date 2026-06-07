@@ -82,6 +82,31 @@ export function getInsightsPayload(): DatasetInsight {
             })),
         }
       : null,
+    realSupplements.shanghaiLibraryBorrow?.available
+      ? {
+          id: "shanghai-library-borrow",
+          name: "上图借阅",
+          summary: "公共阅读流通与现实馆际落点",
+          stat: `${realSupplements.shanghaiLibraryBorrow.topLibraries?.length ?? 0} 组流通馆`,
+          magnitude:
+            realSupplements.shanghaiLibraryBorrow.sampleRecords?.length ??
+            realSupplements.shanghaiLibraryBorrow.topLibraries?.length ??
+            0,
+          evidenceLabel: realSupplements.shanghaiLibraryBorrow.sheetName ?? "借阅流通字段",
+          evidenceNote: "原始字段包含流通馆、流通操作、馆藏类型、书名、作者、出版社与出版年。",
+          sampleTitles: (realSupplements.shanghaiLibraryBorrow.sampleRecords ?? [])
+            .slice(0, 3)
+            .map((item) => item.书名 ?? item.流通馆 ?? "借阅记录"),
+          sampleRecords: (realSupplements.shanghaiLibraryBorrow.sampleRecords ?? [])
+            .slice(0, 3)
+            .map((item) => ({
+              title: item.书名 ?? "借阅记录",
+              category: item.流通馆 ?? item.流通操作,
+              year: item.出版年,
+              note: [item.作者, item.出版社, item.流通操作].filter(Boolean).join(" · "),
+            })),
+        }
+      : null,
     realSupplements.nanjingLibrarySample?.available
       ? {
           id: "nanjing-library",
@@ -392,6 +417,23 @@ export function getInsightsPayload(): DatasetInsight {
               title: item.活动名称,
               status: item.预约状态,
               startTime: item.预约开始时间,
+            })),
+        }
+      : undefined,
+    shanghaiLibraryBorrow: realSupplements.shanghaiLibraryBorrow
+      ? {
+          available: realSupplements.shanghaiLibraryBorrow.available,
+          sourceWorkbook: realSupplements.shanghaiLibraryBorrow.sourceWorkbook,
+          sheetName: realSupplements.shanghaiLibraryBorrow.sheetName,
+          topLibraries: realSupplements.shanghaiLibraryBorrow.topLibraries,
+          sampleRecords: (realSupplements.shanghaiLibraryBorrow.sampleRecords ?? [])
+            .slice(0, 4)
+            .map((item) => ({
+              library: item.流通馆,
+              title: item.书名,
+              action: item.流通操作,
+              publishYear: item.出版年,
+              author: item.作者,
             })),
         }
       : undefined,

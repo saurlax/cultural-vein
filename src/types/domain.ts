@@ -225,6 +225,22 @@ export interface DatasetInsight {
       sampleCount: number;
     }>;
   };
+  shanghaiLibraryBorrow?: {
+    available?: boolean;
+    sourceWorkbook?: string;
+    sheetName?: string;
+    sampleRecords?: Array<{
+      library?: string;
+      title?: string;
+      action?: string;
+      publishYear?: string;
+      author?: string;
+    }>;
+    topLibraries?: Array<{
+      name: string;
+      sampleCount: number;
+    }>;
+  };
   nanjingLibrarySample?: {
     available?: boolean;
     institution?: string;

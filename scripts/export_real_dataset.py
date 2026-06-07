@@ -1632,19 +1632,36 @@ def fetch_shanghai_activity_sample() -> dict[str, object]:
         if not names:
             return {"available": False, "reason": "no xlsx files"}
 
-        target_name = names[0]
-        extracted = WORK_DIR / "shanghai-library-sample.xlsx"
-        with archive.open(target_name) as src, open(extracted, "wb") as dst:
-            dst.write(src.read())
+        target_name = None
+        sheet_name = None
+        records: list[dict[str, str]] = []
+        columns: list[str] = []
 
-        workbook = pd.ExcelFile(extracted)
-        sheet_name = workbook.sheet_names[0]
-        df = workbook.parse(sheet_name, nrows=8)
-        df = df.fillna("")
-        records = [
-            {key: str(value) if value != "" else "" for key, value in row.items()}
-            for row in df.to_dict(orient="records")
-        ]
+        for index, candidate_name in enumerate(names):
+            extracted = WORK_DIR / f"shanghai-library-activity-{index}.xlsx"
+            with archive.open(candidate_name) as src, open(extracted, "wb") as dst:
+                dst.write(src.read())
+
+            workbook = pd.ExcelFile(extracted, engine="openpyxl")
+            for candidate_sheet in workbook.sheet_names:
+                candidate_df = workbook.parse(candidate_sheet, nrows=8).fillna("")
+                candidate_columns = [str(column) for column in candidate_df.columns]
+
+                if {"场馆名称", "活动名称", "预约状态"}.issubset(set(candidate_columns)):
+                    target_name = candidate_name
+                    sheet_name = candidate_sheet
+                    columns = candidate_columns
+                    records = [
+                        {key: str(value) if value != "" else "" for key, value in row.items()}
+                        for row in candidate_df.to_dict(orient="records")
+                    ]
+                    break
+
+            if target_name:
+                break
+
+        if not target_name or not sheet_name:
+            return {"available": False, "reason": "activity workbook missing"}
 
     venue_counts: dict[str, int] = {}
     for record in records:
@@ -1661,9 +1678,76 @@ def fetch_shanghai_activity_sample() -> dict[str, object]:
         "available": True,
         "sourceWorkbook": Path(target_name).name,
         "sheetName": sheet_name,
-        "columns": [str(column) for column in df.columns],
+        "columns": columns,
         "topVenues": top_venues,
         "sampleRecords": records[:5],
+    }
+
+
+def fetch_shanghai_borrow_sample() -> dict[str, object]:
+    if not SL_ZIP.exists():
+        return {"available": False, "reason": "zip missing"}
+
+    with zipfile.ZipFile(SL_ZIP) as archive:
+        names = [
+            name
+            for name in archive.namelist()
+            if name.lower().endswith(".xlsx")
+            and "/._" not in name
+            and "__MACOSX" not in name
+        ]
+        if not names:
+            return {"available": False, "reason": "no xlsx files"}
+
+        borrow_name = None
+        sheet_name = None
+        records: list[dict[str, str]] = []
+        columns: list[str] = []
+
+        for index, candidate_name in enumerate(names):
+            extracted = WORK_DIR / f"shanghai-library-borrow-{index}.xlsx"
+            with archive.open(candidate_name) as src, open(extracted, "wb") as dst:
+                dst.write(src.read())
+
+            workbook = pd.ExcelFile(extracted, engine="openpyxl")
+            for candidate_sheet in workbook.sheet_names:
+                candidate_df = workbook.parse(candidate_sheet, nrows=12).fillna("")
+                candidate_columns = [str(column) for column in candidate_df.columns]
+
+                if {"流通馆", "流通操作", "书名"}.issubset(set(candidate_columns)):
+                    borrow_name = candidate_name
+                    sheet_name = candidate_sheet
+                    columns = candidate_columns
+                    records = [
+                        {key: str(value) if value != "" else "" for key, value in row.items()}
+                        for row in candidate_df.to_dict(orient="records")
+                    ]
+                    break
+
+            if borrow_name:
+                break
+
+        if not borrow_name or not sheet_name:
+            return {"available": False, "reason": "borrow workbook missing"}
+
+    library_counts: dict[str, int] = {}
+    for record in records:
+        library = str(record.get("流通馆") or "").strip()
+        if library:
+            library_counts[library] = library_counts.get(library, 0) + 1
+
+    top_libraries = [
+        {"name": library, "sampleCount": count}
+        for library, count in sorted(library_counts.items(), key=lambda item: item[1], reverse=True)
+    ]
+
+    return {
+        "available": True,
+        "sourceWorkbook": Path(borrow_name).name,
+        "sheetName": sheet_name,
+        "columns": columns,
+        "topLibraries": top_libraries,
+        "sampleRecords": records[:6],
     }
 
 
@@ -2274,6 +2358,7 @@ def main() -> None:
         "cbdbPeople": cbdb_people,
         "cbdbSummary": fetch_cbdb_summary(),
         "shanghaiLibraryActivity": fetch_shanghai_activity_sample(),
+        "shanghaiLibraryBorrow": fetch_shanghai_borrow_sample(),
         "nanjingLibrarySample": fetch_nanjing_library_sample(),
         "fudanArchiveSample": fetch_fudan_archive_sample(),
         "nanhuArchiveSample": fetch_nanhu_archive_sample(),
