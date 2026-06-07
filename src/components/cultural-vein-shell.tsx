@@ -548,6 +548,7 @@ export function CulturalVeinShell() {
 
     if (
       entry.name.includes("南湖") ||
+      entry.name.includes("红色") ||
       entry.name.includes("韬奋") ||
       entry.name.includes("宋庆龄")
     ) {
@@ -663,7 +664,9 @@ export function CulturalVeinShell() {
           return null;
         }
 
-        const routeColor = entry.name.includes("南湖")
+        const routeColor = entry.name.includes("红色")
+          ? "#dc2626"
+          : entry.name.includes("南湖")
           ? "#ef4444"
           : entry.name.includes("韬奋") || entry.name.includes("宋庆龄")
             ? "#fb7185"
@@ -741,6 +744,7 @@ export function CulturalVeinShell() {
 
         if (
           activeSourceAtlasEntry.name.includes("南湖") ||
+          activeSourceAtlasEntry.name.includes("红色") ||
           activeSourceAtlasEntry.name.includes("韬奋") ||
           activeSourceAtlasEntry.name.includes("宋庆龄")
         ) {
@@ -1545,10 +1549,11 @@ export function CulturalVeinShell() {
                                 {activeSourceAtlasEntry.stat ?? "来源线索"}
                               </div>
                               {(activeSourceAtlasEntry.name.includes("南湖") ||
+                                activeSourceAtlasEntry.name.includes("红色") ||
                                 activeSourceAtlasEntry.name.includes("韬奋") ||
                                 activeSourceAtlasEntry.name.includes("宋庆龄")) ? (
                                 <div className="mt-2 inline-flex rounded-full border border-rose-300/24 bg-rose-300/10 px-2.5 py-1 text-[10px] text-rose-100">
-                                  近现代支流
+                                  {activeSourceAtlasEntry.name.includes("红色") ? "红色支流" : "近现代支流"}
                                 </div>
                               ) : null}
                               <div className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#e6d7ae]">
@@ -1596,9 +1601,12 @@ export function CulturalVeinShell() {
                                   </div>
                                   <div className="shrink-0 text-[10px] text-[#d8c9a3]">
                                     {entry.name.includes("南湖") ||
+                                    entry.name.includes("红色") ||
                                     entry.name.includes("韬奋") ||
                                     entry.name.includes("宋庆龄")
-                                      ? "近现代支流"
+                                      ? entry.name.includes("红色")
+                                        ? "红色支流"
+                                        : "近现代支流"
                                       : "待映照"}
                                   </div>
                                 </button>
