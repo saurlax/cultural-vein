@@ -171,8 +171,8 @@ function TraceScene({ traces, activeIndex, playing }: TraceLightFieldProps) {
 
 export function TraceLightField({ traces, activeIndex, playing }: TraceLightFieldProps) {
   return (
-    <div className="relative h-[220px] overflow-hidden rounded-[20px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(56,35,11,0.92),rgba(14,8,4,0.98))]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.22),transparent_45%)]" />
+    <div className="relative h-[220px] overflow-hidden rounded-[20px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(92,62,20,0.86),rgba(34,21,8,0.96))]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.18),transparent_45%)]" />
       <div className="pointer-events-none absolute left-4 top-3 z-10 text-[10px] tracking-[0.22em] text-amber-100/78">
         3D 溯源光场
       </div>
