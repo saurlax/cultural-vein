@@ -1290,6 +1290,36 @@ export function BookExplorer({
     { label: "文本片段", value: eraLinkedSummary.passages, onClick: () => setManualTab("passages") },
   ] as const;
   const activeTabStepLabel = `第 ${activeSequenceIndex + 1} 段`;
+  const spreadStageSummary = activeSpread && activeSpreadPlaces
+    ? `${activeSpreadPlaces.from?.name ?? "起点"} 至 ${activeSpreadPlaces.to?.name ?? "终点"} 的传播正在 ${activeSpread.startYear} - ${activeSpread.endYear} 年间抬升成当前主航段。`
+    : "这一段传播河势正在把知识流动压成可见航线。";
+  const spreadStageActions = [
+    {
+      label: "时间回声",
+      note: "把这段传播放回事件年代继续讲。",
+      onClick: () => setManualTab("timeline"),
+    },
+    {
+      label: "人物接力",
+      note: "顺着人物关系继续追看传播接棒。",
+      onClick: () => setManualTab("people"),
+    },
+  ] as const;
+  const activePersonStageSummary = activePerson
+    ? `${activePerson.name} 正停在${(activePerson.relationTier ?? 2) === 1 ? "主干" : "支流"}层，负责把${book.shortTitle}的${activePerson.role}脉络接到更外层的人物网络。`
+    : "人物关系场正在等待卷心人物显影。";
+  const personStageActions = [
+    {
+      label: "纪传证据",
+      note: "把当前人物接回真实纪传材料。",
+      onClick: () => handleFocusCbdbEvidence(activePerson?.id),
+    },
+    {
+      label: "传播河段",
+      note: "回到地理传播查看人物如何推动扩散。",
+      onClick: () => setManualTab("spread"),
+    },
+  ] as const;
 
   return (
     <div className="relative space-y-4">
@@ -2362,6 +2392,44 @@ export function BookExplorer({
             </div>
           ) : (
             <>
+              <div className="rounded-[26px] border border-[#ead8a6]/14 bg-[linear-gradient(135deg,rgba(102,69,22,0.92),rgba(44,28,9,0.96))] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.08)]">
+                <div className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+                  <div>
+                    <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">传播舞台</div>
+                    <div className="mt-2 text-lg font-semibold text-[#fbf3da]">
+                      {activeSpreadPlaces?.from?.name ?? "起点"} → {activeSpreadPlaces?.to?.name ?? "终点"}
+                    </div>
+                    <div className="mt-2 text-sm leading-7 text-[#eadfbc]">{spreadStageSummary}</div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="rounded-full border border-amber-300/22 bg-amber-300/10 px-3 py-1.5 text-xs text-amber-100">
+                        {activeSpread ? `${activeSpread.startYear} - ${activeSpread.endYear}` : "传播年代"}
+                      </span>
+                      {activeSpread ? (
+                        <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100">
+                          流量 {activeSpread.volume}
+                        </span>
+                      ) : null}
+                      <span className={`rounded-full border px-3 py-1.5 text-xs ${sourceBadgeClass(spreadMeta.tone)}`}>
+                        {spreadMeta.label}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-1">
+                    {spreadStageActions.map((action) => (
+                      <button
+                        key={`spread-stage-action-${action.label}`}
+                        type="button"
+                        onClick={action.onClick}
+                        className="rounded-[20px] border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
+                      >
+                        <div className="text-sm font-medium text-[#fbf3da]">{action.label}</div>
+                        <div className="mt-2 text-xs leading-6 text-[#cdb98d]">{action.note}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(96,66,22,0.72),rgba(42,27,9,0.8))] p-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.06)]">
                 <div className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
                   <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(70,45,14,0.46),rgba(37,24,8,0.4))] px-4 py-4">
@@ -2811,6 +2879,41 @@ export function BookExplorer({
             </div>
           ) : (
             <>
+              <div className="rounded-[26px] border border-[#ead8a6]/14 bg-[linear-gradient(135deg,rgba(79,55,19,0.92),rgba(31,21,9,0.96))] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.08)]">
+                <div className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
+                  <div>
+                    <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">人物舞台</div>
+                    <div className="mt-2 text-lg font-semibold text-[#fbf3da]">
+                      {activePerson?.name ?? "卷心人物"} · {activePerson?.role ?? "关系角色"}
+                    </div>
+                    <div className="mt-2 text-sm leading-7 text-[#eadfbc]">{activePersonStageSummary}</div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {activePerson ? (
+                        <span className={`rounded-full px-3 py-1.5 text-xs ${relationTypeClass(activePerson.relationType)}`}>
+                          {activePerson.relationType ?? "引"}
+                        </span>
+                      ) : null}
+                      <span className="rounded-full border border-violet-300/20 bg-violet-300/10 px-3 py-1.5 text-xs text-violet-100">
+                        核心 {primaryPeople.length} · 支流 {secondaryPeople.length}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-1">
+                    {personStageActions.map((action) => (
+                      <button
+                        key={`person-stage-action-${action.label}`}
+                        type="button"
+                        onClick={action.onClick}
+                        className="rounded-[20px] border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
+                      >
+                        <div className="text-sm font-medium text-[#fbf3da]">{action.label}</div>
+                        <div className="mt-2 text-xs leading-6 text-[#cdb98d]">{action.note}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(96,66,22,0.72),rgba(42,27,9,0.8))] p-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.06)]">
                 <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
                   <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(70,45,14,0.46),rgba(37,24,8,0.4))] px-4 py-4">
