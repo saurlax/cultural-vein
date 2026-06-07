@@ -579,6 +579,9 @@ export function CulturalVeinShell() {
     transitionState === "returning";
   const sourceAtlasEntries = useMemo(() => insights?.sourceAtlas ?? [], [insights?.sourceAtlas]);
   const atlasMeta = insights?.atlasMeta ?? null;
+  const atlasCoverageHighlights = useMemo(() => {
+    return (atlasMeta?.coverageLayers ?? []).slice(0, 3).map((layer) => layer.label);
+  }, [atlasMeta?.coverageLayers]);
   const inferSourceAtlasEra = useCallback(
     (entry: NonNullable<typeof sourceAtlasEntries>[number]) => {
       const inferredEra =
@@ -1513,9 +1516,27 @@ export function CulturalVeinShell() {
                         <div className="text-[10px] text-[#f2dfab]">{sourceAtlasMass.toLocaleString()}</div>
                         </div>
                         {atlasMeta ? (
-                          <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-[11px] leading-5 text-[#e6d7ae]">
-                            眼前长卷已映出 {atlasMeta.demoBookCount} 部主线典籍、{atlasMeta.activeSources} 股真实来源与{" "}
-                            {cbdbPersonCount?.toLocaleString() ?? "--"} 位纪传人物，河册会顺着当前时代继续把相邻支流带到河面。
+                          <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                            <div className="text-[11px] leading-5 text-[#f2e4bb]">
+                              眼前先以 {atlasMeta.demoBookCount} 部主线典籍串起完整长卷，已连入{" "}
+                              {atlasMeta.activeSources} 股真实来源与{" "}
+                              {cbdbPersonCount?.toLocaleString() ?? "--"} 位纪传人物。
+                            </div>
+                            <div className="mt-2 text-[10px] leading-5 text-[#dccb9c]">
+                              更大版图仍可沿同一装配链继续生长至 {atlasMeta.totalBookCount.toLocaleString()} 种古籍。
+                            </div>
+                            {atlasCoverageHighlights.length ? (
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                {atlasCoverageHighlights.map((label) => (
+                                  <span
+                                    key={`atlas-highlight-${label}`}
+                                    className="rounded-full border border-[#ead8a6]/14 bg-[rgba(89,58,17,0.22)] px-2.5 py-1 text-[10px] text-[#eadfbc]"
+                                  >
+                                    {label}
+                                  </span>
+                                ))}
+                              </div>
+                            ) : null}
                           </div>
                         ) : null}
                         <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.26)] px-3 py-3">
@@ -1934,6 +1955,16 @@ export function CulturalVeinShell() {
                       {activeSourceAtlasEntry?.stat ?? sourceAtlasMass.toLocaleString()}
                     </div>
                   </div>
+                  {atlasMeta ? (
+                    <div className="mt-2 text-[11px] leading-5 text-[#eadfbc]">
+                      先以 {atlasMeta.demoBookCount} 部主线典籍托住河身，已接入 {atlasMeta.activeSources} 股真实来源。
+                    </div>
+                  ) : null}
+                  {atlasMeta ? (
+                    <div className="mt-2 text-[10px] leading-5 text-[#d8c9a3]">
+                      同一装配链仍可续展至 {atlasMeta.totalBookCount.toLocaleString()} 种古籍。
+                    </div>
+                  ) : null}
                   <div className="mt-2 text-[11px] leading-5 text-[#eadfbc]">
                     {activeSourceAtlasEntry?.summary ?? "来源支流已映上河面。"}
                   </div>
