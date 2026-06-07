@@ -1866,7 +1866,7 @@ def fetch_nanhu_archive_sample() -> dict[str, object]:
     import subprocess
 
     list_result = subprocess.run(
-        ["7z", "l", "-ba", str(NANHU_RAR)],
+        ["7z", "l", "-sccUTF-8", "-ba", str(NANHU_RAR)],
         capture_output=True,
         text=True,
         encoding="utf-8",
@@ -1901,7 +1901,7 @@ def fetch_nanhu_archive_sample() -> dict[str, object]:
         extract_dir = WORK_DIR / "nanhu_extract"
         extract_dir.mkdir(parents=True, exist_ok=True)
         extract_result = subprocess.run(
-            ["7z", "e", "-y", f"-o{extract_dir}", str(NANHU_RAR), docx_candidate],
+            ["7z", "e", "-sccUTF-8", "-y", f"-o{extract_dir}", str(NANHU_RAR), docx_candidate],
             capture_output=True,
             text=True,
             encoding="utf-8",
