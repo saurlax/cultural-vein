@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   BookExplorer,
@@ -534,44 +534,84 @@ export function CulturalVeinShell() {
     transitionState === "diving" ||
     transitionState === "settling" ||
     transitionState === "returning";
-  const sourceAtlasEntries = insights?.sourceAtlas ?? [];
+  const sourceAtlasEntries = useMemo(() => insights?.sourceAtlas ?? [], [insights?.sourceAtlas]);
   const atlasMeta = insights?.atlasMeta ?? null;
-  const inferSourceAtlasEra = (entry: NonNullable<typeof sourceAtlasEntries>[number]) => {
-    const inferredEra =
-      entry.sampleRecords
-        ?.map((record) => inferEraFromYearText(record.year))
-        .find((era): era is (typeof eras)[number] => Boolean(era)) ?? null;
+  const inferSourceAtlasEra = useCallback(
+    (entry: NonNullable<typeof sourceAtlasEntries>[number]) => {
+      const inferredEra =
+        entry.sampleRecords
+          ?.map((record) => inferEraFromYearText(record.year))
+          .find((era): era is (typeof eras)[number] => Boolean(era)) ?? null;
 
-    if (inferredEra) {
-      return inferredEra;
-    }
+      if (inferredEra) {
+        return inferredEra;
+      }
 
-    if (
-      entry.name.includes("南湖") ||
-      entry.name.includes("红色") ||
-      entry.name.includes("韬奋") ||
-      entry.name.includes("宋庆龄")
-    ) {
-      return "近现代" as const;
-    }
+      if (
+        entry.name.includes("南湖") ||
+        entry.name.includes("红色") ||
+        entry.name.includes("韬奋") ||
+        entry.name.includes("宋庆龄")
+      ) {
+        return "近现代" as const;
+      }
 
-    if (
-      entry.name.includes("报刊") ||
-      entry.name.includes("专题片") ||
-      entry.name.includes("图书馆") ||
-      entry.name.includes("纪念馆")
-    ) {
-      return "近现代" as const;
-    }
+      if (
+        entry.name.includes("报刊") ||
+        entry.name.includes("专题片") ||
+        entry.name.includes("图书馆") ||
+        entry.name.includes("纪念馆")
+      ) {
+        return "近现代" as const;
+      }
 
-    return null;
-  };
+      return null;
+    },
+    [],
+  );
+  const prioritizedSourceAtlasEntries = useMemo(() => {
+    return [...sourceAtlasEntries].sort((left, right) => {
+      const leftEra = inferSourceAtlasEra(left);
+      const rightEra = inferSourceAtlasEra(right);
+      const leftMatchesEra = leftEra === activeEra ? 1 : 0;
+      const rightMatchesEra = rightEra === activeEra ? 1 : 0;
+
+      if (leftMatchesEra !== rightMatchesEra) {
+        return rightMatchesEra - leftMatchesEra;
+      }
+
+      const leftModernBoost =
+        activeEra === "近现代" &&
+        (left.name.includes("红色") ||
+          left.name.includes("南湖") ||
+          left.name.includes("韬奋") ||
+          left.name.includes("宋庆龄") ||
+          left.name.includes("报刊"))
+          ? 1
+          : 0;
+      const rightModernBoost =
+        activeEra === "近现代" &&
+        (right.name.includes("红色") ||
+          right.name.includes("南湖") ||
+          right.name.includes("韬奋") ||
+          right.name.includes("宋庆龄") ||
+          right.name.includes("报刊"))
+          ? 1
+          : 0;
+
+      if (leftModernBoost !== rightModernBoost) {
+        return rightModernBoost - leftModernBoost;
+      }
+
+      return (right.magnitude ?? 0) - (left.magnitude ?? 0);
+    });
+  }, [activeEra, inferSourceAtlasEra, sourceAtlasEntries]);
   const activeSourceAtlasEntry =
-    sourceAtlasEntries.find((entry) => entry.id === activeSourceAtlasId) ??
-    sourceAtlasEntries[0] ??
+    prioritizedSourceAtlasEntries.find((entry) => entry.id === activeSourceAtlasId) ??
+    prioritizedSourceAtlasEntries[0] ??
     null;
   const activeSourceAtlasIndex = activeSourceAtlasEntry
-    ? sourceAtlasEntries.findIndex((entry) => entry.id === activeSourceAtlasEntry.id)
+    ? prioritizedSourceAtlasEntries.findIndex((entry) => entry.id === activeSourceAtlasEntry.id)
     : -1;
   const sourceAtlasSuggestedEra = activeSourceAtlasEntry
     ? inferSourceAtlasEra(activeSourceAtlasEntry) ?? activeEra
@@ -621,7 +661,7 @@ export function CulturalVeinShell() {
     (dock) => [dock.position[0], dock.position[1] + 0.06, dock.position[2]] as [number, number, number],
   );
   const sourceAtlasRoutes = (() => {
-    if (!sourceAtlasEntries.length) {
+    if (!prioritizedSourceAtlasEntries.length) {
       return [];
     }
 
@@ -631,7 +671,7 @@ export function CulturalVeinShell() {
         : riverDataset.books.filter((book) => eras.indexOf(book.dynasty) <= activeEraIndex);
     const fallbackPool = anchorPool.length > 0 ? anchorPool : riverDataset.books;
 
-    return sourceAtlasEntries
+    return prioritizedSourceAtlasEntries
       .map((entry, entryIndex) => {
         const samples = entry.sampleRecords?.slice(0, 3) ?? [];
 
@@ -649,7 +689,7 @@ export function CulturalVeinShell() {
             }
 
             const [baseX, baseY, baseZ] = anchorBook.coordinates;
-            const laneBias = entryIndex - (sourceAtlasEntries.length - 1) / 2;
+            const laneBias = entryIndex - (prioritizedSourceAtlasEntries.length - 1) / 2;
             const sway = sampleIndex % 2 === 0 ? 1 : -1;
 
             return [
@@ -766,7 +806,7 @@ export function CulturalVeinShell() {
   const mergedHighlightedBookSlugs = Array.from(
     new Set([...searchHighlightedSlugs, ...sourceAtlasHighlightedBookSlugs]),
   );
-  const sourceAtlasMass = sourceAtlasEntries.reduce(
+  const sourceAtlasMass = prioritizedSourceAtlasEntries.reduce(
     (sum, entry) => sum + (entry.magnitude ?? entry.sampleRecords?.length ?? 0),
     0,
   );
@@ -777,7 +817,7 @@ export function CulturalVeinShell() {
     setShowDesktopDossier(false);
     setShowMobileDossier(false);
 
-    const selectedEntry = sourceAtlasEntries.find((entry) => entry.id === entryId);
+    const selectedEntry = prioritizedSourceAtlasEntries.find((entry) => entry.id === entryId);
     if (!selectedBook && selectedEntry) {
       const inferredEra = inferSourceAtlasEra(selectedEntry);
       if (inferredEra && inferredEra !== activeEra) {
@@ -825,15 +865,15 @@ export function CulturalVeinShell() {
     }
   };
   const handleSourceAtlasStep = (direction: -1 | 1) => {
-    if (!sourceAtlasEntries.length) {
+    if (!prioritizedSourceAtlasEntries.length) {
       return;
     }
 
     const nextIndex =
       activeSourceAtlasIndex >= 0
-        ? (activeSourceAtlasIndex + direction + sourceAtlasEntries.length) % sourceAtlasEntries.length
+        ? (activeSourceAtlasIndex + direction + prioritizedSourceAtlasEntries.length) % prioritizedSourceAtlasEntries.length
         : 0;
-    const nextEntry = sourceAtlasEntries[nextIndex];
+    const nextEntry = prioritizedSourceAtlasEntries[nextIndex];
 
     if (nextEntry) {
       handleSourceAtlasSelect(nextEntry.id);
@@ -941,9 +981,9 @@ export function CulturalVeinShell() {
   const sourceAtlasNeighborEntries =
     activeSourceAtlasIndex >= 0
       ? [-1, 1]
-          .map((offset) => sourceAtlasEntries[activeSourceAtlasIndex + offset])
+          .map((offset) => prioritizedSourceAtlasEntries[activeSourceAtlasIndex + offset])
           .filter((entry): entry is NonNullable<typeof sourceAtlasEntries>[number] => Boolean(entry))
-      : sourceAtlasEntries.slice(1, 3);
+      : prioritizedSourceAtlasEntries.slice(1, 3);
   const coverageLayers = atlasMeta?.coverageLayers ?? [];
   const cbdbPersonCount = insights?.cbdbSummary?.personCount ?? null;
   const eraRecommendedBooks = useMemo(() => {
@@ -1510,8 +1550,8 @@ export function CulturalVeinShell() {
                             <div className="text-[11px] tracking-[0.2em] text-[#d8c9a3]">来源支流</div>
                             <div className="text-[10px] text-[#c9b68a]">
                               {activeSourceAtlasIndex >= 0
-                                ? `${activeSourceAtlasIndex + 1}/${sourceAtlasEntries.length}`
-                                : `${Math.min(sourceAtlasEntries.length, 1)}/${sourceAtlasEntries.length}`}
+                                ? `${activeSourceAtlasIndex + 1}/${prioritizedSourceAtlasEntries.length}`
+                                : `${Math.min(prioritizedSourceAtlasEntries.length, 1)}/${prioritizedSourceAtlasEntries.length}`}
                             </div>
                           </div>
                           <div className="mt-3 flex items-center gap-2">
@@ -1939,7 +1979,7 @@ export function CulturalVeinShell() {
                     {activeSourceAtlasEntry?.summary ?? "来源支流与河上码头已经映入这段河面。"}
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {sourceAtlasEntries.slice(0, 3).map((entry) => {
+                    {prioritizedSourceAtlasEntries.slice(0, 3).map((entry) => {
                       const isActive = activeSourceAtlasEntry?.id === entry.id;
 
                       return (
