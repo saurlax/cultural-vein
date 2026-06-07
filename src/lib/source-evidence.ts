@@ -28,7 +28,7 @@ export function buildSourceEvidence(detail: BookDetail): SourceEvidenceItem[] {
   ) {
     items.push({
       id: "cbdb-people",
-      source: "CBDB",
+      source: "纪传人物库",
       category: "人物纪传",
       countLabel: `命中 ${signals.cbdbMatchedPeople ?? 0} 人 / 整理 ${signals.cbdbFallbackPeople ?? 0} 人`,
       summary: "用于支撑人物身份、活动地点和人物传播线索的真实纪传来源。",
@@ -36,7 +36,7 @@ export function buildSourceEvidence(detail: BookDetail): SourceEvidenceItem[] {
       samples: [
         {
           label: `纪传命中 ${signals.cbdbMatchedPeople ?? 0} 人`,
-          detail: "对应已匹配到 CBDB 的人物节点。",
+          detail: "对应已匹配到纪传人物库的人物节点。",
         },
         {
           label: `整理人物 ${signals.cbdbFallbackPeople ?? 0} 人`,

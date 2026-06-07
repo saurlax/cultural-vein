@@ -323,7 +323,7 @@ function buildInstitutionAccessMeta(record: {
     return {
       label: "艺术资源入口",
       href: "https://openapi.artlib.cn",
-      note: "可继续访问 Artlib 世界艺术鉴赏库开放接口，回查艺术家列表、艺术家详情与艺术品资源入口。",
+      note: "可继续访问世界艺术鉴赏库开放接口，回查艺术家列表、艺术家详情与艺术品资源入口。",
     };
   }
 
@@ -353,7 +353,7 @@ function buildSourceEvidenceAccessEntries(item: SourceEvidenceItem, detail: Book
         id: "cbdb-ledger",
         label: "纪传人物回查",
         href: null,
-        note: "当前人物关系、活动地点和命中人数已经保留 CBDB 纪传线索，可据此继续回查人物传记与活动原条目。",
+        note: "当前人物关系、活动地点和命中人数已经保留纪传人物库线索，可据此继续回查人物传记与活动原条目。",
       },
     ];
   }
