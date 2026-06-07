@@ -7,7 +7,8 @@
     "backend:dev": "tsx backend/server.ts",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "preflight": "powershell -ExecutionPolicy Bypass -File ./scripts/preflight-check.ps1"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

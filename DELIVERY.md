@@ -142,6 +142,7 @@
 
 ## 正式提交前检查清单
 
+- `pnpm preflight`
 - `pnpm lint`
 - `pnpm build`
 - 如需单独演示 API，执行 `pnpm backend:dev` 并确认 `http://localhost:4318/health` 返回 `status: ok`
@@ -149,6 +150,13 @@
 - 确认核心案例《四书章句集注》可进入中观与微观层
 - 确认 README 与本手册内容和当前实现一致
 - 准备录屏或现场讲解时，优先按照本手册中的 5 分钟路径执行
+
+`pnpm preflight` 当前会顺序执行：
+
+- `pnpm lint`
+- `pnpm build`
+- 临时端口 `4321` 的后端健康检查
+- `source-atlas` 的人物支流 smoke check
 
 ## 建议的最终提交物
 
