@@ -1837,11 +1837,11 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileControls ? (
-          <div className="absolute inset-x-3 bottom-[4.35rem] z-40 md:hidden">
-            <div className={`pointer-events-auto max-h-[min(18rem,42vh)] overflow-auto p-3 ${panelBaseClass}`}>
+          <div className="absolute inset-x-3 bottom-[4.9rem] z-40 md:hidden">
+            <div className={`pointer-events-auto max-h-[min(16rem,38vh)] overflow-auto p-3 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">河图</div>
+                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">卷边题签</div>
                   <div className="mt-1 text-sm font-medium text-[#fbf3da]">{activeDesktopPanelConfig.label}</div>
                 </div>
                 <button
@@ -1849,12 +1849,12 @@ export function CulturalVeinShell() {
                   onClick={() => setShowMobileControls(false)}
                   className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200"
                 >
-                  收卷
+                  收起
                 </button>
               </div>
               <div className="mt-3 rounded-[18px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-2.5 text-[11px] leading-5 text-[#eadfbc]">
                 {activeDesktopPanel === "search"
-                  ? `河面当前显出 ${filteredBooks.length} 部典籍，概念检索会把镜头直接带往对应河段。`
+                  ? `河面当前显出 ${filteredBooks.length} 部典籍，寻章会把镜头直接带往对应河段。`
                   : activeDesktopPanel === "era"
                     ? `${activeEra} 水位已推至 ${eraProgressPercent}% ，这一段文脉河势正在卷面铺开。`
                     : activeDesktopPanel === "category"
@@ -1941,7 +1941,7 @@ export function CulturalVeinShell() {
               {activeDesktopPanel === "search" ? (
                 <>
                   <label className="mt-3 block">
-                    <span className="text-xs tracking-[0.22em] text-[#d8c9a3]">概念检索</span>
+                    <span className="text-xs tracking-[0.22em] text-[#d8c9a3]">寻章入河</span>
                     <input
                       value={searchTerm}
                       onChange={(event) => handleSearchTermChange(event.target.value)}
@@ -2091,8 +2091,8 @@ export function CulturalVeinShell() {
         ) : null}
 
         {showMobileDossier && selectedBook && selectedDetail ? (
-          <div className="absolute inset-x-3 bottom-[4.35rem] z-40 md:hidden">
-            <div className={`pointer-events-auto max-h-[min(30rem,46vh)] overflow-hidden p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
+          <div className="absolute inset-x-3 bottom-[4.9rem] z-40 md:hidden">
+            <div className={`pointer-events-auto max-h-[min(26rem,42vh)] overflow-hidden p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
               <div className="rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(245,231,188,0.16),rgba(104,72,25,0.14))] p-3">
                 <div className="rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(247,237,206,0.98),rgba(230,204,140,0.94))] px-4 py-4 text-[#42290a]">
                   <div className="rounded-[20px] border border-[#b89247]/16 bg-[rgba(255,255,255,0.18)] px-4 py-3">
@@ -2122,7 +2122,7 @@ export function CulturalVeinShell() {
                     {selectedBook.dynasty} 的这部典籍此刻正以 {focusModeLabel} 停驻卷心，卷内已牵出 {selectedBookCitations.length} 条关联
                     {selectedSources.length ? ` 与 ${selectedSources.length} 类实证回声。` : "。"}
                   </div>
-                  <div className="max-h-[calc(28vh-96px)] overflow-auto pr-1">
+                  <div className="max-h-[calc(24vh-96px)] overflow-auto pr-1">
                     <BookExplorer
                       key={`mobile-explorer-${selectedBook.slug}-${entryExplorerTab ?? "spread"}`}
                       book={selectedBook}
@@ -2142,20 +2142,20 @@ export function CulturalVeinShell() {
         ) : null}
         <div className="pointer-events-none absolute bottom-3 left-1/2 z-30 -translate-x-1/2 md:hidden">
           <div className="pointer-events-auto">
-            <div className="flex items-center gap-1.5 rounded-full border border-[#e7c97b]/26 bg-[linear-gradient(180deg,rgba(176,130,51,0.94),rgba(110,74,24,0.94))] px-1.5 py-1.5 shadow-xl shadow-black/20 backdrop-blur-xl">
+            <div className="flex items-center gap-1 rounded-full border border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(176,130,51,0.82),rgba(110,74,24,0.8))] px-1 py-1 shadow-lg shadow-black/15 backdrop-blur-xl">
             <button
               type="button"
               onClick={() => {
                 setShowMobileDossier(false);
                 setShowMobileControls((current) => !current);
               }}
-              className={`rounded-full px-3 py-1.5 text-[10px] transition ${
+              className={`rounded-full px-3 py-1 text-[10px] transition ${
                 showMobileControls
                   ? "bg-[#f3dfab] text-[#42290a]"
                   : "border border-[#e7c97b]/20 bg-[rgba(255,240,199,0.08)] text-[#fff0c7]"
               }`}
             >
-              河图
+              河册
             </button>
             {selectedBook ? (
               <button
@@ -2164,13 +2164,13 @@ export function CulturalVeinShell() {
                   setShowMobileControls(false);
                   setShowMobileDossier((current) => !current);
                 }}
-                className={`rounded-full px-3 py-1.5 text-[10px] transition ${
+                className={`rounded-full px-3 py-1 text-[10px] transition ${
                   showMobileDossier
                     ? "bg-[#f3dfab] text-[#42290a]"
                     : "border border-[#ead8a6]/20 bg-[rgba(255,240,199,0.08)] text-[#f8ebc6]"
                 }`}
               >
-                文卷
+                入卷
               </button>
             ) : null}
             </div>
