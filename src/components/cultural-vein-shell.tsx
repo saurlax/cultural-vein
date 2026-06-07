@@ -539,7 +539,9 @@ export function CulturalVeinShell() {
 
     const loadSourceAtlasDetail = async () => {
       try {
-        const response = await fetch(`/api/source-atlas/${encodeURIComponent(activeSourceAtlasId)}`);
+        const response = await fetch(
+          `/api/source-atlas/${encodeURIComponent(activeSourceAtlasId)}`,
+        );
 
         if (!response.ok) {
           if (!cancelled) {
@@ -920,6 +922,30 @@ export function CulturalVeinShell() {
     (sum, entry) => sum + (entry.magnitude ?? entry.sampleRecords?.length ?? 0),
     0,
   );
+  const applySourceSceneFocus = useCallback(
+    (entry: NonNullable<typeof sourceAtlasEntries>[number]) => {
+      const inferredEra = inferSourceAtlasEra(entry);
+      if (inferredEra && inferredEra !== activeEra) {
+        setActiveEra(inferredEra);
+      }
+
+      const focusBook =
+        getEntryAnchorBooks(entry).sort((left, right) => right.influence - left.influence)[0] ?? null;
+
+      setSceneFocus(
+        focusBook
+          ? {
+              active: true,
+              mode: "source",
+              currentTitle: focusBook.title,
+              contextLabel: `来源联动：${entry.name}`,
+              detail: `${entry.name} 的来源线索正在驱动主河道镜头聚焦 ${focusBook.shortTitle} 所在河段。`,
+            }
+          : null,
+      );
+    },
+    [activeEra, getEntryAnchorBooks, inferSourceAtlasEra, setActiveEra],
+  );
   const handleSourceAtlasSelect = (entryId: string) => {
     setActiveSourceAtlasId(entryId);
     setActiveSourceAtlasDetail(null);
@@ -934,26 +960,7 @@ export function CulturalVeinShell() {
         return;
       }
 
-      const inferredEra = inferSourceAtlasEra(selectedEntry);
-      if (inferredEra && inferredEra !== activeEra) {
-        setActiveEra(inferredEra);
-      }
-
-      const focusBook =
-        getEntryAnchorBooks(selectedEntry).sort((left, right) => right.influence - left.influence)[0] ??
-        null;
-
-      setSceneFocus(
-        focusBook
-          ? {
-              active: true,
-              mode: "source",
-              currentTitle: focusBook.title,
-              contextLabel: `来源联动：${selectedEntry.name}`,
-              detail: `${selectedEntry.name} 的来源线索正在驱动主河道镜头聚焦 ${focusBook.shortTitle} 所在河段。`,
-            }
-          : null,
-      );
+      applySourceSceneFocus(selectedEntry);
     };
 
     if (selectedBook) {
@@ -2009,6 +2016,15 @@ export function CulturalVeinShell() {
                   <div className="mt-2 text-[11px] leading-5 text-[#eadfbc]">
                     {activeSourceAtlasEntry?.summary ?? "来源支流已映上河面。"}
                   </div>
+                  {activeSourceAtlasEntry ? (
+                    <button
+                      type="button"
+                      onClick={() => handleSourceAtlasSelect(activeSourceAtlasEntry.id)}
+                      className="mt-3 w-full rounded-[16px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.08)] px-3 py-2.5 text-[11px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.14)]"
+                    >
+                      映到河面
+                    </button>
+                  ) : null}
                   <div className="mt-3 flex flex-wrap gap-2">
                     {prioritizedSourceAtlasEntries.slice(0, 2).map((entry) => {
                       const isActive = activeSourceAtlasEntry?.id === entry.id;
