@@ -12,6 +12,82 @@ import type { RiverEra, ViewMode } from "@/types/domain";
 type OrbitControlsInstance = ElementRef<typeof OrbitControls>;
 const RIVER_ERA_ORDER: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
 const touchModeLabel = "单指拖河，双指缩放";
+const ERA_FLOW_PROFILE: Record<
+  RiverEra,
+  {
+    fullness: number;
+    mainOpacity: number;
+    branchOpacity: number;
+    branchVisibility: number;
+    glowBoost: number;
+    dryness: number;
+    particleBoost: number;
+  }
+> = {
+  "先秦": {
+    fullness: 0.62,
+    mainOpacity: 0.58,
+    branchOpacity: 0.16,
+    branchVisibility: 0.34,
+    glowBoost: 0.02,
+    dryness: 0.12,
+    particleBoost: 0.84,
+  },
+  "两汉": {
+    fullness: 0.76,
+    mainOpacity: 0.66,
+    branchOpacity: 0.24,
+    branchVisibility: 0.48,
+    glowBoost: 0.08,
+    dryness: 0.08,
+    particleBoost: 0.94,
+  },
+  "魏晋": {
+    fullness: 0.83,
+    mainOpacity: 0.7,
+    branchOpacity: 0.29,
+    branchVisibility: 0.6,
+    glowBoost: 0.12,
+    dryness: 0.1,
+    particleBoost: 1,
+  },
+  "隋唐": {
+    fullness: 0.9,
+    mainOpacity: 0.74,
+    branchOpacity: 0.34,
+    branchVisibility: 0.68,
+    glowBoost: 0.16,
+    dryness: 0.09,
+    particleBoost: 1.06,
+  },
+  "宋元": {
+    fullness: 1.14,
+    mainOpacity: 0.82,
+    branchOpacity: 0.48,
+    branchVisibility: 1.02,
+    glowBoost: 0.24,
+    dryness: 0.03,
+    particleBoost: 1.2,
+  },
+  "明清": {
+    fullness: 0.9,
+    mainOpacity: 0.68,
+    branchOpacity: 0.26,
+    branchVisibility: 0.62,
+    glowBoost: 0.11,
+    dryness: 0.22,
+    particleBoost: 0.92,
+  },
+  "近现代": {
+    fullness: 0.98,
+    mainOpacity: 0.72,
+    branchOpacity: 0.3,
+    branchVisibility: 0.74,
+    glowBoost: 0.18,
+    dryness: 0.14,
+    particleBoost: 1.04,
+  },
+};
 const RIVER_ERA_STORIES: Record<
   RiverEra,
   {
@@ -370,7 +446,11 @@ function RiverBanks() {
   );
 }
 
-function DryRiverGhosts() {
+function DryRiverGhosts({
+  dryness = 0.12,
+}: {
+  dryness?: number;
+}) {
   const ghostRef = useRef<THREE.Group>(null);
   const ghostPaths = useMemo(
     () => [
@@ -404,9 +484,12 @@ function DryRiverGhosts() {
     }
 
     ghostRef.current.children.forEach((child, index) => {
-      const material = (child as THREE.Line).material;
+      const line = child as THREE.Line;
+      const material = line.material;
       if (material instanceof THREE.LineBasicMaterial) {
-        material.opacity = 0.08 + Math.max(0, Math.sin(state.clock.elapsedTime * 0.22 + index * 0.5)) * 0.05;
+        material.opacity =
+          (0.04 + dryness * 0.24) +
+          Math.max(0, Math.sin(state.clock.elapsedTime * 0.22 + index * 0.5)) * (0.02 + dryness * 0.08);
       }
     });
   });
@@ -419,7 +502,7 @@ function DryRiverGhosts() {
           points={points}
           color={index === 1 ? "#9a6a2c" : "#b68741"}
           transparent
-          opacity={0.1}
+          opacity={0.05 + dryness * 0.24}
           lineWidth={index === 2 ? 1.4 : 1.8}
         />
       ))}
@@ -427,7 +510,11 @@ function DryRiverGhosts() {
   );
 }
 
-function RiverSandbars() {
+function RiverSandbars({
+  dryness = 0.12,
+}: {
+  dryness?: number;
+}) {
   const sandbarRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
@@ -447,19 +534,19 @@ function RiverSandbars() {
     <group ref={sandbarRef}>
       <mesh rotation={[-Math.PI / 2, 0, 0.12]} position={[-2.8, -0.79, 1.5]}>
         <planeGeometry args={[2.6, 0.62, 1, 1]} />
-        <meshBasicMaterial color="#e8c774" transparent opacity={0.16} />
+        <meshBasicMaterial color="#e8c774" transparent opacity={0.08 + dryness * 0.3} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, -0.08]} position={[1.4, -0.78, -1.08]}>
         <planeGeometry args={[2.1, 0.56, 1, 1]} />
-        <meshBasicMaterial color="#f1d58e" transparent opacity={0.14} />
+        <meshBasicMaterial color="#f1d58e" transparent opacity={0.07 + dryness * 0.28} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0.05]} position={[7.1, -0.77, 0.92]}>
         <planeGeometry args={[2.9, 0.72, 1, 1]} />
-        <meshBasicMaterial color="#d8ab56" transparent opacity={0.13} />
+        <meshBasicMaterial color="#d8ab56" transparent opacity={0.06 + dryness * 0.26} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, -0.11]} position={[10.2, -0.76, -1.62]}>
         <planeGeometry args={[1.9, 0.46, 1, 1]} />
-        <meshBasicMaterial color="#f5dfab" transparent opacity={0.12} />
+        <meshBasicMaterial color="#f5dfab" transparent opacity={0.05 + dryness * 0.24} />
       </mesh>
     </group>
   );
@@ -1941,6 +2028,7 @@ function RiverWorld({
   );
   const eraIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
   const eraWarmth = eraIndex / Math.max(RIVER_ERA_ORDER.length - 1, 1);
+  const eraFlowProfile = ERA_FLOW_PROFILE[activeEra];
   const scenePulse = traceFocus?.active ? 1 : sceneFocus?.active ? 0.72 : 0;
   const fogColor = traceFocus?.active
     ? "#2b1806"
@@ -1988,13 +2076,15 @@ function RiverWorld({
     [books],
   );
   const eraRiverMood = useMemo(() => {
-    const fullness = 0.58 + eraWarmth * 0.5;
     const revealFactor = 0.3 + eraTransitionProgress * 0.7;
-    const mainOpacity = (0.5 + eraWarmth * 0.3) * revealFactor;
-    const branchOpacity = (0.22 + eraWarmth * 0.46) * revealFactor;
-    const branchVisibility = (0.38 + eraWarmth * 0.84) * revealFactor;
-    const glowStrength = 0.18 + eraWarmth * 0.42 + scenePulse * 0.08;
+    const fullness = eraFlowProfile.fullness * (0.94 + eraWarmth * 0.12);
+    const mainOpacity = eraFlowProfile.mainOpacity * revealFactor;
+    const branchOpacity = eraFlowProfile.branchOpacity * revealFactor;
+    const branchVisibility = eraFlowProfile.branchVisibility * revealFactor;
+    const glowStrength = 0.16 + eraWarmth * 0.24 + eraFlowProfile.glowBoost + scenePulse * 0.08;
     const nodeOpacityFactor = 0.42 + eraTransitionProgress * 0.58;
+    const dryness = eraFlowProfile.dryness * (0.6 + (1 - eraTransitionProgress) * 0.4 + eraWarmth * 0.2);
+    const particleDensityBoost = eraFlowProfile.particleBoost;
 
     return {
       fullness,
@@ -2003,8 +2093,10 @@ function RiverWorld({
       branchVisibility,
       glowStrength,
       nodeOpacityFactor,
+      dryness,
+      particleDensityBoost,
     };
-  }, [eraTransitionProgress, eraWarmth, scenePulse]);
+  }, [eraFlowProfile, eraTransitionProgress, eraWarmth, scenePulse]);
   useEffect(() => {
     const focusPoint = traceFocus?.active || sceneFocus?.active
       ? cameraTarget.clone()
@@ -2172,8 +2264,8 @@ function RiverWorld({
       <ScrollMistBands />
       <RiverBed />
       <RiverBanks />
-      <RiverSandbars />
-      <DryRiverGhosts />
+      <RiverSandbars dryness={eraRiverMood.dryness} />
+      <DryRiverGhosts dryness={eraRiverMood.dryness} />
       <ScrollContourLines />
       <EraRiverZones books={books} />
 
@@ -2194,10 +2286,14 @@ function RiverWorld({
             color="#fde68a"
             density={Math.max(
               84,
-              Math.round((180 + mainStreamStats.averageInfluence * 0.9) * eraRiverMood.fullness),
+              Math.round(
+                (180 + mainStreamStats.averageInfluence * 0.9) *
+                  eraRiverMood.fullness *
+                  eraRiverMood.particleDensityBoost,
+              ),
             )}
             flowSpeed={(0.032 + mainStreamStats.averageVelocity * 0.16) * (0.82 + eraWarmth * 0.42)}
-            spread={0.12 - eraWarmth * 0.04}
+            spread={Math.max(0.05, 0.14 - eraWarmth * 0.035 + eraRiverMood.dryness * 0.06)}
           />
         </>
       ) : null}
@@ -2227,11 +2323,12 @@ function RiverWorld({
                 28,
                 Math.round(
                   ((index === 0 ? 120 : 92) + branchStreamStats[index]!.averageInfluence * 0.56) *
-                    eraRiverMood.branchVisibility,
+                    eraRiverMood.branchVisibility *
+                    eraRiverMood.particleDensityBoost,
                 ),
               )}
               flowSpeed={(0.038 + branchStreamStats[index]!.averageVelocity * 0.18) * (0.78 + eraWarmth * 0.48)}
-              spread={0.1 - eraWarmth * 0.03}
+              spread={Math.max(0.04, 0.11 - eraWarmth * 0.026 + eraRiverMood.dryness * 0.05)}
             />
           </group>
         ) : null,
