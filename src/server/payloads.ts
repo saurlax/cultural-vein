@@ -38,11 +38,11 @@ export function getInsightsPayload(): DatasetInsight {
     realSupplements.cbdbSummary?.available
       ? {
           id: "cbdb",
-          name: "CBDB",
+          name: "纪传人物库",
           summary: "纪传人物与朝代分布",
           stat: `${realSupplements.cbdbSummary.personCount?.toLocaleString() ?? "--"} 位人物`,
           magnitude: realSupplements.cbdbSummary.personCount ?? 0,
-          evidenceLabel: "CBDB 纪传统计",
+          evidenceLabel: "纪传人物统计",
           evidenceNote: "依据朝代分布与人物总量字段，当前用于人物关系与时间线补证。",
           sampleTitles: (realSupplements.cbdbSummary.topDynasties ?? [])
             .slice(0, 3)
@@ -342,7 +342,7 @@ export function getInsightsPayload(): DatasetInsight {
         },
         {
           id: "cbdb-people",
-          label: "人名规范 / CBDB",
+          label: "人名规范 / 纪传人物库",
           status: "已显河面",
           scope: "人物命中与纪传地点",
           usage: "人物关系、活动地点、时间线补证",

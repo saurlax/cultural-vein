@@ -918,7 +918,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "CBDB 人物 + 上图活动资料 + 搜韵知识图谱 API 资料",
+      sourceLabel: "纪传人物库 + 上图活动资料 + 搜韵知识图谱资料",
       venueSummary: "补入《论语》后，四书主干从孔门语录源头一直连到宋代理学教材化阶段，增强“主河道不是单节点”的展示力度。",
     },
   },
@@ -1111,7 +1111,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "CBDB 人物 + 上海图书馆活动资料",
+      sourceLabel: "纪传人物库 + 上海图书馆活动资料",
       venueSummary: "补入《大学》后，可以更清楚地展示《礼记》篇章如何被析出并重组进四书教材体系。",
     },
   },
@@ -1364,7 +1364,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "CBDB 人物 + 上海图书馆活动资料",
+      sourceLabel: "纪传人物库 + 上海图书馆活动资料",
       venueSummary: "补入《中庸》后，四书主干中的心性义理层得到明确落点，不再只停留在《礼记》与《四书章句集注》的跳跃连接。",
     },
   },
@@ -1613,7 +1613,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "CBDB 人物 + 上海图书馆活动资料 + 搜韵知识图谱 API 资料",
+      sourceLabel: "纪传人物库 + 上海图书馆活动资料 + 搜韵知识图谱资料",
       venueSummary: "补入《周易》后，主河道不再只覆盖四书内部，而能向五经义理与天道论方向继续展开。",
     },
   },
@@ -1860,7 +1860,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "CBDB 人物 + 上海图书馆活动资料",
+      sourceLabel: "纪传人物库 + 上海图书馆活动资料",
       venueSummary: "补入《孝经》后，主河道可以更自然地延伸到家礼、教化与家族传播叙事，为后续接家谱数据预留落点。",
     },
   },
@@ -2019,7 +2019,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "CBDB 人物 + 南京图书馆馆藏资料",
+      sourceLabel: "纪传人物库 + 南京图书馆馆藏资料",
       venueSummary: "补入《尚书正义》后，主河道里的《尚书》不再只是源头节点，而是多出一个能讲清官学经疏化的中继层。",
     },
   },
@@ -2240,7 +2240,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "CBDB 人物 + 上海图书馆活动资料",
+      sourceLabel: "纪传人物库 + 上海图书馆活动资料",
       venueSummary: "补入《公羊传》后，春秋学不再只有《左传》叙事一支，而能直接展示“叙事—义例”双分流。",
     },
   },
@@ -2405,7 +2405,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "CBDB 人物 + 复旦馆藏资料",
+      sourceLabel: "纪传人物库 + 复旦馆藏资料",
       venueSummary: "补入《说文解字》后，经学主河道与训诂、考据支流之间有了可见的中继节点，不再只是抽象的“考据学”标签。",
     },
   },
@@ -2632,7 +2632,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "南湖文献 + 搜韵知识图谱 API 资料",
+      sourceLabel: "南湖文献 + 搜韵知识图谱资料",
       venueSummary: "补入《楚辞章句》后，诗学支流从风雅源头到总集编排之间多了一个可见的“骚体注释中继层”。",
     },
   },
@@ -2893,7 +2893,7 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       },
     ],
     realWorldSignals: {
-      sourceLabel: "南湖文献 + 全国报刊索引 API 资料",
+      sourceLabel: "南湖文献 + 全国报刊索引资料",
       venueSummary: "补入《文心雕龙》后，诗学支流从“骚体注释”到“近代词论”之间有了完整的六朝文论中段，不再只靠首尾跳接。",
     },
   },
@@ -3422,7 +3422,7 @@ if (lijiDetail) {
   ]);
   lijiDetail.realWorldSignals = {
     ...lijiDetail.realWorldSignals,
-    sourceLabel: appendSourceLabel(lijiDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    sourceLabel: appendSourceLabel(lijiDetail.realWorldSignals?.sourceLabel, "纪传人物库"),
     venueSummary: appendVenueSummary(
       lijiDetail.realWorldSignals?.venueSummary,
       "补厚《礼记》后，首页主河道能更清楚地展示“四书母体”与礼治秩序的源头层，不再只剩一个抽象名称。",
@@ -3667,7 +3667,7 @@ if (lunyuJizhuDetail) {
   ]);
   lunyuJizhuDetail.realWorldSignals = {
     ...lunyuJizhuDetail.realWorldSignals,
-    sourceLabel: appendSourceLabel(lunyuJizhuDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    sourceLabel: appendSourceLabel(lunyuJizhuDetail.realWorldSignals?.sourceLabel, "纪传人物库"),
     venueSummary: appendVenueSummary(
       lunyuJizhuDetail.realWorldSignals?.venueSummary,
       "补入《论语集注》后，《论语》不再只是源头节点，而能继续点进“理学化、教材化”的中段河道。",
@@ -3759,7 +3759,7 @@ if (zuozhuanDetail) {
   ]);
   zuozhuanDetail.realWorldSignals = {
     ...zuozhuanDetail.realWorldSignals,
-    sourceLabel: appendSourceLabel(zuozhuanDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    sourceLabel: appendSourceLabel(zuozhuanDetail.realWorldSignals?.sourceLabel, "纪传人物库"),
     venueSummary: appendVenueSummary(
       zuozhuanDetail.realWorldSignals?.venueSummary,
       "《左传》补入真实来源信号后，经史互证这条支流在现场演示时不再显得孤立。",
@@ -3987,7 +3987,7 @@ if (shijiDetail) {
   ]);
   shijiDetail.realWorldSignals = {
     ...shijiDetail.realWorldSignals,
-    sourceLabel: appendSourceLabel(shijiDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    sourceLabel: appendSourceLabel(shijiDetail.realWorldSignals?.sourceLabel, "纪传人物库"),
     venueSummary: appendVenueSummary(
       shijiDetail.realWorldSignals?.venueSummary,
       "补厚《史记》后，经史转写这段河道终于有了从《左传》到《通鉴》的中继节点。",
@@ -4188,7 +4188,7 @@ if (zztjDetail) {
   ]);
   zztjDetail.realWorldSignals = {
     ...zztjDetail.realWorldSignals,
-    sourceLabel: appendSourceLabel(zztjDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    sourceLabel: appendSourceLabel(zztjDetail.realWorldSignals?.sourceLabel, "纪传人物库"),
     venueSummary: appendVenueSummary(
       zztjDetail.realWorldSignals?.venueSummary,
       "补厚《资治通鉴》后，经史支流能完整落到“史法回流为治道镜鉴”的演示叙事上。",
@@ -4436,7 +4436,7 @@ if (rizhiluDetail) {
   ]);
   rizhiluDetail.realWorldSignals = {
     ...rizhiluDetail.realWorldSignals,
-    sourceLabel: appendSourceLabel(rizhiluDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    sourceLabel: appendSourceLabel(rizhiluDetail.realWorldSignals?.sourceLabel, "纪传人物库"),
     venueSummary: appendVenueSummary(
       rizhiluDetail.realWorldSignals?.venueSummary,
       "补厚《日知录》后，晚明清的经世考据支流终于不再只是一张薄卡，而能继续点到制度、训诂与史鉴三层内容。",
@@ -4690,7 +4690,7 @@ if (renjianciHuaDetail) {
   ]);
   renjianciHuaDetail.realWorldSignals = {
     ...renjianciHuaDetail.realWorldSignals,
-    sourceLabel: appendSourceLabel(renjianciHuaDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    sourceLabel: appendSourceLabel(renjianciHuaDetail.realWorldSignals?.sourceLabel, "纪传人物库"),
     venueSummary: appendVenueSummary(
       renjianciHuaDetail.realWorldSignals?.venueSummary,
       "补厚《人间词话》后，诗学支流可以自然收束到近代审美回读，而不是只停在一张近现代来源卡上。",
@@ -4837,7 +4837,7 @@ if (shangshuZhengyiDetail) {
   ]);
   shangshuZhengyiDetail.realWorldSignals = {
     ...shangshuZhengyiDetail.realWorldSignals,
-    sourceLabel: appendSourceLabel(shangshuZhengyiDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    sourceLabel: appendSourceLabel(shangshuZhengyiDetail.realWorldSignals?.sourceLabel, "纪传人物库"),
     venueSummary: appendVenueSummary(
       shangshuZhengyiDetail.realWorldSignals?.venueSummary,
       "补厚《尚书正义》后，《尚书》主河道终于能看见“原典—官学经疏—治道回流”的完整中段，不再只是一条细支流。",
@@ -4984,7 +4984,7 @@ if (shuowenDetail) {
   ]);
   shuowenDetail.realWorldSignals = {
     ...shuowenDetail.realWorldSignals,
-    sourceLabel: appendSourceLabel(shuowenDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    sourceLabel: appendSourceLabel(shuowenDetail.realWorldSignals?.sourceLabel, "纪传人物库"),
     venueSummary: appendVenueSummary(
       shuowenDetail.realWorldSignals?.venueSummary,
       "补厚《说文》后，训诂与考据支流终于不再只是一块工具性标签，而能继续点到释经、考据和经世回流三层内容。",
@@ -5912,7 +5912,7 @@ if (shanghaiLibraryActivity.available) {
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
       sourceLabel: appendSourceLabel(
-        detail.realWorldSignals?.sourceLabel ?? "CBDB 人物",
+        detail.realWorldSignals?.sourceLabel ?? "纪传人物库",
         "上海图书馆活动资料",
       ),
       venueSummary:
@@ -5933,7 +5933,7 @@ if (nanjingLibrarySample.available) {
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
       sourceLabel: appendSourceLabel(
-        detail.realWorldSignals?.sourceLabel ?? "CBDB",
+        detail.realWorldSignals?.sourceLabel ?? "纪传人物库",
         "南京图书馆图像资料",
       ),
       institutionSamples,
@@ -6150,11 +6150,11 @@ if (cbdbSummary.available) {
       ...detail.realWorldSignals,
       sourceLabel: appendSourceLabel(
         detail.realWorldSignals?.sourceLabel ?? "上图数据",
-        "CBDB 人物",
+        "纪传人物库",
       ),
       venueSummary:
         detail.realWorldSignals?.venueSummary ??
-        `CBDB 当前可用人物 ${cbdbSummary.personCount?.toLocaleString() ?? "未知"} 条；高频朝代分布为 ${topDynastyLine}。`,
+        `纪传人物库当前可用人物 ${cbdbSummary.personCount?.toLocaleString() ?? "未知"} 条；高频朝代分布为 ${topDynastyLine}。`,
       cbdbMatchedPeople: matchedCount,
       cbdbFallbackPeople: fallbackCount,
     };

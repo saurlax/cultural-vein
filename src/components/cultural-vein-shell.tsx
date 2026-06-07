@@ -1400,7 +1400,7 @@ export function CulturalVeinShell() {
                                 <div className="mt-1 text-sm font-medium text-[#fbf3da]">
                                   {cbdbPersonCount?.toLocaleString() ?? "--"}
                                 </div>
-                                <div className="mt-1 text-[10px] text-[#dccb9c]">CBDB 纪传人物底盘</div>
+                                <div className="mt-1 text-[10px] text-[#dccb9c]">纪传人物库底盘</div>
                               </div>
                             </div>
                             <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
