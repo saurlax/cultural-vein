@@ -54,6 +54,7 @@ interface RiverSceneProps {
   visibleNodeCount?: number;
   totalNodeCount?: number;
   highlightedBookSlugs?: string[];
+  searchFocusSlug?: string | null;
   hoveredBookSlug?: string | null;
   onHoverBook?: (slug: string | null) => void;
   hoveredDockId?: string | null;
@@ -1504,6 +1505,7 @@ function RiverWorld({
   sceneFocus,
   cruiseProgress,
   highlightedBookSlugs = [],
+  searchFocusSlug,
   hoveredBookSlug,
   onHoverBook,
   hoveredDockId,
@@ -1568,18 +1570,27 @@ function RiverWorld({
   const cameraTarget = useMemo(() => {
     const traceCurrentBook =
       books.find((book) => book.title === traceFocus?.currentTitle) ??
+      (searchFocusSlug ? books.find((book) => book.slug === searchFocusSlug) : null) ??
       books.find((book) => book.slug === selectedBookSlug);
 
     return traceCurrentBook
       ? new THREE.Vector3(...traceCurrentBook.coordinates)
       : new THREE.Vector3(3.5, 0, 0);
-  }, [books, selectedBookSlug, traceFocus?.currentTitle]);
+  }, [books, searchFocusSlug, selectedBookSlug, traceFocus?.currentTitle]);
   const selectedBookPosition = useMemo(() => {
     const selectedBook = books.find((book) => book.slug === selectedBookSlug);
     return selectedBook
       ? new THREE.Vector3(...selectedBook.coordinates)
       : null;
   }, [books, selectedBookSlug]);
+  const searchFocusNode = useMemo(
+    () => (searchFocusSlug ? books.find((book) => book.slug === searchFocusSlug) ?? null : null),
+    [books, searchFocusSlug],
+  );
+  const searchFocusPosition = useMemo(
+    () => (searchFocusNode ? new THREE.Vector3(...searchFocusNode.coordinates) : null),
+    [searchFocusNode],
+  );
   const selectedBookNode = useMemo(
     () => books.find((book) => book.slug === selectedBookSlug) ?? null,
     [books, selectedBookSlug],
@@ -1693,6 +1704,9 @@ function RiverWorld({
     } else if (sceneFocus?.active) {
       nextTarget = focusPoint.clone().add(new THREE.Vector3(0, 0.08, 0));
       nextPosition = focusPoint.clone().add(new THREE.Vector3(1.75, 1.9, 4.75));
+    } else if (viewMode === "river" && searchFocusPosition && !selectedBookPosition) {
+      nextTarget = searchFocusPosition.clone().add(new THREE.Vector3(0, 0.08, 0));
+      nextPosition = searchFocusPosition.clone().add(new THREE.Vector3(1.8, 2.05, 5.05));
     } else if (cinematicState === "diving" && selectedBookPosition) {
       nextTarget = focusPoint.clone().add(new THREE.Vector3(0.18, 0.12, 0));
       nextPosition = focusPoint.clone().add(new THREE.Vector3(0.45, 3.2, 6.4));
@@ -1725,6 +1739,7 @@ function RiverWorld({
     cinematicState,
     cruiseSnapshot,
     sceneFocus,
+    searchFocusPosition,
     selectedBookPosition,
     traceFocus,
     viewMode,
@@ -2070,9 +2085,16 @@ export function RiverScene(props: RiverSceneProps) {
   const [isInteracting, setIsInteracting] = useState(false);
   const [showMobileTouchHint, setShowMobileTouchHint] = useState(true);
   const canCruise =
-    props.viewMode === "river" && !props.traceFocus?.active && !props.sceneFocus?.active;
+    props.viewMode === "river" &&
+    !props.traceFocus?.active &&
+    !props.sceneFocus?.active &&
+    !props.searchFocusSlug;
   const cruiseRunning = canCruise && autoCruise;
   const mobilePanelOpen = props.mobilePanelOpen ?? false;
+  const searchFocusBook =
+    props.searchFocusSlug
+      ? props.books.find((book) => book.slug === props.searchFocusSlug) ?? null
+      : null;
   const hoveredBook = props.books.find((book) => book.slug === props.hoveredBookSlug) ?? null;
   const hoveredDock = props.dockMarkers?.find((dock) => dock.id === props.hoveredDockId) ?? null;
   const hoveredBranch = props.branchAnnotations?.find(
@@ -2118,6 +2140,8 @@ export function RiverScene(props: RiverSceneProps) {
     ? `逆流正经过 ${props.traceFocus.currentTitle ?? "此处节点"}，沿链回看文脉源头。`
     : props.sceneFocus?.active
       ? props.sceneFocus.detail
+      : searchFocusBook
+        ? `概念检索已把镜头带到 ${searchFocusBook.shortTitle} 所在河段，可顺势入卷继续追看这条文脉。`
       : isInteracting
         ? "长河正在掌中转景，松手后可继续点选典籍与码头。"
       : activeCruiseMoment

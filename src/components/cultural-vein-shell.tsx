@@ -321,6 +321,7 @@ export function CulturalVeinShell() {
         : [],
     [searchResult?.hits, searchResult?.query, searchTerm],
   );
+  const primarySearchFocusSlug = searchHighlightedSlugs[0] ?? null;
 
   const visibleCitations = useMemo(() => {
     return riverDataset.citations.filter((citation) => {
@@ -1572,6 +1573,7 @@ export function CulturalVeinShell() {
             visibleNodeCount={filteredBooks.length}
             totalNodeCount={riverDataset.books.length}
             highlightedBookSlugs={mergedHighlightedBookSlugs}
+            searchFocusSlug={!selectedBook ? primarySearchFocusSlug : null}
             onOpenControlPanel={() => handleOpenDesktopPanel("branch")}
             onOpenEraPanel={() => handleOpenDesktopPanel("era")}
             onReturnToRiver={selectedBook ? handleReturnToRiver : null}
