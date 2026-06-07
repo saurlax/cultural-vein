@@ -52,6 +52,11 @@ interface SourceAtlasEntryDetailPayload {
   }>;
 }
 
+interface DerivedBranchAnnotation extends RiverBranchAnnotation {
+  layer: keyof typeof relationLayerMeta;
+  weight: number;
+}
+
 function inferEraFromYearText(yearText?: string) {
   if (!yearText) {
     return null;
@@ -215,7 +220,7 @@ function deriveBranchAnnotations(
   activeEraIndex: number,
   allowedSlugs: Set<string>,
   selectedSlug: string,
-): RiverBranchAnnotation[] {
+): DerivedBranchAnnotation[] {
   const visibleBooks = riverDataset.books.filter((book) => {
     return allowedSlugs.has(book.slug) && eras.indexOf(book.dynasty) <= activeEraIndex;
   });
@@ -283,7 +288,7 @@ function deriveBranchAnnotations(
       return true;
     })
     .slice(0, 6)
-    .map(({ citation, sourceBook, targetBook }) => {
+    .map(({ citation, sourceBook, targetBook, branchWeight }) => {
       const sourcePoint = sourceBook.coordinates;
       const targetPoint = targetBook.coordinates;
       const midX = (sourcePoint[0] + targetPoint[0]) / 2;
@@ -294,6 +299,8 @@ function deriveBranchAnnotations(
 
       return {
         id: `branch-${citation.id}`,
+        layer: citation.layer,
+        weight: branchWeight,
         label,
         description: `${sourceBook.shortTitle} 由 ${targetBook.shortTitle} 这层文脉引出。${citation.evidence}`,
         sourceSlug: targetBook.slug,
@@ -431,15 +438,6 @@ export function CulturalVeinShell() {
       );
     });
   }, [filteredBooks]);
-  const relationSummary = useMemo(
-    () =>
-      (Object.keys(relationLayerMeta) as Array<keyof typeof relationLayerMeta>).map((layer) => ({
-        layer,
-        count: visibleCitations.filter((citation) => citation.layer === layer).length,
-      })),
-    [visibleCitations],
-  );
-
   const selectedBook = riverDataset.books.find((book) => book.slug === selectedBookSlug);
   const selectedDetail = riverDataset.booksBySlug[selectedBookSlug];
   const selectedBookCitations = selectedBook
@@ -461,12 +459,28 @@ export function CulturalVeinShell() {
     () => deriveBranchAnnotations(activeEraIndex, visibleBookSlugs, selectedBookSlug),
     [activeEraIndex, visibleBookSlugs, selectedBookSlug],
   );
+  const relationSummary = useMemo(
+    () =>
+      (Object.keys(relationLayerMeta) as Array<keyof typeof relationLayerMeta>).map((layer) => {
+        const layerBranches = visibleBranchAnnotations.filter((branch) => branch.layer === layer);
+
+        return {
+          layer,
+          count: layerBranches.length,
+          primaryBranch: layerBranches.sort((left, right) => right.weight - left.weight)[0] ?? null,
+        };
+      }),
+    [visibleBranchAnnotations],
+  );
 
   const activeBranchAnnotation =
     visibleBranchAnnotations.find((annotation) => annotation.id === hoveredBranchId) ??
     visibleBranchAnnotations.find((annotation) => annotation.targetSlug === selectedBookSlug) ??
     visibleBranchAnnotations[0] ??
     null;
+  const activeBranchSummary = relationSummary.find(
+    ({ layer }) => layer === activeBranchAnnotation?.layer,
+  ) ?? null;
   const riverDockMarkers = useMemo<RiverDockMarker[]>(() => {
     if (!selectedBook || !selectedDetail?.places.length) {
       return [];
@@ -1510,9 +1524,8 @@ export function CulturalVeinShell() {
                             key={layer}
                             type="button"
                             onClick={() => {
-                              const target = visibleBranchAnnotations.find(
-                                (branch) => branch.id === `branch-${layer}`,
-                              );
+                              const target =
+                                relationSummary.find((item) => item.layer === layer)?.primaryBranch ?? null;
 
                               if (target?.targetSlug) {
                                 handleDiveToBook(target.targetSlug);
@@ -1529,8 +1542,15 @@ export function CulturalVeinShell() {
                       {activeBranchAnnotation ? (
                         <>
                           <div className="flex items-start justify-between gap-3">
-                            <div className="text-sm font-medium text-[#fbf3da]">
-                              {activeBranchAnnotation.label}
+                            <div>
+                              <div className="text-sm font-medium text-[#fbf3da]">
+                                {activeBranchAnnotation.label}
+                              </div>
+                              {activeBranchSummary ? (
+                                <div className="mt-1 text-[11px] text-[#d8c9a3]">
+                                  {relationLayerMeta[activeBranchSummary.layer].label} · 当前已显 {activeBranchSummary.count} 股
+                                </div>
+                              ) : null}
                             </div>
                             <button
                               type="button"
@@ -2222,9 +2242,8 @@ export function CulturalVeinShell() {
                           key={`mobile-layer-${layer}`}
                           type="button"
                           onClick={() => {
-                            const target = visibleBranchAnnotations.find(
-                              (branch) => branch.id === `branch-${layer}`,
-                            );
+                            const target =
+                              relationSummary.find((item) => item.layer === layer)?.primaryBranch ?? null;
 
                             if (target?.targetSlug) {
                               handleDiveToBook(target.targetSlug);
