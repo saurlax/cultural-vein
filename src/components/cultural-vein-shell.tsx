@@ -41,6 +41,17 @@ interface SearchPayload {
   relatedConcepts: string[];
 }
 
+interface SourceAtlasEntryDetailPayload {
+  entry: NonNullable<DatasetInsight["sourceAtlas"]>[number];
+  relatedBooks: Array<{
+    id: string;
+    slug: string;
+    title: string;
+    dynasty: string;
+    category: string;
+  }>;
+}
+
 function inferEraFromYearText(yearText?: string) {
   if (!yearText) {
     return null;
@@ -322,6 +333,8 @@ export function CulturalVeinShell() {
   const [showDesktopDossier, setShowDesktopDossier] = useState(false);
   const [showDesktopControls, setShowDesktopControls] = useState(false);
   const [activeSourceAtlasId, setActiveSourceAtlasId] = useState<string | null>(null);
+  const [activeSourceAtlasDetail, setActiveSourceAtlasDetail] =
+    useState<SourceAtlasEntryDetailPayload | null>(null);
   const [entryExplorerTab, setEntryExplorerTab] = useState<
     "spread" | "people" | "versions" | "timeline" | "passages" | null
   >(null);
@@ -516,6 +529,42 @@ export function CulturalVeinShell() {
 
     return () => window.clearTimeout(timer);
   }, [transitionState]);
+
+  useEffect(() => {
+    if (!activeSourceAtlasId) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadSourceAtlasDetail = async () => {
+      try {
+        const response = await fetch(`/api/source-atlas/${encodeURIComponent(activeSourceAtlasId)}`);
+
+        if (!response.ok) {
+          if (!cancelled) {
+            setActiveSourceAtlasDetail(null);
+          }
+          return;
+        }
+
+        const payload = (await response.json()) as SourceAtlasEntryDetailPayload;
+        if (!cancelled) {
+          setActiveSourceAtlasDetail(payload);
+        }
+      } catch {
+        if (!cancelled) {
+          setActiveSourceAtlasDetail(null);
+        }
+      }
+    };
+
+    void loadSourceAtlasDetail();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeSourceAtlasId]);
 
   const handleDiveToBook = (slug: string, options?: ExplorerOpenOptions) => {
     const nextEntryTab =
@@ -1028,6 +1077,7 @@ export function CulturalVeinShell() {
           .map((offset) => prioritizedSourceAtlasEntries[activeSourceAtlasIndex + offset])
           .filter((entry): entry is NonNullable<typeof sourceAtlasEntries>[number] => Boolean(entry))
       : prioritizedSourceAtlasEntries.slice(1, 2);
+  const activeSourceRelatedBooks = activeSourceAtlasDetail?.relatedBooks ?? [];
   const cbdbPersonCount = insights?.cbdbSummary?.personCount ?? null;
   const eraRecommendedBooks = useMemo(() => {
     return filteredBooks
@@ -1676,6 +1726,23 @@ export function CulturalVeinShell() {
                                   {activeSourceRoute.points.length}
                                 </span>
                                 个码头落点铺开，河段与来源已彼此扣合。
+                              </div>
+                            ) : null}
+                            {activeSourceRelatedBooks.length ? (
+                              <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.3)] px-3 py-3">
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">顺流可入</div>
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                  {activeSourceRelatedBooks.map((book) => (
+                                    <button
+                                      key={`source-related-${activeSourceAtlasEntry.id}-${book.slug}`}
+                                      type="button"
+                                      onClick={() => handleDiveToBook(book.slug)}
+                                      className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.12)] hover:text-[#fbf3da]"
+                                    >
+                                      {book.title} · {book.dynasty}
+                                    </button>
+                                  ))}
+                                </div>
                               </div>
                             ) : null}
                             {activeSourceRecord ? (
