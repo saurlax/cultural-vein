@@ -6,6 +6,7 @@ import { PersonNetwork3D } from "@/components/person-network-3d";
 import { SpreadGlobe } from "@/components/spread-globe";
 import { TraceLightField } from "@/components/trace-light-field";
 import { VersionTree } from "@/components/version-tree";
+import { riverDataset } from "@/data/river-dataset";
 import { buildSourceEvidence, type SourceEvidenceItem } from "@/lib/source-evidence";
 import type { BookDetail, BookNode, RiverEra, VersionNode } from "@/types/domain";
 
@@ -452,47 +453,30 @@ export function BookExplorer({
   const [showSecondaryPeople, setShowSecondaryPeople] = useState(false);
 
   const bookEraByTitle = useMemo(() => {
-    return new Map<string, RiverEra>([
-      ["诗经", "先秦"],
-      ["尚书", "先秦"],
-      ["周易", "先秦"],
-      ["论语", "先秦"],
-      ["礼记", "两汉"],
-      ["孝经", "两汉"],
-      ["大学", "两汉"],
-      ["中庸", "两汉"],
-      ["史记", "两汉"],
-      ["春秋左传", "先秦"],
-      ["左传", "先秦"],
-      ["论语集注", "宋元"],
-      ["四书章句集注", "宋元"],
-      ["孟子", "先秦"],
-      ["资治通鉴", "宋元"],
-      ["日知录", "明清"],
-      ["人间词话", "近现代"],
-      ["明内府本四书章句", "明清"],
-    ]);
+    const titleMap = new Map<string, RiverEra>();
+
+    for (const item of riverDataset.books) {
+      titleMap.set(item.title, item.dynasty);
+      titleMap.set(item.shortTitle, item.dynasty);
+    }
+
+    titleMap.set("左传", "先秦");
+    titleMap.set("春秋左传", "先秦");
+
+    return titleMap;
   }, []);
   const bookSlugByTitle = useMemo(() => {
-    return new Map<string, string>([
-      ["诗经", "shijing"],
-      ["尚书", "shangshu"],
-      ["周易", "zhouyi"],
-      ["论语", "lunyu"],
-      ["礼记", "liji"],
-      ["孝经", "xiaojing"],
-      ["大学", "daxue"],
-      ["中庸", "zhongyong"],
-      ["史记", "shiji"],
-      ["春秋左传", "zuozhuan"],
-      ["左传", "zuozhuan"],
-      ["论语集注", "lunyu-jizhu"],
-      ["四书章句集注", "sishu-zhangju"],
-      ["孟子", "mengzi"],
-      ["资治通鉴", "zi-zhi-tong-jian"],
-      ["日知录", "ri-zhi-lu"],
-      ["人间词话", "ren-jian-ci-hua"],
-    ]);
+    const titleMap = new Map<string, string>();
+
+    for (const item of riverDataset.books) {
+      titleMap.set(item.title, item.slug);
+      titleMap.set(item.shortTitle, item.slug);
+    }
+
+    titleMap.set("左传", "zuozhuan");
+    titleMap.set("春秋左传", "zuozhuan");
+
+    return titleMap;
   }, []);
   const activeEraIndex = eraOrder.indexOf(activeEra);
   const activeEraRange = eraYearRange[activeEra];
