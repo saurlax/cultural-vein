@@ -315,6 +315,96 @@ function AtmosphereField({
   );
 }
 
+function HorizonRiverBreath({
+  activeEra,
+  traceFocus,
+  sceneFocus,
+}: Pick<RiverSceneProps, "activeEra" | "traceFocus" | "sceneFocus">) {
+  const breathRef = useRef<THREE.Group>(null);
+  const eraIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
+  const warmth = eraIndex / Math.max(RIVER_ERA_ORDER.length - 1, 1);
+  const focusBoost = traceFocus?.active ? 0.12 : sceneFocus?.active ? 0.08 : 0;
+  const hazeColor = traceFocus?.active
+    ? "#f6c453"
+    : sceneFocus?.active
+      ? "#fde7b0"
+      : warmth > 0.65
+        ? "#f3cf82"
+        : "#d8ab56";
+  const dustColor = warmth > 0.72 ? "#fff1c0" : "#f1d187";
+  const dustPositions = useMemo(
+    () =>
+      Array.from({ length: 20 }, (_, index) => ({
+        position: [
+          -5.8 + pseudoNoise(index * 1.31 + 0.4) * 18.4,
+          1.2 + pseudoNoise(index * 0.82 + 2.1) * 2.7,
+          -8.8 + pseudoNoise(index * 1.73 + 1.7) * 4.8,
+        ] as [number, number, number],
+        scale: 0.08 + pseudoNoise(index * 0.57 + 4.2) * 0.14,
+      })),
+    [],
+  );
+
+  useFrame((state) => {
+    if (!breathRef.current) {
+      return;
+    }
+
+    breathRef.current.children.forEach((child, index) => {
+      const mesh = child as THREE.Mesh;
+      const material = mesh.material;
+
+      mesh.position.x =
+        (index < 4
+          ? [-4.6, 3.4, 9.8, 0.8][index] ?? 0
+          : dustPositions[index - 4]?.position[0] ?? 0) +
+        Math.sin(state.clock.elapsedTime * (0.06 + index * 0.008) + index * 0.33) * (index < 4 ? 0.18 : 0.05);
+      mesh.position.y =
+        (index < 4
+          ? [1.8, 2.6, 1.35, 3.4][index] ?? 0
+          : dustPositions[index - 4]?.position[1] ?? 0) +
+        Math.sin(state.clock.elapsedTime * (0.14 + index * 0.02) + index * 0.6) * (index < 4 ? 0.08 : 0.03);
+
+      if (material instanceof THREE.MeshBasicMaterial) {
+        material.opacity =
+          (index < 4 ? 0.06 + warmth * 0.05 + focusBoost : 0.12 + warmth * 0.06) +
+          Math.max(0, Math.sin(state.clock.elapsedTime * (0.22 + index * 0.02) + index * 0.45)) *
+            (index < 4 ? 0.04 : 0.05);
+      }
+    });
+  });
+
+  return (
+    <group ref={breathRef}>
+      <mesh position={[-4.6, 1.8, -8.6]} scale={[8.4, 1.7, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color={hazeColor} transparent opacity={0.08 + warmth * 0.04 + focusBoost} />
+      </mesh>
+      <mesh position={[3.4, 2.6, -9.1]} scale={[10.6, 2.1, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#f7e7bf" transparent opacity={0.06 + warmth * 0.035 + focusBoost * 0.85} />
+      </mesh>
+      <mesh position={[9.8, 1.35, -8.4]} scale={[7.1, 1.5, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#d9a44d" transparent opacity={0.05 + warmth * 0.03 + focusBoost * 0.7} />
+      </mesh>
+      <mesh position={[0.8, 3.4, -9.6]} scale={[14.2, 2.6, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#fff2cb" transparent opacity={0.04 + warmth * 0.025 + focusBoost * 0.6} />
+      </mesh>
+      {dustPositions.map((dust, index) => (
+        <mesh
+          key={`horizon-dust-${index}`}
+          position={dust.position}
+        >
+          <sphereGeometry args={[dust.scale, 10, 10]} />
+          <meshBasicMaterial color={dustColor} transparent opacity={0.14 + warmth * 0.05} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function RiverBed({
   span = 24,
   depth = -1.14,
@@ -3351,6 +3441,7 @@ function RiverWorld({
       />
 
       <ScrollCanopy activeEra={activeEra} traceFocus={traceFocus} sceneFocus={sceneFocus} />
+      <HorizonRiverBreath activeEra={activeEra} traceFocus={traceFocus} sceneFocus={sceneFocus} />
       <AtmosphereField activeEra={activeEra} traceFocus={traceFocus} sceneFocus={sceneFocus} />
       <ScrollMistBands />
       <RiverBed />
