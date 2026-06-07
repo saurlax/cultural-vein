@@ -61,7 +61,7 @@ export function getInsightsPayload(): DatasetInsight {
       ? {
           id: "shanghai-library",
           name: "上图活动",
-          summary: "场馆活动与预约样本",
+          summary: "场馆活动与预约实录",
           stat: `${realSupplements.shanghaiLibraryActivity.topVenues?.length ?? 0} 组场馆`,
           magnitude:
             realSupplements.shanghaiLibraryActivity.sampleRecords?.length ??
@@ -115,7 +115,7 @@ export function getInsightsPayload(): DatasetInsight {
           stat: `${realSupplements.nanjingLibrarySample.recordCount?.toLocaleString() ?? "--"} 条图像`,
           magnitude: realSupplements.nanjingLibrarySample.recordCount ?? 0,
           evidenceLabel: realSupplements.nanjingLibrarySample.institution ?? "图像资源条目",
-          evidenceNote: "原始样本保留题名、分类、年代与图像出处说明。",
+          evidenceNote: "原始条目保留题名、分类、年代与图像出处说明。",
           sampleTitles: realSupplements.nanjingLibrarySample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.nanjingLibrarySample.sampleRecords ?? [])
             .slice(0, 3)
@@ -358,7 +358,7 @@ export function getInsightsPayload(): DatasetInsight {
           id: "geo-events",
           label: "地名事件",
           status: "已接入",
-          scope: "场馆、活动、专题片与事件落点",
+          scope: "场馆、活动、专题片与事件线索",
           usage: "地理传播、时间回声与真实场景挂接",
         },
         {
