@@ -668,6 +668,8 @@ function BookMarkers({
   viewMode,
   traceFocus,
   sceneFocus,
+  cruiseProgress,
+  cruiseRunning,
   highlightedBookSlugs = [],
   hoveredBookSlug,
   onHoverBook,
@@ -679,6 +681,8 @@ function BookMarkers({
   viewMode: ViewMode;
   traceFocus?: TraceFocusState | null;
   sceneFocus?: SceneFocusState | null;
+  cruiseProgress: number;
+  cruiseRunning: boolean;
   highlightedBookSlugs?: string[];
   hoveredBookSlug?: string | null;
   onHoverBook?: (slug: string | null) => void;
@@ -692,6 +696,15 @@ function BookMarkers({
     () => new Set(highlightedBookSlugs),
     [highlightedBookSlugs],
   );
+  const bookProgressMap = useMemo(() => {
+    const orderedBooks = [...books].sort((left, right) => left.year - right.year);
+    return new Map(
+      orderedBooks.map((book, index) => [
+        book.slug,
+        orderedBooks.length <= 1 ? 0 : index / (orderedBooks.length - 1),
+      ]),
+    );
+  }, [books]);
   const hasSearchHighlight = highlightedBookSlugs.length > 0;
   const markerRef = useRef<THREE.Group>(null);
 
@@ -718,6 +731,16 @@ function BookMarkers({
         const isSceneFocused =
           sceneFocus?.active === true && sceneFocus.currentTitle === book.title;
         const isSearchHighlighted = highlightedSlugSet.has(book.slug);
+        const bookProgress = bookProgressMap.get(book.slug) ?? 0;
+        const revealDistance = Math.abs(bookProgress - cruiseProgress);
+        const revealBlend = THREE.MathUtils.clamp(1 - revealDistance / 0.2, 0, 1);
+        const shouldUseCruiseReveal =
+          viewMode === "river" &&
+          cruiseRunning &&
+          !selectedBookSlug &&
+          !traceFocus?.active &&
+          !sceneFocus?.active &&
+          !hasSearchHighlight;
         const shouldDim =
           ((viewMode === "book" || Boolean(traceFocus?.active) || Boolean(sceneFocus?.active)) &&
           !isSelected &&
@@ -782,7 +805,15 @@ function BookMarkers({
               <meshStandardMaterial
                 color={markerColor}
                 transparent
-                opacity={shouldDim ? 0.22 : isHovered || isSearchHighlighted ? 1 : 0.94}
+                opacity={
+                  shouldDim
+                    ? 0.22
+                    : isHovered || isSearchHighlighted
+                      ? 1
+                      : shouldUseCruiseReveal
+                        ? 0.24 + revealBlend * 0.74
+                        : 0.94
+                }
                 emissive={new THREE.Color(emissive)}
                 emissiveIntensity={
                   isTraceCurrent
@@ -793,6 +824,8 @@ function BookMarkers({
                       ? 1.25
                       : isTraceLinked
                         ? 1.1
+                        : shouldUseCruiseReveal
+                          ? 0.5 + revealBlend * 0.92
                         : isNewestVisible
                           ? 1
                           : 0.8
@@ -850,6 +883,8 @@ function BookMarkers({
                     ? `${book.shortTitle} · 概念命中`
                   : isTraceLinked
                     ? `${book.shortTitle} · 溯源链`
+                    : shouldUseCruiseReveal && revealBlend > 0.78
+                      ? `${book.shortTitle} · 河段正显`
                     : isNewestVisible
                       ? `${book.shortTitle} · 新显现`
                     : book.shortTitle}
@@ -1835,6 +1870,8 @@ function RiverWorld({
         viewMode={viewMode}
         traceFocus={traceFocus}
         sceneFocus={sceneFocus}
+        cruiseProgress={cruiseProgress}
+        cruiseRunning={viewMode === "river" && !traceFocus?.active && !sceneFocus?.active}
         highlightedBookSlugs={highlightedBookSlugs}
         hoveredBookSlug={hoveredBookSlug}
         onHoverBook={onHoverBook}
@@ -1928,9 +1965,20 @@ export function RiverScene(props: RiverSceneProps) {
       return;
     }
 
+    const cruiseAnchors = [0.12, 0.24, 0.38, 0.54, 0.71, 0.86];
     const timer = window.setInterval(() => {
       setCruiseProgress((current) => {
-        const next = current + 0.0065;
+        const slowFactor = cruiseAnchors.reduce((factor, anchor) => {
+          const distance = Math.abs(current - anchor);
+
+          if (distance > 0.06) {
+            return factor;
+          }
+
+          const easing = 1 - distance / 0.06;
+          return Math.min(factor, 1 - easing * 0.55);
+        }, 1);
+        const next = current + 0.0065 * slowFactor;
         return next >= 0.99 ? 0.04 : next;
       });
     }, 120);
