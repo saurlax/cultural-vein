@@ -2449,12 +2449,12 @@ export function RiverScene(props: RiverSceneProps) {
         }`}
       >
         <div className="rounded-full border border-[#e7c97b]/18 bg-[rgba(106,72,24,0.48)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
-          {isInteracting ? "正在拖移河面" : touchModeLabel}
+          {isInteracting ? "正在拖移长河" : touchModeLabel}
         </div>
       </div>
       {canCruise ? (
         <div
-          className={`absolute bottom-5 right-5 z-20 hidden w-[min(300px,calc(100vw-2.5rem))] transition-opacity duration-300 sm:block ${
+          className={`absolute bottom-5 right-5 z-20 hidden w-[min(280px,calc(100vw-2.5rem))] transition-opacity duration-300 lg:block ${
             mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
           }`}
         >
@@ -2539,6 +2539,12 @@ export function RiverScene(props: RiverSceneProps) {
         dpr={[1, 1.8]}
         eventSource={eventSource ?? undefined}
         eventPrefix="client"
+        onPointerMissed={() => {
+          setAutoCruise(false);
+          setIsInteracting(true);
+        }}
+        onPointerUp={() => setIsInteracting(false)}
+        onPointerLeave={() => setIsInteracting(false)}
         className={isInteracting ? "cursor-grabbing touch-none" : "cursor-grab touch-none"}
       >
         <RiverWorld

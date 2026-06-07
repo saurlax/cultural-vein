@@ -943,6 +943,17 @@ export function BookExplorer({
         return activeInstitutionRecord.year.includes(String(item.year));
       }) ?? null
     : null;
+  const activeInstitutionPreviewTone = activeInstitutionRecord?.imageRef
+    ? "影像卷面"
+    : activeInstitutionRecord?.sourceText
+      ? "馆藏线索"
+      : "资源摘记";
+  const activeInstitutionPreviewText = activeInstitutionRecord
+    ? activeInstitutionRecord.sourceText ??
+      (activeInstitutionRecord.imageRef
+        ? `当前影像号 ${activeInstitutionRecord.imageRef} 已挂接到 ${activeInstitutionRecord.institution} 的馆藏线索，可作为这一版的卷面落点。`
+        : "当前馆藏条目已落到版本资源层，可作为卷面浏览入口。")
+    : null;
   const linkedVenueEventMap = new Map(
     venuePreview.map((venue) => {
       const matchedEvents = (detail.realWorldSignals?.eventSamples ?? []).filter(
@@ -1420,6 +1431,36 @@ export function BookExplorer({
                     回到关联时间线
                   </button>
                 ) : null}
+              </div>
+              <div className="mt-4 rounded-[24px] border border-[#d9bd79]/16 bg-[linear-gradient(180deg,rgba(244,230,188,0.94),rgba(226,201,146,0.9))] px-4 py-4 text-[#4a2c08] shadow-[inset_0_1px_0_rgba(255,255,255,0.24)]">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-[11px] tracking-[0.22em] text-[#8d6a2c]">{activeInstitutionPreviewTone}</div>
+                  <div className="rounded-full border border-[#b89247]/18 bg-[rgba(255,255,255,0.24)] px-3 py-1 text-[10px] text-[#7a571d]">
+                    {activeInstitutionRecord.imageRef ? `影像号 ${activeInstitutionRecord.imageRef}` : activeInstitutionRecord.category ?? "馆藏条目"}
+                  </div>
+                </div>
+                <div className="mt-4 rounded-[20px] border border-[#b89247]/14 bg-[rgba(255,255,255,0.24)] px-4 py-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="text-[10px] tracking-[0.2em] text-[#8d6a2c]">卷面来源</div>
+                      <div className="mt-2 text-base font-semibold text-[#5b3a11]">
+                        {activeInstitutionRecord.institution}
+                      </div>
+                      <div className="mt-2 text-xs text-[#7a571d]">
+                        {[activeInstitutionRecord.title, activeInstitutionRecord.year].filter(Boolean).join(" · ")}
+                      </div>
+                    </div>
+                    <div className="rounded-full border border-[#b89247]/18 bg-[rgba(255,255,255,0.22)] px-3 py-1 text-[10px] text-[#7a571d]">
+                      版本资源
+                    </div>
+                  </div>
+                  <div className="mt-4 grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm text-[#5b3a11]">
+                    <div className="text-[#8d6a2c]">资源类型</div>
+                    <div>{activeInstitutionRecord.category ?? "古籍馆藏 / 影像线索"}</div>
+                    <div className="text-[#8d6a2c]">卷面摘要</div>
+                    <div className="leading-6">{activeInstitutionPreviewText}</div>
+                  </div>
+                </div>
               </div>
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <button
