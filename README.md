@@ -64,6 +64,7 @@ pnpm backend:dev
 - `/graph`
 - `/books/:slug`
 - `/insights`
+- `/source-atlas`
 - `/search?q=关键词`
 
 生产构建验证：

@@ -33,6 +33,15 @@ export function getSearchPayload(query: string) {
   return searchConcepts(query);
 }
 
+export function getSourceAtlasPayload() {
+  const insights = getInsightsPayload();
+
+  return {
+    sourceAtlas: insights.sourceAtlas ?? [],
+    atlasMeta: insights.atlasMeta ?? null,
+  };
+}
+
 export function getInsightsPayload(): DatasetInsight {
   const nanhuRecords = realSupplements.nanhuArchiveSample?.sampleRecords ?? [];
   const redArchiveRecords = nanhuRecords

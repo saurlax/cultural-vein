@@ -1,7 +1,13 @@
 import { createServer } from "node:http";
 import { URL } from "node:url";
 
-import { getBookPayload, getGraphPayload, getInsightsPayload, getSearchPayload } from "@/server/payloads";
+import {
+  getBookPayload,
+  getGraphPayload,
+  getInsightsPayload,
+  getSearchPayload,
+  getSourceAtlasPayload,
+} from "@/server/payloads";
 
 const port = Number(process.env.CULTURAL_VEIN_BACKEND_PORT ?? 4318);
 
@@ -46,7 +52,7 @@ const server = createServer((request, response) => {
     sendJson(response, 200, {
       status: "ok",
       service: "cultural-vein-backend",
-      routes: ["/graph", "/books/:slug", "/insights", "/search?q=关键词"],
+      routes: ["/graph", "/books/:slug", "/insights", "/source-atlas", "/search?q=关键词"],
     });
     return;
   }
@@ -58,6 +64,11 @@ const server = createServer((request, response) => {
 
   if (pathname === "/insights") {
     sendJson(response, 200, getInsightsPayload());
+    return;
+  }
+
+  if (pathname === "/source-atlas") {
+    sendJson(response, 200, getSourceAtlasPayload());
     return;
   }
 

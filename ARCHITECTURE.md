@@ -25,6 +25,7 @@
 │  /api/graph                首页图谱数据                     │
 │  /api/books/[slug]         单书详情                         │
 │  /api/insights             真实数据覆盖与统计               │
+│  /api/source-atlas         来源河册与覆盖层                  │
 │  /api/search               概念搜索与命中排序               │
 │  backend/server.ts         独立后端骨架（可单独启动）       │
 │                                                             │
@@ -121,11 +122,13 @@
   - 返回结构化 `sourceEvidence`
 - `src/app/api/insights/route.ts`
   - 数据覆盖与统计接口
+- `src/app/api/source-atlas/route.ts`
+  - 来源河册与覆盖层接口
 - `src/app/api/search/route.ts`
   - 概念搜索接口
 - `backend/server.ts`
   - 轻量独立后端骨架
-  - 当前可直接提供 `/health`、`/graph`、`/books/:slug`、`/insights`、`/search`
+  - 当前可直接提供 `/health`、`/graph`、`/books/:slug`、`/insights`、`/source-atlas`、`/search`
 
 ### 交互组件
 
