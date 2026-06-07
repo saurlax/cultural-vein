@@ -2339,6 +2339,92 @@ function CruiseCurrentAura({
   );
 }
 
+function BranchConfluenceAura({
+  focusPosition,
+  color,
+}: {
+  focusPosition: THREE.Vector3 | null;
+  color: string;
+}) {
+  const ringRef = useRef<THREE.Mesh>(null);
+  const outerRef = useRef<THREE.Mesh>(null);
+  const washRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state) => {
+    const pulse = 1 + Math.sin(state.clock.elapsedTime * 1.7) * 0.12;
+    const outerPulse = 1 + Math.sin(state.clock.elapsedTime * 1.08 + 0.45) * 0.18;
+
+    if (ringRef.current) {
+      ringRef.current.scale.set(pulse, pulse, pulse);
+      const material = ringRef.current.material;
+      if (material instanceof THREE.MeshBasicMaterial) {
+        material.opacity = 0.2 + Math.max(0, Math.sin(state.clock.elapsedTime * 1.7)) * 0.16;
+      }
+    }
+
+    if (outerRef.current) {
+      outerRef.current.scale.set(outerPulse, outerPulse, outerPulse);
+      const material = outerRef.current.material;
+      if (material instanceof THREE.MeshBasicMaterial) {
+        material.opacity = 0.08 + Math.max(0, Math.sin(state.clock.elapsedTime * 1.08 + 0.45)) * 0.08;
+      }
+    }
+
+    if (washRef.current) {
+      washRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.22) * 0.08;
+      const material = washRef.current.material;
+      if (material instanceof THREE.MeshBasicMaterial) {
+        material.opacity = 0.09 + Math.max(0, Math.sin(state.clock.elapsedTime * 0.9)) * 0.05;
+      }
+    }
+  });
+
+  if (!focusPosition) {
+    return null;
+  }
+
+  return (
+    <group position={[focusPosition.x, focusPosition.y, focusPosition.z]}>
+      <mesh
+        ref={washRef}
+        rotation={[-Math.PI / 2, 0, 0.16]}
+        position={[0, -0.06, 0]}
+        scale={[1.52, 1, 0.96]}
+      >
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color={color} transparent opacity={0.1} />
+      </mesh>
+      <mesh
+        ref={outerRef}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.05, 0]}
+      >
+        <ringGeometry args={[0.52, 0.92, 56]} />
+        <meshBasicMaterial color={color} transparent opacity={0.1} />
+      </mesh>
+      <mesh
+        ref={ringRef}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.035, 0]}
+      >
+        <ringGeometry args={[0.24, 0.46, 48]} />
+        <meshBasicMaterial color="#fff3c4" transparent opacity={0.22} />
+      </mesh>
+      {[0, Math.PI / 3, -Math.PI / 3].map((rotation, index) => (
+        <mesh
+          key={`branch-fan-${index}`}
+          rotation={[0, rotation, 0]}
+          position={[0, 0.12, 0]}
+          scale={[0.16, 0.7 + index * 0.06, 0.9]}
+        >
+          <planeGeometry args={[1, 1]} />
+          <meshBasicMaterial color={index === 0 ? "#fde68a" : color} transparent opacity={0.08} side={THREE.DoubleSide} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function BranchMarkers({
   annotations,
   selectedBookSlug,
@@ -3270,6 +3356,10 @@ function RiverWorld({
       !sceneFocus?.active &&
       activeBranchFlowPoints.length >= 2 ? (
         <group>
+          <BranchConfluenceAura
+            focusPosition={activeBranchAnnotation ? new THREE.Vector3(...activeBranchAnnotation.position) : null}
+            color={activeBranchAnnotation?.accentColor ?? "#fcd34d"}
+          />
           <Line
             points={activeBranchFlowPoints}
             color={activeBranchAnnotation?.accentColor ?? "#fcd34d"}
