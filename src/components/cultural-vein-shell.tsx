@@ -194,12 +194,12 @@ function deriveBranchAnnotations(
       const midY = Math.max(sourcePoint[1], targetPoint[1]) + 0.22;
       const midZ = (sourcePoint[2] + targetPoint[2]) / 2;
       const offsetZ = sourcePoint[2] >= targetPoint[2] ? 0.28 : -0.28;
-      const label = `${targetBook.shortTitle} · ${citation.label}`;
+      const label = `${sourceBook.shortTitle} · ${citation.label}`;
 
       return {
         id: `branch-${citation.id}`,
         label,
-        description: citation.evidence,
+        description: `${sourceBook.shortTitle} 由 ${targetBook.shortTitle} 这层文脉引出。${citation.evidence}`,
         targetSlug: sourceBook.slug,
         accentColor: branchAccentByLayer[citation.layer],
         position: [midX, midY, midZ + offsetZ] as [number, number, number],
