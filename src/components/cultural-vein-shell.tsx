@@ -903,6 +903,7 @@ export function CulturalVeinShell() {
           .filter((entry): entry is NonNullable<typeof sourceAtlasEntries>[number] => Boolean(entry))
       : sourceAtlasEntries.slice(1, 3);
   const coverageLayers = atlasMeta?.coverageLayers ?? [];
+  const cbdbPersonCount = insights?.cbdbSummary?.personCount ?? null;
   const eraRecommendedBooks = useMemo(() => {
     return filteredBooks
       .filter((book) => book.dynasty === activeEra)
@@ -1361,6 +1362,52 @@ export function CulturalVeinShell() {
                             </div>
                             <div className="mt-2 text-[11px] leading-5 text-[#e6d7ae]">
                               {atlasMeta.expansionNote}
+                            </div>
+                            <div className="mt-3 grid grid-cols-3 gap-2">
+                              <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">古籍规模</div>
+                                <div className="mt-1 text-sm font-medium text-[#fbf3da]">
+                                  {atlasMeta.totalBookCount.toLocaleString()}
+                                </div>
+                                <div className="mt-1 text-[10px] text-[#dccb9c]">目标全域书目底盘</div>
+                              </div>
+                              <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">示范关系</div>
+                                <div className="mt-1 text-sm font-medium text-[#fbf3da]">
+                                  {atlasMeta.totalCitationCount.toLocaleString()}
+                                </div>
+                                <div className="mt-1 text-[10px] text-[#dccb9c]">当前长卷已显关系边</div>
+                              </div>
+                              <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">人物底本</div>
+                                <div className="mt-1 text-sm font-medium text-[#fbf3da]">
+                                  {cbdbPersonCount?.toLocaleString() ?? "--"}
+                                </div>
+                                <div className="mt-1 text-[10px] text-[#dccb9c]">CBDB 纪传可用人物</div>
+                              </div>
+                            </div>
+                            <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
+                              <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">循证分层</div>
+                              <div className="mt-2 grid gap-2">
+                                <div className="rounded-[12px] border border-white/10 bg-[rgba(255,248,220,0.04)] px-3 py-2">
+                                  <div className="text-[11px] text-[#fbf3da]">元数据层</div>
+                                  <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">
+                                    直接来自古籍、书目、人物与馆藏来源，托住主河道、版本链与机构落点。
+                                  </div>
+                                </div>
+                                <div className="rounded-[12px] border border-emerald-300/14 bg-emerald-300/8 px-3 py-2">
+                                  <div className="text-[11px] text-emerald-100">显式引用层</div>
+                                  <div className="mt-1 text-[10px] leading-5 text-[#dff7ea]">
+                                    依据原文引述、注疏和目录痕迹建立高置信度关系，不把研究线索包装成确定事实。
+                                  </div>
+                                </div>
+                                <div className="rounded-[12px] border border-amber-300/14 bg-amber-300/8 px-3 py-2">
+                                  <div className="text-[11px] text-amber-100">语义关联层</div>
+                                  <div className="mt-1 text-[10px] leading-5 text-[#f5e8c0]">
+                                    用相近义理与段落回声补足中程支流，并在界面中显式保留置信度差异。
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                             <div className="mt-3 flex flex-wrap gap-2">
                               {atlasMeta.plannedLayers.slice(0, 4).map((layer) => (
@@ -1827,6 +1874,40 @@ export function CulturalVeinShell() {
                       </div>
                       <div className="mt-2 text-[11px] leading-5 text-[#e6d7ae]">
                         {atlasMeta.expansionNote}
+                      </div>
+                      <div className="mt-3 grid grid-cols-3 gap-2">
+                        <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
+                          <div className="text-[10px] tracking-[0.16em] text-[#d8c9a3]">古籍</div>
+                          <div className="mt-1 text-[11px] font-medium text-[#fbf3da]">
+                            {atlasMeta.totalBookCount.toLocaleString()}
+                          </div>
+                        </div>
+                        <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
+                          <div className="text-[10px] tracking-[0.16em] text-[#d8c9a3]">关系</div>
+                          <div className="mt-1 text-[11px] font-medium text-[#fbf3da]">
+                            {atlasMeta.totalCitationCount.toLocaleString()}
+                          </div>
+                        </div>
+                        <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
+                          <div className="text-[10px] tracking-[0.16em] text-[#d8c9a3]">人物</div>
+                          <div className="mt-1 text-[11px] font-medium text-[#fbf3da]">
+                            {cbdbPersonCount?.toLocaleString() ?? "--"}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-3 rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-3">
+                        <div className="text-[10px] tracking-[0.16em] text-[#d8c9a3]">循证分层</div>
+                        <div className="mt-2 grid gap-2">
+                          <div className="rounded-[10px] border border-white/10 bg-[rgba(255,248,220,0.04)] px-3 py-2 text-[10px] leading-5 text-[#dccb9c]">
+                            元数据层：主河道、版本链与机构落点均保留权威来源依据。
+                          </div>
+                          <div className="rounded-[10px] border border-emerald-300/14 bg-emerald-300/8 px-3 py-2 text-[10px] leading-5 text-[#dff7ea]">
+                            显式引用层：原文引述与注疏证据构成高置信度支流。
+                          </div>
+                          <div className="rounded-[10px] border border-amber-300/14 bg-amber-300/8 px-3 py-2 text-[10px] leading-5 text-[#f5e8c0]">
+                            语义关联层：相近义理只作为研究线索展示，并明确保留置信度差异。
+                          </div>
+                        </div>
                       </div>
                       {coverageLayers.length ? (
                         <div className="mt-3 grid gap-2">
