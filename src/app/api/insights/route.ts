@@ -13,6 +13,8 @@ export function GET() {
           summary: "纪传人物与朝代分布",
           stat: `${realSupplements.cbdbSummary.personCount?.toLocaleString() ?? "--"} 位人物`,
           magnitude: realSupplements.cbdbSummary.personCount ?? 0,
+          evidenceLabel: "CBDB 纪传统计",
+          evidenceNote: "依据朝代分布与人物总量字段，当前用于人物关系与时间线补证。",
           sampleTitles: (realSupplements.cbdbSummary.topDynasties ?? [])
             .slice(0, 3)
             .map((item) => `${item.name} ${item.count}`),
@@ -36,6 +38,8 @@ export function GET() {
             realSupplements.shanghaiLibraryActivity.sampleRecords?.length ??
             realSupplements.shanghaiLibraryActivity.topVenues?.length ??
             0,
+          evidenceLabel: realSupplements.shanghaiLibraryActivity.sheetName ?? "活动预约字段",
+          evidenceNote: "原始字段包含活动名称、场馆名称、预约状态与预约开始时间。",
           sampleTitles: (realSupplements.shanghaiLibraryActivity.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => item.活动名称 ?? item.场馆名称 ?? "活动资料"),
@@ -56,6 +60,8 @@ export function GET() {
           summary: realSupplements.nanjingLibrarySample.institution,
           stat: `${realSupplements.nanjingLibrarySample.recordCount?.toLocaleString() ?? "--"} 条图像`,
           magnitude: realSupplements.nanjingLibrarySample.recordCount ?? 0,
+          evidenceLabel: realSupplements.nanjingLibrarySample.institution ?? "图像资源条目",
+          evidenceNote: "原始样本保留题名、分类、年代与图像出处说明。",
           sampleTitles: realSupplements.nanjingLibrarySample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.nanjingLibrarySample.sampleRecords ?? [])
             .slice(0, 3)
@@ -74,6 +80,8 @@ export function GET() {
           summary: realSupplements.fudanArchiveSample.summary,
           stat: realSupplements.fudanArchiveSample.collectionTitle ?? "近代手稿资料",
           magnitude: realSupplements.fudanArchiveSample.sampleRecords?.length ?? 0,
+          evidenceLabel: realSupplements.fudanArchiveSample.collectionTitle ?? "馆藏说明",
+          evidenceNote: "当前保留馆藏题名、类别、年代与资料出处。",
           sampleTitles: (realSupplements.fudanArchiveSample.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => item.title),
@@ -96,6 +104,8 @@ export function GET() {
           magnitude:
             (realSupplements.nanhuArchiveSample.documentCount ?? 0) +
             (realSupplements.nanhuArchiveSample.imageCount ?? 0),
+          evidenceLabel: realSupplements.nanhuArchiveSample.collectionTitle ?? "文献 / 图像统计",
+          evidenceNote: "原始资料可回查文献数量、图像数量与专题条目摘记。",
           sampleTitles: (realSupplements.nanhuArchiveSample.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => item.title),
@@ -119,6 +129,8 @@ export function GET() {
             realSupplements.shenzhenLibrarySample.sampleRecords?.length ??
             realSupplements.shenzhenLibrarySample.sampleTitles?.length ??
             0,
+          evidenceLabel: realSupplements.shenzhenLibrarySample.collectionTitle ?? "接口资料",
+          evidenceNote: "当前保留专题库接口名称、类别、年代与来源文本。",
           sampleTitles: realSupplements.shenzhenLibrarySample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.shenzhenLibrarySample.sampleRecords ?? [])
             .slice(0, 3)
@@ -140,6 +152,8 @@ export function GET() {
             realSupplements.taofenMuseumSample.sampleRecords?.length ??
             realSupplements.taofenMuseumSample.sampleTitles?.length ??
             0,
+          evidenceLabel: realSupplements.taofenMuseumSample.collectionTitle ?? "馆方接口条目",
+          evidenceNote: "原始资料包含机构年表、人物年表与图书列表等接口方向。",
           sampleTitles: realSupplements.taofenMuseumSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.taofenMuseumSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -161,6 +175,8 @@ export function GET() {
             realSupplements.soongLiteratureSample.sampleRecords?.length ??
             realSupplements.soongLiteratureSample.sampleTitles?.length ??
             0,
+          evidenceLabel: realSupplements.soongLiteratureSample.collectionTitle ?? "人物事件字段",
+          evidenceNote: "原始字段覆盖文中人名、事件组织、写作地点与题词对象。",
           sampleTitles: realSupplements.soongLiteratureSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.soongLiteratureSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -182,6 +198,8 @@ export function GET() {
             realSupplements.videoTopicSample.sampleRecords?.length ??
             realSupplements.videoTopicSample.sampleTitles?.length ??
             0,
+          evidenceLabel: realSupplements.videoTopicSample.collectionTitle ?? "专题片资料",
+          evidenceNote: "当前保留片名、类别、年代与专题说明文本。",
           sampleTitles: realSupplements.videoTopicSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.videoTopicSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -203,6 +221,8 @@ export function GET() {
             realSupplements.souyunKnowledgeGraphSample.sampleRecords?.length ??
             realSupplements.souyunKnowledgeGraphSample.sampleTitles?.length ??
             0,
+          evidenceLabel: realSupplements.souyunKnowledgeGraphSample.collectionTitle ?? "OpenAPI / 古籍库",
+          evidenceNote: "原始资料保留开放接口、诗文库与古籍库的字段说明。",
           sampleTitles: realSupplements.souyunKnowledgeGraphSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.souyunKnowledgeGraphSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -224,6 +244,8 @@ export function GET() {
             realSupplements.periodicalIndexSample.sampleRecords?.length ??
             realSupplements.periodicalIndexSample.sampleTitles?.length ??
             0,
+          evidenceLabel: realSupplements.periodicalIndexSample.collectionTitle ?? "期刊检索字段",
+          evidenceNote: "原始资料可回查题名、主题词、摘要与全文路径等字段。",
           sampleTitles: realSupplements.periodicalIndexSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.periodicalIndexSample.sampleRecords ?? [])
             .slice(0, 3)

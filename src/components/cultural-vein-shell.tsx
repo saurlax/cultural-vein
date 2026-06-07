@@ -1489,6 +1489,19 @@ export function CulturalVeinShell() {
                               <div className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#e6d7ae]">
                                 {activeSourceAtlasEntry.summary ?? "顺着这股来源继续切入河上样本。"}
                               </div>
+                              {activeSourceAtlasEntry.evidenceLabel ? (
+                                <div className="mt-2 rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-2.5 py-2">
+                                  <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">原始凭据</div>
+                                  <div className="mt-1 text-[10px] text-[#fbf3da]">
+                                    {activeSourceAtlasEntry.evidenceLabel}
+                                  </div>
+                                  {activeSourceAtlasEntry.evidenceNote ? (
+                                    <div className="mt-1 line-clamp-3 text-[10px] leading-5 text-[#dccb9c]">
+                                      {activeSourceAtlasEntry.evidenceNote}
+                                    </div>
+                                  ) : null}
+                                </div>
+                              ) : null}
                             </button>
                           ) : null}
                           <div className="mt-3 space-y-2">
@@ -1565,6 +1578,19 @@ export function CulturalVeinShell() {
                                 );
                               })}
                             </div>
+                            {activeSourceAtlasEntry.evidenceLabel ? (
+                              <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.22)] px-3 py-2.5">
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">原始凭据</div>
+                                <div className="mt-1 text-[11px] text-[#fbf3da]">
+                                  {activeSourceAtlasEntry.evidenceLabel}
+                                </div>
+                                {activeSourceAtlasEntry.evidenceNote ? (
+                                  <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">
+                                    {activeSourceAtlasEntry.evidenceNote}
+                                  </div>
+                                ) : null}
+                              </div>
+                            ) : null}
                             {activeSourceRoute ? (
                               <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.26)] px-3 py-2.5 text-[11px] text-[#dccb9c]">
                                 这股来源支流当前沿
@@ -2007,6 +2033,19 @@ export function CulturalVeinShell() {
                       <div className="mt-1 text-[11px] leading-5 text-[#e6d7ae]">
                         {activeSourceAtlasEntry.summary ?? "来源样本"}
                       </div>
+                      {activeSourceAtlasEntry.evidenceLabel ? (
+                        <div className="mt-2 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.22)] px-3 py-2.5">
+                          <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">原始凭据</div>
+                          <div className="mt-1 text-[11px] text-[#fbf3da]">
+                            {activeSourceAtlasEntry.evidenceLabel}
+                          </div>
+                          {activeSourceAtlasEntry.evidenceNote ? (
+                            <div className="mt-1 text-[10px] leading-5 text-[#dccb9c] line-clamp-3">
+                              {activeSourceAtlasEntry.evidenceNote}
+                            </div>
+                          ) : null}
+                        </div>
+                      ) : null}
                       <div className="mt-2 flex flex-wrap gap-2">
                         <button
                           type="button"
