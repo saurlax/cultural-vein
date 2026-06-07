@@ -891,6 +891,18 @@ export function CulturalVeinShell() {
       panel: "branch" as const,
     },
   ];
+  const eraRecommendedBooks = useMemo(() => {
+    return filteredBooks
+      .filter((book) => book.dynasty === activeEra)
+      .sort((left, right) => {
+        if (left.branchLevel !== right.branchLevel) {
+          return left.branchLevel - right.branchLevel;
+        }
+
+        return right.influence - left.influence;
+      })
+      .slice(0, 4);
+  }, [activeEra, filteredBooks]);
   const eraProgressPercent =
     eras.length > 1 ? Math.round((activeEraIndex / (eras.length - 1)) * 100) : 0;
 
@@ -1130,6 +1142,23 @@ export function CulturalVeinShell() {
                           {activeEraNarrative.branch}
                         </div>
                       </div>
+                      {eraRecommendedBooks.length ? (
+                        <div className="mt-2 rounded-[14px] border border-[#ead8a6]/10 bg-[rgba(42,26,9,0.28)] px-3 py-2.5">
+                          <div className="text-[10px] tracking-[0.2em] text-[#d8c9a3]">直接入卷</div>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {eraRecommendedBooks.map((book) => (
+                              <button
+                                key={`era-recommend-${book.slug}`}
+                                type="button"
+                                onClick={() => handleDiveToBook(book.slug)}
+                                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.12)] hover:text-[#fbf3da]"
+                              >
+                                {book.shortTitle}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
                     <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-[#d8c9a3]">
                       <span>时代水位</span>
@@ -1718,6 +1747,34 @@ export function CulturalVeinShell() {
                   </button>
                 ))}
               </div>
+              {activeDesktopPanel === "era" ? (
+                <div className="mt-3 rounded-[20px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                  <div className="text-[11px] tracking-[0.22em] text-[#d8c9a3]">时代提纲</div>
+                  <div className="mt-2 text-[12px] leading-6 text-[#f6e8c4]">
+                    {activeEraNarrative.lead}
+                  </div>
+                  <div className="mt-3 text-[11px] leading-5 text-[#eadfbc]">
+                    {activeEraNarrative.trunk}
+                  </div>
+                  {eraRecommendedBooks.length ? (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {eraRecommendedBooks.map((book) => (
+                        <button
+                          key={`mobile-era-recommend-${book.slug}`}
+                          type="button"
+                          onClick={() => {
+                            setShowMobileControls(false);
+                            handleDiveToBook(book.slug);
+                          }}
+                          className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-xs text-[#eadfbc]"
+                        >
+                          {book.shortTitle}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
               {activeDesktopPanel === "branch" && sourceAtlasEntries.length ? (
                 <div className="mt-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(93,62,18,0.22)] px-3 py-3">
                   <div className="flex items-center justify-between gap-3">
