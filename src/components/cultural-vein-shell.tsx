@@ -358,6 +358,7 @@ export function CulturalVeinShell() {
   >("idle");
   const [transitionTargetSlug, setTransitionTargetSlug] = useState<string | null>(null);
   const [eraPlaybackActive, setEraPlaybackActive] = useState(false);
+  const [sourceAtlasCruiseActive] = useState(true);
   const isMobileViewport = () =>
     typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
 
@@ -1080,45 +1081,57 @@ export function CulturalVeinShell() {
     },
     [activeEra, getEntryAnchorBooks, handleEraFocus, inferSourceAtlasEra],
   );
-  const handleSourceAtlasSelect = (entryId: string) => {
-    clearSearchContext();
-    setTraceFocus(null);
-    setHoveredBranchId(null);
-    setActiveSourceAtlasId(entryId);
-    setActiveSourceAtlasDetail(null);
-    setSelectedDockId(null);
-    setShowDesktopControls(true);
-    setShowDesktopDossier(false);
-    setShowMobileDossier(false);
+  const activateSourceAtlasEntry = useCallback(
+    (
+      entry: NonNullable<typeof sourceAtlasEntries>[number],
+      options?: {
+        openPanel?: boolean;
+      },
+    ) => {
+      const shouldOpenPanel = options?.openPanel ?? true;
 
-    const selectedEntry = prioritizedSourceAtlasEntries.find((entry) => entry.id === entryId);
-    const applySourceEntry = () => {
-      if (!selectedEntry) {
+      clearSearchContext();
+      setTraceFocus(null);
+      setHoveredBranchId(null);
+      setActiveSourceAtlasId(entry.id);
+      setActiveSourceAtlasDetail(null);
+      setSelectedDockId(null);
+      setShowDesktopControls(shouldOpenPanel);
+      setShowDesktopDossier(false);
+      setShowMobileDossier(false);
+
+      const applySourceEntry = () => {
+        applySourceSceneFocus(entry);
+      };
+
+      if (selectedBook) {
+        setTransitionTargetSlug(selectedBook.slug);
+        setTransitionState("returning");
+        window.setTimeout(() => {
+          setTraceFocus(null);
+          setSceneFocus(null);
+          setEntryExplorerTab(null);
+          setShowDesktopDossier(false);
+          setShowMobileDossier(false);
+          setShowMobileControls(false);
+          resetSelection();
+          setActiveDesktopPanel("branch");
+          setShowDesktopControls(shouldOpenPanel);
+          applySourceEntry();
+        }, 120);
         return;
       }
 
-      applySourceSceneFocus(selectedEntry);
-    };
+      applySourceEntry();
+    },
+    [applySourceSceneFocus, clearSearchContext, resetSelection, selectedBook],
+  );
+  const handleSourceAtlasSelect = (entryId: string) => {
+    const selectedEntry = prioritizedSourceAtlasEntries.find((entry) => entry.id === entryId);
 
-    if (selectedBook) {
-      setTransitionTargetSlug(selectedBook.slug);
-      setTransitionState("returning");
-      window.setTimeout(() => {
-        setTraceFocus(null);
-        setSceneFocus(null);
-        setEntryExplorerTab(null);
-        setShowDesktopDossier(false);
-        setShowMobileDossier(false);
-        setShowMobileControls(false);
-        resetSelection();
-        setActiveDesktopPanel("branch");
-        setShowDesktopControls(true);
-        applySourceEntry();
-      }, 120);
-      return;
+    if (selectedEntry) {
+      activateSourceAtlasEntry(selectedEntry, { openPanel: true });
     }
-
-    applySourceEntry();
   };
   const handleSourceAtlasStep = (direction: -1 | 1) => {
     if (!prioritizedSourceAtlasEntries.length) {
@@ -1135,6 +1148,47 @@ export function CulturalVeinShell() {
       handleSourceAtlasSelect(nextEntry.id);
     }
   };
+  useEffect(() => {
+    if (
+      !sourceAtlasCruiseActive ||
+      prioritizedSourceAtlasEntries.length <= 1 ||
+      selectedBook ||
+      showDesktopControls ||
+      showDesktopDossier ||
+      showMobileControls ||
+      showMobileDossier ||
+      sourceAtlasFilterActive ||
+      searchTerm.trim().length > 0
+    ) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      const nextIndex =
+        activeSourceAtlasIndex >= 0
+          ? (activeSourceAtlasIndex + 1) % prioritizedSourceAtlasEntries.length
+          : 0;
+      const nextEntry = prioritizedSourceAtlasEntries[nextIndex];
+
+      if (nextEntry) {
+        activateSourceAtlasEntry(nextEntry, { openPanel: false });
+      }
+    }, 5200);
+
+    return () => window.clearInterval(timer);
+  }, [
+    activateSourceAtlasEntry,
+    activeSourceAtlasIndex,
+    prioritizedSourceAtlasEntries,
+    searchTerm,
+    selectedBook,
+    showDesktopControls,
+    showDesktopDossier,
+    showMobileControls,
+    showMobileDossier,
+    sourceAtlasCruiseActive,
+    sourceAtlasFilterActive,
+  ]);
   const focusModeLabel = traceFocus?.active
     ? "逆流溯源"
     : sceneFocus?.active
@@ -1280,6 +1334,7 @@ export function CulturalVeinShell() {
     categoryFilter !== "全部" ? `门类 · ${categoryFilter}` : null,
     schoolFilter !== "全部" ? `学派 · ${schoolFilter}` : null,
     sourceAtlasFilterActive ? `支流 · ${sourceAtlasFilterSummary}` : null,
+    sourceAtlasCruiseActive && !selectedBook && !sourceAtlasFilterActive ? "支流轮巡" : null,
   ].filter((item): item is string => Boolean(item));
   const collapsedDesktopLead = selectedBook
     ? `《${selectedBook.shortTitle}》已入卷`
