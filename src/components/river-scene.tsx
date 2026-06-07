@@ -2898,16 +2898,17 @@ export function RiverScene(props: RiverSceneProps) {
     <div
       ref={containerRef}
       onContextMenu={(event) => event.preventDefault()}
-      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#d7ab56]/46 bg-[radial-gradient(circle_at_50%_42%,#f8dd9a_0%,#e0b760_24%,#c88d39_54%,#9f6224_100%)] shadow-[0_0_140px_rgba(107,68,18,0.18)] [touch-action:none]"
+      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#cc9d49]/46 bg-[radial-gradient(circle_at_50%_38%,#fbf0c8_0%,#efd48e_20%,#d7a54f_50%,#925a1d_100%)] shadow-[0_0_140px_rgba(107,68,18,0.16)] [touch-action:none]"
     >
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-[linear-gradient(90deg,rgba(254,240,196,0.92),rgba(254,240,196,0.24),transparent)]" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-[linear-gradient(270deg,rgba(231,188,96,0.86),rgba(231,188,96,0.22),transparent)]" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-[linear-gradient(90deg,rgba(255,244,210,0.94),rgba(255,244,210,0.2),transparent)]" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-[linear-gradient(270deg,rgba(233,193,101,0.86),rgba(233,193,101,0.18),transparent)]" />
       <div className="pointer-events-none absolute inset-y-0 left-2 z-10 w-[4px] rounded-full bg-[linear-gradient(180deg,rgba(255,247,218,0.98),rgba(219,176,82,0.56),rgba(255,247,218,0.92))]" />
       <div className="pointer-events-none absolute inset-y-0 right-2 z-10 w-[4px] rounded-full bg-[linear-gradient(180deg,rgba(255,241,201,0.96),rgba(201,145,49,0.56),rgba(255,241,201,0.9))]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-40 bg-[linear-gradient(180deg,rgba(255,246,214,0.52),rgba(219,165,64,0.12),rgba(211,154,58,0))]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-48 bg-[linear-gradient(0deg,rgba(140,92,27,0.52),rgba(157,104,29,0.08),rgba(157,104,29,0))]" />
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_44%,rgba(255,241,189,0.22),transparent_38%),radial-gradient(circle_at_50%_78%,rgba(112,68,18,0.16),transparent_34%),linear-gradient(90deg,rgba(250,228,160,0.08),transparent_14%,transparent_86%,rgba(250,228,160,0.08))]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-40 bg-[linear-gradient(180deg,rgba(255,247,219,0.54),rgba(221,171,71,0.12),rgba(211,154,58,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-48 bg-[linear-gradient(0deg,rgba(140,92,27,0.48),rgba(157,104,29,0.08),rgba(157,104,29,0))]" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_44%,rgba(255,241,189,0.24),transparent_38%),radial-gradient(circle_at_50%_78%,rgba(112,68,18,0.14),transparent_34%),linear-gradient(90deg,rgba(250,228,160,0.1),transparent_14%,transparent_86%,rgba(250,228,160,0.1))]" />
       <div className="pointer-events-none absolute inset-0 z-[1] opacity-35 [background-image:linear-gradient(rgba(132,86,28,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(132,86,28,0.05)_1px,transparent_1px)] [background-size:100%_42px,56px_100%]" />
+      <div className="pointer-events-none absolute inset-0 z-[1] opacity-25 [background-image:radial-gradient(rgba(133,88,27,0.18)_0.6px,transparent_0.6px)] [background-size:18px_18px]" />
       <div
         className={`pointer-events-none absolute left-1/2 top-3 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
           (showMobileTouchHint || isInteracting) && !mobilePanelOpen ? "opacity-100" : "opacity-0"

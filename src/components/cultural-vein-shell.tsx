@@ -1074,7 +1074,7 @@ export function CulturalVeinShell() {
       ? resolvedSearchResult.relatedConcepts
       : defaultConceptSuggestions;
   const panelBaseClass =
-    "rounded-[28px] border border-[#d8b565]/28 bg-[linear-gradient(180deg,rgba(236,214,159,0.94),rgba(207,168,90,0.88))] shadow-[0_18px_56px_rgba(92,58,16,0.18)] backdrop-blur-xl";
+    "rounded-[28px] border border-[#c89b43]/30 bg-[linear-gradient(180deg,rgba(245,232,189,0.96),rgba(225,191,112,0.92))] shadow-[0_18px_56px_rgba(92,58,16,0.16)] backdrop-blur-xl";
   const desktopPanels: Array<{
     id: "search" | "era" | "category" | "branch";
     label: string;
@@ -1187,10 +1187,11 @@ export function CulturalVeinShell() {
   }, [activeSourceAtlasEntry, activeSourceRelatedBooks, getEntryAnchorBooks, selectedBook]);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#e2c372] text-stone-100">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_14%,rgba(255,246,210,0.58),transparent_28%),radial-gradient(circle_at_82%_10%,rgba(225,177,62,0.26),transparent_24%),radial-gradient(circle_at_50%_100%,rgba(177,119,35,0.18),transparent_38%),linear-gradient(180deg,#f8edc8_0%,#efd89b_24%,#d4a24b_58%,#8f5c20_100%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_14%,rgba(255,252,235,0.26),transparent_30%),radial-gradient(circle_at_82%_12%,rgba(248,226,150,0.16),transparent_24%),linear-gradient(180deg,rgba(255,247,220,0.18)_0%,rgba(222,177,83,0.08)_28%,rgba(126,79,24,0.12)_100%)]" />
+    <div className="relative min-h-screen overflow-hidden bg-[#e7c978] text-stone-100">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(255,250,224,0.72),transparent_24%),radial-gradient(circle_at_84%_12%,rgba(240,199,92,0.34),transparent_24%),radial-gradient(circle_at_50%_100%,rgba(176,118,34,0.2),transparent_38%),linear-gradient(180deg,#fbf1cf_0%,#f0dc9f_24%,#d8ac54_56%,#8e591f_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_14%,rgba(255,252,235,0.3),transparent_30%),radial-gradient(circle_at_82%_12%,rgba(248,226,150,0.14),transparent_24%),linear-gradient(180deg,rgba(255,247,220,0.2)_0%,rgba(222,177,83,0.08)_28%,rgba(126,79,24,0.12)_100%)]" />
       <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(149,108,42,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(149,108,42,0.08)_1px,transparent_1px)] [background-size:108px_108px]" />
+      <div className="pointer-events-none absolute inset-0 opacity-35 [background-image:radial-gradient(rgba(122,84,26,0.14)_0.6px,transparent_0.6px)] [background-size:22px_22px]" />
 
       {showDiveOverlay ? (
         <div className="pointer-events-none absolute inset-0 z-40 overflow-hidden">
@@ -1273,67 +1274,6 @@ export function CulturalVeinShell() {
             ) : null}
           </div>
         </div>
-        {!selectedBook && activeSourceAtlasEntry ? (
-          <div className="pointer-events-none absolute left-4 top-28 z-30 hidden md:block lg:left-6">
-            <div className="pointer-events-auto max-w-[18rem] rounded-[20px] border border-[#e7c97b]/18 bg-[linear-gradient(180deg,rgba(109,73,24,0.58),rgba(78,50,16,0.5))] px-3 py-3 shadow-[0_12px_26px_rgba(61,34,8,0.08)] backdrop-blur-xl">
-              <div className="flex items-center gap-2">
-                <span
-                  className="h-2.5 w-2.5 shrink-0 rounded-full"
-                  style={{ backgroundColor: activeSourceRoute?.color ?? "#d6a33d" }}
-                />
-                <div className="text-[10px] tracking-[0.24em] text-[#f4d892]/82">真实来源图例</div>
-              </div>
-              <div className="mt-2 text-[11px] text-[#fff2cf]">{activeSourceAtlasEntry.name}</div>
-              <div className="mt-1 text-[10px] leading-5 text-[#e8d7ab]">
-                {getSourceThemeLabel(activeSourceAtlasEntry.name)} · {activeSourceAtlasEntry.stat ?? "来源支流"}
-              </div>
-              {atlasMeta ? (
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
-                    主线 {atlasMeta.demoBookCount} 部
-                  </span>
-                  <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
-                    来源 {atlasMeta.activeSources} 股
-                  </span>
-                  <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
-                    可扩至 {atlasMeta.totalBookCount.toLocaleString()}
-                  </span>
-                </div>
-              ) : null}
-              {atlasCoverageHighlights.length ? (
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {atlasCoverageHighlights.map((label) => (
-                    <span
-                      key={`coverage-layer-${label}`}
-                      className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]"
-                    >
-                      {label}
-                    </span>
-                  ))}
-                </div>
-              ) : null}
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {relationSummary
-                  .filter(({ count }) => count > 0)
-                  .slice(0, 3)
-                  .map(({ layer, count }) => (
-                    <span
-                      key={`relation-layer-${layer}`}
-                      className={`rounded-full px-2.5 py-1 text-[10px] ${relationLayerMeta[layer].tone}`}
-                    >
-                      {relationLayerMeta[layer].label} {count}
-                    </span>
-                  ))}
-                {cbdbPersonCount ? (
-                  <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
-                    纪传 {cbdbPersonCount.toLocaleString()} 人
-                  </span>
-                ) : null}
-              </div>
-            </div>
-          </div>
-        ) : null}
-
         <div className="pointer-events-none absolute right-4 top-1/2 z-30 hidden -translate-y-1/2 md:block lg:right-5">
           <div className="pointer-events-auto relative flex flex-col items-center gap-1.5 rounded-[30px] border border-[#e3c47a]/18 bg-[linear-gradient(180deg,rgba(170,126,51,0.8),rgba(95,64,23,0.74))] px-1.5 py-2 shadow-[0_12px_32px_rgba(61,34,8,0.12)] backdrop-blur-xl">
             <div className="pointer-events-none absolute inset-y-3 left-1 w-[3px] rounded-full bg-[linear-gradient(180deg,rgba(253,239,191,0.9),rgba(213,166,70,0.46),rgba(253,239,191,0.82))]" />
@@ -1374,7 +1314,7 @@ export function CulturalVeinShell() {
         </div>
 
         {showDesktopControls ? (
-          <div className="absolute right-[4.15rem] top-1/2 z-20 hidden w-[184px] -translate-y-1/2 md:block lg:right-[4.55rem] lg:w-[196px]">
+          <div className="absolute right-[4.15rem] top-1/2 z-20 hidden w-[220px] -translate-y-1/2 md:block lg:right-[4.55rem] lg:w-[236px]">
             <aside className="pointer-events-auto xl:pt-2">
               <div className={`relative overflow-hidden p-3.5 ${panelBaseClass}`}>
               <div className="pointer-events-none absolute inset-y-5 left-2 w-px bg-[linear-gradient(180deg,transparent,rgba(244,220,156,0.42),transparent)]" />
@@ -1627,6 +1567,64 @@ export function CulturalVeinShell() {
 
                 {activeDesktopPanel === "branch" ? (
                   <div className="mt-4">
+                    {!selectedBook && activeSourceAtlasEntry ? (
+                      <div className="mb-3 rounded-[18px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-3 py-3">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="h-2.5 w-2.5 shrink-0 rounded-full"
+                            style={{ backgroundColor: activeSourceRoute?.color ?? "#d6a33d" }}
+                          />
+                          <div className="text-[10px] tracking-[0.24em] text-[#f4d892]/82">真实来源图例</div>
+                        </div>
+                        <div className="mt-2 text-[12px] text-[#fff2cf]">{activeSourceAtlasEntry.name}</div>
+                        <div className="mt-1 text-[10px] leading-5 text-[#e8d7ab]">
+                          {getSourceThemeLabel(activeSourceAtlasEntry.name)} · {activeSourceAtlasEntry.stat ?? "来源支流"}
+                        </div>
+                        {atlasMeta ? (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
+                              主线 {atlasMeta.demoBookCount} 部
+                            </span>
+                            <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
+                              来源 {atlasMeta.activeSources} 股
+                            </span>
+                            <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
+                              可扩至 {atlasMeta.totalBookCount.toLocaleString()}
+                            </span>
+                          </div>
+                        ) : null}
+                        {atlasCoverageHighlights.length ? (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {atlasCoverageHighlights.map((label) => (
+                              <span
+                                key={`coverage-layer-inline-${label}`}
+                                className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]"
+                              >
+                                {label}
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {relationSummary
+                            .filter(({ count }) => count > 0)
+                            .slice(0, 3)
+                            .map(({ layer, count }) => (
+                              <span
+                                key={`relation-layer-inline-${layer}`}
+                                className={`rounded-full px-2.5 py-1 text-[10px] ${relationLayerMeta[layer].tone}`}
+                              >
+                                {relationLayerMeta[layer].label} {count}
+                              </span>
+                            ))}
+                          {cbdbPersonCount ? (
+                            <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
+                              纪传 {cbdbPersonCount.toLocaleString()} 人
+                            </span>
+                          ) : null}
+                        </div>
+                      </div>
+                    ) : null}
                     <div className="rounded-[18px] border border-[#ead8a6]/14 bg-[rgba(27,17,7,0.22)] px-3 py-3">
                       <div className="flex items-center justify-between gap-3">
                         <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">关系层级</div>
@@ -2117,9 +2115,9 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileControls ? (
-          <div className="absolute inset-x-0 bottom-[4.8rem] z-40 px-3 md:hidden">
+          <div className="absolute inset-x-0 bottom-[4.9rem] z-40 px-3 md:hidden">
             <div
-              className={`pointer-events-auto mx-auto w-full max-w-[22rem] max-h-[min(13rem,30vh)] overflow-auto rounded-[28px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.18)] ${panelBaseClass}`}
+              className={`pointer-events-auto ml-auto w-[min(18.5rem,calc(100vw-1.5rem))] max-h-[min(12rem,26vh)] overflow-auto rounded-[24px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.16)] ${panelBaseClass}`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -2202,6 +2200,20 @@ export function CulturalVeinShell() {
                       );
                     })}
                   </div>
+                  {!selectedBook && activeSourceAtlasEntry ? (
+                    <div className="mt-3 rounded-[16px] border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.06)] px-3 py-3">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="h-2.5 w-2.5 shrink-0 rounded-full"
+                          style={{ backgroundColor: activeSourceRoute?.color ?? "#d6a33d" }}
+                        />
+                        <div className="text-[10px] tracking-[0.24em] text-[#8d6a2c]">来源摘要</div>
+                      </div>
+                      <div className="mt-2 text-[11px] leading-5 text-[#6f4b18]">
+                        {getSourceThemeLabel(activeSourceAtlasEntry.name)}，当前映入河面的来源支流为 {activeSourceAtlasEntry.stat ?? "一组真实记录"}。
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               ) : null}
               <div className="mt-3 flex flex-wrap gap-2">
@@ -2389,7 +2401,7 @@ export function CulturalVeinShell() {
 
         {showMobileDossier && selectedBook && selectedDetail ? (
           <div className="absolute inset-x-0 bottom-0 z-40 md:hidden">
-            <div className={`pointer-events-auto mx-3 mb-[4.8rem] max-h-[min(22rem,34vh)] overflow-hidden rounded-[28px] p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
+            <div className={`pointer-events-auto mx-3 mb-[4.8rem] max-h-[min(19rem,30vh)] overflow-hidden rounded-[24px] p-2.5 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
               <div className="rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(245,231,188,0.16),rgba(104,72,25,0.14))] p-3">
                 <div className="relative rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(247,237,206,0.98),rgba(230,204,140,0.94))] px-4 py-4 text-[#42290a]">
                   <div className="pointer-events-none absolute inset-y-5 left-2 w-2 rounded-full bg-[linear-gradient(180deg,rgba(255,239,196,0.88),rgba(212,164,72,0.55),rgba(255,239,196,0.82))]" />
@@ -2445,33 +2457,23 @@ export function CulturalVeinShell() {
               <button
                 type="button"
                 onClick={() => {
+                  if (selectedBook) {
+                    setShowMobileControls(false);
+                    setShowMobileDossier((current) => !current);
+                    return;
+                  }
+
                   setShowMobileDossier(false);
                   setShowMobileControls((current) => !current);
                 }}
                 className={`rounded-full border px-4 py-2 text-[10px] shadow-[0_10px_22px_rgba(52,28,6,0.18)] backdrop-blur-xl transition ${
-                  showMobileControls
+                  showMobileControls || showMobileDossier
                     ? "border-[#f0cf75]/34 bg-[#f3dfab] text-[#42290a]"
                     : "border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(182,134,53,0.88),rgba(109,73,24,0.82))] text-[#fff0c7]"
                 }`}
               >
-                {selectedBook ? `已选《${selectedBook.shortTitle}》` : "控卷"}
+                {selectedBook ? `卷内《${selectedBook.shortTitle}》` : "控卷"}
               </button>
-              {selectedBook ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowMobileControls(false);
-                    setShowMobileDossier((current) => !current);
-                  }}
-                  className={`rounded-full border px-4 py-2 text-[10px] shadow-[0_10px_22px_rgba(52,28,6,0.18)] backdrop-blur-xl transition ${
-                    showMobileDossier
-                      ? "border-[#f0cf75]/34 bg-[#f3dfab] text-[#42290a]"
-                      : "border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(182,134,53,0.88),rgba(109,73,24,0.82))] text-[#fff0c7]"
-                  }`}
-                >
-                  卷内
-                </button>
-              ) : null}
             </div>
           </div>
         </div>
