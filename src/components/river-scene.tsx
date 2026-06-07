@@ -1386,6 +1386,162 @@ function BackgroundBranchField({
   );
 }
 
+function RiverbankLandmarks({
+  books,
+  activeEra,
+  selectedBookSlug,
+  highlightedBookSlugs = [],
+}: {
+  books: BookNode[];
+  activeEra: RiverEra;
+  selectedBookSlug: string;
+  highlightedBookSlugs?: string[];
+}) {
+  const activeIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
+  const landmarkRef = useRef<THREE.Group>(null);
+  const highlightedSet = useMemo(() => new Set(highlightedBookSlugs), [highlightedBookSlugs]);
+  const landmarks = useMemo(() => {
+    const visibleBooks = books.filter((book) => RIVER_ERA_ORDER.indexOf(book.dynasty) <= activeIndex);
+    const prioritized = visibleBooks
+      .filter((book) => book.slug === selectedBookSlug || highlightedSet.has(book.slug) || book.branchLevel === 0)
+      .sort((left, right) => {
+        const leftScore =
+          (left.slug === selectedBookSlug ? 1000 : 0) +
+          (highlightedSet.has(left.slug) ? 400 : 0) +
+          left.influence;
+        const rightScore =
+          (right.slug === selectedBookSlug ? 1000 : 0) +
+          (highlightedSet.has(right.slug) ? 400 : 0) +
+          right.influence;
+        return rightScore - leftScore;
+      });
+    const seen = new Set<string>();
+
+    return prioritized
+      .filter((book) => {
+        const bucket = `${Math.round(book.coordinates[0])}:${book.coordinates[2] >= 0 ? "north" : "south"}`;
+        if (seen.has(bucket)) {
+          return false;
+        }
+        seen.add(bucket);
+        return true;
+      })
+      .slice(0, 6)
+      .map((book, index) => {
+        const northBank = book.coordinates[2] >= 0;
+        const bankOffset = northBank ? 1.36 : -1.38;
+        const lateralOffset = northBank ? 0.12 : -0.16;
+        return {
+          id: book.slug,
+          title: book.shortTitle,
+          northBank,
+          emphasized: book.slug === selectedBookSlug || highlightedSet.has(book.slug),
+          position: [
+            book.coordinates[0] + (index % 2 === 0 ? -0.18 : 0.22),
+            book.coordinates[1] - 0.02,
+            book.coordinates[2] + bankOffset,
+          ] as [number, number, number],
+          stackHeight: 0.24 + (book.slug === selectedBookSlug ? 0.18 : highlightedSet.has(book.slug) ? 0.12 : 0),
+          quayWidth: 0.42 + (index % 3) * 0.08,
+          lateralOffset,
+        };
+      });
+  }, [activeIndex, books, highlightedSet, selectedBookSlug]);
+
+  useFrame((state) => {
+    if (!landmarkRef.current) {
+      return;
+    }
+
+    landmarkRef.current.children.forEach((child, index) => {
+      const group = child as THREE.Group;
+      const baseY = landmarks[index]?.position[1] ?? 0;
+      group.position.y = baseY + Math.sin(state.clock.elapsedTime * 0.62 + index * 0.45) * 0.012;
+    });
+  });
+
+  if (!landmarks.length) {
+    return null;
+  }
+
+  return (
+    <group ref={landmarkRef}>
+      {landmarks.map((landmark, index) => (
+        <group key={`riverbank-landmark-${landmark.id}`} position={landmark.position}>
+          <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <circleGeometry args={[landmark.quayWidth + 0.18, 30]} />
+            <meshBasicMaterial
+              color={landmark.emphasized ? "#f8deb0" : "#d5a553"}
+              transparent
+              opacity={landmark.emphasized ? 0.18 : 0.1}
+            />
+          </mesh>
+          <mesh rotation={[-Math.PI / 2, 0, landmark.northBank ? 0.18 : -0.18]} position={[0, -0.015, 0]}>
+            <planeGeometry args={[landmark.quayWidth + 0.32, 0.24, 1, 1]} />
+            <meshStandardMaterial
+              color={landmark.northBank ? "#8f6326" : "#7d531f"}
+              emissive={new THREE.Color(landmark.emphasized ? "#d69c44" : "#a66a24")}
+              emissiveIntensity={landmark.emphasized ? 0.42 : 0.24}
+              roughness={0.88}
+              metalness={0.02}
+              transparent
+              opacity={0.92}
+            />
+          </mesh>
+          <mesh position={[landmark.lateralOffset, 0.13, 0]}>
+            <boxGeometry args={[0.16, landmark.stackHeight, 0.16]} />
+            <meshStandardMaterial
+              color="#f6deb0"
+              emissive={new THREE.Color(landmark.emphasized ? "#fbbf24" : "#d8a24b")}
+              emissiveIntensity={landmark.emphasized ? 0.54 : 0.28}
+              roughness={0.64}
+              metalness={0.05}
+            />
+          </mesh>
+          <mesh position={[landmark.lateralOffset, 0.25 + landmark.stackHeight * 0.52, 0]}>
+            <boxGeometry args={[0.12, 0.08, 0.12]} />
+            <meshStandardMaterial
+              color="#fff1cf"
+              emissive={new THREE.Color("#fcd34d")}
+              emissiveIntensity={landmark.emphasized ? 0.88 : 0.48}
+              roughness={0.52}
+              metalness={0.08}
+            />
+          </mesh>
+          <mesh position={[-landmark.lateralOffset * 0.75, 0.08, 0.06]}>
+            <cylinderGeometry args={[0.03, 0.03, 0.16, 10]} />
+            <meshStandardMaterial
+              color="#e8c774"
+              emissive={new THREE.Color("#f59e0b")}
+              emissiveIntensity={landmark.emphasized ? 0.8 : 0.45}
+            />
+          </mesh>
+          <mesh position={[-landmark.lateralOffset * 0.75, 0.2, 0.06]}>
+            <sphereGeometry args={[0.036, 12, 12]} />
+            <meshStandardMaterial
+              color="#fff6de"
+              emissive={new THREE.Color("#fde68a")}
+              emissiveIntensity={landmark.emphasized ? 1.2 : 0.72}
+            />
+          </mesh>
+          {index < 4 ? (
+            <Text
+              position={[0, 0.48 + landmark.stackHeight * 0.4, 0]}
+              fontSize={0.1}
+              color={landmark.emphasized ? "#fef3c7" : "#eadfbc"}
+              fillOpacity={landmark.emphasized ? 0.86 : 0.42}
+              anchorX="center"
+              anchorY="middle"
+            >
+              {landmark.title}
+            </Text>
+          ) : null}
+        </group>
+      ))}
+    </group>
+  );
+}
+
 function BookMarkers({
   books,
   selectedBookSlug,
@@ -2668,6 +2824,12 @@ function RiverWorld({
         activeEra={activeEra}
         vitality={eraRiverMood.branchVisibility}
         dryness={eraRiverMood.dryness}
+      />
+      <RiverbankLandmarks
+        books={books}
+        activeEra={activeEra}
+        selectedBookSlug={selectedBookSlug}
+        highlightedBookSlugs={highlightedBookSlugs}
       />
 
       {mainStream.length >= 2 ? (
