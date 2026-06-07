@@ -847,7 +847,7 @@ export function CulturalVeinShell() {
       ? resolvedSearchResult.relatedConcepts
       : defaultConceptSuggestions;
   const panelBaseClass =
-    "rounded-[28px] border border-[#e5c97f]/34 bg-[linear-gradient(180deg,rgba(161,122,53,0.94),rgba(104,70,22,0.92))] shadow-2xl shadow-black/30 backdrop-blur-xl";
+    "rounded-[28px] border border-[#e5c97f]/28 bg-[linear-gradient(180deg,rgba(162,123,53,0.82),rgba(100,68,23,0.76))] shadow-2xl shadow-black/24 backdrop-blur-xl";
   const desktopPanels: Array<{
     id: "search" | "era" | "category" | "branch";
     label: string;
@@ -1020,7 +1020,7 @@ export function CulturalVeinShell() {
         </div>
 
         {showDesktopControls ? (
-          <div className="absolute right-4 top-[132px] z-20 hidden w-[228px] sm:right-6 md:block lg:right-8 lg:w-[248px]">
+          <div className="absolute right-4 top-[132px] z-20 hidden w-[214px] sm:right-6 md:block lg:right-8 lg:w-[228px]">
             <aside className="pointer-events-auto xl:pt-2">
               <div className={`p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">

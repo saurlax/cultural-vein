@@ -259,18 +259,18 @@ function RiverBed({
       <mesh ref={bedRef} rotation={[-Math.PI / 2, 0, 0]} position={[3.4, depth, 0]}>
         <planeGeometry args={[span * 1.6, span * 1.2, 48, 48]} />
         <meshStandardMaterial
-          color="#352313"
-          emissive={new THREE.Color("#6b4b1d")}
-          emissiveIntensity={0.22}
+          color="#6b4315"
+          emissive={new THREE.Color("#9a6623")}
+          emissiveIntensity={0.28}
           metalness={0.08}
-          roughness={0.72}
+          roughness={0.68}
           transparent
-          opacity={0.94}
+          opacity={0.96}
         />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.4, depth + 0.01, 0]}>
         <planeGeometry args={[span * 1.55, span * 1.16, 1, 1]} />
-        <meshBasicMaterial color="#fbbf24" transparent opacity={0.04} />
+        <meshBasicMaterial color="#f6c453" transparent opacity={0.1} />
       </mesh>
     </group>
   );
@@ -300,9 +300,9 @@ function RiverBanks() {
       <mesh rotation={[-Math.PI / 2.08, 0, 0.11]} position={[3.2, -0.96, 3.45]}>
         <planeGeometry args={[21.5, 6.8, 1, 1]} />
         <meshStandardMaterial
-          color="#5b3b17"
-          emissive={new THREE.Color("#8b5a21")}
-          emissiveIntensity={0.16}
+          color="#7b511d"
+          emissive={new THREE.Color("#b67a2f")}
+          emissiveIntensity={0.2}
           roughness={0.94}
           metalness={0.02}
           transparent
@@ -312,9 +312,9 @@ function RiverBanks() {
       <mesh rotation={[-Math.PI / 2.06, 0, -0.09]} position={[3.5, -0.98, -3.55]}>
         <planeGeometry args={[22.8, 7.6, 1, 1]} />
         <meshStandardMaterial
-          color="#4a2f14"
-          emissive={new THREE.Color("#7b4b18")}
-          emissiveIntensity={0.14}
+          color="#6d461c"
+          emissive={new THREE.Color("#a66a24")}
+          emissiveIntensity={0.18}
           roughness={0.95}
           metalness={0.02}
           transparent
@@ -323,11 +323,11 @@ function RiverBanks() {
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.35, -0.9, 4.45]}>
         <planeGeometry args={[18.5, 1.4, 1, 1]} />
-        <meshBasicMaterial color="#e2bd73" transparent opacity={0.07} />
+        <meshBasicMaterial color="#f0cf84" transparent opacity={0.14} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.55, -0.92, -4.6]}>
         <planeGeometry args={[19.4, 1.6, 1, 1]} />
-        <meshBasicMaterial color="#d6a54a" transparent opacity={0.06} />
+        <meshBasicMaterial color="#e3b45b" transparent opacity={0.11} />
       </mesh>
     </group>
   );
@@ -394,17 +394,21 @@ function ScrollMistBands() {
 
   return (
     <group ref={bandRef}>
-      <mesh position={[2.6, 0.32, -5.4]} scale={[11.6, 2.3, 1]}>
+      <mesh position={[2.6, 0.32, -5.4]} scale={[13.6, 2.8, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color="#f3d58b" transparent opacity={0.045} />
+        <meshBasicMaterial color="#f2d38b" transparent opacity={0.08} />
       </mesh>
-      <mesh position={[8.4, 0.5, -4.9]} scale={[8.8, 1.9, 1]}>
+      <mesh position={[8.4, 0.5, -4.9]} scale={[10.4, 2.2, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color="#fde7b0" transparent opacity={0.04} />
+        <meshBasicMaterial color="#fde7b0" transparent opacity={0.075} />
       </mesh>
-      <mesh position={[-1.6, 0.68, -4.2]} scale={[7.4, 1.6, 1]}>
+      <mesh position={[-1.6, 0.68, -4.2]} scale={[8.8, 1.9, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color="#e7bf63" transparent opacity={0.034} />
+        <meshBasicMaterial color="#e7bf63" transparent opacity={0.06} />
+      </mesh>
+      <mesh position={[4.6, 0.9, -6.2]} scale={[15.2, 2.6, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#f6deb0" transparent opacity={0.045} />
       </mesh>
     </group>
   );
@@ -439,17 +443,17 @@ function ScrollCanopy({
 
   return (
     <group ref={canopyRef}>
-      <mesh position={[3.2, 5.4, -8.2]} scale={[18.5, 6.8, 1]}>
+      <mesh position={[3.2, 5.4, -8.2]} scale={[20.2, 7.4, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color={scrollPaper} transparent opacity={0.08 + warmth * 0.05 + focusBoost} />
+        <meshBasicMaterial color={scrollPaper} transparent opacity={0.11 + warmth * 0.06 + focusBoost} />
       </mesh>
-      <mesh position={[8.8, 4.7, -7.6]} scale={[14.2, 5.2, 1]}>
+      <mesh position={[8.8, 4.7, -7.6]} scale={[15.6, 5.8, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color={scrollGold} transparent opacity={0.06 + warmth * 0.04 + focusBoost * 0.75} />
+        <meshBasicMaterial color={scrollGold} transparent opacity={0.08 + warmth * 0.05 + focusBoost * 0.75} />
       </mesh>
-      <mesh position={[-1.5, 4.05, -7.1]} scale={[10.6, 4.2, 1]}>
+      <mesh position={[-1.5, 4.05, -7.1]} scale={[11.4, 4.5, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color={shadowTone} transparent opacity={0.055 + warmth * 0.03 + focusBoost * 0.65} />
+        <meshBasicMaterial color={shadowTone} transparent opacity={0.07 + warmth * 0.035 + focusBoost * 0.65} />
       </mesh>
       <mesh position={[3.5, 5.9, -8.8]} scale={[20.4, 0.34, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
@@ -491,13 +495,13 @@ function ForegroundScrollVeil({
 
   return (
     <group ref={veilRef}>
-      <mesh position={[3.5, -0.42, 6.6]} scale={[16.5, 1.9, 1]}>
+      <mesh position={[3.5, -0.42, 6.6]} scale={[18.4, 2.15, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color={paperShadow} transparent opacity={0.1 + warmth * 0.03 + focusBoost * 0.5} />
+        <meshBasicMaterial color={paperShadow} transparent opacity={0.13 + warmth * 0.04 + focusBoost * 0.5} />
       </mesh>
-      <mesh position={[3.1, -0.18, 6.2]} scale={[15.4, 0.18, 1]}>
+      <mesh position={[3.1, -0.18, 6.2]} scale={[16.8, 0.22, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial color={edgeGold} transparent opacity={0.16 + warmth * 0.04 + focusBoost * 0.6} />
+        <meshBasicMaterial color={edgeGold} transparent opacity={0.2 + warmth * 0.05 + focusBoost * 0.6} />
       </mesh>
       <mesh position={[7.8, 0.24, 5.8]} scale={[7.2, 1.3, 1]}>
         <planeGeometry args={[1, 1, 1, 1]} />
@@ -2416,10 +2420,11 @@ export function RiverScene(props: RiverSceneProps) {
     <div
       ref={containerRef}
       onContextMenu={(event) => event.preventDefault()}
-      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#d7ad57]/55 bg-[#6f4516] shadow-[0_0_80px_rgba(0,0,0,0.34)] [touch-action:none]"
+      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#dfb55f]/60 bg-[#8b5a21] shadow-[0_0_110px_rgba(77,45,13,0.4)] [touch-action:none]"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(243,219,149,0.24),rgba(126,83,29,0))]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(76,45,13,0.56),rgba(76,45,13,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-36 bg-[linear-gradient(180deg,rgba(247,226,166,0.34),rgba(165,112,39,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-44 bg-[linear-gradient(0deg,rgba(104,62,18,0.68),rgba(104,62,18,0))]" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_46%,rgba(244,210,133,0.12),transparent_40%),linear-gradient(90deg,rgba(241,214,152,0.06),transparent_18%,transparent_82%,rgba(241,214,152,0.06))]" />
       <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#efd38f]/34 bg-[rgba(132,88,27,0.34)] px-4 py-2 text-[10px] text-[#fff3d0] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
         <span className="tracking-[0.28em] text-[#fff0c2]">黄河文脉长卷</span>
         <span className="hidden h-3 w-px bg-[#ead8a6]/24 sm:block" />
@@ -2450,7 +2455,7 @@ export function RiverScene(props: RiverSceneProps) {
             mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
           }`}
         >
-          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/20 bg-[linear-gradient(180deg,rgba(136,98,37,0.78),rgba(82,53,17,0.78))] px-3 py-3 text-[#f1e2bb] shadow-xl shadow-black/15 backdrop-blur-md">
+          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/16 bg-[linear-gradient(180deg,rgba(145,104,38,0.64),rgba(88,57,18,0.58))] px-3 py-3 text-[#f1e2bb] shadow-xl shadow-black/10 backdrop-blur-md">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-[10px] tracking-[0.24em] text-[#e5d1a1]">河势卷签</div>
