@@ -604,7 +604,7 @@ export function CulturalVeinShell() {
     if (selectedBookSlug === slug && viewMode === "book") {
       const mobileViewport = isMobileViewport();
       setShowDesktopDossier(!mobileViewport);
-      setShowDesktopControls(true);
+      setShowDesktopControls(false);
       setShowMobileControls(false);
       setShowMobileDossier(false);
       setEntryExplorerTab(nextEntryTab);
@@ -619,7 +619,7 @@ export function CulturalVeinShell() {
     window.setTimeout(() => {
       const mobileViewport = isMobileViewport();
       setShowDesktopDossier(!mobileViewport);
-      setShowDesktopControls(true);
+      setShowDesktopControls(false);
       setShowMobileControls(false);
       setShowMobileDossier(false);
       setSelectedBookSlug(slug);
@@ -635,7 +635,7 @@ export function CulturalVeinShell() {
       setSceneFocus(null);
       setEntryExplorerTab(null);
       setShowDesktopDossier(false);
-      setShowDesktopControls(true);
+      setShowDesktopControls(false);
       setShowMobileDossier(false);
       setShowMobileControls(false);
       if (activeSourceAtlasEntry) {
