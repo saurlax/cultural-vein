@@ -861,6 +861,14 @@ export function BookExplorer({
     ) ??
     institutionRecords[0] ??
     null;
+  const activeInstitutionRecordIndex = activeInstitutionRecord
+    ? institutionRecords.findIndex((item) => {
+        return (
+          `${item.institution}-${item.title}-${item.imageRef ?? item.sourceText ?? "trace"}` ===
+          `${activeInstitutionRecord.institution}-${activeInstitutionRecord.title}-${activeInstitutionRecord.imageRef ?? activeInstitutionRecord.sourceText ?? "trace"}`
+        );
+      })
+    : -1;
   const activeVersionParent = activeVersion?.parentId
     ? visibleVersions.find((version) => version.id === activeVersion.parentId) ?? null
     : null;
@@ -954,6 +962,13 @@ export function BookExplorer({
         ? `当前影像号 ${activeInstitutionRecord.imageRef} 已挂接到 ${activeInstitutionRecord.institution} 的馆藏线索，可作为这一版的卷面落点。`
         : "当前馆藏条目已落到版本资源层，可作为卷面浏览入口。")
     : null;
+  const activeInstitutionPreviewWindow = activeInstitutionRecord
+    ? institutionRecords
+        .slice(
+          Math.max(0, activeInstitutionRecordIndex - 1),
+          Math.min(institutionRecords.length, activeInstitutionRecordIndex + 2),
+        )
+    : institutionPreview;
   const linkedVenueEventMap = new Map(
     venuePreview.map((venue) => {
       const matchedEvents = (detail.realWorldSignals?.eventSamples ?? []).filter(
@@ -1439,6 +1454,50 @@ export function BookExplorer({
                     {activeInstitutionRecord.imageRef ? `影像号 ${activeInstitutionRecord.imageRef}` : activeInstitutionRecord.category ?? "馆藏条目"}
                   </div>
                 </div>
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-[#b89247]/14 bg-[rgba(255,255,255,0.18)] px-3 py-3">
+                  <div>
+                    <div className="text-[10px] tracking-[0.2em] text-[#8d6a2c]">卷面序列</div>
+                    <div className="mt-1 text-xs text-[#7a571d]">
+                      第 {Math.max(activeInstitutionRecordIndex + 1, 1)} / {Math.max(institutionRecords.length, 1)} 卷
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const previousRecord = institutionRecords[activeInstitutionRecordIndex - 1];
+                        if (previousRecord) {
+                          handleSelectInstitutionRecord(previousRecord);
+                        }
+                      }}
+                      disabled={activeInstitutionRecordIndex <= 0}
+                      className={`rounded-full px-3 py-1.5 text-xs transition ${
+                        activeInstitutionRecordIndex <= 0
+                          ? "cursor-not-allowed border border-[#c9b68a]/20 bg-[rgba(201,182,138,0.14)] text-[#b09057]"
+                          : "border border-[#b89247]/18 bg-[rgba(255,255,255,0.24)] text-[#7a571d] hover:bg-[rgba(255,255,255,0.32)]"
+                      }`}
+                    >
+                      前一卷
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const nextRecord = institutionRecords[activeInstitutionRecordIndex + 1];
+                        if (nextRecord) {
+                          handleSelectInstitutionRecord(nextRecord);
+                        }
+                      }}
+                      disabled={activeInstitutionRecordIndex >= institutionRecords.length - 1}
+                      className={`rounded-full px-3 py-1.5 text-xs transition ${
+                        activeInstitutionRecordIndex >= institutionRecords.length - 1
+                          ? "cursor-not-allowed border border-[#c9b68a]/20 bg-[rgba(201,182,138,0.14)] text-[#b09057]"
+                          : "border border-[#b89247]/18 bg-[rgba(255,255,255,0.24)] text-[#7a571d] hover:bg-[rgba(255,255,255,0.32)]"
+                      }`}
+                    >
+                      后一卷
+                    </button>
+                  </div>
+                </div>
                 <div className="mt-4 rounded-[20px] border border-[#b89247]/14 bg-[rgba(255,255,255,0.24)] px-4 py-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
@@ -1461,6 +1520,42 @@ export function BookExplorer({
                     <div className="leading-6">{activeInstitutionPreviewText}</div>
                   </div>
                 </div>
+                {activeInstitutionPreviewWindow.length > 1 ? (
+                  <div className="mt-4 grid gap-3 md:grid-cols-3">
+                    {activeInstitutionPreviewWindow.map((item) => {
+                      const recordId = `${item.institution}-${item.title}-${item.imageRef ?? item.sourceText ?? "trace"}`;
+                      const isActive =
+                        recordId ===
+                        `${activeInstitutionRecord.institution}-${activeInstitutionRecord.title}-${activeInstitutionRecord.imageRef ?? activeInstitutionRecord.sourceText ?? "trace"}`;
+
+                      return (
+                        <button
+                          key={`preview-window-${recordId}`}
+                          type="button"
+                          onClick={() => handleSelectInstitutionRecord(item)}
+                          className={`rounded-[18px] border px-3 py-3 text-left transition ${
+                            isActive
+                              ? "border-[#b89247]/28 bg-[rgba(255,255,255,0.32)]"
+                              : "border-[#b89247]/12 bg-[rgba(255,255,255,0.18)] hover:bg-[rgba(255,255,255,0.26)]"
+                          }`}
+                        >
+                          <div className="text-[10px] tracking-[0.18em] text-[#8d6a2c]">
+                            {isActive ? "当前卷面" : "同列卷面"}
+                          </div>
+                          <div className="mt-2 line-clamp-2 text-sm font-medium leading-6 text-[#5b3a11]">
+                            {item.title}
+                          </div>
+                          <div className="mt-1 text-[11px] text-[#7a571d]">
+                            {[item.institution, item.year].filter(Boolean).join(" · ")}
+                          </div>
+                          <div className="mt-2 line-clamp-2 text-[11px] leading-5 text-[#6b4a16]">
+                            {item.imageRef ?? item.sourceText ?? item.category ?? "馆藏条目"}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : null}
               </div>
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <button
