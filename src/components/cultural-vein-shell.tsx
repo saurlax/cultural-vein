@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import {
   BookExplorer,
+  type ExplorerOpenOptions,
   type SceneFocusState,
   type TraceFocusState,
 } from "@/components/book-explorer";
@@ -175,6 +176,9 @@ export function CulturalVeinShell() {
   const [showDesktopDossier, setShowDesktopDossier] = useState(false);
   const [showDesktopControls, setShowDesktopControls] = useState(false);
   const [activeSourceAtlasId, setActiveSourceAtlasId] = useState<string | null>(null);
+  const [entryExplorerTab, setEntryExplorerTab] = useState<
+    "spread" | "people" | "versions" | "timeline" | "passages" | null
+  >(null);
   const [activeDesktopPanel, setActiveDesktopPanel] = useState<
     "search" | "era" | "category" | "branch"
   >("search");
@@ -369,15 +373,25 @@ export function CulturalVeinShell() {
     return () => window.clearTimeout(timer);
   }, [transitionState]);
 
-  const handleDiveToBook = (slug: string) => {
+  const handleDiveToBook = (slug: string, options?: ExplorerOpenOptions) => {
+    const nextEntryTab =
+      options?.entryTab ??
+      (sceneFocus?.active
+        ? sceneFocus.mode === "source"
+          ? "versions"
+          : sceneFocus.mode
+        : null);
+
     if (selectedBookSlug === slug && viewMode === "book") {
       setShowDesktopDossier(true);
       setShowDesktopControls(false);
+      setEntryExplorerTab(nextEntryTab);
       setSelectedBookSlug(slug);
       return;
     }
 
     setSceneFocus(null);
+    setEntryExplorerTab(nextEntryTab);
     setTransitionState("diving");
     window.setTimeout(() => {
       setShowDesktopDossier(true);
@@ -392,6 +406,7 @@ export function CulturalVeinShell() {
     window.setTimeout(() => {
       setTraceFocus(null);
       setSceneFocus(null);
+      setEntryExplorerTab(null);
       setShowDesktopDossier(false);
       setShowDesktopControls(false);
       setShowMobileDossier(false);
@@ -1455,6 +1470,7 @@ export function CulturalVeinShell() {
                       <BookExplorer
                         book={selectedBook}
                         detail={selectedDetail}
+                        forcedTab={entryExplorerTab}
                         activeEra={activeEra}
                         onTraceFocusChange={setTraceFocus}
                         onSceneFocusChange={setSceneFocus}
@@ -1898,6 +1914,7 @@ export function CulturalVeinShell() {
                     <BookExplorer
                       book={selectedBook}
                       detail={selectedDetail}
+                      forcedTab={entryExplorerTab}
                       activeEra={activeEra}
                       onTraceFocusChange={setTraceFocus}
                       onSceneFocusChange={setSceneFocus}

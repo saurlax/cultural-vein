@@ -35,6 +35,10 @@ export interface SceneFocusState {
   detail: string;
 }
 
+export interface ExplorerOpenOptions {
+  entryTab?: ExplorerTab | null;
+}
+
 const eraOrder: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
 const eraYearRange: Record<RiverEra, { start: number; end: number }> = {
   "先秦": { start: -2000, end: -221 },
@@ -252,7 +256,7 @@ export function BookExplorer({
   activeEra: RiverEra;
   onTraceFocusChange?: (focus: TraceFocusState | null) => void;
   onSceneFocusChange?: (focus: SceneFocusState | null) => void;
-  onOpenBook?: (slug: string) => void;
+  onOpenBook?: (slug: string, options?: ExplorerOpenOptions) => void;
 }) {
   const [tab, setTab] = useState<ExplorerTab>("spread");
   const [passageLayout, setPassageLayout] = useState<"horizontal" | "vertical">("horizontal");
@@ -642,10 +646,10 @@ export function BookExplorer({
       return;
     }
 
-    onOpenBook?.(activeLink.sourceBookId);
+    onOpenBook?.(activeLink.sourceBookId, { entryTab: "passages" });
   };
   const handleOpenSpecificLinkedBook = (sourceBookId: string) => {
-    onOpenBook?.(sourceBookId);
+    onOpenBook?.(sourceBookId, { entryTab: "passages" });
   };
   const handleOpenDownstreamBook = (targetTitle: string) => {
     const targetSlug = bookSlugByTitle.get(targetTitle);
@@ -654,7 +658,7 @@ export function BookExplorer({
       return;
     }
 
-    onOpenBook?.(targetSlug);
+    onOpenBook?.(targetSlug, { entryTab: "people" });
   };
   const handleOpenTraceBook = (traceTitle: string) => {
     const targetSlug = bookSlugByTitle.get(traceTitle);
@@ -663,7 +667,7 @@ export function BookExplorer({
       return;
     }
 
-    onOpenBook?.(targetSlug);
+    onOpenBook?.(targetSlug, { entryTab: "passages" });
   };
   const handleSelectInstitutionRecord = (record: {
     institution: string;
