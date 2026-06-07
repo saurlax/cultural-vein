@@ -1283,29 +1283,69 @@ export function BookExplorer({
   const nextReadingTabs: ExplorerTab[] = suggestedNextTabs.length
     ? suggestedNextTabs
     : [fallbackNextTab];
+  const heroMetricCards = [
+    { label: "传播河段", value: eraLinkedSummary.spread, onClick: () => setManualTab("spread") },
+    { label: "人物关系", value: eraLinkedSummary.people, onClick: () => setManualTab("people") },
+    { label: "版本节点", value: eraLinkedSummary.versions, onClick: () => setManualTab("versions") },
+    { label: "文本片段", value: eraLinkedSummary.passages, onClick: () => setManualTab("passages") },
+  ] as const;
+  const activeTabStepLabel = `第 ${activeSequenceIndex + 1} 段`;
 
   return (
     <div className="relative space-y-4">
       <div className="pointer-events-none absolute inset-x-4 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(233,202,128,0.55),transparent)]" />
       <div className="pointer-events-none absolute inset-y-0 left-2 hidden w-px bg-[linear-gradient(180deg,transparent,rgba(180,136,53,0.22),transparent)] xl:block" />
       <div className="pointer-events-none absolute inset-y-0 right-2 hidden w-px bg-[linear-gradient(180deg,transparent,rgba(180,136,53,0.18),transparent)] xl:block" />
-      <section className="overflow-hidden rounded-[28px] border border-[#d5b46f]/28 bg-[linear-gradient(180deg,rgba(247,235,200,0.98),rgba(232,208,151,0.96))] px-5 py-5 text-[#4a2c08] shadow-[inset_0_1px_0_rgba(255,255,255,0.26),0_18px_42px_rgba(79,52,16,0.08)]">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <p className="text-[11px] tracking-[0.3em] text-[#8d6a2c]">
-              卷首题签
-            </p>
-            <h2 className="mt-2 text-[clamp(1.7rem,3vw,2.5rem)] font-semibold text-[#4a2c08]">
-              {book.title}
-            </h2>
-            <p className="mt-3 text-sm leading-7 text-[#6b4b1d]">{book.summary}</p>
-            <div className="mt-4 rounded-[22px] border border-[#d8bb78]/30 bg-[linear-gradient(180deg,rgba(255,250,238,0.58),rgba(255,245,214,0.34))] px-4 py-3">
-              <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">卷内导读</div>
-              <div className="mt-2 text-sm leading-7 text-[#6b4b1d]">{currentNarrative.lead}</div>
-              <div className="mt-3 flex flex-wrap gap-2">
+      <section className="overflow-hidden rounded-[30px] border border-[#d5b46f]/28 bg-[linear-gradient(180deg,rgba(247,235,200,0.98),rgba(232,208,151,0.96))] px-5 py-5 text-[#4a2c08] shadow-[inset_0_1px_0_rgba(255,255,255,0.26),0_18px_42px_rgba(79,52,16,0.08)]">
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] tracking-[0.3em] text-[#8d6a2c]">卷首题签</p>
+                <h2 className="mt-2 text-[clamp(1.7rem,3vw,2.5rem)] font-semibold text-[#4a2c08]">
+                  {book.title}
+                </h2>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {dossierEntryCards.map((item) => (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={item.onClick}
+                      className="rounded-full border border-[#caa45b]/24 bg-white/35 px-3 py-1.5 text-xs text-[#6b4b1d] transition hover:bg-white/50"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                  <span className="rounded-full border border-[#caa45b]/24 bg-[#f3dfab]/75 px-3 py-1.5 text-xs text-[#6b4b1d]">
+                    {activeTabStepLabel} · {activeTabMeta.label}
+                  </span>
+                </div>
+              </div>
+              <div className="rounded-[22px] border border-[#d8bb78]/28 bg-[linear-gradient(180deg,rgba(255,250,238,0.76),rgba(255,245,214,0.4))] px-4 py-3 text-right">
+                <div className="text-[10px] tracking-[0.24em] text-[#8d6a2c]">卷中时代</div>
+                <div className="mt-2 text-lg font-semibold text-[#5b3a11]">{activeEra}</div>
+                <button
+                  type="button"
+                  onClick={() => setManualTab("timeline")}
+                  className="mt-3 rounded-full border border-[#caa45b]/24 bg-white/45 px-3 py-1.5 text-xs text-[#6b4b1d] transition hover:bg-white/60"
+                >
+                  可见年段 {eraLinkedSummary.timeline || 1} 条
+                </button>
+              </div>
+            </div>
+
+            <p className="mt-4 text-sm leading-7 text-[#6b4b1d]">{book.summary}</p>
+            <div className="mt-4 rounded-[24px] border border-[#d8bb78]/30 bg-[linear-gradient(180deg,rgba(255,250,238,0.6),rgba(255,245,214,0.3))] px-4 py-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">卷内导读</div>
+                  <div className="mt-2 text-sm leading-7 text-[#6b4b1d]">{currentNarrative.lead}</div>
+                </div>
                 <div className="rounded-full border border-[#caa45b]/24 bg-white/45 px-3 py-1.5 text-xs text-[#6b4b1d]">
                   当前卷心：{activeTabMeta.label}
                 </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
                 {nextReadingTabs.slice(0, 2).map((item) => {
                   const tabMeta = tabs.find((tabItem) => tabItem.id === item) ?? tabs[0];
 
@@ -1322,34 +1362,58 @@ export function BookExplorer({
                 })}
               </div>
             </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => setManualTab("spread")}
-                className="rounded-full border border-[#caa45b]/24 bg-white/35 px-3 py-1.5 text-xs text-[#6b4b1d] transition hover:bg-white/50"
-              >
-                传播河段
-              </button>
-              <button
-                type="button"
-                onClick={() => setManualTab("passages")}
-                className="rounded-full border border-[#caa45b]/24 bg-white/35 px-3 py-1.5 text-xs text-[#6b4b1d] transition hover:bg-white/50"
-              >
-                文本溯源
-              </button>
-            </div>
           </div>
-          <div className="grid gap-2 text-xs text-[#6b4b1d]">
-            {dossierEntryCards.map((item) => (
-              <button
-                key={item.label}
-                type="button"
-                onClick={item.onClick}
-                className="rounded-full border border-[#caa45b]/24 bg-white/30 px-3 py-1 text-left transition hover:bg-white/45"
-              >
-                {item.label}
-              </button>
-            ))}
+
+          <div className="grid gap-3">
+            <div className="rounded-[24px] border border-[#d8bb78]/28 bg-[linear-gradient(180deg,rgba(132,90,29,0.16),rgba(90,58,18,0.08))] px-4 py-4">
+              <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">卷内指标</div>
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                {heroMetricCards.map((item) => (
+                  <button
+                    key={`hero-metric-${item.label}`}
+                    type="button"
+                    onClick={item.onClick}
+                    className="rounded-[18px] border border-[#caa45b]/22 bg-[rgba(255,250,238,0.56)] px-3 py-3 text-left transition hover:bg-[rgba(255,250,238,0.74)]"
+                  >
+                    <div className="text-[10px] tracking-[0.18em] text-[#8d6a2c]">{item.label}</div>
+                    <div className="mt-2 text-2xl font-semibold text-[#5b3a11]">{item.value}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-[24px] border border-[#d8bb78]/28 bg-[linear-gradient(180deg,rgba(255,250,238,0.72),rgba(255,245,214,0.34))] px-4 py-4">
+              <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">读卷顺序</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {readingSequence.map((item, index) => {
+                  const tabMeta = tabs.find((tabItem) => tabItem.id === item) ?? tabs[0];
+                  const isActive = activeTab === item;
+
+                  return (
+                    <button
+                      key={`reading-sequence-${item}`}
+                      type="button"
+                      onClick={() => setManualTab(item)}
+                      className={`rounded-full px-3 py-1.5 text-xs transition ${
+                        isActive
+                          ? "bg-[#f3dfab] text-[#42290a]"
+                          : "border border-[#caa45b]/24 bg-white/35 text-[#6b4b1d] hover:bg-white/50"
+                      }`}
+                    >
+                      第 {index + 1} 段 · {tabMeta.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="mt-4 h-2 rounded-full bg-white/40">
+                <div
+                  className="h-full rounded-full bg-[linear-gradient(90deg,#d89e37,#f3dfab)] transition-all duration-300"
+                  style={{
+                    width: `${readingSequence.length <= 1 ? 100 : ((activeSequenceIndex + 1) / readingSequence.length) * 100}%`,
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1357,61 +1421,31 @@ export function BookExplorer({
       <section className="rounded-[24px] border border-[#e1bd6e]/18 bg-[linear-gradient(180deg,rgba(214,170,84,0.2),rgba(98,65,20,0.24))] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,245,215,0.08)]">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <div className="text-xs tracking-[0.2em] text-amber-100/75">
-              卷中时代
-            </div>
+            <div className="text-xs tracking-[0.2em] text-amber-100/75">卷中脉络</div>
             <div className="mt-1 text-sm font-medium text-amber-50">
-              卷中脉络已推至 {activeEra}
+              这一时代的中观探索已在 {activeTabMeta.label} 聚焦成卷心。
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => setManualTab("timeline")}
-            className="rounded-full border border-[#d7b066]/24 bg-[rgba(252,220,124,0.12)] px-3 py-1 text-xs text-[#f7e4a7] transition hover:bg-[rgba(252,220,124,0.18)]"
-          >
-            可见年段 {eraLinkedSummary.timeline || 1} 条
-          </button>
-        </div>
-        <div className="mt-3 rounded-[20px] border border-[#ead8a6]/12 bg-[linear-gradient(180deg,rgba(72,45,14,0.34),rgba(44,27,9,0.28))] px-3 py-3 text-sm leading-7 text-[#f6e8bd]">
-          这一时代已显出 {eraLinkedSummary.spread} 段传播、{eraLinkedSummary.people} 位人物、{eraLinkedSummary.versions} 个版本节点与 {eraLinkedSummary.passages} 个文本片段，
-          此刻卷心落在 {activeTabMeta.label}。
-        </div>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {readingSequence.map((item, index) => {
-            const tabMeta = tabs.find((tabItem) => tabItem.id === item) ?? tabs[0];
-            const isActive = activeTab === item;
-
-            return (
+          <div className="flex flex-wrap gap-2">
+            {tabs.map((item) => (
               <button
-                key={`reading-sequence-${item}`}
+                key={item.id}
                 type="button"
-                onClick={() => setManualTab(item)}
-                className={`rounded-full px-3 py-1.5 text-xs transition ${
-                  isActive
+                onClick={() => setManualTab(item.id)}
+                className={`rounded-full px-3 py-2 text-xs transition ${
+                  activeTab === item.id
                     ? "bg-[#f3dfab] text-[#42290a]"
                     : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
                 }`}
               >
-                第 {index + 1} 段 · {tabMeta.label}
+                {item.label}
               </button>
-            );
-          })}
+            ))}
+          </div>
         </div>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {tabs.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setManualTab(item.id)}
-              className={`rounded-full px-3 py-2 text-xs transition ${
-                activeTab === item.id
-                  ? "bg-[#f3dfab] text-[#42290a]"
-                  : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
+        <div className="mt-3 rounded-[20px] border border-[#ead8a6]/12 bg-[linear-gradient(180deg,rgba(72,45,14,0.34),rgba(44,27,9,0.28))] px-3 py-3 text-sm leading-7 text-[#f6e8bd]">
+          这一时代已显出 {eraLinkedSummary.spread} 段传播、{eraLinkedSummary.people} 位人物、{eraLinkedSummary.versions} 个版本节点与 {eraLinkedSummary.passages} 个文本片段，
+          此刻卷心落在 {activeTabMeta.label}。
         </div>
       </section>
 
