@@ -67,6 +67,7 @@ interface RiverSceneProps {
   onOpenControlPanel?: (() => void) | null;
   onOpenEraPanel?: (() => void) | null;
   onReturnToRiver?: (() => void) | null;
+  mobilePanelOpen?: boolean;
 }
 
 interface CruiseSnapshot {
@@ -1873,16 +1874,10 @@ export function RiverScene(props: RiverSceneProps) {
   const [autoCruise, setAutoCruise] = useState(false);
   const [isInteracting, setIsInteracting] = useState(false);
   const [showMobileTouchHint, setShowMobileTouchHint] = useState(true);
-  const eraProgress = props.activeEra
-    ? ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"].indexOf(props.activeEra) / 6
-    : 0;
-  const visibilityRatio =
-    props.totalNodeCount && props.totalNodeCount > 0
-      ? (props.visibleNodeCount ?? 0) / props.totalNodeCount
-      : 0;
   const canCruise =
     props.viewMode === "river" && !props.traceFocus?.active && !props.sceneFocus?.active;
   const cruiseRunning = canCruise && autoCruise;
+  const mobilePanelOpen = props.mobilePanelOpen ?? false;
   const hoveredBook = props.books.find((book) => book.slug === props.hoveredBookSlug) ?? null;
   const hoveredDock = props.dockMarkers?.find((dock) => dock.id === props.hoveredDockId) ?? null;
   const hoveredBranch = props.branchAnnotations?.find(
@@ -1893,20 +1888,20 @@ export function RiverScene(props: RiverSceneProps) {
     : props.sceneFocus?.active
       ? props.sceneFocus.detail
       : isInteracting
-        ? "正在拖拽河面巡看，可松手后继续点选节点或码头。"
+        ? "河面正在缓缓转景，松手后可继续点选典籍与码头。"
       : hoveredDock
-        ? `${hoveredDock.label} 的样本码头已浮起。${hoveredDock.note ? ` ${hoveredDock.note}` : ""}`
+        ? `${hoveredDock.label} 正从河面浮起。${hoveredDock.note ? ` ${hoveredDock.note}` : ""}`
       : props.sourceAtlasLabel && props.dockMarkers?.length
-        ? `${props.sourceAtlasLabel} 的样本资料已映上河面，可沿数据码头顺流细看。${props.sourceAtlasSummary ? ` ${props.sourceAtlasSummary}` : ""}`
+        ? `${props.sourceAtlasLabel} 的样本已映入河道，可沿码头顺流检阅。${props.sourceAtlasSummary ? ` ${props.sourceAtlasSummary}` : ""}`
       : hoveredBook
-        ? `${hoveredBook.shortTitle} 已浮起，点击可直接入卷细看。`
-        : hoveredBranch
-          ? `${hoveredBranch.label} 正在显现，顺着支流可进入对应典籍。`
+        ? `${hoveredBook.shortTitle} 已浮出河心，点击即可入卷。`
+      : hoveredBranch
+          ? `${hoveredBranch.label} 正在显现，顺着支流便能入卷追看。`
           : props.selectedBookSlug
-            ? "入卷典籍已停稳，可继续展开文卷或归河巡看。"
+            ? "典籍已经停驻岸边，可续展文卷，亦可归河巡看。"
             : cruiseRunning
-              ? "镜头正沿河巡航，可暂停后手动拖拽细看节点。"
-              : "拖动河面巡看节点，悬停会提示，点击即可入卷。";
+              ? "镜头正沿长河缓缓前行，可随时停下改为手动巡看。"
+              : "拖动长河巡看文脉起伏，点中节点便可入卷。";
 
   useEffect(() => {
     setEventSource(containerRef.current);
@@ -1946,6 +1941,7 @@ export function RiverScene(props: RiverSceneProps) {
   return (
     <div
       ref={containerRef}
+      onContextMenu={(event) => event.preventDefault()}
       className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#edd08a]/45 bg-[#3a2208] shadow-[0_0_80px_rgba(0,0,0,0.42)] [touch-action:none]"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(146,102,36,0.4),rgba(78,51,15,0))]" />
@@ -1965,88 +1961,16 @@ export function RiverScene(props: RiverSceneProps) {
                   : `${props.activeEra} 水位`}
         </span>
       </div>
-      <div className="pointer-events-none absolute left-1/2 top-16 z-10 hidden w-[min(420px,calc(100vw-2.5rem))] -translate-x-1/2 px-3 md:block md:top-20">
-        <div className="rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(79,52,16,0.74)] px-4 py-3 text-center text-[11px] leading-6 text-[#f7e9c0] shadow-lg shadow-black/20 backdrop-blur-md sm:text-xs">
+      <div className="pointer-events-none absolute left-1/2 top-16 z-10 hidden w-[min(420px,calc(100vw-2.5rem))] -translate-x-1/2 px-3 lg:block lg:top-20">
+        <div className="rounded-[26px] border border-[#f2dfab]/18 bg-[linear-gradient(180deg,rgba(115,78,27,0.78),rgba(70,45,14,0.72))] px-5 py-3 text-center shadow-lg shadow-black/20 backdrop-blur-md">
+          <div className="text-[10px] tracking-[0.34em] text-[#f4e2b0]">卷首题签</div>
+          <div className="mt-2 text-[11px] leading-6 text-[#fbf1d2] sm:text-xs">
           {sceneHint}
+          </div>
         </div>
       </div>
-      <div className="pointer-events-none absolute left-5 bottom-5 z-10 hidden rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.52)] px-4 py-3 text-[11px] text-[#f0e0b8] backdrop-blur-md 2xl:block">
-        <div className="text-[10px] tracking-[0.24em] text-stone-500">
-          河面扫描
-        </div>
-        <div className="mt-2 grid grid-cols-3 gap-3">
-          <div>
-            <div className="text-stone-500">节点</div>
-            <div className="mt-1 text-sm text-stone-100">{props.visibleNodeCount ?? 0}</div>
-          </div>
-          <div>
-            <div className="text-stone-500">总量</div>
-            <div className="mt-1 text-sm text-stone-100">{props.totalNodeCount ?? 0}</div>
-          </div>
-          <div>
-            <div className="text-stone-500">模式</div>
-            <div className="mt-1 text-sm text-stone-100">
-              {props.traceFocus?.active ? "逆流" : props.viewMode === "book" ? "钻入" : "巡航"}
-            </div>
-          </div>
-        </div>
-        <div className="mt-3 space-y-2">
-          <div>
-            <div className="mb-1 flex items-center justify-between text-[10px] tracking-[0.22em] text-stone-500">
-              <span>时代显现</span>
-              <span>{Math.round(eraProgress * 100)}%</span>
-            </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-              <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,#b45309,#fcd34d)]"
-                style={{ width: `${Math.max(10, eraProgress * 100)}%` }}
-              />
-            </div>
-          </div>
-          <div>
-            <div className="mb-1 flex items-center justify-between text-[10px] tracking-[0.22em] text-stone-500">
-              <span>河段显现</span>
-              <span>{Math.round(visibilityRatio * 100)}%</span>
-            </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-              <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,#d97706,#fde68a)]"
-                style={{ width: `${Math.max(8, visibilityRatio * 100)}%` }}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="mt-3 text-[10px] leading-5 text-[#e8d6aa]">
-          顺着节点密度、时代水位与河段显现继续拖拽巡看，锁定感兴趣的典籍后再入卷细看。
-        </div>
-        <div className="pointer-events-auto mt-3 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => props.onOpenControlPanel?.()}
-            className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#f0e0b8] transition hover:bg-[rgba(255,248,220,0.12)]"
-          >
-            展开河上题签
-          </button>
-          <button
-            type="button"
-            onClick={() => props.onOpenEraPanel?.()}
-            className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#f0e0b8] transition hover:bg-[rgba(255,248,220,0.12)]"
-          >
-            切换时代水位
-          </button>
-          {props.viewMode === "book" ? (
-            <button
-              type="button"
-              onClick={() => props.onReturnToRiver?.()}
-              className="rounded-full border border-amber-300/24 bg-amber-300/10 px-3 py-1.5 text-[10px] text-amber-100 transition hover:bg-amber-300/18"
-            >
-              回到主河道
-            </button>
-          ) : null}
-        </div>
-      </div>
-      <div className="pointer-events-none absolute right-4 top-4 z-10 hidden rounded-full border border-[#ead8a6]/14 bg-[rgba(79,52,16,0.42)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md lg:flex">
-        {isInteracting ? "正在拖动画卷" : "左键拖移河面 · 右键旋看 · 滚轮缩放"}
+      <div className="pointer-events-none absolute left-4 top-16 z-10 hidden rounded-full border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.42)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md xl:flex">
+        {isInteracting ? "正在拖动画卷" : "拖移河面巡看文脉"}
       </div>
       <div
         className={`pointer-events-none absolute left-1/2 top-5 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
@@ -2058,18 +1982,20 @@ export function RiverScene(props: RiverSceneProps) {
         </div>
       </div>
       {canCruise ? (
-        <div className="absolute bottom-4 left-1/2 z-20 w-[min(220px,calc(100vw-2.5rem))] -translate-x-1/2 sm:bottom-5 sm:left-auto sm:right-5 sm:w-[min(320px,calc(100vw-2.5rem))] sm:translate-x-0">
-          <div className="pointer-events-auto rounded-[24px] border border-[#ead8a6]/18 bg-[rgba(79,52,16,0.72)] px-4 py-3 text-[#f1e2bb] shadow-xl shadow-black/20 backdrop-blur-md sm:px-4 sm:py-4">
+        <div
+          className={`absolute bottom-4 left-1/2 z-20 w-[min(240px,calc(100vw-2.5rem))] -translate-x-1/2 transition-opacity duration-300 sm:bottom-5 sm:left-auto sm:right-5 sm:w-[min(300px,calc(100vw-2.5rem))] sm:translate-x-0 ${
+            mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
+          }`}
+        >
+          <div className="pointer-events-auto rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(92,61,19,0.82),rgba(66,42,12,0.82))] px-4 py-3 text-[#f1e2bb] shadow-xl shadow-black/20 backdrop-blur-md sm:px-4 sm:py-4">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-[10px] tracking-[0.24em] text-[#d8c9a3]">
-                  沿河巡航
-                </div>
+                <div className="text-[10px] tracking-[0.26em] text-[#e5d1a1]">巡河题签</div>
                 <div className="mt-1 text-xs text-[#fbf3da] sm:text-sm">
-                  顺着长河前后巡看文脉起伏
+                  顺流看典籍浮沉
                 </div>
                 <div className="mt-2 hidden text-[10px] leading-5 text-[#e8d6aa] sm:block">
-                  可先自动巡航找节点，再用上下游按钮把镜头停在想讲的河段。
+                  先让镜头缓行找河段，再停在要讲的节点附近。
                 </div>
               </div>
               <button

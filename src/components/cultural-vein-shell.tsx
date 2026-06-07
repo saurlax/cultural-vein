@@ -1482,15 +1482,16 @@ export function CulturalVeinShell() {
             onOpenControlPanel={() => handleOpenDesktopPanel("branch")}
             onOpenEraPanel={() => handleOpenDesktopPanel("era")}
             onReturnToRiver={selectedBook ? handleReturnToRiver : null}
+            mobilePanelOpen={showMobileControls || showMobileDossier}
           />
         </main>
 
         {showMobileControls ? (
           <div className="absolute inset-x-3 bottom-20 z-40 md:hidden">
-            <div className={`pointer-events-auto max-h-[56vh] overflow-auto p-3 ${panelBaseClass}`}>
+            <div className={`pointer-events-auto max-h-[48vh] overflow-auto p-3 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">长卷侧注</div>
+                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">河上题签</div>
                   <div className="mt-1 text-sm font-medium text-[#fbf3da]">
                     {activeDesktopPanelConfig.label}题签
                   </div>
@@ -1515,7 +1516,7 @@ export function CulturalVeinShell() {
                   </button>
                 ))}
               </div>
-              {sourceAtlasEntries.length ? (
+              {activeDesktopPanel === "branch" && sourceAtlasEntries.length ? (
                 <div className="mt-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(93,62,18,0.22)] px-3 py-3">
                   <div className="flex items-center justify-between gap-3">
                     <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">真实数据版图</div>
@@ -1887,22 +1888,22 @@ export function CulturalVeinShell() {
         ) : null}
         <div className="pointer-events-none absolute inset-x-0 bottom-4 z-30 md:hidden">
           <div className="pointer-events-auto flex justify-center px-3">
-            <div className="flex items-center gap-2 rounded-full border border-[#ead8a6]/24 bg-[linear-gradient(180deg,rgba(112,80,31,0.92),rgba(58,39,13,0.92))] px-2 py-2 shadow-xl shadow-black/25 backdrop-blur-xl">
-              <div className="px-2 text-[10px] tracking-[0.24em] text-[#f7e8bf]">河上题签</div>
-            <button
-              type="button"
-              onClick={() => {
-                setShowMobileDossier(false);
-                setShowMobileControls((current) => !current);
-              }}
-              className={`rounded-full border border-[#ead8a6]/26 px-4 py-2 text-xs transition ${
-                showMobileControls
-                  ? "bg-[#f3dfab] text-[#42290a]"
-                  : "bg-[rgba(78,52,18,0.7)] text-[#f7edd1]"
-              }`}
-            >
-              {showMobileControls ? "收起" : "展开"}
-            </button>
+            <div className="flex items-center gap-2 rounded-full border border-[#ead8a6]/24 bg-[linear-gradient(180deg,rgba(132,94,35,0.94),rgba(70,45,14,0.94))] px-2 py-2 shadow-xl shadow-black/25 backdrop-blur-xl">
+              <div className="px-2 text-[10px] tracking-[0.24em] text-[#f7e8bf]">黄河长卷</div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMobileDossier(false);
+                  setShowMobileControls((current) => !current);
+                }}
+                className={`rounded-full border border-[#ead8a6]/26 px-4 py-2 text-xs transition ${
+                  showMobileControls
+                    ? "bg-[#f3dfab] text-[#42290a]"
+                    : "bg-[rgba(78,52,18,0.7)] text-[#f7edd1]"
+                }`}
+              >
+                {showMobileControls ? "收起题签" : "看题签"}
+              </button>
               <button
                 type="button"
                 onClick={() => {
@@ -1916,7 +1917,7 @@ export function CulturalVeinShell() {
                 }`}
                 disabled={!selectedBook}
               >
-                {selectedBook ? (showMobileDossier ? "收卷" : "文卷") : "未选典籍"}
+                {selectedBook ? (showMobileDossier ? "收卷" : "入卷") : "未选典籍"}
               </button>
             </div>
           </div>
