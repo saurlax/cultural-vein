@@ -6,6 +6,7 @@ import {
   getGraphPayload,
   getInsightsPayload,
   getSearchPayload,
+  getSourceAtlasEntryPayload,
   getSourceAtlasPayload,
 } from "@/server/payloads";
 
@@ -52,7 +53,14 @@ const server = createServer((request, response) => {
     sendJson(response, 200, {
       status: "ok",
       service: "cultural-vein-backend",
-      routes: ["/graph", "/books/:slug", "/insights", "/source-atlas", "/search?q=关键词"],
+      routes: [
+        "/graph",
+        "/books/:slug",
+        "/insights",
+        "/source-atlas",
+        "/source-atlas/:id",
+        "/search?q=关键词",
+      ],
     });
     return;
   }
@@ -69,6 +77,19 @@ const server = createServer((request, response) => {
 
   if (pathname === "/source-atlas") {
     sendJson(response, 200, getSourceAtlasPayload());
+    return;
+  }
+
+  const matchedSourceAtlas = pathname.match(/^\/source-atlas\/([^/]+)$/);
+  if (matchedSourceAtlas) {
+    const payload = getSourceAtlasEntryPayload(decodeURIComponent(matchedSourceAtlas[1] ?? ""));
+
+    if (!payload) {
+      sendJson(response, 404, { error: "Not found" });
+      return;
+    }
+
+    sendJson(response, 200, payload);
     return;
   }
 

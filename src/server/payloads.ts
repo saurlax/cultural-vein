@@ -42,6 +42,32 @@ export function getSourceAtlasPayload() {
   };
 }
 
+export function getSourceAtlasEntryPayload(id: string) {
+  const atlas = getSourceAtlasPayload();
+  const entry = atlas.sourceAtlas.find((item) => item.id === id);
+
+  if (!entry) {
+    return null;
+  }
+
+  return {
+    entry,
+    atlasMeta: atlas.atlasMeta,
+    relatedBooks: riverDataset.books
+      .filter((book) =>
+        entry.sampleTitles?.some((title) => book.title.includes(title) || title.includes(book.title)),
+      )
+      .slice(0, 6)
+      .map((book) => ({
+        id: book.id,
+        slug: book.slug,
+        title: book.title,
+        dynasty: book.dynasty,
+        category: book.category,
+      })),
+  };
+}
+
 export function getInsightsPayload(): DatasetInsight {
   const nanhuRecords = realSupplements.nanhuArchiveSample?.sampleRecords ?? [];
   const redArchiveRecords = nanhuRecords

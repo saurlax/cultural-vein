@@ -305,12 +305,13 @@
   - 数据装配边界清晰
   - 已抽出 `src/server/payloads.ts` 作为共享接口装配层
   - 已新增 `backend/server.ts` 轻量独立后端骨架
-  - 已可单独启动并返回 `/health`、`/graph`、`/books/:slug`、`/insights`、`/source-atlas`、`/search`
+  - 已可单独启动并返回 `/health`、`/graph`、`/books/:slug`、`/insights`、`/source-atlas`、`/source-atlas/:id`、`/search`
 - 直接证据：
   - `package.json` 中的 `backend:dev`
   - `backend/server.ts`
   - `2026-06-07` 本地执行 `pnpm backend:dev` 后，请求 `http://127.0.0.1:4318/health` 返回 `{"status":"ok","service":"cultural-vein-backend",...}`
   - `2026-06-07` 在临时端口 `4321` 上启动独立后端后，请求 `http://127.0.0.1:4321/source-atlas` 成功返回来源河册与覆盖层 payload
+  - `2026-06-07` 在临时端口 `4321` 上请求 `http://127.0.0.1:4321/source-atlas/cbdb` 成功返回单条来源明细、覆盖层信息与关联典籍摘要
 - 缺口：
   - 未真正接入 Neo4j
   - 未真正接入 MeiliSearch
