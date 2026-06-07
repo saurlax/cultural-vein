@@ -769,6 +769,110 @@ function ForegroundScrollVeil({
   );
 }
 
+function ScrollRiverBackdrop({
+  activeEra,
+  traceFocus,
+  sceneFocus,
+}: Pick<RiverSceneProps, "activeEra" | "traceFocus" | "sceneFocus">) {
+  const eraIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
+  const warmth = eraIndex / Math.max(RIVER_ERA_ORDER.length - 1, 1);
+  const focusBoost = traceFocus?.active ? 0.16 : sceneFocus?.active ? 0.1 : 0;
+  const channelOpacity = 0.66 + warmth * 0.12 + focusBoost;
+  const branchOpacity = 0.26 + warmth * 0.08 + focusBoost * 0.45;
+  const segments = [
+    { left: "5%", top: "6%", width: "40%", height: "12%", rotate: -11 },
+    { left: "17%", top: "18%", width: "44%", height: "15%", rotate: 9 },
+    { left: "28%", top: "34%", width: "41%", height: "16%", rotate: -8 },
+    { left: "24%", top: "51%", width: "43%", height: "17%", rotate: 10 },
+    { left: "18%", top: "69%", width: "46%", height: "18%", rotate: -7 },
+    { left: "17%", top: "84%", width: "36%", height: "12%", rotate: 6 },
+  ] as const;
+  const branchStreams = [
+    { left: "45%", top: "20%", width: "19%", height: "6%", rotate: -24 },
+    { left: "47%", top: "48%", width: "23%", height: "7%", rotate: 18 },
+    { left: "10%", top: "58%", width: "18%", height: "6%", rotate: -30 },
+    { left: "39%", top: "77%", width: "21%", height: "6%", rotate: 26 },
+  ] as const;
+  const confluences = [
+    { left: "23%", top: "18%", size: "11rem" },
+    { left: "33%", top: "42%", size: "13rem" },
+    { left: "29%", top: "70%", size: "14rem" },
+  ] as const;
+
+  return (
+    <div className="pointer-events-none absolute inset-[4%_3%_4%_3%] z-[2] overflow-hidden">
+      {segments.map((segment, index) => (
+        <div
+          key={`scroll-river-segment-${index}`}
+          className="absolute rounded-[999px]"
+          style={{
+            left: segment.left,
+            top: segment.top,
+            width: segment.width,
+            height: segment.height,
+            transform: `rotate(${segment.rotate}deg)`,
+            opacity: channelOpacity,
+            background:
+              "radial-gradient(circle at 30% 50%, rgba(255,249,226,0.98) 0%, rgba(253,231,171,0.95) 18%, rgba(244,199,95,0.88) 40%, rgba(198,130,42,0.72) 72%, rgba(142,87,28,0.16) 100%)",
+            boxShadow:
+              "0 0 28px rgba(255,236,179,0.48), 0 0 68px rgba(214,156,54,0.28), inset 0 0 34px rgba(255,244,214,0.62)",
+          }}
+        >
+          <div
+            className="absolute inset-y-[18%] left-[10%] right-[16%] rounded-[999px]"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(255,251,239,0.88), rgba(255,240,187,0.82) 24%, rgba(247,206,111,0.58) 58%, rgba(255,246,221,0.76) 100%)",
+              opacity: 0.92,
+              filter: "blur(0.5px)",
+            }}
+          />
+          <div
+            className="absolute inset-y-[34%] left-[12%] right-[28%] rounded-[999px]"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(255,255,249,0.78), rgba(255,249,228,0.32), rgba(255,255,249,0.74))",
+              opacity: 0.72,
+            }}
+          />
+        </div>
+      ))}
+      {branchStreams.map((branch, index) => (
+        <div
+          key={`scroll-river-branch-${index}`}
+          className="absolute rounded-[999px] blur-[0.4px]"
+          style={{
+            left: branch.left,
+            top: branch.top,
+            width: branch.width,
+            height: branch.height,
+            transform: `rotate(${branch.rotate}deg)`,
+            opacity: branchOpacity,
+            background:
+              "linear-gradient(90deg, rgba(255,247,214,0), rgba(250,222,154,0.86) 18%, rgba(225,174,74,0.78) 48%, rgba(153,96,30,0.18) 100%)",
+            boxShadow: "0 0 22px rgba(237,196,103,0.24)",
+          }}
+        />
+      ))}
+      {confluences.map((pool, index) => (
+        <div
+          key={`scroll-river-pool-${index}`}
+          className="absolute rounded-full blur-[2px]"
+          style={{
+            left: pool.left,
+            top: pool.top,
+            width: pool.size,
+            height: pool.size,
+            opacity: 0.24 + warmth * 0.08 + focusBoost * 0.4,
+            background:
+              "radial-gradient(circle, rgba(255,248,223,0.92) 0%, rgba(250,219,140,0.64) 36%, rgba(213,151,56,0.2) 72%, rgba(213,151,56,0) 100%)",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 function EraRiverZones({
   books,
 }: {
@@ -2858,6 +2962,11 @@ export function RiverScene(props: RiverSceneProps) {
       <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_44%,rgba(255,241,189,0.24),transparent_38%),radial-gradient(circle_at_50%_78%,rgba(112,68,18,0.14),transparent_34%),linear-gradient(90deg,rgba(250,228,160,0.1),transparent_14%,transparent_86%,rgba(250,228,160,0.1))]" />
       <div className="pointer-events-none absolute inset-0 z-[1] opacity-35 [background-image:linear-gradient(rgba(132,86,28,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(132,86,28,0.05)_1px,transparent_1px)] [background-size:100%_42px,56px_100%]" />
       <div className="pointer-events-none absolute inset-0 z-[1] opacity-25 [background-image:radial-gradient(rgba(133,88,27,0.18)_0.6px,transparent_0.6px)] [background-size:18px_18px]" />
+      <ScrollRiverBackdrop
+        activeEra={props.activeEra}
+        traceFocus={props.traceFocus}
+        sceneFocus={props.sceneFocus}
+      />
       <div
         className={`pointer-events-none absolute left-1/2 top-3 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
           (showMobileTouchHint || isInteracting) && !mobilePanelOpen ? "opacity-100" : "opacity-0"
