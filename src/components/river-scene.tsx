@@ -1170,14 +1170,30 @@ function BranchMarkers({
   onSelectBook,
   hoveredBranchId,
   onHoverBranch,
+  cruiseProgress,
+  cruiseRunning,
 }: {
   annotations: RiverBranchAnnotation[];
   selectedBookSlug: string;
   onSelectBook: (slug: string) => void;
   hoveredBranchId?: string | null;
   onHoverBranch?: (branchId: string | null) => void;
+  cruiseProgress: number;
+  cruiseRunning: boolean;
 }) {
   const branchRef = useRef<THREE.Group>(null);
+  const branchProgressMap = useMemo(() => {
+    const orderedAnnotations = [...annotations].sort(
+      (left, right) => left.position[0] - right.position[0],
+    );
+
+    return new Map(
+      orderedAnnotations.map((annotation, index) => [
+        annotation.id,
+        orderedAnnotations.length <= 1 ? 0 : index / (orderedAnnotations.length - 1),
+      ]),
+    );
+  }, [annotations]);
 
   useFrame((state) => {
     if (!branchRef.current) {
@@ -1195,6 +1211,14 @@ function BranchMarkers({
       {annotations.map((annotation) => {
         const isHovered = hoveredBranchId === annotation.id;
         const isSelected = selectedBookSlug === annotation.targetSlug;
+        const branchProgress = branchProgressMap.get(annotation.id) ?? 0;
+        const revealDistance = Math.abs(branchProgress - cruiseProgress);
+        const revealBlend = THREE.MathUtils.clamp(1 - revealDistance / 0.16, 0, 1);
+        const shouldUseCruiseReveal = cruiseRunning && !selectedBookSlug && !hoveredBranchId;
+        const isCruiseNearby = shouldUseCruiseReveal && revealBlend > 0.34;
+        const markerRadius = isHovered || isSelected ? 0.14 : isCruiseNearby ? 0.125 : 0.1;
+        const markerOpacity = isHovered || isSelected ? 0.92 : isCruiseNearby ? 0.44 + revealBlend * 0.38 : 0.18;
+        const labelOpacity = isHovered || isSelected ? 1 : isCruiseNearby ? 0.36 + revealBlend * 0.56 : 0.08;
 
         return (
           <group key={annotation.id} position={annotation.position}>
@@ -1203,19 +1227,23 @@ function BranchMarkers({
               onPointerOver={() => onHoverBranch?.(annotation.id)}
               onPointerOut={() => onHoverBranch?.(null)}
             >
-              <sphereGeometry args={[isHovered || isSelected ? 0.14 : 0.11, 18, 18]} />
+              <sphereGeometry args={[markerRadius, 18, 18]} />
               <meshStandardMaterial
                 color={isSelected ? "#fde68a" : annotation.accentColor}
+                transparent
+                opacity={markerOpacity}
                 emissive={new THREE.Color(annotation.accentColor)}
-                emissiveIntensity={isHovered ? 1.5 : 1.1}
+                emissiveIntensity={
+                  isHovered ? 1.5 : isSelected ? 1.3 : isCruiseNearby ? 0.8 + revealBlend * 0.7 : 0.45
+                }
               />
             </mesh>
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
-              <ringGeometry args={[0.18, isHovered || isSelected ? 0.31 : 0.27, 40]} />
+              <ringGeometry args={[0.18, isHovered || isSelected ? 0.31 : isCruiseNearby ? 0.29 : 0.24, 40]} />
               <meshBasicMaterial
                 color={annotation.accentColor}
                 transparent
-                opacity={isHovered || isSelected ? 0.75 : 0.42}
+                opacity={isHovered || isSelected ? 0.75 : isCruiseNearby ? 0.24 + revealBlend * 0.34 : 0.08}
               />
             </mesh>
             <Text
@@ -1223,6 +1251,7 @@ function BranchMarkers({
               fontSize={0.12}
               maxWidth={1.6}
               color={isHovered || isSelected ? "#fef3c7" : "#e7e5e4"}
+              fillOpacity={labelOpacity}
               anchorX="center"
               anchorY="middle"
             >
@@ -1861,6 +1890,8 @@ function RiverWorld({
         onSelectBook={onSelectBook}
         hoveredBranchId={hoveredBranchId}
         onHoverBranch={onHoverBranch}
+        cruiseProgress={cruiseProgress}
+        cruiseRunning={viewMode === "river" && !traceFocus?.active && !sceneFocus?.active}
       />
       <BookMarkers
         books={books}
