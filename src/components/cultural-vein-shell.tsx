@@ -115,6 +115,51 @@ const branchAccentByLayer = {
   influence: "#c084fc",
 } as const;
 
+const eraNarratives: Record<
+  (typeof eras)[number],
+  {
+    lead: string;
+    trunk: string;
+    branch: string;
+  }
+> = {
+  "先秦": {
+    lead: "主河仍在上游聚束，核心是经典原点与最初的思想定型。",
+    trunk: "主干以《诗经》《尚书》《周易》《论语》为轴，奠定后世经学与义理的源头层。",
+    branch: "可从《孟子》与《左传》看思想分化与史学叙事如何开始外展。",
+  },
+  "两汉": {
+    lead: "河道开始显著放宽，经典整理、篇章析出与训诂系统同步成形。",
+    trunk: "《礼记》《大学》《中庸》《孝经》把礼治、教化与修身秩序重新编入主河道。",
+    branch: "《说文解字》《公羊传》一类支流开始把文字、义例与制度讨论接入主脉。",
+  },
+  "魏晋": {
+    lead: "主河进入重释与转写阶段，经学资源向文论、总集和新解释框架扩散。",
+    trunk: "《文心雕龙》《昭明文选》把经典源流转译为诗文批评与选本阅读传统。",
+    branch: "这一段更适合讲“经学资源怎样溢出主河”，走向诗学与文体理论支流。",
+  },
+  "隋唐": {
+    lead: "河势转入官学整理期，正义、疏解与制度化讲授让主流更稳定可传。",
+    trunk: "《尚书正义》代表的官学经疏，把原典重新固定成更大范围的教学主线。",
+    branch: "可顺着经疏支流讲注释体系如何充当河道整修者，放大经典传播半径。",
+  },
+  "宋元": {
+    lead: "这是支流爆发的一层，理学重组与通史编纂让整条河出现强烈分流。",
+    trunk: "《四书章句集注》《论语集注》《资治通鉴》把教材化、义理化与历史叙事推到高峰。",
+    branch: "最适合展示四书体系、史法支流与多层传播网络如何同时长成。",
+  },
+  "明清": {
+    lead: "河道进入考据、反思与再整理阶段，部分旧支流收束，部分新支流转深。",
+    trunk: "《日知录》这样的节点把经世批评、训诂回流和制度反思重新压入主线讨论。",
+    branch: "这一层适合讲“回看源头”的力量，展示支流如何折返主河，形成考据与反思。",
+  },
+  "近现代": {
+    lead: "河面抵达近现代，古典资源被重新改写成新的出版、审美与公共文化话语。",
+    trunk: "《人间词话》把古典诗学转译为现代审美判断，让整条河在近代重新发光。",
+    branch: "可从近现代研究文献、专题资料和公共传播场景继续把支流向现实空间外推。",
+  },
+};
+
 function deriveBranchAnnotations(
   activeEraIndex: number,
   allowedSlugs: Set<string>,
@@ -814,13 +859,14 @@ export function CulturalVeinShell() {
   ];
   const activeDesktopPanelConfig =
     desktopPanels.find((panel) => panel.id === activeDesktopPanel) ?? desktopPanels[0];
+  const activeEraNarrative = eraNarratives[activeEra];
   const activePanelNarrative =
     activeDesktopPanel === "search"
       ? resolvedSearchResult?.query
         ? `先由“${resolvedSearchResult.query}”照见河上典籍，再顺势入卷细读其文脉来路。`
         : "先从概念起笔，在河面上找到可切入的典籍节点。"
       : activeDesktopPanel === "era"
-        ? `这道河段当前停在${activeEra}，可沿时代水位前后推移，看文脉如何层层接续。`
+        ? `${activeEra} 这层河段里，${activeEraNarrative.lead}`
         : activeDesktopPanel === "category"
           ? `先收束门类与学派，再沿筛出的主线节点进入更清晰的讲述路径。`
           : activeSourceAtlasEntry
@@ -1067,6 +1113,24 @@ export function CulturalVeinShell() {
 
                 {activeDesktopPanel === "era" ? (
                   <div className="mt-4">
+                    <div className="rounded-[18px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                      <div className="text-[11px] tracking-[0.22em] text-[#d8c9a3]">时代提纲</div>
+                      <div className="mt-2 text-[12px] leading-6 text-[#f6e8c4]">
+                        {activeEraNarrative.lead}
+                      </div>
+                      <div className="mt-3 rounded-[14px] border border-[#ead8a6]/10 bg-[rgba(42,26,9,0.28)] px-3 py-2.5">
+                        <div className="text-[10px] tracking-[0.2em] text-[#d8c9a3]">主干</div>
+                        <div className="mt-1 text-[11px] leading-5 text-[#eadfbc]">
+                          {activeEraNarrative.trunk}
+                        </div>
+                      </div>
+                      <div className="mt-2 rounded-[14px] border border-[#ead8a6]/10 bg-[rgba(42,26,9,0.28)] px-3 py-2.5">
+                        <div className="text-[10px] tracking-[0.2em] text-[#d8c9a3]">支流</div>
+                        <div className="mt-1 text-[11px] leading-5 text-[#eadfbc]">
+                          {activeEraNarrative.branch}
+                        </div>
+                      </div>
+                    </div>
                     <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-[#d8c9a3]">
                       <span>时代水位</span>
                       <span className="text-amber-100">{activeEra}</span>
@@ -1979,10 +2043,13 @@ export function CulturalVeinShell() {
                     : activeDesktopPanel === "category"
                       ? `筛到 ${categoryFilter} 与 ${schoolFilter} 后，河道已经更收束，适合直接挑主线节点展开讲述。`
                       : "先顺着关系层级与来源河册找到入口，再从河面码头进入具体典籍与样本。"}
-              </div>
-            </div>
-          </div>
-        ) : null}
+                      </div>
+                    </div>
+                    <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-[11px] leading-5 text-[#eadfbc]">
+                      顺着这一层时代水位继续前后推移，就能看到主干如何加粗、支流如何增生或收束。
+                    </div>
+                  </div>
+                ) : null}
 
         {showMobileDossier && selectedBook && selectedDetail ? (
           <div className="absolute inset-x-3 bottom-20 z-40 md:hidden">
