@@ -74,7 +74,30 @@ export function buildSourceEvidence(detail: BookDetail): SourceEvidenceItem[] {
         .map((item) => ({
           label: item.title,
           detail: `${item.venue} · ${item.startTime}`,
+      })),
+    });
+  }
+
+  if (signals.borrowLibraries?.length || signals.borrowSamples?.length) {
+    items.push({
+      id: "borrow-samples",
+      source: "上海图书馆开放数据",
+      category: "公共流通",
+      countLabel: `${signals.borrowLibraries?.length ?? 0} 组流通馆 / ${signals.borrowSamples?.length ?? 0} 条借阅`,
+      summary: "把分馆借阅、流通操作与现实书目样本压成公共阅读传播证据，说明经典议题如何落到今天的城市借阅网络。",
+      traceNote: "样本可回查到流通馆、借阅操作、题名、作者与出版年等字段。",
+      samples: [
+        ...(signals.borrowLibraries ?? []).slice(0, 2).map((item) => ({
+          label: item.name,
+          detail: `流通记录 ${item.sampleCount}`,
         })),
+        ...(signals.borrowSamples ?? []).slice(0, 2).map((item) => ({
+          label: item.title,
+          detail: [item.library, item.action, item.author, item.publishYear]
+            .filter(Boolean)
+            .join(" · "),
+        })),
+      ].slice(0, 4),
     });
   }
 

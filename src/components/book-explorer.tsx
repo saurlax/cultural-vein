@@ -372,6 +372,17 @@ function buildSourceEvidenceAccessEntries(item: SourceEvidenceItem, detail: Book
     ];
   }
 
+  if (item.id === "borrow-samples") {
+    return [
+      {
+        id: "borrow-ledger",
+        label: "借阅流通回查",
+        href: null,
+        note: "已保留流通馆、流通操作、题名、作者与出版年字段，可继续顺着上海图书馆借阅开放数据回查原始流通记录。",
+      },
+    ];
+  }
+
   if (item.id === "institution-samples") {
     const seen = new Set<string>();
 
@@ -917,6 +928,14 @@ export function BookExplorer({
       return;
     }
 
+    if (evidenceId === "borrow-samples") {
+      if (visibleSpread[0]?.id) {
+        setSelectedSpreadId(visibleSpread[0].id);
+      }
+      setManualTab("spread");
+      return;
+    }
+
     if (evidenceId === "institution-samples") {
       const firstInstitutionRecord = institutionRecords[0];
 
@@ -968,6 +987,22 @@ export function BookExplorer({
       }
 
       setManualTab("timeline");
+      return;
+    }
+
+    if (evidenceId === "borrow-samples") {
+      const targetLibrary = detail.realWorldSignals?.borrowLibraries?.find((item) => item.name === sample.label);
+
+      if (targetLibrary) {
+        const linkedSpread = linkedVenueSpreadMap.get(targetLibrary.name);
+
+        if (linkedSpread?.id) {
+          setSelectedSpreadId(linkedSpread.id);
+        }
+      }
+
+      setSelectedSourceEvidenceId("borrow-samples");
+      setManualTab("spread");
       return;
     }
 
@@ -1925,6 +1960,8 @@ export function BookExplorer({
                             ? "查看地理传播"
                             : item.id === "event-samples"
                               ? "查看关联时间线"
+                              : item.id === "borrow-samples"
+                                ? "查看传播河势"
                               : item.id === "institution-samples"
                                   ? "查看版本与馆藏"
                                 : "转入相应层"}
@@ -2147,6 +2184,8 @@ export function BookExplorer({
                             ? "转入地理传播"
                             : activeSourceEvidence.id === "event-samples"
                               ? "转入关联时间线"
+                              : activeSourceEvidence.id === "borrow-samples"
+                                ? "转入传播河势"
                               : activeSourceEvidence.id === "institution-samples"
                                 ? "转入版本与馆藏线索"
                                 : "转入对应卷面"}

@@ -160,6 +160,17 @@ export interface BookDetail {
       imageRef?: string;
       sourceText?: string;
     }>;
+    borrowLibraries?: Array<{
+      name: string;
+      sampleCount: number;
+    }>;
+    borrowSamples?: Array<{
+      library: string;
+      title: string;
+      action: string;
+      publishYear?: string;
+      author?: string;
+    }>;
     cbdbMatchedPeople?: number;
     cbdbFallbackPeople?: number;
   };

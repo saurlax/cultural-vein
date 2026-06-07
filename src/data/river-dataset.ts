@@ -3,6 +3,7 @@ import type {
   BookDetail,
   BookNode,
   CitationEdge,
+  DatasetInsight,
   PersonNode,
   RiverDataset,
 } from "@/types/domain";
@@ -230,6 +231,7 @@ interface RealSupplementPayload {
   cbdbPeople?: RealSupplementPerson[];
   cbdbSummary?: RealSupplementCbdbSummary;
   shanghaiLibraryActivity?: RealSupplementActivity;
+  shanghaiLibraryBorrow?: DatasetInsight["shanghaiLibraryBorrow"];
   nanjingLibrarySample?: RealSupplementInstitutionSample;
   fudanArchiveSample?: RealSupplementArchiveSample;
   nanhuArchiveSample?: RealSupplementNanhuSample;
@@ -3110,6 +3112,8 @@ const cloneDetail = (detail: BookDetail): BookDetail => ({
         ...detail.realWorldSignals,
         venueSamples: detail.realWorldSignals.venueSamples?.map((item) => ({ ...item })),
         eventSamples: detail.realWorldSignals.eventSamples?.map((item) => ({ ...item })),
+        borrowLibraries: detail.realWorldSignals.borrowLibraries?.map((item) => ({ ...item })),
+        borrowSamples: detail.realWorldSignals.borrowSamples?.map((item) => ({ ...item })),
       }
     : undefined,
 });
@@ -5544,6 +5548,8 @@ const cbdbPeople = (supplementPayload.cbdbPeople ?? []) as RealSupplementPerson[
 const cbdbSummary = (supplementPayload.cbdbSummary ?? {}) as RealSupplementCbdbSummary;
 const shanghaiLibraryActivity = (supplementPayload.shanghaiLibraryActivity ??
   {}) as RealSupplementActivity;
+const shanghaiLibraryBorrow = (supplementPayload.shanghaiLibraryBorrow ??
+  {}) as NonNullable<import("@/types/domain").DatasetInsight["shanghaiLibraryBorrow"]>;
 const nanjingLibrarySample = (supplementPayload.nanjingLibrarySample ??
   {}) as RealSupplementInstitutionSample;
 const fudanArchiveSample = (supplementPayload.fudanArchiveSample ??
@@ -5922,6 +5928,37 @@ if (shanghaiLibraryActivity.available) {
           : "上海图书馆活动资料已映入这段河面。"),
       venueSamples,
       eventSamples: eventSamples.slice(0, 3),
+    };
+  }
+}
+
+if (shanghaiLibraryBorrow.available) {
+  const borrowLibraries = (shanghaiLibraryBorrow.topLibraries ?? []).slice(0, 4);
+  const borrowSamples = (shanghaiLibraryBorrow.sampleRecords ?? [])
+    .map((record) => ({
+      library: record.library ?? "未知分馆",
+      title: record.title ?? "借阅记录",
+      action: record.action ?? "流通记录",
+      publishYear: record.publishYear ?? "",
+      author: record.author ?? "",
+    }))
+    .slice(0, 4);
+
+  for (const slug of ["shijing", "lunyu", "liji", "daxue", "zhongyong", "xiaojing"] as const) {
+    const detail = details[slug];
+    detail.realWorldSignals = {
+      ...detail.realWorldSignals,
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel ?? "上海图书馆活动资料",
+        "上海图书馆借阅流通",
+      ),
+      venueSummary:
+        detail.realWorldSignals?.venueSummary ??
+        (borrowLibraries.length > 0
+          ? `上图借阅流通样本已落到 ${borrowLibraries[0].name} 等公共馆际节点，可直接说明经典主题在现实阅读网络中的持续流动。`
+          : "上海图书馆借阅流通资料已映入这段河面。"),
+      borrowLibraries,
+      borrowSamples,
     };
   }
 }
