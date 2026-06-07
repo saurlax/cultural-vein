@@ -1164,7 +1164,7 @@ export function BookExplorer({
                 key={item}
                 type="button"
                 onClick={() => handleOpenSourceEvidence("institution-samples")}
-                className="rounded-full border border-amber-300/15 bg-black/15 px-3 py-1 text-xs text-amber-100 transition hover:bg-white/10"
+                className="rounded-full border border-amber-300/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-xs text-amber-100 transition hover:bg-[rgba(255,244,214,0.12)]"
               >
                 {item}
               </button>
@@ -1179,38 +1179,38 @@ export function BookExplorer({
             <button
               type="button"
               onClick={() => handleOpenSourceEvidence("cbdb-people")}
-              className="rounded-2xl border border-amber-300/10 bg-black/15 px-3 py-3 text-left transition hover:bg-white/10"
+              className="rounded-2xl border border-amber-300/18 bg-[rgba(255,244,214,0.08)] px-3 py-3 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
             >
               <div className="text-xs tracking-[0.2em] text-amber-100/70">
                 人物纪传
               </div>
-              <div className="mt-2 text-sm text-stone-100">
+              <div className="mt-2 text-sm text-[#fbf3da]">
                 纪传库对照 {detail.realWorldSignals.cbdbMatchedPeople ?? 0} 人
               </div>
-              <div className="mt-1 text-xs text-stone-400">
+              <div className="mt-1 text-xs text-[#cdb98d]">
                 旁支人物回声 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
               </div>
             </button>
             <button
               type="button"
               onClick={() => handleOpenSourceEvidence("venue-samples")}
-              className="rounded-2xl border border-amber-300/10 bg-black/15 px-3 py-3 text-left transition hover:bg-white/10"
+              className="rounded-2xl border border-amber-300/18 bg-[rgba(255,244,214,0.08)] px-3 py-3 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
             >
               <div className="text-xs tracking-[0.2em] text-amber-100/70">
                 传播现场
               </div>
-              <div className="mt-2 text-sm text-stone-100">
+              <div className="mt-2 text-sm text-[#fbf3da]">
                 {detail.realWorldSignals.venueSamples?.length
                   ? `上图场馆资料 ${detail.realWorldSignals.venueSamples.length} 组`
                   : "场馆实录"}
               </div>
-              <div className="mt-1 text-xs text-stone-400">
+              <div className="mt-1 text-xs text-[#cdb98d]">
                 活动事件资料 {detail.realWorldSignals.eventSamples?.length ?? 0} 条
               </div>
             </button>
           </div>
           <div className="mt-4 grid gap-3 xl:grid-cols-3">
-            <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
+            <div className="rounded-2xl border border-amber-300/18 bg-[rgba(255,244,214,0.08)] px-4 py-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-xs tracking-[0.2em] text-amber-100/75">
                   场馆来源
@@ -1231,22 +1231,22 @@ export function BookExplorer({
                           detail: `卷中回声 ${venue.sampleCount}`,
                         })
                       }
-                      className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left text-sm transition hover:bg-white/10"
+                      className="w-full rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-3 text-left text-sm transition hover:bg-[rgba(255,244,214,0.12)]"
                     >
-                      <div className="font-medium text-stone-100">{venue.name}</div>
-                      <div className="mt-1 text-xs text-stone-400">
+                      <div className="font-medium text-[#fbf3da]">{venue.name}</div>
+                      <div className="mt-1 text-xs text-[#cdb98d]">
                         卷中回声 {venue.sampleCount}
                       </div>
                     </button>
                   ))
                 ) : (
-                  <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4">
-                    <div className="text-sm text-stone-200">这一层尚未落到具体场馆，时间与传播两条线仍在为现实去处保留回声。</div>
+                  <div className="rounded-2xl border border-dashed border-[#d8b56f]/24 bg-[rgba(255,244,214,0.04)] px-3 py-4">
+                    <div className="text-sm text-[#eadfbc]">这一层尚未落到具体场馆，时间与传播两条线仍在为现实去处保留回声。</div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
                         onClick={() => setTab("timeline")}
-                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                        className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                       >
                         时间回声
                       </button>
@@ -1262,7 +1262,7 @@ export function BookExplorer({
                 )}
               </div>
             </div>
-            <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
+            <div className="rounded-2xl border border-amber-300/18 bg-[rgba(255,244,214,0.08)] px-4 py-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-xs tracking-[0.2em] text-amber-100/75">
                   活动事件
@@ -1281,22 +1281,22 @@ export function BookExplorer({
                         handleSelectEventSample(event);
                         setTab("timeline");
                       }}
-                      className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left text-sm transition hover:bg-white/10"
+                      className="w-full rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-3 text-left text-sm transition hover:bg-[rgba(255,244,214,0.12)]"
                     >
-                      <div className="font-medium text-stone-100">{event.title}</div>
-                      <div className="mt-1 text-xs text-stone-400">
+                      <div className="font-medium text-[#fbf3da]">{event.title}</div>
+                      <div className="mt-1 text-xs text-[#cdb98d]">
                         {event.venue} · {event.startTime}
                       </div>
                     </button>
                   ))
                 ) : (
-                  <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4">
-                    <div className="text-sm text-stone-200">这一层尚未落到具体活动事件，传播与人物两条支流仍在托住扩散路径。</div>
+                  <div className="rounded-2xl border border-dashed border-[#d8b56f]/24 bg-[rgba(255,244,214,0.04)] px-3 py-4">
+                    <div className="text-sm text-[#eadfbc]">这一层尚未落到具体活动事件，传播与人物两条支流仍在托住扩散路径。</div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
                         onClick={() => setTab("spread")}
-                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                        className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                       >
                         传播河势
                       </button>
@@ -1305,14 +1305,14 @@ export function BookExplorer({
                         onClick={() => setTab("people")}
                         className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                       >
-                        人物网络
+                        人物关系
                       </button>
                     </div>
                   </div>
                 )}
               </div>
             </div>
-            <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
+            <div className="rounded-2xl border border-amber-300/18 bg-[rgba(255,244,214,0.08)] px-4 py-4">
               <div className="flex items-center justify-between gap-3">
               <div className="text-xs tracking-[0.2em] text-amber-100/75">
                   馆藏落点
@@ -1947,9 +1947,9 @@ export function BookExplorer({
                 <button
                   type="button"
                   onClick={() => setTab("people")}
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                  className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                 >
-                  转看人物网络
+                  转看人物关系
                 </button>
               </div>
             </div>
@@ -1986,16 +1986,16 @@ export function BookExplorer({
                               className={`rounded-[22px] border px-4 py-3 text-left transition ${
                                 isActive
                                   ? "border-amber-300/35 bg-amber-300/12 shadow-lg shadow-amber-500/10"
-                                  : "border-white/10 bg-white/5 hover:bg-white/10"
+                                  : "border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] hover:bg-[rgba(255,244,214,0.12)]"
                               }`}
                             >
-                              <div className="text-xs uppercase tracking-[0.18em] text-stone-400">
+                              <div className="text-xs tracking-[0.18em] text-[#d8c9a3]">
                                 航段 {index + 1}
                               </div>
-                              <div className="mt-2 text-sm font-medium text-stone-50">
+                              <div className="mt-2 text-sm font-medium text-[#fbf3da]">
                                 {fromPlace?.name ?? "未知"} → {toPlace?.name ?? "未知"}
                               </div>
-                            <div className="mt-2 flex items-center gap-2 text-xs text-stone-400">
+                            <div className="mt-2 flex items-center gap-2 text-xs text-[#cdb98d]">
                               <span>{item.startYear} - {item.endYear}</span>
                               <span className="rounded-full bg-amber-300/10 px-2 py-1 text-amber-100">
                                 流量 {item.volume}
@@ -2046,7 +2046,7 @@ export function BookExplorer({
                                   className={`shrink-0 rounded-full border px-3 py-1.5 text-[10px] transition ${
                                     isActive
                                       ? "border-amber-300/35 bg-amber-300/14 text-amber-50"
-                                      : "border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                                      : "border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] text-[#eadfbc] hover:bg-[rgba(255,244,214,0.12)]"
                                   }`}
                                 >
                                   {item.startYear}
@@ -2086,7 +2086,7 @@ export function BookExplorer({
                             className={`rounded-full px-3 py-2 text-xs transition ${
                               activeSpreadIndex <= 0
                                 ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
-                                : "border border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                                : "border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] text-[#eadfbc] hover:bg-[rgba(255,244,214,0.12)]"
                             }`}
                           >
                             回看上一段
@@ -2109,7 +2109,7 @@ export function BookExplorer({
                               activeSpreadIndex === -1 ||
                               activeSpreadIndex >= visibleSpread.length - 1
                                 ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
-                                : "border border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                                : "border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] text-[#eadfbc] hover:bg-[rgba(255,244,214,0.12)]"
                             }`}
                           >
                             进入下一段
@@ -2141,13 +2141,13 @@ export function BookExplorer({
                           <button
                             type="button"
                             onClick={() => setTab("timeline")}
-                            className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-left transition hover:bg-white/10"
+                            className="w-full rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
                           >
                             <div className="flex items-center justify-between gap-3">
-                              <span className="text-sm font-medium text-stone-50">
+                              <span className="text-sm font-medium text-[#fbf3da]">
                                 传播时间
                               </span>
-                              <span className="text-xs text-stone-400">
+                              <span className="text-xs text-[#cdb98d]">
                                 {activeSpread.startYear} - {activeSpread.endYear}
                               </span>
                             </div>
@@ -2157,7 +2157,7 @@ export function BookExplorer({
                               >
                                 {spreadMeta.label}
                               </span>
-                              <span className="text-xs text-stone-400">
+                              <span className="text-xs text-[#cdb98d]">
                                 {spreadMeta.detail}
                               </span>
                             </div>
@@ -2173,20 +2173,20 @@ export function BookExplorer({
                           </button>
 
                           <div className="grid gap-3 md:grid-cols-2">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setSelectedSourceEvidenceId("venue-samples");
-                              }}
-                              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-left transition hover:bg-white/10"
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedSourceEvidenceId("venue-samples");
+                                }}
+                              className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
                             >
-                              <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                              <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
                                 起点
                               </div>
-                              <div className="mt-2 text-base font-semibold text-stone-50">
+                              <div className="mt-2 text-base font-semibold text-[#fbf3da]">
                                 {activeSpreadPlaces?.from?.name ?? "未知地点"}
                               </div>
-                              <p className="mt-2 text-sm leading-6 text-stone-300">
+                              <p className="mt-2 text-sm leading-6 text-[#eadfbc]">
                                 {activeSpreadPlaces?.from?.note ?? "当前航段已落到这座城市，可结合年份与航线继续追看传播落点。"}
                               </p>
                               <div className="mt-3 text-xs text-amber-100/80">
@@ -2196,19 +2196,19 @@ export function BookExplorer({
                             <button
                               type="button"
                               onClick={() => setTab("people")}
-                              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-left transition hover:bg-white/10"
+                              className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
                             >
-                              <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                              <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
                                 终点
                               </div>
-                              <div className="mt-2 text-base font-semibold text-stone-50">
+                              <div className="mt-2 text-base font-semibold text-[#fbf3da]">
                                 {activeSpreadPlaces?.to?.name ?? "未知地点"}
                               </div>
-                              <p className="mt-2 text-sm leading-6 text-stone-300">
-                                {activeSpreadPlaces?.to?.note ?? "这座终点城市承接当前航段，可继续回到时间线或人物网络追看扩散回声。"}
+                              <p className="mt-2 text-sm leading-6 text-[#eadfbc]">
+                                {activeSpreadPlaces?.to?.note ?? "这座终点城市承接当前航段，可继续回到时间线或人物关系追看扩散回声。"}
                               </p>
                               <div className="mt-3 text-xs text-amber-100/80">
-                                转看人物网络，继续讲清这段扩散在人物层如何接力。
+                                转看人物关系，继续讲清这段扩散在人物层如何接力。
                               </div>
                             </button>
                           </div>
