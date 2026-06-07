@@ -945,11 +945,11 @@ export function CulturalVeinShell() {
       : "border-amber-200/18 bg-[linear-gradient(135deg,rgba(97,63,14,0.42),rgba(34,22,8,0.9))]";
   const dossierMotionClass =
     transitionState === "diving"
-      ? "translate-y-6 scale-[0.985] opacity-0"
+      ? "translate-y-8 scale-[0.972] opacity-0 blur-[1px]"
       : transitionState === "settling"
         ? "translate-y-0 scale-100 opacity-100"
         : transitionState === "returning"
-          ? "translate-y-3 scale-[0.992] opacity-0"
+          ? "-translate-y-4 scale-[1.018] opacity-0 blur-[1px]"
           : "translate-y-0 scale-100 opacity-100";
   const resolvedSearchResult =
     searchResult?.query.trim() === searchTerm.trim() ? searchResult : null;
@@ -1020,14 +1020,14 @@ export function CulturalVeinShell() {
   const transitionLabel =
     transitionState === "diving"
       ? transitionTargetBook
-        ? `文卷正向《${transitionTargetBook.shortTitle}》展开`
-        : "文卷正徐徐展开"
+        ? `文卷正自河心向《${transitionTargetBook.shortTitle}》舒展开来`
+        : "文卷正自河心徐徐展开"
       : transitionState === "settling"
         ? transitionTargetBook
           ? `《${transitionTargetBook.shortTitle}》已停驻卷心`
-          : "文卷已经停驻卷心"
+          : "文卷已停驻卷心"
         : transitionState === "returning"
-          ? "文卷正缓缓收回主河道"
+          ? "文卷正沿水势缓缓归回主河道"
           : null;
 
   return (
@@ -1041,19 +1041,28 @@ export function CulturalVeinShell() {
           <div
             className={`absolute inset-0 transition-all duration-500 ${
               transitionState === "diving"
-                ? "bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.18),rgba(4,8,7,0.92)_68%)] backdrop-blur-[2px]"
+                ? "bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.22),rgba(4,8,7,0.9)_68%)] backdrop-blur-[3px]"
                 : transitionState === "settling"
-                  ? "bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.16),rgba(38,24,8,0.76)_72%)]"
-                  : "bg-[radial-gradient(circle_at_center,rgba(34,197,94,0.08),rgba(4,8,7,0.88)_70%)]"
+                  ? "bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.18),rgba(38,24,8,0.74)_72%)]"
+                  : "bg-[radial-gradient(circle_at_center,rgba(243,212,123,0.08),rgba(4,8,7,0.84)_70%)]"
             }`}
           />
           <div
             className={`absolute inset-y-0 left-1/2 w-[min(38vw,440px)] -translate-x-1/2 bg-[linear-gradient(180deg,rgba(248,223,154,0.16),rgba(248,223,154,0.03),rgba(248,223,154,0.14))] transition-all duration-500 ${
               transitionState === "diving"
-                ? "opacity-80 blur-[10px]"
+                ? "opacity-90 blur-[8px] scale-x-[1.02]"
                 : transitionState === "settling"
-                  ? "opacity-55 blur-[14px]"
-                  : "opacity-0 blur-[18px]"
+                  ? "opacity-62 blur-[12px] scale-x-100"
+                  : "opacity-0 blur-[18px] scale-x-[0.96]"
+            }`}
+          />
+          <div
+            className={`absolute inset-y-[14%] left-1/2 w-[min(44vw,520px)] -translate-x-1/2 rounded-[999px] border border-[#f5dfab]/18 bg-[linear-gradient(180deg,rgba(255,244,205,0.12),rgba(255,244,205,0.02),rgba(219,172,76,0.1))] transition-all duration-500 ${
+              transitionState === "diving"
+                ? "opacity-100 blur-[10px] scale-y-[1.08]"
+                : transitionState === "settling"
+                  ? "opacity-66 blur-[12px] scale-y-100"
+                  : "opacity-0 blur-[18px] scale-y-[0.92]"
             }`}
           />
           {transitionLabel ? (
@@ -1098,6 +1107,7 @@ export function CulturalVeinShell() {
               onClick={() => {
                 setShowMobileControls(false);
                 setShowMobileDossier(false);
+                setShowDesktopDossier(false);
                 setShowDesktopControls((current) => !current);
               }}
               className={`min-w-[3.6rem] rounded-full border px-3 py-2 text-[11px] transition ${
@@ -1114,6 +1124,8 @@ export function CulturalVeinShell() {
                 setShowDesktopDossier(false);
                 setActiveDesktopPanel("era");
                 setShowDesktopControls(true);
+                setShowMobileControls(false);
+                setShowMobileDossier(false);
               }}
               className="min-w-[3.6rem] rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-[11px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
             >
@@ -1125,6 +1137,8 @@ export function CulturalVeinShell() {
                 setShowDesktopDossier(false);
                 setActiveDesktopPanel("search");
                 setShowDesktopControls(true);
+                setShowMobileControls(false);
+                setShowMobileDossier(false);
               }}
               className="min-w-[3.6rem] rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-[11px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
             >
@@ -1184,7 +1198,7 @@ export function CulturalVeinShell() {
                 ))}
               </div>
 
-              <section className="mt-4 rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(62,40,11,0.2)] px-4 py-4">
+              <section className={`mt-4 rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(62,40,11,0.2)] px-4 py-4 transition-all duration-500 ease-out ${showDesktopControls ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">

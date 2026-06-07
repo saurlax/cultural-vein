@@ -966,6 +966,8 @@ function BookMarkers({
           !traceFocus?.active &&
           !sceneFocus?.active &&
           !hasSearchHighlight;
+        const isCruiseStrong = shouldUseCruiseReveal && revealBlend > 0.66;
+        const isCruiseSoft = shouldUseCruiseReveal && revealBlend > 0.42;
         const shouldDim =
           ((viewMode === "book" || Boolean(traceFocus?.active) || Boolean(sceneFocus?.active)) &&
           !isSelected &&
@@ -1013,11 +1015,15 @@ function BookMarkers({
               ? 0.2
             : isTraceLinked
               ? 0.19
-              : isNewestVisible
+              : isCruiseStrong
                 ? 0.18
+              : isCruiseSoft
+                ? 0.16
+              : isNewestVisible
+                ? 0.155
                 : shouldDim
                   ? 0.12
-                  : 0.16;
+                  : 0.135;
 
         return (
           <group key={book.id} position={book.coordinates}>
@@ -1032,12 +1038,16 @@ function BookMarkers({
                 transparent
                 opacity={
                   shouldDim
-                    ? 0.22
-                    : isHovered || isSearchHighlighted
+                    ? 0.14
+                    : isHovered || isSearchHighlighted || isSelected || isTraceLinked || isSceneFocused
                       ? 1
-                      : shouldUseCruiseReveal
-                        ? 0.24 + revealBlend * 0.74
-                        : 0.94
+                      : isCruiseStrong
+                        ? 0.38 + revealBlend * 0.48
+                      : isCruiseSoft
+                        ? 0.16 + revealBlend * 0.2
+                        : isNewestVisible
+                          ? 0.34
+                          : 0.16
                 }
                 emissive={new THREE.Color(emissive)}
                 emissiveIntensity={
@@ -1049,18 +1059,20 @@ function BookMarkers({
                       ? 1.25
                       : isTraceLinked
                         ? 1.1
-                        : shouldUseCruiseReveal
-                          ? 0.5 + revealBlend * 0.92
+                        : isCruiseStrong
+                          ? 0.48 + revealBlend * 0.68
+                        : isCruiseSoft
+                          ? 0.22 + revealBlend * 0.24
                         : isNewestVisible
-                          ? 1
-                          : 0.8
+                          ? 0.7
+                          : 0.28
                 }
               />
             </mesh>
-            {isTraceLinked || isSearchHighlighted || isHovered || isSelected ? (
+            {isTraceLinked || isSearchHighlighted || isHovered || isSelected || isCruiseStrong ? (
               <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
                 <ringGeometry
-                  args={[markerSize + 0.08, markerSize + (isTraceCurrent ? 0.2 : isHovered ? 0.18 : 0.15), 32]}
+                  args={[markerSize + 0.08, markerSize + (isTraceCurrent ? 0.2 : isHovered ? 0.18 : isCruiseStrong ? 0.16 : 0.15), 32]}
                 />
                 <meshBasicMaterial
                   color={
@@ -1070,15 +1082,17 @@ function BookMarkers({
                         ? "#fde68a"
                         : isSearchHighlighted
                           ? "#fde68a"
-                          : "#f59e0b"
+                          : isCruiseStrong
+                            ? "#facc15"
+                            : "#f59e0b"
                   }
                   transparent
-                  opacity={isTraceCurrent ? 0.65 : isHovered ? 0.52 : isSearchHighlighted ? 0.4 : 0.28}
+                  opacity={isTraceCurrent ? 0.65 : isHovered ? 0.52 : isSearchHighlighted ? 0.4 : isCruiseStrong ? 0.24 + revealBlend * 0.22 : 0.28}
                 />
               </mesh>
             ) : null}
             <Text
-              position={[0, isTraceLinked || isSearchHighlighted || isHovered ? 0.46 : 0.38, 0]}
+              position={[0, isTraceLinked || isSearchHighlighted || isHovered || isCruiseStrong ? 0.46 : 0.38, 0]}
               fontSize={isTraceCurrent ? 0.19 : isHovered ? 0.18 : 0.17}
               color={
                 isTraceCurrent
@@ -1095,6 +1109,17 @@ function BookMarkers({
                         ? "#78716c"
                         : "#e7e5e4"
               }
+              fillOpacity={
+                isTraceCurrent || isHovered || isSelected || isSearchHighlighted || isTraceLinked || isSceneFocused
+                  ? 1
+                  : isCruiseStrong
+                    ? 0.44 + revealBlend * 0.46
+                  : isCruiseSoft
+                    ? 0.12 + revealBlend * 0.16
+                    : isNewestVisible
+                      ? 0.28
+                      : 0.1
+              }
               anchorX="center"
               anchorY="middle"
             >
@@ -1108,7 +1133,7 @@ function BookMarkers({
                     ? `${book.shortTitle} · 概念命中`
                   : isTraceLinked
                     ? `${book.shortTitle} · 溯源链`
-                    : shouldUseCruiseReveal && revealBlend > 0.78
+                    : isCruiseStrong
                       ? `${book.shortTitle} · 河段正显`
                     : isNewestVisible
                       ? `${book.shortTitle} · 新显现`
@@ -1462,8 +1487,8 @@ function BranchMarkers({
         const shouldUseCruiseReveal = cruiseRunning && !selectedBookSlug && !hoveredBranchId;
         const isCruiseNearby = shouldUseCruiseReveal && revealBlend > 0.34;
         const markerRadius = isHovered || isSelected ? 0.14 : isCruiseNearby ? 0.125 : 0.1;
-        const markerOpacity = isHovered || isSelected ? 0.92 : isCruiseNearby ? 0.44 + revealBlend * 0.38 : 0.18;
-        const labelOpacity = isHovered || isSelected ? 1 : isCruiseNearby ? 0.36 + revealBlend * 0.56 : 0.08;
+        const markerOpacity = isHovered || isSelected ? 0.92 : isCruiseNearby ? 0.28 + revealBlend * 0.34 : 0.1;
+        const labelOpacity = isHovered || isSelected ? 1 : isCruiseNearby ? 0.24 + revealBlend * 0.44 : 0.04;
 
         return (
           <group key={annotation.id} position={annotation.position}>
@@ -1479,7 +1504,7 @@ function BranchMarkers({
                 opacity={markerOpacity}
                 emissive={new THREE.Color(annotation.accentColor)}
                 emissiveIntensity={
-                  isHovered ? 1.5 : isSelected ? 1.3 : isCruiseNearby ? 0.8 + revealBlend * 0.7 : 0.45
+                  isHovered ? 1.5 : isSelected ? 1.3 : isCruiseNearby ? 0.56 + revealBlend * 0.54 : 0.22
                 }
               />
             </mesh>
@@ -1488,7 +1513,7 @@ function BranchMarkers({
               <meshBasicMaterial
                 color={annotation.accentColor}
                 transparent
-                opacity={isHovered || isSelected ? 0.75 : isCruiseNearby ? 0.24 + revealBlend * 0.34 : 0.08}
+                opacity={isHovered || isSelected ? 0.75 : isCruiseNearby ? 0.18 + revealBlend * 0.24 : 0.04}
               />
             </mesh>
             <Text
