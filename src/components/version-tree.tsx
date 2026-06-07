@@ -52,7 +52,7 @@ export function VersionTree({
     <div className="rounded-[24px] border border-[#ead8a6]/16 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.16),rgba(92,62,20,0.84)_34%,rgba(38,24,8,0.92))] px-4 py-4">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">版本流变树</div>
+          <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">版本流变</div>
           <div className="mt-1 text-sm text-[#eadfbc]">按祖本、传抄、刊刻与重刊关系展开版本链</div>
         </div>
         <div className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.06)] px-3 py-1 text-xs text-[#eadfbc]">

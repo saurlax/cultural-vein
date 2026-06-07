@@ -2017,7 +2017,7 @@ export function BookExplorer({
                     {visibleSpread.length > 1 ? (
                       <div className="mt-4 rounded-2xl border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4">
                         <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-stone-400">
-                          <span>传播时间轴</span>
+                          <span>传播次第</span>
                           <span className="text-amber-100">
                             第 {Math.max(activeSpreadIndex + 1, 1)} / {visibleSpread.length} 段
                           </span>
@@ -2379,7 +2379,7 @@ export function BookExplorer({
       {activeTab === "people" ? (
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">人物关系网</h3>
+            <h3 className="text-lg font-medium">人物关系</h3>
             <span className="text-xs text-[#d8c9a3]">人物显影</span>
           </div>
           {visiblePeople.length === 0 ? (
@@ -2712,7 +2712,7 @@ export function BookExplorer({
       {activeTab === "versions" ? (
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">版本流变树</h3>
+            <h3 className="text-lg font-medium">版本流变</h3>
             <span className="text-xs text-[#d8c9a3]">版本显影</span>
           </div>
           {visibleVersions.length === 0 ? (
@@ -3397,7 +3397,7 @@ export function BookExplorer({
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
-                      横向时间轨
+                      横向年脉
                     </div>
                     <div className="mt-1 text-sm text-[#eadfbc]">
                       成书、刊刻、注疏与现实回声正在同一条时间轨上前后相接
@@ -3449,7 +3449,7 @@ export function BookExplorer({
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
-                        时间轨道
+                        年脉轨道
                       </div>
                       <button
                         type="button"
