@@ -481,10 +481,10 @@ export function PersonNetwork3D(props: PersonNetwork3DProps) {
   return (
     <div className="relative h-[360px] overflow-hidden rounded-[24px] border border-[#ead8a6]/16 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.16),rgba(92,62,20,0.84)_34%,rgba(38,24,8,0.92))]">
       <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-full border border-[#ead8a6]/16 bg-[rgba(94,64,21,0.62)] px-3 py-1 text-[11px] text-[#f5ecd3]">
-        3D 力导人物关系场
+        人物关系场
       </div>
       <div className="pointer-events-none absolute right-4 top-4 z-10 rounded-full border border-[#ead8a6]/16 bg-[rgba(94,64,21,0.58)] px-3 py-1 text-[11px] text-[#eadfbc]">
-        拖拽旋转 · 点击人物聚焦
+        拖卷换向 · 点人物聚焦
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-[linear-gradient(0deg,rgba(51,31,10,0.56),rgba(51,31,10,0))]" />
       <div className="pointer-events-none absolute inset-x-4 bottom-4 z-10 flex flex-wrap gap-2">

@@ -174,10 +174,10 @@ export function TraceLightField({ traces, activeIndex, playing }: TraceLightFiel
     <div className="relative h-[220px] overflow-hidden rounded-[20px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(92,62,20,0.86),rgba(34,21,8,0.96))]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.18),transparent_45%)]" />
       <div className="pointer-events-none absolute left-4 top-3 z-10 text-[10px] tracking-[0.22em] text-amber-100/78">
-        3D 溯源光场
+        溯源光场
       </div>
       <div className="pointer-events-none absolute bottom-3 left-4 right-4 z-10 flex items-center justify-between text-[10px] tracking-[0.22em] text-[#d8c9a3]">
-        <span>当前文本</span>
+        <span>卷心文本</span>
         <span>中间转引</span>
         <span>源头典籍</span>
       </div>
