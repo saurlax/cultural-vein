@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ead394;
-  --foreground: #5d3a12;
+  --background: #efe0ac;
+  --foreground: #5a3812;
 }
 
 @theme inline {
@@ -26,9 +26,9 @@ body {
   color: var(--foreground);
   font-family: var(--font-noto-serif-sc), serif;
   background-image:
-    radial-gradient(circle at top, rgba(255, 245, 205, 0.48), transparent 26%),
-    radial-gradient(circle at 18% 12%, rgba(222, 176, 70, 0.22), transparent 24%),
-    linear-gradient(180deg, #f3e3b8 0%, #e2c374 28%, #bf832f 62%, #86531a 100%);
+    radial-gradient(circle at top, rgba(255, 248, 223, 0.62), transparent 26%),
+    radial-gradient(circle at 18% 12%, rgba(220, 173, 74, 0.24), transparent 24%),
+    linear-gradient(180deg, #f7edd0 0%, #ecd39a 28%, #d6ab58 62%, #8b581f 100%);
 }
 
 button,
@@ -42,7 +42,7 @@ button,
 }
 
 canvas {
-  touch-action: pan-x pan-y pinch-zoom;
+  touch-action: none;
 }
 
 ::selection {

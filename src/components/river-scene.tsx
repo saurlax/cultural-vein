@@ -11,7 +11,7 @@ import type { RiverEra, ViewMode } from "@/types/domain";
 
 type OrbitControlsInstance = ElementRef<typeof OrbitControls>;
 const RIVER_ERA_ORDER: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
-const touchModeLabel = "单指拖河，双指缩放";
+const touchModeLabel = "单指拖动画卷，双指缩放";
 const ERA_FLOW_PROFILE: Record<
   RiverEra,
   {
@@ -2708,7 +2708,6 @@ export function RiverScene(props: RiverSceneProps) {
   const [isInteracting, setIsInteracting] = useState(false);
   const [showMobileTouchHint, setShowMobileTouchHint] = useState(true);
   const [eraTransitionProgress, setEraTransitionProgress] = useState(1);
-  const [openingSweep, setOpeningSweep] = useState(true);
   const previousEraRef = useRef<RiverEra>(props.activeEra);
   const canCruise =
     props.viewMode === "river" &&
@@ -2717,16 +2716,6 @@ export function RiverScene(props: RiverSceneProps) {
     !props.searchFocusSlug;
   const cruiseRunning = canCruise && autoCruise;
   const mobilePanelOpen = props.mobilePanelOpen ?? false;
-  const overlayBusy = props.overlayBusy ?? false;
-  const searchFocusBook =
-    props.searchFocusSlug
-      ? props.books.find((book) => book.slug === props.searchFocusSlug) ?? null
-      : null;
-  const hoveredBook = props.books.find((book) => book.slug === props.hoveredBookSlug) ?? null;
-  const hoveredDock = props.dockMarkers?.find((dock) => dock.id === props.hoveredDockId) ?? null;
-  const hoveredBranch = props.branchAnnotations?.find(
-    (annotation) => annotation.id === props.hoveredBranchId,
-  ) ?? null;
   const cruiseAnchorMoments = useMemo<CruiseAnchorMoment[]>(() => {
     const eraAnchors = RIVER_ERA_ORDER.map((era) => {
       const eraBooks = props.books
@@ -2789,38 +2778,6 @@ export function RiverScene(props: RiverSceneProps) {
       })
       .slice(0, 10);
   }, [props.books, props.branchAnnotations]);
-  const activeCruiseMoment =
-    cruiseAnchorMoments.find((anchor) => Math.abs(anchor.progress - cruiseProgress) <= 0.045) ??
-    null;
-  const activeCruiseStory =
-    activeCruiseMoment?.era ? RIVER_ERA_STORIES[activeCruiseMoment.era] : null;
-  const openingLabel = openingSweep ? "飞越文脉" : null;
-  const sceneHint = props.traceFocus?.active
-    ? `逆流正经过 ${props.traceFocus.currentTitle ?? "此处节点"}。`
-    : props.sceneFocus?.active
-      ? props.sceneFocus.detail
-      : searchFocusBook
-        ? `镜头已落到《${searchFocusBook.shortTitle}》所在河段。`
-      : isInteracting
-        ? "长河正在掌中转景。"
-      : activeCruiseMoment
-        ? activeCruiseMoment.detail
-      : hoveredDock
-        ? `${hoveredDock.label} 正从河面浮起。`
-      : props.sourceAtlasLabel && props.dockMarkers?.length
-        ? `${props.sourceAtlasLabel} 的来源线索已映入河道，顺着这股支流便可择书入卷。`
-        : hoveredBook
-        ? `${hoveredBook.shortTitle} 已浮出河心。`
-      : hoveredBranch
-          ? `${hoveredBranch.label} 正在显现。`
-          : props.selectedBookSlug
-            ? "典籍已经停驻岸边。"
-            : openingSweep
-              ? "镜头正沿黄河长卷掠过主河与支流，稍后便会落稳在可巡看的河面上。"
-            : cruiseRunning
-              ? "长河正自上游缓缓展开，先看支流落点，再顺势入卷。"
-              : "拖动长河巡看文脉起伏，顺着来源支流择书入卷。";
-
   useEffect(() => {
     if (previousEraRef.current === props.activeEra) {
       return;
@@ -2860,14 +2817,6 @@ export function RiverScene(props: RiverSceneProps) {
 
     return () => window.clearTimeout(timer);
   }, [showMobileTouchHint]);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setOpeningSweep(false);
-    }, 4200);
-
-    return () => window.clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     if (!cruiseRunning) {
@@ -2918,33 +2867,6 @@ export function RiverScene(props: RiverSceneProps) {
           {isInteracting ? "正在拖移长河" : touchModeLabel}
         </div>
       </div>
-      {canCruise && (activeCruiseStory?.trunk || sceneHint) && !overlayBusy ? (
-        <div
-        className={`absolute bottom-5 left-5 z-20 hidden w-[min(188px,calc(100vw-2.5rem))] transition-all duration-300 xl:block ${
-          mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
-        }`}
-      >
-          <div className="pointer-events-none rounded-[24px] border border-[#e7c97b]/10 bg-[linear-gradient(180deg,rgba(190,145,57,0.18),rgba(121,82,29,0.12))] px-3 py-3 text-[#f1e2bb] shadow-[0_14px_34px_rgba(35,20,6,0.06)] backdrop-blur-md">
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0 truncate text-[10px] tracking-[0.18em] text-[#fbf3da]">
-                {openingLabel ?? (activeCruiseMoment ? activeCruiseMoment.label : "上游入画")}
-              </div>
-              <div className="rounded-full border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#eadfbc]">
-                {openingSweep ? "开场中" : cruiseRunning ? "巡河中" : "停驻中"}
-              </div>
-            </div>
-            <div className="mt-2.5 h-1 overflow-hidden rounded-full bg-white/10">
-              <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,#b45309,#fcd34d)]"
-                style={{ width: `${Math.max(6, cruiseProgress * 100)}%` }}
-              />
-            </div>
-            <div className="mt-2.5 line-clamp-2 text-[10px] leading-5 text-[#e8d6aa]">
-              {activeCruiseStory?.trunk ?? sceneHint}
-            </div>
-          </div>
-        </div>
-      ) : null}
       <Canvas
         dpr={[1, 1.8]}
         onPointerDown={() => {
