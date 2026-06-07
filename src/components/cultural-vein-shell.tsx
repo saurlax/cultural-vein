@@ -788,6 +788,8 @@ export function CulturalVeinShell() {
       panel: "branch" as const,
     },
   ];
+  const eraProgressPercent =
+    eras.length > 1 ? Math.round((activeEraIndex / (eras.length - 1)) * 100) : 0;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#2b1906] text-stone-100">
@@ -1520,6 +1522,49 @@ export function CulturalVeinShell() {
           />
         </main>
 
+        <div className="pointer-events-none absolute inset-x-0 bottom-4 z-30 hidden justify-center px-4 md:flex">
+          <div className="pointer-events-auto w-[min(720px,calc(100vw-26rem))] rounded-[28px] border border-[#ead8a6]/24 bg-[linear-gradient(180deg,rgba(121,82,28,0.92),rgba(58,37,12,0.9))] px-5 py-4 shadow-2xl shadow-black/30 backdrop-blur-xl">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <div className="text-[11px] tracking-[0.3em] text-[#f2dfab]/80">时代水位轴</div>
+                <div className="mt-1 text-sm text-[#fbf3da]">
+                  顺着时间推移，看主河道如何由先秦缓缓长到近现代
+                </div>
+              </div>
+              <div className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.08)] px-3 py-1.5 text-xs text-[#f5e6bf]">
+                {activeEra} · {eraProgressPercent}%
+              </div>
+            </div>
+            <div className="mt-4">
+              <input
+                type="range"
+                min={0}
+                max={eras.length - 1}
+                step={1}
+                value={activeEraIndex}
+                onChange={(event) => setActiveEra(eras[Number(event.target.value)] ?? eras[0])}
+                className="h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
+              />
+              <div className="mt-3 grid grid-cols-7 gap-2 text-center text-[11px]">
+                {eras.map((era) => (
+                  <button
+                    key={`bottom-era-${era}`}
+                    type="button"
+                    onClick={() => setActiveEra(era)}
+                    className={`rounded-full px-2 py-1.5 transition ${
+                      activeEra === era
+                        ? "bg-amber-300/16 text-amber-100"
+                        : "text-[#d7c49a] hover:bg-[rgba(255,248,220,0.06)] hover:text-[#f0e0b8]"
+                    }`}
+                  >
+                    {era}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
         {showMobileControls ? (
           <div className="absolute inset-x-3 bottom-20 z-40 md:hidden">
             <div className={`pointer-events-auto max-h-[48vh] overflow-auto p-3 ${panelBaseClass}`}>
@@ -1928,6 +1973,38 @@ export function CulturalVeinShell() {
             </div>
           </div>
         ) : null}
+        <div className="pointer-events-none absolute inset-x-0 bottom-[4.75rem] z-30 px-3 md:hidden">
+          <div className="pointer-events-auto rounded-[24px] border border-[#ead8a6]/24 bg-[linear-gradient(180deg,rgba(121,82,28,0.9),rgba(58,37,12,0.88))] px-3 py-3 shadow-xl shadow-black/25 backdrop-blur-xl">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-[10px] tracking-[0.24em] text-[#f2dfab]/80">时代水位轴</div>
+                <div className="mt-1 text-xs text-[#fbf3da]">{activeEra}</div>
+              </div>
+              <div className="text-[10px] text-[#e6d2a1]">{eraProgressPercent}%</div>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={eras.length - 1}
+              step={1}
+              value={activeEraIndex}
+              onChange={(event) => setActiveEra(eras[Number(event.target.value)] ?? eras[0])}
+              className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
+            />
+            <div className="mt-2 flex flex-wrap justify-between gap-x-2 gap-y-1 text-[10px] text-[#d7c49a]">
+              {eras.map((era) => (
+                <button
+                  key={`mobile-bottom-era-${era}`}
+                  type="button"
+                  onClick={() => setActiveEra(era)}
+                  className={activeEra === era ? "text-amber-100" : ""}
+                >
+                  {era}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-4 z-30 md:hidden">
           <div className="pointer-events-auto flex justify-center px-3">
             <div className="flex items-center gap-2 rounded-full border border-[#ead8a6]/24 bg-[linear-gradient(180deg,rgba(132,94,35,0.94),rgba(70,45,14,0.94))] px-2 py-2 shadow-xl shadow-black/25 backdrop-blur-xl">
