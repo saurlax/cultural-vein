@@ -3263,6 +3263,17 @@ export function RiverScene(props: RiverSceneProps) {
       return nextDistance < closestDistance ? anchor : closest;
     }, null);
   }, [cruiseAnchorMoments, cruiseProgress]);
+  const activeEraCruiseAnchor = useMemo(() => {
+    if (!props.eraPlaybackActive) {
+      return null;
+    }
+
+    return (
+      cruiseAnchorMoments.find(
+        (anchor) => anchor.kind === "era" && anchor.era === props.activeEra,
+      ) ?? null
+    );
+  }, [cruiseAnchorMoments, props.activeEra, props.eraPlaybackActive]);
   const stageLead =
     !props.selectedBookSlug && cruiseRunning && activeCruiseAnchor
       ? activeCruiseAnchor.kind === "book"
@@ -3302,6 +3313,26 @@ export function RiverScene(props: RiverSceneProps) {
     setAutoCruise(false);
     setCruiseProgress(nextAnchor.progress);
   };
+  useEffect(() => {
+    if (!activeEraCruiseAnchor) {
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      setCruiseProgress((current) => {
+        const gap = Math.abs(current - activeEraCruiseAnchor.progress);
+
+        if (gap < 0.01) {
+          return activeEraCruiseAnchor.progress;
+        }
+
+        return THREE.MathUtils.lerp(current, activeEraCruiseAnchor.progress, 0.72);
+      });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [activeEraCruiseAnchor]);
+
   useEffect(() => {
     if (previousEraRef.current === props.activeEra) {
       return;
