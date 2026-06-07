@@ -958,7 +958,7 @@ export function CulturalVeinShell() {
       ? resolvedSearchResult.relatedConcepts
       : defaultConceptSuggestions;
   const panelBaseClass =
-    "rounded-[28px] border border-[#e5c97f]/28 bg-[linear-gradient(180deg,rgba(162,123,53,0.82),rgba(100,68,23,0.76))] shadow-2xl shadow-black/24 backdrop-blur-xl";
+    "rounded-[28px] border border-[#e5c97f]/24 bg-[linear-gradient(180deg,rgba(171,131,57,0.78),rgba(99,67,24,0.68))] shadow-[0_18px_56px_rgba(68,39,9,0.22)] backdrop-blur-xl";
   const desktopPanels: Array<{
     id: "search" | "era" | "category" | "branch";
     label: string;
@@ -993,20 +993,6 @@ export function CulturalVeinShell() {
   const activeDesktopPanelConfig =
     desktopPanels.find((panel) => panel.id === activeDesktopPanel) ?? desktopPanels[0];
   const activeEraNarrative = eraNarratives[activeEra];
-  const activePanelNarrative =
-    activeDesktopPanel === "search"
-      ? resolvedSearchResult?.query
-        ? `“${resolvedSearchResult.query}”已在河面照出相应典籍与支流脉络。`
-        : "概念、典籍与支流正在同一条河面上彼此映照。"
-      : activeDesktopPanel === "era"
-        ? `${activeEra} 河段里，${activeEraNarrative.lead}`
-        : activeDesktopPanel === "category"
-          ? "门类与学派收束之后，主线脉络会在河面上显得更清晰。"
-          : activeSourceAtlasEntry
-            ? "这股来源已经映上河面，与主河道共同构成可回查的现实落点。"
-            : activeBranchAnnotation
-              ? activeBranchAnnotation.description
-              : "主河道与来源支流正在同一卷面上交汇展开。";
   const sourceAtlasNeighborEntries =
     activeSourceAtlasIndex >= 0
       ? [1]
@@ -1103,8 +1089,10 @@ export function CulturalVeinShell() {
               顺河巡看典籍主脉，点中节点即可入卷细览。
             </div>
           </div>
+        </div>
 
-          <div className="pointer-events-auto flex items-center gap-2">
+        <div className="pointer-events-none absolute right-4 top-1/2 z-30 hidden -translate-y-1/2 md:block lg:right-5">
+          <div className="pointer-events-auto flex flex-col items-center gap-2 rounded-[28px] border border-[#e3c47a]/22 bg-[linear-gradient(180deg,rgba(164,121,47,0.68),rgba(91,60,20,0.62))] px-2 py-3 shadow-[0_16px_40px_rgba(61,34,8,0.18)] backdrop-blur-xl">
             <button
               type="button"
               onClick={() => {
@@ -1112,9 +1100,35 @@ export function CulturalVeinShell() {
                 setShowMobileDossier(false);
                 setShowDesktopControls((current) => !current);
               }}
-              className="hidden rounded-full border border-[#e7c97b]/24 bg-[linear-gradient(180deg,rgba(164,123,52,0.92),rgba(96,64,24,0.88))] px-4 py-2 text-xs text-[#fff0cf] backdrop-blur-xl md:inline-flex"
+              className={`min-w-[3.6rem] rounded-full border px-3 py-2 text-[11px] transition ${
+                showDesktopControls
+                  ? "border-[#f5dfab]/40 bg-[#f3dfab] text-[#42290a]"
+                  : "border-[#ead8a6]/20 bg-[rgba(255,248,220,0.06)] text-[#f5ebc8]"
+              }`}
             >
-              {showDesktopControls ? "收河图" : "河图"}
+              河册
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowDesktopDossier(false);
+                setActiveDesktopPanel("era");
+                setShowDesktopControls(true);
+              }}
+              className="min-w-[3.6rem] rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-[11px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+            >
+              时代
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowDesktopDossier(false);
+                setActiveDesktopPanel("search");
+                setShowDesktopControls(true);
+              }}
+              className="min-w-[3.6rem] rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-[11px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+            >
+              寻章
             </button>
             {selectedBook ? (
               <button
@@ -1123,32 +1137,34 @@ export function CulturalVeinShell() {
                   setShowDesktopControls(false);
                   setShowDesktopDossier((current) => !current);
                 }}
-                className="hidden rounded-full border border-amber-200/24 bg-[linear-gradient(180deg,rgba(164,123,52,0.92),rgba(96,64,24,0.88))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl md:inline-flex"
+                className={`min-w-[3.6rem] rounded-full border px-3 py-2 text-[11px] transition ${
+                  showDesktopDossier
+                    ? "border-[#f5dfab]/40 bg-[#f3dfab] text-[#42290a]"
+                    : "border-[#ead8a6]/20 bg-[rgba(255,248,220,0.06)] text-[#f5ebc8]"
+                }`}
               >
-                {showDesktopDossier ? "收文卷" : "文卷"}
+                文卷
               </button>
             ) : null}
           </div>
         </div>
 
         {showDesktopControls ? (
-          <div className="absolute right-4 top-[132px] z-20 hidden w-[214px] sm:right-6 md:block lg:right-8 lg:w-[224px]">
+          <div className="absolute right-[4.8rem] top-1/2 z-20 hidden w-[204px] -translate-y-1/2 md:block lg:right-[5.2rem] lg:w-[212px]">
             <aside className="pointer-events-auto xl:pt-2">
               <div className={`p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">卷边题签</div>
-                  <div className="mt-1 text-base font-medium text-[#fbf3da]">河上长卷</div>
+                  <div className="text-[10px] tracking-[0.28em] text-[#d8c9a3]">卷边题签</div>
+                  <div className="mt-1 text-sm font-medium text-[#fbf3da]">河上长卷</div>
                 </div>
-                {viewMode === "book" ? (
-                  <button
-                    type="button"
-                    onClick={handleReturnToRiver}
-                    className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-2 text-xs text-amber-100 transition hover:bg-amber-300/15"
-                  >
-                    归河
-                  </button>
-                ) : null}
+                <button
+                  type="button"
+                  onClick={() => setShowDesktopControls(false)}
+                  className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-[10px] text-[#eadfbc]"
+                >
+                  收起
+                </button>
               </div>
 
               <div className="mt-4 flex flex-wrap gap-2">
@@ -1168,7 +1184,7 @@ export function CulturalVeinShell() {
                 ))}
               </div>
 
-              <section className="mt-4 rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(62,40,11,0.22)] px-4 py-4">
+              <section className="mt-4 rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(62,40,11,0.2)] px-4 py-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
@@ -1178,10 +1194,15 @@ export function CulturalVeinShell() {
                       {activeDesktopPanelConfig.summary}
                     </div>
                   </div>
-                  <div className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">旁注</div>
-                </div>
-                <div className="mt-3 rounded-2xl border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-[12px] leading-6 text-[#e8d8af]">
-                  {activePanelNarrative}
+                  {viewMode === "book" ? (
+                    <button
+                      type="button"
+                      onClick={handleReturnToRiver}
+                      className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-[10px] text-amber-100 transition hover:bg-amber-300/15"
+                    >
+                      归河
+                    </button>
+                  ) : null}
                 </div>
 
                 {activeDesktopPanel === "search" ? (
@@ -2126,7 +2147,8 @@ export function CulturalVeinShell() {
         ) : null}
         <div className="pointer-events-none absolute inset-x-0 bottom-3 z-30 md:hidden">
           <div className="pointer-events-auto">
-            <div className="mx-auto flex w-[min(calc(100vw-1.4rem),18rem)] items-center justify-center gap-1 rounded-full border border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(176,130,51,0.82),rgba(110,74,24,0.8))] px-1 py-1 shadow-lg shadow-black/15 backdrop-blur-xl">
+            <div className="mx-auto flex w-[min(calc(100vw-1.4rem),17rem)] items-center justify-center gap-1 rounded-[999px] border border-[#e7c97b]/24 bg-[linear-gradient(180deg,rgba(182,134,53,0.88),rgba(109,73,24,0.82))] px-1.5 py-1.5 shadow-[0_12px_26px_rgba(52,28,6,0.18)] backdrop-blur-xl">
+            <div className="mr-1 h-8 w-2 rounded-full bg-[linear-gradient(180deg,rgba(252,239,189,0.78),rgba(219,175,82,0.58))]" />
             <button
               type="button"
               onClick={() => {
@@ -2138,9 +2160,9 @@ export function CulturalVeinShell() {
                   ? "bg-[#f3dfab] text-[#42290a]"
                   : "border border-[#e7c97b]/20 bg-[rgba(255,240,199,0.08)] text-[#fff0c7]"
               }`}
-            >
-              河册
-            </button>
+              >
+                河册
+              </button>
             {selectedBook ? (
               <button
                 type="button"
@@ -2157,6 +2179,7 @@ export function CulturalVeinShell() {
                 入卷
               </button>
             ) : null}
+            <div className="ml-1 h-8 w-2 rounded-full bg-[linear-gradient(180deg,rgba(252,239,189,0.78),rgba(219,175,82,0.58))]" />
             </div>
           </div>
         </div>
