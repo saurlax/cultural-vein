@@ -291,6 +291,7 @@ export function CulturalVeinShell() {
   const [transitionState, setTransitionState] = useState<
     "idle" | "diving" | "settling" | "returning"
   >("idle");
+  const [transitionTargetSlug, setTransitionTargetSlug] = useState<string | null>(null);
 
   const activeEraIndex = eras.indexOf(activeEra);
   const schools = useMemo(
@@ -495,16 +496,20 @@ export function CulturalVeinShell() {
 
     setSceneFocus(null);
     setEntryExplorerTab(nextEntryTab);
+    setTransitionTargetSlug(slug);
     setTransitionState("diving");
     window.setTimeout(() => {
       setShowDesktopDossier(true);
       setShowDesktopControls(false);
+      setShowMobileControls(false);
+      setShowMobileDossier(true);
       setSelectedBookSlug(slug);
       setTransitionState("settling");
     }, 180);
   };
 
   const handleReturnToRiver = () => {
+    setTransitionTargetSlug(selectedBookSlug || null);
     setTransitionState("returning");
     window.setTimeout(() => {
       setTraceFocus(null);
@@ -905,6 +910,21 @@ export function CulturalVeinShell() {
   }, [activeEra, filteredBooks]);
   const eraProgressPercent =
     eras.length > 1 ? Math.round((activeEraIndex / (eras.length - 1)) * 100) : 0;
+  const transitionTargetBook = transitionTargetSlug
+    ? riverDataset.books.find((book) => book.slug === transitionTargetSlug) ?? null
+    : null;
+  const transitionLabel =
+    transitionState === "diving"
+      ? transitionTargetBook
+        ? `文卷正向《${transitionTargetBook.shortTitle}》展开`
+        : "文卷正徐徐展开"
+      : transitionState === "settling"
+        ? transitionTargetBook
+          ? `《${transitionTargetBook.shortTitle}》已停驻卷心`
+          : "文卷已经停驻卷心"
+        : transitionState === "returning"
+          ? "文卷正缓缓收回主河道"
+          : null;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#2d1a07] text-stone-100">
@@ -931,6 +951,16 @@ export function CulturalVeinShell() {
                   : "opacity-0 blur-[18px]"
             }`}
           />
+          {transitionLabel ? (
+            <div className="absolute left-1/2 top-16 w-[min(32rem,calc(100vw-2.5rem))] -translate-x-1/2">
+              <div className="rounded-[26px] border border-[#ecd18a]/20 bg-[linear-gradient(180deg,rgba(135,96,31,0.72),rgba(74,47,15,0.72))] px-5 py-4 text-center shadow-2xl shadow-black/20 backdrop-blur-md">
+                <div className="text-[10px] tracking-[0.32em] text-[#f2dfab]/80">
+                  {transitionState === "returning" ? "归河过渡" : "入卷过渡"}
+                </div>
+                <div className="mt-2 text-sm leading-7 text-[#fbf1d2]">{transitionLabel}</div>
+              </div>
+            </div>
+          ) : null}
         </div>
       ) : null}
 
