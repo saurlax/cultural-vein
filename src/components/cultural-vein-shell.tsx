@@ -1199,10 +1199,6 @@ export function CulturalVeinShell() {
       : activeEra === "宋元"
         ? "此处正是支流奔涌最盛的一段河身。"
         : "顺着黄河长卷巡看主河、支流与时代起伏。";
-  const openingSourceLead =
-    activeSourceAtlasEntry?.name
-      ? `当前高光正牵向 ${activeSourceAtlasEntry.name} 这股真实来源支流。`
-      : "首屏高光节点已优先牵到真实来源可落点的河段。";
   const openingSourcePreviewBooks = useMemo(() => {
     if (selectedBook) {
       return [];
@@ -1278,9 +1274,9 @@ export function CulturalVeinShell() {
 
       <div className="relative z-10 min-h-screen">
         {showDesktopControls ? (
-          <div className="absolute left-4 top-4 z-20 hidden w-[min(22rem,calc(100vw-28rem))] md:block lg:left-6 lg:top-6 lg:w-[23rem]">
+          <div className="absolute left-4 top-4 z-20 hidden w-[min(18.75rem,calc(100vw-32rem))] md:block lg:left-6 lg:top-6 lg:w-[19.5rem]">
             <aside className="pointer-events-auto xl:pt-2">
-              <div className={`relative overflow-hidden p-3.5 ${panelBaseClass}`}>
+              <div className={`relative max-h-[min(76vh,52rem)] overflow-hidden p-3.5 ${panelBaseClass}`}>
               <div className="pointer-events-none absolute inset-y-5 left-2 w-px bg-[linear-gradient(180deg,transparent,rgba(244,220,156,0.42),transparent)]" />
               <div className="pointer-events-none absolute inset-y-5 right-2 w-px bg-[linear-gradient(180deg,transparent,rgba(213,167,70,0.34),transparent)]" />
               <div className="flex items-center justify-between gap-3">
@@ -1295,8 +1291,7 @@ export function CulturalVeinShell() {
 
               <div className="mt-3 rounded-[22px] border border-[#d9b86b]/18 bg-[rgba(255,252,240,0.32)] px-3 py-3 text-[#6f4b18]">
                 <div className="text-[12px] leading-6">{openingLead}</div>
-                <div className="mt-2 text-[11px] leading-5 text-[#8d6a2c]">{openingSourceLead}</div>
-                <div className="mt-2 text-[11px] leading-5 text-[#7a571d]">{landingNarrative}</div>
+                <div className="mt-2 text-[11px] leading-5 text-[#8d6a2c]">{landingNarrative}</div>
                 {openingSourcePreviewBooks.length ? (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {openingSourcePreviewBooks.map((book) => (
@@ -1336,7 +1331,7 @@ export function CulturalVeinShell() {
                 ))}
               </div>
 
-              <section className={`mt-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(62,40,11,0.18)] px-3 py-3 transition-all duration-500 ease-out ${showDesktopControls ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}>
+              <section className={`mt-3 max-h-[min(56vh,37rem)] overflow-auto rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(62,40,11,0.18)] px-3 py-3 pr-2 transition-all duration-500 ease-out ${showDesktopControls ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-[10px] tracking-[0.22em] text-[#d8c9a3]">
@@ -1614,24 +1609,8 @@ export function CulturalVeinShell() {
                         <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">关系层级</div>
                         <div className="text-[11px] text-[#c9b68a]">河上脉络</div>
                       </div>
-                      <div className="mt-3 grid gap-2 text-[11px] text-[#eadfbc]">
-                        {(Object.keys(relationLayerMeta) as Array<keyof typeof relationLayerMeta>).map((layer) => (
-                          <div
-                            key={`desktop-layer-legend-${layer}`}
-                            className={`rounded-[14px] border px-3 py-2 ${relationLayerMeta[layer].tone}`}
-                          >
-                            <div className="font-medium">{relationLayerMeta[layer].label}</div>
-                            <div className="mt-1 text-[10px] leading-5 opacity-80">
-                              {layer === "metadata"
-                                ? "用于展示书目、版本与主线挂接关系。"
-                                : layer === "explicit"
-                                  ? "原文、注疏或目录中能够直接找到援引证据。"
-                                  : layer === "semantic"
-                                    ? "主题、义理或术语高度接近，构成中程支流。"
-                                    : "通过人物、时代与学术路径形成的间接回响。"}
-                            </div>
-                          </div>
-                        ))}
+                      <div className="mt-3 rounded-[14px] border border-[#ead8a6]/10 bg-[rgba(255,248,220,0.05)] px-3 py-2.5 text-[11px] leading-5 text-[#eadfbc]">
+                        只保留四层主脉提示，顺着色签点选即可切到对应河段，不再让说明块压住河面。
                       </div>
                       <div className="mt-3 flex flex-wrap gap-2">
                         {relationSummary.map(({ layer, count }) => (
