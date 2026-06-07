@@ -11,7 +11,7 @@ import type { RiverEra, ViewMode } from "@/types/domain";
 
 type OrbitControlsInstance = ElementRef<typeof OrbitControls>;
 const RIVER_ERA_ORDER: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
-const touchModeLabel = "单指拖河巡看，双指缩放卷面";
+const touchModeLabel = "单指拖河，双指缩放";
 const RIVER_ERA_STORIES: Record<
   RiverEra,
   {
@@ -2511,16 +2511,17 @@ export function RiverScene(props: RiverSceneProps) {
     <div
       ref={containerRef}
       onContextMenu={(event) => event.preventDefault()}
-      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#d7ab56]/60 bg-[#c98b34] shadow-[0_0_110px_rgba(107,68,18,0.2)] [touch-action:pan-x_pinch-zoom]"
+      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#d7ab56]/46 bg-[radial-gradient(circle_at_50%_42%,#efc86c_0%,#d8a246_28%,#c28733_56%,#a96623_100%)] shadow-[0_0_140px_rgba(107,68,18,0.18)] [touch-action:pan-x_pinch-zoom]"
     >
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-[linear-gradient(90deg,rgba(253,236,187,0.84),rgba(253,236,187,0.2),transparent)]" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-[linear-gradient(270deg,rgba(228,183,86,0.82),rgba(228,183,86,0.18),transparent)]" />
-      <div className="pointer-events-none absolute inset-y-0 left-2 z-10 w-[3px] rounded-full bg-[linear-gradient(180deg,rgba(255,244,205,0.95),rgba(218,173,78,0.55),rgba(255,244,205,0.9))]" />
-      <div className="pointer-events-none absolute inset-y-0 right-2 z-10 w-[3px] rounded-full bg-[linear-gradient(180deg,rgba(255,239,196,0.92),rgba(198,143,48,0.55),rgba(255,239,196,0.88))]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-36 bg-[linear-gradient(180deg,rgba(255,243,202,0.5),rgba(211,154,58,0))]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-44 bg-[linear-gradient(0deg,rgba(157,104,29,0.44),rgba(157,104,29,0))]" />
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_46%,rgba(254,233,166,0.2),transparent_42%),linear-gradient(90deg,rgba(250,228,160,0.08),transparent_18%,transparent_82%,rgba(250,228,160,0.08))]" />
-      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#efd38f]/28 bg-[rgba(150,104,31,0.22)] px-3 py-1.5 text-[10px] text-[#fff3d0] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-[linear-gradient(90deg,rgba(254,240,196,0.92),rgba(254,240,196,0.24),transparent)]" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-[linear-gradient(270deg,rgba(231,188,96,0.86),rgba(231,188,96,0.22),transparent)]" />
+      <div className="pointer-events-none absolute inset-y-0 left-2 z-10 w-[4px] rounded-full bg-[linear-gradient(180deg,rgba(255,247,218,0.98),rgba(219,176,82,0.56),rgba(255,247,218,0.92))]" />
+      <div className="pointer-events-none absolute inset-y-0 right-2 z-10 w-[4px] rounded-full bg-[linear-gradient(180deg,rgba(255,241,201,0.96),rgba(201,145,49,0.56),rgba(255,241,201,0.9))]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-40 bg-[linear-gradient(180deg,rgba(255,246,214,0.52),rgba(219,165,64,0.12),rgba(211,154,58,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-48 bg-[linear-gradient(0deg,rgba(140,92,27,0.52),rgba(157,104,29,0.08),rgba(157,104,29,0))]" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_44%,rgba(255,241,189,0.22),transparent_38%),radial-gradient(circle_at_50%_78%,rgba(112,68,18,0.16),transparent_34%),linear-gradient(90deg,rgba(250,228,160,0.08),transparent_14%,transparent_86%,rgba(250,228,160,0.08))]" />
+      <div className="pointer-events-none absolute inset-0 z-[1] opacity-35 [background-image:linear-gradient(rgba(132,86,28,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(132,86,28,0.05)_1px,transparent_1px)] [background-size:100%_42px,56px_100%]" />
+      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#efd38f]/22 bg-[rgba(150,104,31,0.18)] px-3 py-1.5 text-[10px] text-[#fff3d0] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
         <span className="tracking-[0.28em] text-[#fff0c2]">黄河文脉长卷</span>
         <span className="hidden h-3 w-px bg-[#ead8a6]/24 sm:block" />
         <span className="truncate text-[#f1e3bd]/86">
@@ -2540,25 +2541,25 @@ export function RiverScene(props: RiverSceneProps) {
           showMobileTouchHint || isInteracting ? "opacity-100" : "opacity-0"
         }`}
       >
-        <div className="rounded-full border border-[#e7c97b]/18 bg-[rgba(150,108,35,0.28)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
+        <div className="rounded-full border border-[#e7c97b]/14 bg-[rgba(150,108,35,0.2)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
           {isInteracting ? "正在拖移长河" : touchModeLabel}
         </div>
       </div>
       {canCruise ? (
         <div
-        className={`absolute bottom-5 left-5 z-20 hidden w-[min(220px,calc(100vw-2.5rem))] transition-opacity duration-300 xl:block ${
+        className={`absolute bottom-5 left-5 z-20 hidden w-[min(212px,calc(100vw-2.5rem))] transition-opacity duration-300 xl:block ${
           mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
         }`}
       >
-          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/14 bg-[linear-gradient(180deg,rgba(187,142,59,0.48),rgba(124,84,28,0.42))] px-3 py-3 text-[#f1e2bb] shadow-xl shadow-black/10 backdrop-blur-md">
+          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/12 bg-[linear-gradient(180deg,rgba(187,142,59,0.34),rgba(124,84,28,0.26))] px-3 py-3 text-[#f1e2bb] shadow-[0_20px_50px_rgba(35,20,6,0.12)] backdrop-blur-md">
             <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0 truncate text-[11px] text-[#fbf3da]">
+              <div className="min-w-0 truncate text-[10px] tracking-[0.18em] text-[#fbf3da]">
                 {activeCruiseMoment ? activeCruiseMoment.label : "上游入画"}
               </div>
               <button
                 type="button"
                 onClick={() => setAutoCruise((current) => !current)}
-                className={`rounded-full px-3 py-1.5 text-[11px] transition ${
+                className={`rounded-full px-2.5 py-1 text-[10px] transition ${
                   cruiseRunning
                     ? "bg-[#f3dfab] text-[#42290a]"
                     : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
@@ -2577,19 +2578,19 @@ export function RiverScene(props: RiverSceneProps) {
               <button
                 type="button"
                 onClick={() => nudgeCruise(-0.08)}
-                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
               >
                 上游
               </button>
               <button
                 type="button"
                 onClick={() => nudgeCruise(0.08)}
-                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
               >
                 下游
               </button>
             </div>
-            <div className="mt-3 text-[10px] leading-5 text-[#e8d6aa]">
+            <div className="mt-3 line-clamp-3 text-[10px] leading-5 text-[#e8d6aa]">
               {activeCruiseStory?.trunk ?? sceneHint}
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
