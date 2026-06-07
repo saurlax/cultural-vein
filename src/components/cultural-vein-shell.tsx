@@ -1163,10 +1163,10 @@ export function CulturalVeinShell() {
                           >
                             <div className="flex flex-wrap items-center justify-between gap-3">
                               <div className="text-xs font-medium text-[#fbf3da]">
-                                示范域已映出 {atlasMeta.demoBookCount} 部主河道典籍
+                                河上已映出 {atlasMeta.demoBookCount} 部主线典籍
                               </div>
                               <div className="text-[10px] text-[#f2dfab]">
-                                底座预留 {atlasMeta.totalBookCount.toLocaleString()} 种古籍
+                                可继续接入 {atlasMeta.totalBookCount.toLocaleString()} 种古籍
                               </div>
                             </div>
                             <div className="mt-2 text-[11px] leading-5 text-[#e6d7ae]">
@@ -1216,11 +1216,11 @@ export function CulturalVeinShell() {
                                       </span>
                                     </div>
                                     <div className="mt-1 truncate text-[10px] text-[#d8c9a3]">
-                                      {entry.stat ?? "真实来源样本"}
+                                      {entry.stat ?? "来源样本"}
                                     </div>
                                   </div>
                                   <div className="shrink-0 text-[10px] text-[#f2dfab]">
-                                    {isActive ? "已映照" : route ? "在河上" : "待切入"}
+                                    {isActive ? "已映照" : route ? "已连河道" : "可映入河道"}
                                   </div>
                                 </button>
                               );
@@ -1235,7 +1235,7 @@ export function CulturalVeinShell() {
                                   {activeSourceAtlasEntry.name}
                                 </div>
                                 <div className="mt-1 text-[11px] leading-5 text-[#e6d7ae]">
-                                  {activeSourceAtlasEntry.summary ?? "真实来源样本"}
+                                  {activeSourceAtlasEntry.summary ?? "来源样本"}
                                 </div>
                               </div>
                               <div className="shrink-0 text-[10px] text-[#f2dfab]">
@@ -1563,7 +1563,7 @@ export function CulturalVeinShell() {
                       className="mt-3 w-full rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
                     >
                       <div className="text-xs font-medium text-[#fbf3da]">
-                        示范域 {atlasMeta.demoBookCount} 部，底座预留 {atlasMeta.totalBookCount.toLocaleString()} 种
+                        河上已映出 {atlasMeta.demoBookCount} 部主线典籍，可继续接入 {atlasMeta.totalBookCount.toLocaleString()} 种
                       </div>
                       <div className="mt-2 text-[11px] leading-5 text-[#e6d7ae]">
                         {atlasMeta.expansionNote}
@@ -1600,11 +1600,11 @@ export function CulturalVeinShell() {
                                 <span className="truncate text-[11px] text-[#fbf3da]">{entry.name}</span>
                               </div>
                               <div className="mt-1 truncate text-[10px] text-[#d8c9a3]">
-                                {entry.stat ?? "真实来源样本"}
+                                {entry.stat ?? "来源样本"}
                               </div>
                             </div>
                             <div className="shrink-0 text-[10px] text-[#f2dfab]">
-                              {isActive ? "已映照" : route ? "在河上" : "待切入"}
+                              {isActive ? "已映照" : route ? "已连河道" : "可映入河道"}
                             </div>
                           </button>
                         );
@@ -1618,14 +1618,14 @@ export function CulturalVeinShell() {
                           <div className="truncate text-xs text-[#fbf3da]">{activeSourceAtlasEntry.name}</div>
                           {activeSourceRoute ? (
                             <div className="mt-1 text-[10px] text-[#c9b68a]">
-                              当前这股来源支流沿 {activeSourceRoute.points.length} 个样本码头铺开
+                              这股来源支流正沿 {activeSourceRoute.points.length} 个样本码头铺开
                             </div>
                           ) : null}
                         </div>
                         <div className="shrink-0 text-[10px] text-[#f2dfab]">{activeSourceAtlasEntry.stat}</div>
                       </div>
                       <div className="mt-1 text-[11px] leading-5 text-[#e6d7ae]">
-                        {activeSourceAtlasEntry.summary ?? "真实来源样本"}
+                        {activeSourceAtlasEntry.summary ?? "来源样本"}
                       </div>
                       <div className="mt-2 flex flex-wrap gap-2">
                         <button
@@ -1643,7 +1643,7 @@ export function CulturalVeinShell() {
                           }}
                           className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.04)] px-3 py-1.5 text-[10px] text-[#d8c9a3]"
                         >
-                          只看河面
+                          回到主河道
                         </button>
                       </div>
                       {activeSourceAtlasEntry.sampleRecords?.length ? (
@@ -1681,7 +1681,7 @@ export function CulturalVeinShell() {
                               activeSourceRecord.year,
                             ]
                               .filter(Boolean)
-                              .join(" · ") || "样本条目"}
+                              .join(" · ") || "来源条目"}
                           </div>
                           {activeSourceRecord.note ? (
                             <div className="mt-1 text-[11px] leading-5 text-[#dccb9c] line-clamp-3">
@@ -1863,7 +1863,7 @@ export function CulturalVeinShell() {
                     </div>
                   </div>
                   <div className="mt-3 rounded-[22px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-sm text-[#eadfbc]">
-                    {activeBranchAnnotation ? activeBranchAnnotation.description : "河上节点已经浮起，点任一典籍即可入卷细看。"}
+                    {activeBranchAnnotation ? activeBranchAnnotation.description : "河上节点已经浮起，可择一典籍顺势入卷细看。"}
                   </div>
                 </>
               ) : null}
