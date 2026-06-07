@@ -847,7 +847,7 @@ export function CulturalVeinShell() {
       ? resolvedSearchResult.relatedConcepts
       : defaultConceptSuggestions;
   const panelBaseClass =
-    "rounded-[28px] border border-[#dfbf74]/34 bg-[linear-gradient(180deg,rgba(151,114,52,0.92),rgba(88,58,19,0.9))] shadow-2xl shadow-black/30 backdrop-blur-xl";
+    "rounded-[28px] border border-[#e5c97f]/34 bg-[linear-gradient(180deg,rgba(161,122,53,0.94),rgba(104,70,22,0.92))] shadow-2xl shadow-black/30 backdrop-blur-xl";
   const desktopPanels: Array<{
     id: "search" | "era" | "category" | "branch";
     label: string;
@@ -1026,7 +1026,7 @@ export function CulturalVeinShell() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">河图</div>
-                  <div className="mt-1 text-base font-medium text-[#fbf3da]">河上卷签</div>
+                  <div className="mt-1 text-base font-medium text-[#fbf3da]">长河卷签</div>
                 </div>
                 {viewMode === "book" ? (
                   <button
@@ -1066,7 +1066,7 @@ export function CulturalVeinShell() {
                       {activeDesktopPanelConfig.summary}
                     </div>
                   </div>
-                  <div className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">卷面</div>
+                  <div className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">黄卷</div>
                 </div>
                 <div className="mt-3 rounded-2xl border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-[12px] leading-6 text-[#e8d8af]">
                   {activePanelNarrative}
@@ -1726,8 +1726,8 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileControls ? (
-          <div className="absolute inset-x-3 bottom-[4.75rem] z-40 md:hidden">
-            <div className={`pointer-events-auto max-h-[36vh] overflow-auto p-3 ${panelBaseClass}`}>
+          <div className="absolute inset-x-3 bottom-[4.35rem] z-40 md:hidden">
+            <div className={`pointer-events-auto max-h-[30vh] overflow-auto p-3 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">河图</div>
@@ -2122,8 +2122,8 @@ export function CulturalVeinShell() {
         ) : null}
 
         {showMobileDossier && selectedBook && selectedDetail ? (
-          <div className="absolute inset-x-3 bottom-[4.75rem] z-40 md:hidden">
-            <div className={`pointer-events-auto overflow-hidden p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
+          <div className="absolute inset-x-3 bottom-[4.35rem] z-40 md:hidden">
+            <div className={`pointer-events-auto max-h-[56vh] overflow-hidden p-3 transition-all duration-500 ease-out ${panelBaseClass} ${dossierMotionClass}`}>
               <div className="rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(245,231,188,0.16),rgba(104,72,25,0.14))] p-3">
                 <div className="rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(247,237,206,0.98),rgba(230,204,140,0.94))] px-4 py-4 text-[#42290a]">
                   <div className="rounded-[20px] border border-[#b89247]/16 bg-[rgba(255,255,255,0.18)] px-4 py-3">
@@ -2153,7 +2153,7 @@ export function CulturalVeinShell() {
                     {selectedBook.dynasty} 的这部典籍此刻正以 {focusModeLabel} 停驻卷心，卷内已牵出 {selectedBookCitations.length} 条关联
                     {selectedSources.length ? ` 与 ${selectedSources.length} 类来源回声。` : "。"}
                   </div>
-                  <div className="max-h-[calc(40vh-112px)] overflow-auto pr-1">
+                  <div className="max-h-[calc(34vh-96px)] overflow-auto pr-1">
                     <BookExplorer
                       key={`mobile-explorer-${selectedBook.slug}-${entryExplorerTab ?? "spread"}`}
                       book={selectedBook}
@@ -2171,16 +2171,16 @@ export function CulturalVeinShell() {
             </div>
           </div>
         ) : null}
-        <div className="pointer-events-none absolute bottom-4 right-3 z-30 md:hidden">
+        <div className="pointer-events-none absolute bottom-3 left-1/2 z-30 -translate-x-1/2 md:hidden">
           <div className="pointer-events-auto">
-            <div className="flex items-center gap-2 rounded-full border border-[#e7c97b]/26 bg-[linear-gradient(180deg,rgba(143,104,40,0.92),rgba(92,61,20,0.92))] px-2 py-2 shadow-xl shadow-black/20 backdrop-blur-xl">
+            <div className="flex items-center gap-1.5 rounded-full border border-[#e7c97b]/26 bg-[linear-gradient(180deg,rgba(143,104,40,0.94),rgba(92,61,20,0.94))] px-1.5 py-1.5 shadow-xl shadow-black/20 backdrop-blur-xl">
             <button
               type="button"
               onClick={() => {
                 setShowMobileDossier(false);
                 setShowMobileControls((current) => !current);
               }}
-              className={`rounded-full px-3 py-1.5 text-[10px] tracking-[0.2em] transition ${
+              className={`rounded-full px-3 py-1.5 text-[10px] transition ${
                 showMobileControls
                   ? "bg-[#f3dfab] text-[#42290a]"
                   : "border border-[#e7c97b]/20 bg-[rgba(255,240,199,0.08)] text-[#fff0c7]"

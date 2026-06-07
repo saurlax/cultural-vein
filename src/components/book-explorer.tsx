@@ -1064,10 +1064,10 @@ export function BookExplorer({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="text-xs tracking-[0.2em] text-amber-100/75">
-              时代联动
+              卷中时代
             </div>
             <div className="mt-1 text-sm font-medium text-amber-50">
-              卷内内容已联动到 {activeEra}
+              卷中脉络已推至 {activeEra}
             </div>
           </div>
           <button
@@ -1075,7 +1075,7 @@ export function BookExplorer({
             onClick={() => setTab("timeline")}
             className="rounded-full border border-[#d7b066]/24 bg-[rgba(252,220,124,0.12)] px-3 py-1 text-xs text-[#f7e4a7] transition hover:bg-[rgba(252,220,124,0.18)]"
           >
-            可见阶段 {eraLinkedSummary.timeline || 1} 条
+            可见年段 {eraLinkedSummary.timeline || 1} 条
           </button>
         </div>
         <div className="mt-3 rounded-2xl border border-[#ead8a6]/12 bg-[rgba(54,33,10,0.28)] px-3 py-3 text-sm leading-7 text-[#f6e8bd]">
@@ -1332,7 +1332,7 @@ export function BookExplorer({
                         onClick={() => setSelectedSourceEvidenceId("institution-samples")}
                         className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                       >
-                        来源总表
+                        来源总录
                       </button>
                     </div>
                   </div>
@@ -1519,7 +1519,7 @@ export function BookExplorer({
                       .join(" · ")}
                   </div>
                   <div className="mt-3 text-xs text-amber-100/80">
-                    机构总表会继续把馆藏与版本资源线并列展开。
+                    机构卷录会继续把馆藏与版本资源线并列展开。
                   </div>
                 </button>
                 <button
@@ -1545,7 +1545,7 @@ export function BookExplorer({
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                    来源证据总览
+                    来源卷录
                   </div>
                   <div className="mt-1 text-sm text-stone-300">
                     将真实来源按人物、场馆、事件与机构资源归并成可核验的证据条目。
@@ -1719,7 +1719,7 @@ export function BookExplorer({
                                 }`}
                               >
                                 <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">
-                                  {isActive ? "当前证据" : "相邻证据"}
+                                  {isActive ? "当前卷录" : "相邻卷录"}
                                 </div>
                                 <div className="mt-2 text-sm font-medium text-stone-100">
                                   {item.source}
@@ -1753,7 +1753,7 @@ export function BookExplorer({
                     </div>
                     <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
                       <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                        回查入口
+                        回看片段
                       </div>
                       <div className="mt-2 flex flex-wrap gap-2 text-sm leading-6 text-stone-300">
                         <span className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
@@ -1781,13 +1781,13 @@ export function BookExplorer({
                         className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                       >
                         {activeSourceEvidence.id === "cbdb-people"
-                          ? "前往人物关系视图"
+                          ? "转入人物关系"
                           : activeSourceEvidence.id === "venue-samples"
-                            ? "前往地理传播视图"
+                            ? "转入地理传播"
                             : activeSourceEvidence.id === "event-samples"
-                              ? "前往关联时间线"
+                              ? "转入关联时间线"
                               : activeSourceEvidence.id === "institution-samples"
-                                ? "前往版本与资源线索"
+                                ? "转入版本与资源线索"
                                 : "前往相关视图"}
                       </button>
                     </div>
@@ -1926,7 +1926,7 @@ export function BookExplorer({
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
-                          传播航线总览
+                          传播河段
                         </div>
                         <div className="mt-1 text-sm text-[#eadfbc]">
                           点任一航段即可落到对应传播阶段
@@ -2088,7 +2088,7 @@ export function BookExplorer({
                     <div className="flex items-center justify-between gap-3">
                       <div>
                         <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
-                          当前焦点
+                          当前河段
                         </div>
                         <div className="mt-1 text-lg font-semibold text-[#fbf3da]">
                           {activeSpreadPlaces?.from?.name ?? "未知"} → {activeSpreadPlaces?.to?.name ?? "未知"}
@@ -3402,7 +3402,7 @@ export function BookExplorer({
                   {activeTimelineItem ? (
                     <>
                       <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
-                        事件焦点
+                        事件显影
                       </div>
                       <div className="mt-2 flex items-center justify-between gap-3">
                         <div className="text-2xl font-semibold text-[#fbf3da]">
@@ -3600,7 +3600,7 @@ export function BookExplorer({
                                 <div className="flex items-center justify-between gap-3">
                                   <div className="text-sm font-medium text-stone-50">{item.title}</div>
                                   <div className="rounded-full bg-white/10 px-2 py-1 text-[10px] text-stone-300">
-                                    定位资源细览
+                                    资源落点
                                   </div>
                                 </div>
                                 <div className="mt-2 text-xs text-stone-400">
@@ -3642,7 +3642,7 @@ export function BookExplorer({
                                     }}
                                     className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
                                   >
-                                    机构总表
+                                    机构卷录
                                   </button>
                                 </div>
                               </button>
@@ -3655,7 +3655,7 @@ export function BookExplorer({
                             <div className="text-xs tracking-[0.2em] text-stone-400">
                               现实回声
                             </div>
-                            <div className="text-[10px] text-stone-500">机构回查入口</div>
+                            <div className="text-[10px] text-stone-500">机构回看片段</div>
                           </div>
                           <div className="mt-3 flex flex-wrap gap-2">
                             <button
@@ -3663,7 +3663,7 @@ export function BookExplorer({
                               onClick={() => handleOpenSourceEvidence("institution-samples")}
                               className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                             >
-                              机构总表
+                              机构卷录
                             </button>
                             <button
                               type="button"
