@@ -34,6 +34,20 @@ export function getSearchPayload(query: string) {
 }
 
 export function getInsightsPayload(): DatasetInsight {
+  const nanhuRecords = realSupplements.nanhuArchiveSample?.sampleRecords ?? [];
+  const redArchiveRecords = nanhuRecords
+    .filter((item) => {
+      const text = `${item.title ?? ""} ${item.sourceText ?? ""}`;
+      return (
+        text.includes("一大") ||
+        text.includes("南湖会议") ||
+        text.includes("题字") ||
+        text.includes("题诗") ||
+        text.includes("题词") ||
+        text.includes("代表简介")
+      );
+    })
+    .slice(0, 3);
   const sourceAtlas = [
     realSupplements.cbdbSummary?.available
       ? {
@@ -179,16 +193,12 @@ export function getInsightsPayload(): DatasetInsight {
           name: "红色文献",
           summary:
             "以南湖专题资料为锚点，把中共“一大”、代表人物与近现代纪念书写单独牵成一股红色支流。",
-          stat: `${Math.min(realSupplements.nanhuArchiveSample.sampleRecords?.length ?? 0, 3)} 组红色线索`,
-          magnitude: Math.min(realSupplements.nanhuArchiveSample.sampleRecords?.length ?? 0, 3),
+          stat: `${redArchiveRecords.length} 组红色线索`,
+          magnitude: redArchiveRecords.length,
           evidenceLabel: "南湖红色专题",
           evidenceNote: "直接取自南湖文献数据库中的中共“一大”、题词题诗与代表人物资料。",
-          sampleTitles: (realSupplements.nanhuArchiveSample.sampleRecords ?? [])
-            .slice(0, 3)
-            .map((item) => item.title),
-          sampleRecords: (realSupplements.nanhuArchiveSample.sampleRecords ?? [])
-            .slice(0, 3)
-            .map((item) => ({
+          sampleTitles: redArchiveRecords.map((item) => item.title),
+          sampleRecords: redArchiveRecords.map((item) => ({
               title: item.title,
               category: item.category,
               year: item.year,
