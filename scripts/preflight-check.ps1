@@ -2,10 +2,10 @@ $ErrorActionPreference = "Stop"
 
 Set-Location (Split-Path -Parent $PSScriptRoot)
 
-Write-Host "[1/4] Lint"
+Write-Host "[1/6] Lint"
 pnpm lint
 
-Write-Host "[2/4] Build"
+Write-Host "[2/6] Build"
 pnpm build
 
 Write-Host "[3/6] Backend health"
@@ -35,6 +35,24 @@ try {
 
   Write-Host "Source atlas sample:" $entries[0].name
   Write-Host "[5/6] Branch book smoke check"
+  $lunyuResponse = Invoke-WebRequest -Uri "http://127.0.0.1:4321/books/lunyu" -UseBasicParsing -TimeoutSec 5
+  $lunyuBook = $lunyuResponse.Content | ConvertFrom-Json
+  if ($lunyuBook.book.slug -ne "lunyu") {
+    throw "Core branch payload did not return lunyu."
+  }
+  if ((@($lunyuBook.related)).Count -lt 2) {
+    throw "Lunyu related graph is incomplete."
+  }
+
+  $zhouyiResponse = Invoke-WebRequest -Uri "http://127.0.0.1:4321/books/zhouyi" -UseBasicParsing -TimeoutSec 5
+  $zhouyiBook = $zhouyiResponse.Content | ConvertFrom-Json
+  if ($zhouyiBook.book.slug -ne "zhouyi") {
+    throw "Core branch payload did not return zhouyi."
+  }
+  if ((@($zhouyiBook.detail.passages)).Count -lt 2) {
+    throw "Zhouyi passages are incomplete."
+  }
+
   $familyResponse = Invoke-WebRequest -Uri "http://127.0.0.1:4321/books/zhuzi-jiali" -UseBasicParsing -TimeoutSec 5
   $familyBook = $familyResponse.Content | ConvertFrom-Json
   if ($familyBook.book.slug -ne "zhuzi-jiali") {
@@ -53,7 +71,7 @@ try {
     throw "Nanhu memorial branch source evidence is incomplete."
   }
 
-  Write-Host "Branch books:" $familyBook.book.title "," $nanhuBook.book.title
+  Write-Host "Branch books:" $lunyuBook.book.title "," $zhouyiBook.book.title "," $familyBook.book.title "," $nanhuBook.book.title
   Write-Host "[6/6] Source branch linkage check"
   $genealogyResponse = Invoke-WebRequest -Uri "http://127.0.0.1:4321/source-atlas/genealogy-archive" -UseBasicParsing -TimeoutSec 5
   $genealogyAtlas = $genealogyResponse.Content | ConvertFrom-Json
