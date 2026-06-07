@@ -536,7 +536,6 @@ export function CulturalVeinShell() {
     transitionState === "returning";
   const sourceAtlasEntries = insights?.sourceAtlas ?? [];
   const atlasMeta = insights?.atlasMeta ?? null;
-  const connectedSourceCount = sourceAtlasEntries.length;
   const inferSourceAtlasEra = (entry: NonNullable<typeof sourceAtlasEntries>[number]) => {
     const inferredEra =
       entry.sampleRecords
@@ -897,23 +896,6 @@ export function CulturalVeinShell() {
             : activeBranchAnnotation
               ? activeBranchAnnotation.description
               : "主河道与来源支流正在同一卷面上交汇展开。";
-  const compactStatButtons = [
-    {
-      label: "典籍",
-      value: filteredBooks.length,
-      panel: "search" as const,
-    },
-    {
-      label: "关系",
-      value: visibleCitations.length,
-      panel: "branch" as const,
-    },
-    {
-      label: "来源",
-      value: connectedSourceCount || "--",
-      panel: "branch" as const,
-    },
-  ];
   const sourceAtlasNeighborEntries =
     activeSourceAtlasIndex >= 0
       ? [-1, 1]
@@ -1745,7 +1727,7 @@ export function CulturalVeinShell() {
 
         {showMobileControls ? (
           <div className="absolute inset-x-3 bottom-[4.75rem] z-40 md:hidden">
-            <div className={`pointer-events-auto max-h-[44vh] overflow-auto p-3 ${panelBaseClass}`}>
+            <div className={`pointer-events-auto max-h-[36vh] overflow-auto p-3 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">河图</div>
@@ -1759,48 +1741,14 @@ export function CulturalVeinShell() {
                   收卷
                 </button>
               </div>
-              <div className="mt-3 grid grid-cols-3 gap-2 text-[11px] text-[#eadfbc]">
-                {compactStatButtons.map((item) => (
-                  <button
-                    key={`mobile-stat-${item.label}`}
-                    type="button"
-                    onClick={() => setActiveDesktopPanel(item.panel)}
-                    className="rounded-2xl border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-2.5 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
-                  >
-                    {item.label} {item.value}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-3 rounded-[22px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-3">
-                <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-[#d8c9a3]">
-                  <span>时代水位</span>
-                  <span className="text-amber-100">{activeEra} · {eraProgressPercent}%</span>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={eras.length - 1}
-                  step={1}
-                  value={activeEraIndex}
-                  onChange={(event) => setActiveEra(eras[Number(event.target.value)] ?? eras[0])}
-                  className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
-                />
-                <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-[#c9b68a]">
-                  {eras.map((era) => (
-                    <button
-                      key={`mobile-inline-era-${era}`}
-                      type="button"
-                      onClick={() => setActiveEra(era)}
-                      className={`rounded-full px-2 py-1 transition ${
-                        activeEra === era
-                          ? "bg-amber-300/14 text-amber-100"
-                          : "bg-white/0 text-[#c9b68a] hover:bg-[rgba(255,248,220,0.05)] hover:text-[#eadfbc]"
-                      }`}
-                    >
-                      {era}
-                    </button>
-                  ))}
-                </div>
+              <div className="mt-3 rounded-[18px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-3 text-[12px] leading-6 text-[#eadfbc]">
+                {activeDesktopPanel === "search"
+                  ? `河面当前显出 ${filteredBooks.length} 部典籍，概念检索会把镜头直接带往对应河段。`
+                  : activeDesktopPanel === "era"
+                    ? `${activeEra} 水位已推至 ${eraProgressPercent}% ，这一段文脉河势正在卷面铺开。`
+                    : activeDesktopPanel === "category"
+                      ? `${categoryFilter} 与 ${schoolFilter} 的筛选结果正在收束河道轮廓。`
+                      : "来源支流、关系层级与河上码头正沿同一卷面彼此映照。"}
               </div>
               {activeDesktopPanel === "era" ? (
                 <div className="mt-3 rounded-[20px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3">
