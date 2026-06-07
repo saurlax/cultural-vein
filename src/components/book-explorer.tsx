@@ -4209,117 +4209,79 @@ export function BookExplorer({
                   </div>
                 </div>
 
-              <div className="rounded-[24px] border border-amber-300/15 bg-[linear-gradient(180deg,rgba(191,140,40,0.16),rgba(56,35,11,0.24))] px-4 py-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                      微观导引
-                    </div>
-                    <p className="mt-3 text-sm leading-7 text-amber-50/90">
-                        一段文字会同时牵出证据、上游源流与下游分化三条脉络。
-                    </p>
-                  </div>
-                  <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
-                      片段 {activePassage.section}
-                    </div>
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {activeLink ? (
-                      <button
-                        type="button"
-                        onClick={handleOpenLinkedBook}
-                        className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
-                      >
-                        源典
-                      </button>
-                    ) : null}
-                    <button
-                      type="button"
-                      onClick={handleStartTrace}
-                      disabled={!activePassage?.tracePath?.length || tracePlaying}
-                      className={`rounded-full px-3 py-1.5 text-xs transition ${
-                        !activePassage?.tracePath?.length
-                          ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
-                          : tracePlaying
-                            ? "border border-amber-300/20 bg-amber-300/12 text-amber-100"
-                            : "border border-amber-300/25 bg-amber-300/15 text-amber-50 hover:bg-amber-300/20"
-                      }`}
-                    >
-                      {tracePlaying ? "溯源进行中" : "启动溯源"}
-                    </button>
-                    {activePassage.tracePath?.[0] ? (
-                      <button
-                        type="button"
-                        onClick={() => handleOpenTraceBook(activePassage.tracePath![0]!.title)}
-                        disabled={!bookSlugByTitle.has(activePassage.tracePath[0].title)}
-                        className={`rounded-full px-3 py-1.5 text-xs transition ${
-                          bookSlugByTitle.has(activePassage.tracePath[0].title)
-                            ? "border border-amber-300/25 bg-amber-300/15 text-amber-50 hover:bg-amber-300/20"
-                            : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
-                        }`}
-                      >
-                        上游源典
-                      </button>
-                    ) : null}
-                    {activePassage.downstreamInfluence?.[0] ? (
-                      <button
-                        type="button"
-                        onClick={() => handleOpenDownstreamBook(activePassage.downstreamInfluence![0]!.targetTitle)}
-                        disabled={!bookSlugByTitle.has(activePassage.downstreamInfluence[0].targetTitle)}
-                        className={`rounded-full px-3 py-1.5 text-xs transition ${
-                          bookSlugByTitle.has(activePassage.downstreamInfluence[0].targetTitle)
-                            ? "border border-emerald-300/20 bg-emerald-300/10 text-emerald-100 hover:bg-emerald-300/15"
-                            : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
-                        }`}
-                      >
-                        下游典籍
-                      </button>
-                    ) : null}
-                  </div>
-                  <div className="mt-4 grid gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const firstLink = activePassage.links[0];
-
-                        if (firstLink) {
-                          handleSelectLink(firstLink.id);
-                        }
-                      }}
-                      className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-left transition hover:bg-white/10"
-                    >
-                      <div className="text-xs tracking-[0.2em] text-amber-100/75">证据源头</div>
-                      <div className="mt-2 text-sm text-stone-100">
-                        {activePassage.links[0]?.sourceTitle ?? "首层证据"}
-                      </div>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setTab("timeline")}
-                      className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-left transition hover:bg-white/10"
-                    >
-                      <div className="text-xs tracking-[0.2em] text-amber-100/75">时间回声</div>
-                      <div className="mt-2 text-sm text-stone-100">
-                        这段文字在年代与事件中的回声会沿时间线重新显影。
-                      </div>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
               <div className="rounded-[24px] border border-[#e1bd6e]/18 bg-[linear-gradient(180deg,rgba(194,140,42,0.18),rgba(62,39,12,0.26))] px-4 py-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <div className="text-xs tracking-[0.22em] text-amber-100/75">
-                      逐字探源工作台
+                      微观探源台
                     </div>
                     <div className="mt-1 text-sm font-medium text-amber-50">
-                      对读、逆流与下游分化在同一工作台上连续展开
+                      一段文字会同时牵出证据、上游源流与下游分化三条脉络
                     </div>
                   </div>
                   <div className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
                     片段 · {activePassage.section}
                   </div>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {activeLink ? (
+                    <button
+                      type="button"
+                      onClick={handleOpenLinkedBook}
+                      className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                    >
+                      源典
+                    </button>
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={handleStartTrace}
+                    disabled={!activePassage?.tracePath?.length || tracePlaying}
+                    className={`rounded-full px-3 py-1.5 text-xs transition ${
+                      !activePassage?.tracePath?.length
+                        ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                        : tracePlaying
+                          ? "border border-amber-300/20 bg-amber-300/12 text-amber-100"
+                          : "border border-amber-300/25 bg-amber-300/15 text-amber-50 hover:bg-amber-300/20"
+                    }`}
+                  >
+                    {tracePlaying ? "溯源进行中" : "启动溯源"}
+                  </button>
+                  {activePassage.tracePath?.[0] ? (
+                    <button
+                      type="button"
+                      onClick={() => handleOpenTraceBook(activePassage.tracePath![0]!.title)}
+                      disabled={!bookSlugByTitle.has(activePassage.tracePath[0].title)}
+                      className={`rounded-full px-3 py-1.5 text-xs transition ${
+                        bookSlugByTitle.has(activePassage.tracePath[0].title)
+                          ? "border border-amber-300/25 bg-amber-300/15 text-amber-50 hover:bg-amber-300/20"
+                          : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                      }`}
+                    >
+                      上游源典
+                    </button>
+                  ) : null}
+                  {activePassage.downstreamInfluence?.[0] ? (
+                    <button
+                      type="button"
+                      onClick={() => handleOpenDownstreamBook(activePassage.downstreamInfluence![0]!.targetTitle)}
+                      disabled={!bookSlugByTitle.has(activePassage.downstreamInfluence[0].targetTitle)}
+                      className={`rounded-full px-3 py-1.5 text-xs transition ${
+                        bookSlugByTitle.has(activePassage.downstreamInfluence[0].targetTitle)
+                          ? "border border-emerald-300/20 bg-emerald-300/10 text-emerald-100 hover:bg-emerald-300/15"
+                          : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                      }`}
+                    >
+                      下游典籍
+                    </button>
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={() => setTab("timeline")}
+                    className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                  >
+                    时间回声
+                  </button>
                 </div>
                 <div className="mt-4 grid gap-3 xl:grid-cols-3">
                   <button
@@ -4392,6 +4354,7 @@ export function BookExplorer({
                     </div>
                   </button>
                 </div>
+              </div>
               </div>
 
               <div className="rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.06)] px-4 py-4">
