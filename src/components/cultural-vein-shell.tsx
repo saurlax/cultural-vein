@@ -1468,6 +1468,7 @@ export function CulturalVeinShell() {
                     </div>
                     <div className="max-h-[calc(100vh-368px)] overflow-auto pr-1">
                       <BookExplorer
+                        key={`desktop-explorer-${selectedBook.slug}-${entryExplorerTab ?? "spread"}`}
                         book={selectedBook}
                         detail={selectedDetail}
                         forcedTab={entryExplorerTab}
@@ -1912,6 +1913,7 @@ export function CulturalVeinShell() {
                   </div>
                   <div className="max-h-[calc(34vh-112px)] overflow-auto pr-1">
                     <BookExplorer
+                      key={`mobile-explorer-${selectedBook.slug}-${entryExplorerTab ?? "spread"}`}
                       book={selectedBook}
                       detail={selectedDetail}
                       forcedTab={entryExplorerTab}

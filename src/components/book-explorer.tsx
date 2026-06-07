@@ -258,7 +258,7 @@ export function BookExplorer({
   onSceneFocusChange?: (focus: SceneFocusState | null) => void;
   onOpenBook?: (slug: string, options?: ExplorerOpenOptions) => void;
 }) {
-  const [tab, setTab] = useState<ExplorerTab>("spread");
+  const [tab, setTab] = useState<ExplorerTab>(forcedTab ?? "spread");
   const [passageLayout, setPassageLayout] = useState<"horizontal" | "vertical">("horizontal");
   const [selectedSpreadId, setSelectedSpreadId] = useState<string | null>(null);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
@@ -273,6 +273,7 @@ export function BookExplorer({
   const [traceStep, setTraceStep] = useState<number>(0);
   const [tracePlaying, setTracePlaying] = useState(false);
   const [showSecondaryPeople, setShowSecondaryPeople] = useState(false);
+
   const bookEraByTitle = useMemo(() => {
     return new Map<string, RiverEra>([
       ["诗经", "先秦"],
@@ -434,7 +435,7 @@ export function BookExplorer({
       link: activePassage.links[index] ?? null,
     }));
   }, [activePassage]);
-  const activeTab = forcedTab ?? tab;
+  const activeTab = tab;
   const activeTraceFocus = useMemo<TraceFocusState | null>(() => {
     if (activeTab !== "passages" || !activePassage?.tracePath?.length || !tracePlaying) {
       return null;
