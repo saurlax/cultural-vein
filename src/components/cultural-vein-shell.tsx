@@ -1312,6 +1312,24 @@ export function CulturalVeinShell() {
                   ))}
                 </div>
               ) : null}
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {relationSummary
+                  .filter(({ count }) => count > 0)
+                  .slice(0, 3)
+                  .map(({ layer, count }) => (
+                    <span
+                      key={`relation-layer-${layer}`}
+                      className={`rounded-full px-2.5 py-1 text-[10px] ${relationLayerMeta[layer].tone}`}
+                    >
+                      {relationLayerMeta[layer].label} {count}
+                    </span>
+                  ))}
+                {cbdbPersonCount ? (
+                  <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
+                    纪传 {cbdbPersonCount.toLocaleString()} 人
+                  </span>
+                ) : null}
+              </div>
             </div>
           </div>
         ) : null}
