@@ -562,6 +562,9 @@ export function CulturalVeinShell() {
     sourceAtlasEntries.find((entry) => entry.id === activeSourceAtlasId) ??
     sourceAtlasEntries[0] ??
     null;
+  const activeSourceAtlasIndex = activeSourceAtlasEntry
+    ? sourceAtlasEntries.findIndex((entry) => entry.id === activeSourceAtlasEntry.id)
+    : -1;
   const sourceAtlasSuggestedEra = activeSourceAtlasEntry
     ? inferSourceAtlasEra(activeSourceAtlasEntry) ?? activeEra
     : null;
@@ -791,6 +794,21 @@ export function CulturalVeinShell() {
       );
     }
   };
+  const handleSourceAtlasStep = (direction: -1 | 1) => {
+    if (!sourceAtlasEntries.length) {
+      return;
+    }
+
+    const nextIndex =
+      activeSourceAtlasIndex >= 0
+        ? (activeSourceAtlasIndex + direction + sourceAtlasEntries.length) % sourceAtlasEntries.length
+        : 0;
+    const nextEntry = sourceAtlasEntries[nextIndex];
+
+    if (nextEntry) {
+      handleSourceAtlasSelect(nextEntry.id);
+    }
+  };
   const handleSourceRecordFocus = (index: number) => {
     const dockId = getSourceAtlasDockId(index);
 
@@ -896,6 +914,12 @@ export function CulturalVeinShell() {
       panel: "branch" as const,
     },
   ];
+  const sourceAtlasNeighborEntries =
+    activeSourceAtlasIndex >= 0
+      ? [-1, 1]
+          .map((offset) => sourceAtlasEntries[activeSourceAtlasIndex + offset])
+          .filter((entry): entry is NonNullable<typeof sourceAtlasEntries>[number] => Boolean(entry))
+      : sourceAtlasEntries.slice(1, 3);
   const eraRecommendedBooks = useMemo(() => {
     return filteredBooks
       .filter((book) => book.dynasty === activeEra)
@@ -967,7 +991,7 @@ export function CulturalVeinShell() {
 
       <div className="relative z-10 min-h-screen">
         <div className="pointer-events-none absolute inset-x-0 top-0 z-30 hidden items-start justify-between gap-3 px-4 py-4 md:flex sm:px-6 lg:px-8">
-          <div className={`pointer-events-auto max-w-[220px] px-4 py-3 sm:max-w-[260px] ${panelBaseClass}`}>
+          <div className={`pointer-events-auto max-w-[210px] px-4 py-3 sm:max-w-[236px] ${panelBaseClass}`}>
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[11px] tracking-[0.32em] text-[#f2dfab]/80">
@@ -1025,7 +1049,7 @@ export function CulturalVeinShell() {
         </div>
 
         {showDesktopControls ? (
-          <div className="absolute right-4 top-[132px] z-20 hidden w-[220px] sm:right-6 md:block lg:right-8 lg:w-[228px]">
+          <div className="absolute right-4 top-[132px] z-20 hidden w-[198px] sm:right-6 md:block lg:right-8 lg:w-[208px]">
             <aside className="pointer-events-auto xl:pt-2">
               <div className={`p-4 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
@@ -1048,13 +1072,13 @@ export function CulturalVeinShell() {
                 ) : null}
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 grid grid-cols-2 gap-2">
                 {desktopPanels.map((panel) => (
                   <button
                     key={panel.id}
                     type="button"
                     onClick={() => setActiveDesktopPanel(panel.id)}
-                    className={`rounded-full px-3 py-2 text-[11px] transition ${
+                    className={`rounded-[14px] px-3 py-2 text-[11px] transition ${
                       activeDesktopPanel === panel.id
                         ? "bg-[#f3dfab] text-[#42290a]"
                         : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
@@ -1352,10 +1376,10 @@ export function CulturalVeinShell() {
                       )}
                     </div>
                     {sourceAtlasEntries.length ? (
-                      <div className="mt-3 rounded-[18px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(105,72,24,0.3),rgba(39,25,8,0.22))] px-3 py-3">
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">真实数据版图</div>
-                          <div className="text-[10px] text-[#f2dfab]">{sourceAtlasMass.toLocaleString()}</div>
+                    <div className="mt-3 rounded-[18px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(105,72,24,0.3),rgba(39,25,8,0.22))] px-3 py-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">真实数据版图</div>
+                        <div className="text-[10px] text-[#f2dfab]">{sourceAtlasMass.toLocaleString()}</div>
                         </div>
                         {atlasMeta ? (
                           <button
@@ -1389,23 +1413,61 @@ export function CulturalVeinShell() {
                         <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.26)] px-3 py-3">
                           <div className="flex items-center justify-between gap-3">
                             <div className="text-[11px] tracking-[0.2em] text-[#d8c9a3]">来源河册</div>
-                            <div className="text-[10px] text-[#c9b68a]">顺着样本切河段</div>
+                            <div className="text-[10px] text-[#c9b68a]">
+                              {activeSourceAtlasIndex >= 0
+                                ? `${activeSourceAtlasIndex + 1}/${sourceAtlasEntries.length}`
+                                : `${Math.min(sourceAtlasEntries.length, 1)}/${sourceAtlasEntries.length}`}
+                            </div>
                           </div>
+                          <div className="mt-3 flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleSourceAtlasStep(-1)}
+                              className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                            >
+                              前一股
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleSourceAtlasStep(1)}
+                              className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                            >
+                              后一股
+                            </button>
+                          </div>
+                          {activeSourceAtlasEntry ? (
+                            <button
+                              type="button"
+                              onClick={() => handleSourceAtlasSelect(activeSourceAtlasEntry.id)}
+                              className="mt-3 w-full rounded-[14px] border border-amber-300/28 bg-[rgba(120,81,26,0.4)] px-3 py-3 text-left transition hover:bg-[rgba(131,90,29,0.46)]"
+                            >
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className="h-2.5 w-2.5 shrink-0 rounded-full"
+                                  style={{ backgroundColor: activeSourceRoute?.color ?? "#d6a33d" }}
+                                />
+                                <span className="truncate text-[11px] text-[#fbf3da]">
+                                  {activeSourceAtlasEntry.name}
+                                </span>
+                              </div>
+                              <div className="mt-2 text-[10px] text-[#f2dfab]">
+                                {activeSourceAtlasEntry.stat ?? "来源样本"}
+                              </div>
+                              <div className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#e6d7ae]">
+                                {activeSourceAtlasEntry.summary ?? "顺着这股来源继续切入河上样本。"}
+                              </div>
+                            </button>
+                          ) : null}
                           <div className="mt-3 space-y-2">
-                            {sourceAtlasEntries.slice(0, 6).map((entry) => {
+                            {sourceAtlasNeighborEntries.map((entry) => {
                               const route = sourceAtlasRouteMap.get(entry.id);
-                              const isActive = activeSourceAtlasEntry?.id === entry.id;
 
                               return (
                                 <button
                                   key={`desktop-source-route-${entry.id}`}
                                   type="button"
                                   onClick={() => handleSourceAtlasSelect(entry.id)}
-                                  className={`flex w-full items-center justify-between gap-3 rounded-[14px] border px-3 py-2.5 text-left transition ${
-                                    isActive
-                                      ? "border-amber-300/28 bg-[rgba(120,81,26,0.4)]"
-                                      : "border-[#ead8a6]/10 bg-[rgba(255,248,220,0.03)] hover:bg-[rgba(255,248,220,0.07)]"
-                                  }`}
+                                  className="flex w-full items-center justify-between gap-3 rounded-[14px] border border-[#ead8a6]/10 bg-[rgba(255,248,220,0.03)] px-3 py-2.5 text-left transition hover:bg-[rgba(255,248,220,0.07)]"
                                 >
                                   <div className="min-w-0">
                                     <div className="flex items-center gap-2">
@@ -1413,17 +1475,15 @@ export function CulturalVeinShell() {
                                         className="h-2.5 w-2.5 shrink-0 rounded-full"
                                         style={{ backgroundColor: route?.color ?? "#d6a33d" }}
                                       />
-                                      <span className="truncate text-[11px] text-[#fbf3da]">
+                                      <span className="truncate text-[11px] text-[#eadfbc]">
                                         {entry.name}
                                       </span>
                                     </div>
-                                    <div className="mt-1 truncate text-[10px] text-[#d8c9a3]">
+                                    <div className="mt-1 truncate text-[10px] text-[#cdb98d]">
                                       {entry.stat ?? "来源样本"}
                                     </div>
                                   </div>
-                                  <div className="shrink-0 text-[10px] text-[#f2dfab]">
-                                    {isActive ? "已映照" : route ? "已连河道" : "可映入河道"}
-                                  </div>
+                                  <div className="shrink-0 text-[10px] text-[#d8c9a3]">待翻看</div>
                                 </button>
                               );
                             })}
