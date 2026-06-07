@@ -198,6 +198,7 @@ interface CruiseAnchorMoment {
   emphasis: number;
   kind: "era" | "book" | "branch";
   era?: RiverEra;
+  spotlightSlug?: string;
 }
 
 interface RiverRibbonProps {
@@ -931,15 +932,26 @@ function RiverParticleStream({
 function FlowBeacons({
   books,
   activeEra,
+  spotlightSlugs = [],
 }: {
   books: BookNode[];
   activeEra: RiverEra;
+  spotlightSlugs?: string[];
 }) {
   const beaconRef = useRef<THREE.Group>(null);
   const activeIndex = RIVER_ERA_ORDER.indexOf(activeEra);
-  const latestBooks = books
-    .filter((book) => RIVER_ERA_ORDER.indexOf(book.dynasty) === activeIndex)
-    .slice(0, 4);
+  const spotlightSet = useMemo(() => new Set(spotlightSlugs), [spotlightSlugs]);
+  const latestBooks = useMemo(() => {
+    const spotlightBooks = books.filter((book) => spotlightSet.has(book.slug));
+
+    if (spotlightBooks.length) {
+      return spotlightBooks.slice(0, 4);
+    }
+
+    return books
+      .filter((book) => RIVER_ERA_ORDER.indexOf(book.dynasty) === activeIndex)
+      .slice(0, 4);
+  }, [activeIndex, books, spotlightSet]);
 
   useFrame((state) => {
     if (!beaconRef.current) {
@@ -948,11 +960,11 @@ function FlowBeacons({
 
     beaconRef.current.children.forEach((child, index) => {
       const mesh = child as THREE.Mesh;
-      const pulse = 1 + Math.sin(state.clock.elapsedTime * 1.4 + index * 0.85) * 0.18;
+      const pulse = 1 + Math.sin(state.clock.elapsedTime * 1.4 + index * 0.85) * 0.26;
       mesh.scale.setScalar(pulse);
       const material = mesh.material;
       if (material instanceof THREE.MeshBasicMaterial) {
-        material.opacity = 0.18 + Math.max(0, Math.sin(state.clock.elapsedTime * 1.4 + index * 0.85)) * 0.18;
+        material.opacity = 0.22 + Math.max(0, Math.sin(state.clock.elapsedTime * 1.4 + index * 0.85)) * 0.22;
       }
     });
   });
@@ -965,7 +977,7 @@ function FlowBeacons({
           rotation={[-Math.PI / 2, 0, 0]}
           position={[book.coordinates[0], book.coordinates[1] - 0.03, book.coordinates[2]]}
         >
-          <ringGeometry args={[0.26, 0.4, 40]} />
+          <ringGeometry args={[0.28, 0.46, 40]} />
           <meshBasicMaterial color="#fde68a" transparent opacity={0.24} />
         </mesh>
       ))}
@@ -2052,6 +2064,21 @@ function RiverWorld({
       .sort((left, right) => left.year - right.year)
       .map((book) => new THREE.Vector3(...book.coordinates));
   }, [books, highlightedBookSlugs]);
+  const openingSpotlightSlugs = useMemo(
+    () =>
+      books
+        .filter((book) => book.branchLevel === 0)
+        .sort((left, right) => {
+          if (left.dynasty !== right.dynasty) {
+            return RIVER_ERA_ORDER.indexOf(left.dynasty) - RIVER_ERA_ORDER.indexOf(right.dynasty);
+          }
+
+          return right.influence - left.influence;
+        })
+        .slice(0, 3)
+        .map((book) => book.slug),
+    [books],
+  );
   const focusStreamPoints = useMemo(() => {
     if (tracePathPoints.length >= 2) {
       return tracePathPoints;
@@ -2440,7 +2467,11 @@ function RiverWorld({
         ) : null,
       )}
 
-      <FlowBeacons books={books} activeEra={activeEra} />
+      <FlowBeacons
+        books={books}
+        activeEra={activeEra}
+        spotlightSlugs={!selectedBookSlug && !traceFocus?.active && !sceneFocus?.active ? openingSpotlightSlugs : []}
+      />
       <EraMilestones books={books} activeEra={activeEra} />
       {tracePathPoints.length >= 2 ? (
         <group>
@@ -2734,6 +2765,7 @@ export function RiverScene(props: RiverSceneProps) {
         emphasis: 1,
         kind: "book" as const,
         era: book.dynasty,
+        spotlightSlug: book.slug,
       }));
     const branchAnchors = (props.branchAnnotations ?? [])
       .map((annotation) => ({
