@@ -792,6 +792,72 @@ export function BookExplorer({
     [detail.realWorldSignals?.eventSamples],
   );
   const institutionPreview = useMemo(() => institutionRecords.slice(0, 3), [institutionRecords]);
+  const evidenceOverviewCards = useMemo(() => {
+    return [
+      {
+        id: "people",
+        label: "人物纪传",
+        value: `${detail.realWorldSignals?.cbdbMatchedPeople ?? 0} 人`,
+        note: `整理 ${detail.realWorldSignals?.cbdbFallbackPeople ?? 0} 人`,
+      },
+      {
+        id: "venues",
+        label: "场馆现场",
+        value: `${detail.realWorldSignals?.venueSamples?.length ?? 0} 组`,
+        note: `${detail.realWorldSignals?.eventSamples?.length ?? 0} 条活动`,
+      },
+      {
+        id: "borrow",
+        label: "公共流通",
+        value: `${detail.realWorldSignals?.borrowLibraries?.length ?? 0} 馆`,
+        note: `${detail.realWorldSignals?.borrowSamples?.length ?? 0} 条借阅`,
+      },
+      {
+        id: "institutions",
+        label: "机构馆藏",
+        value: `${detail.realWorldSignals?.institutionSamples?.length ?? 0} 条`,
+        note: `${new Set((detail.realWorldSignals?.institutionSamples ?? []).map((item) => item.institution)).size} 家机构`,
+      },
+    ];
+  }, [
+    detail.realWorldSignals?.borrowLibraries,
+    detail.realWorldSignals?.borrowSamples,
+    detail.realWorldSignals?.cbdbFallbackPeople,
+    detail.realWorldSignals?.cbdbMatchedPeople,
+    detail.realWorldSignals?.eventSamples,
+    detail.realWorldSignals?.institutionSamples,
+    detail.realWorldSignals?.venueSamples,
+  ]);
+  const institutionEvidenceGroups = useMemo(() => {
+    const groups = new Map<
+      string,
+      {
+        institution: string;
+        count: number;
+        latestYear: string | null;
+      }
+    >();
+
+    for (const record of institutionRecords) {
+      const existing = groups.get(record.institution);
+
+      if (existing) {
+        existing.count += 1;
+        if (!existing.latestYear && record.year) {
+          existing.latestYear = record.year;
+        }
+        continue;
+      }
+
+      groups.set(record.institution, {
+        institution: record.institution,
+        count: 1,
+        latestYear: record.year ?? null,
+      });
+    }
+
+    return Array.from(groups.values()).sort((left, right) => right.count - left.count);
+  }, [institutionRecords]);
   const dossierEntryCards = [
     {
       label: `${book.dynasty} · ${book.category}`,
@@ -2308,18 +2374,61 @@ export function BookExplorer({
                     <p className="mt-4 text-sm leading-7 text-[#eadfbc]">
                       {activeSourceEvidence.summary}
                     </p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {activeSourceEvidence.samples.slice(0, 3).map((sample) => (
-                        <button
-                          key={`lead-sample-${activeSourceEvidence.id}-${sample.label}`}
-                          type="button"
-                          onClick={() => handleOpenSourceSample(activeSourceEvidence.id, sample)}
-                          className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-xs text-amber-100 transition hover:bg-amber-300/15"
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                      {evidenceOverviewCards.map((card) => (
+                        <div
+                          key={`evidence-overview-${card.id}`}
+                          className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-3"
                         >
-                          直达 {sample.label}
-                        </button>
+                          <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">
+                            {card.label}
+                          </div>
+                          <div className="mt-2 text-base font-semibold text-[#fbf3da]">
+                            {card.value}
+                          </div>
+                          <div className="mt-1 text-[11px] leading-5 text-[#cdb98d]">
+                            {card.note}
+                          </div>
+                        </div>
                       ))}
                     </div>
+                    {institutionEvidenceGroups.length ? (
+                      <div className="mt-3 rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <div>
+                            <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
+                              机构分布
+                            </div>
+                            <div className="mt-1 text-sm text-[#eadfbc]">
+                              当前这本书已经落到 {institutionEvidenceGroups.length} 家真实机构的馆藏或专题线索里。
+                            </div>
+                          </div>
+                          <div className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
+                            机构归流
+                          </div>
+                        </div>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {institutionEvidenceGroups.slice(0, 6).map((group) => (
+                            <button
+                              key={`institution-group-${group.institution}`}
+                              type="button"
+                              onClick={() => {
+                                const targetRecord = institutionRecords.find(
+                                  (item) => item.institution === group.institution,
+                                );
+                                if (targetRecord) {
+                                  handleSelectInstitutionRecord(targetRecord);
+                                }
+                              }}
+                              className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-left text-xs text-[#fbf3da] transition hover:bg-[rgba(255,248,220,0.1)]"
+                            >
+                              {group.institution} · {group.count} 条
+                              {group.latestYear ? ` · ${group.latestYear}` : ""}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
                     <div className="mt-3 rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4">
                       <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
                         回查线索
@@ -2339,6 +2448,33 @@ export function BookExplorer({
                             className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                           >
                             回查 {sample.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mt-3 rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,248,220,0.05)] px-4 py-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
+                          示范样本
+                        </div>
+                        <div className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-[10px] text-[#eadfbc]">
+                          {activeSourceEvidence.samples.length} 条
+                        </div>
+                      </div>
+                      <div className="mt-3 grid gap-2">
+                        {activeSourceEvidence.samples.map((sample) => (
+                          <button
+                            key={`active-${activeSourceEvidence.id}-${sample.label}-${sample.detail ?? "detail"}`}
+                            type="button"
+                            onClick={() => handleOpenSourceSample(activeSourceEvidence.id, sample)}
+                            className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-3 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
+                          >
+                            <div className="text-sm text-[#fbf3da]">{sample.label}</div>
+                            {sample.detail ? (
+                              <div className="mt-1 text-xs leading-6 text-[#cdb98d]">
+                                {sample.detail}
+                              </div>
+                            ) : null}
                           </button>
                         ))}
                       </div>
@@ -2405,25 +2541,8 @@ export function BookExplorer({
                                 ? "转入传播河势"
                               : activeSourceEvidence.id === "institution-samples"
                                 ? "转入版本与馆藏线索"
-                                : "转入对应卷面"}
+                              : "转入对应卷面"}
                       </button>
-                    </div>
-                    <div className="mt-3 grid gap-2">
-                      {activeSourceEvidence.samples.map((sample) => (
-                        <button
-                          key={`active-${activeSourceEvidence.id}-${sample.label}-${sample.detail ?? "detail"}`}
-                          type="button"
-                          onClick={() => handleOpenSourceSample(activeSourceEvidence.id, sample)}
-                          className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-3 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
-                        >
-                          <div className="text-sm text-[#fbf3da]">{sample.label}</div>
-                          {sample.detail ? (
-                            <div className="mt-1 text-xs leading-6 text-[#cdb98d]">
-                              {sample.detail}
-                            </div>
-                          ) : null}
-                        </button>
-                      ))}
                     </div>
                   </div>
                 ) : null}
