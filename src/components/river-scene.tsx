@@ -409,6 +409,54 @@ function ScrollCanopy({
   );
 }
 
+function ForegroundScrollVeil({
+  activeEra,
+  traceFocus,
+  sceneFocus,
+}: Pick<RiverSceneProps, "activeEra" | "traceFocus" | "sceneFocus">) {
+  const veilRef = useRef<THREE.Group>(null);
+  const eraIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
+  const warmth = eraIndex / Math.max(RIVER_ERA_ORDER.length - 1, 1);
+  const focusBoost = traceFocus?.active ? 0.08 : sceneFocus?.active ? 0.05 : 0;
+  const edgeGold = warmth > 0.6 ? "#f3cf82" : "#cf9d46";
+  const paperShadow = warmth > 0.6 ? "#7b4d1a" : "#5f3811";
+
+  useFrame((state) => {
+    if (!veilRef.current) {
+      return;
+    }
+
+    veilRef.current.children.forEach((child, index) => {
+      const mesh = child as THREE.Mesh;
+      mesh.position.y =
+        (index === 0 ? -0.42 : index === 1 ? -0.18 : 0.24) +
+        Math.sin(state.clock.elapsedTime * (0.14 + index * 0.03) + index * 0.9) * 0.025;
+      mesh.rotation.z = Math.sin(state.clock.elapsedTime * 0.08 + index * 0.35) * 0.025;
+    });
+  });
+
+  return (
+    <group ref={veilRef}>
+      <mesh position={[3.5, -0.42, 6.6]} scale={[16.5, 1.9, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color={paperShadow} transparent opacity={0.1 + warmth * 0.03 + focusBoost * 0.5} />
+      </mesh>
+      <mesh position={[3.1, -0.18, 6.2]} scale={[15.4, 0.18, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color={edgeGold} transparent opacity={0.16 + warmth * 0.04 + focusBoost * 0.6} />
+      </mesh>
+      <mesh position={[7.8, 0.24, 5.8]} scale={[7.2, 1.3, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#f8e8bc" transparent opacity={0.05 + warmth * 0.03 + focusBoost * 0.4} />
+      </mesh>
+      <mesh position={[-0.8, 0.16, 5.6]} scale={[6.4, 1.1, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#dba94e" transparent opacity={0.045 + warmth * 0.02 + focusBoost * 0.35} />
+      </mesh>
+    </group>
+  );
+}
+
 function EraRiverZones({
   books,
 }: {
@@ -1961,6 +2009,7 @@ function RiverWorld({
         hoveredBookSlug={hoveredBookSlug}
         onHoverBook={onHoverBook}
       />
+      <ForegroundScrollVeil activeEra={activeEra} traceFocus={traceFocus} sceneFocus={sceneFocus} />
       <OrbitControls
         ref={controlsRef}
         makeDefault
