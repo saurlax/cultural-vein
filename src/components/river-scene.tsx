@@ -1250,6 +1250,82 @@ function RiverParticleStream({
   );
 }
 
+function NearFieldCurrentStrands({
+  points,
+  activeEra,
+}: {
+  points: THREE.Vector3[];
+  activeEra: RiverEra;
+}) {
+  const eraIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
+  const warmth = eraIndex / Math.max(RIVER_ERA_ORDER.length - 1, 1);
+  const strands = useMemo(() => {
+    if (points.length < 2) {
+      return [];
+    }
+
+    const curve = new THREE.CatmullRomCurve3(points);
+    const configs = [
+      { start: 0.58, end: 0.98, yOffset: 0.02, zOffset: 0.34, color: "#fff2c7" },
+      { start: 0.62, end: 0.99, yOffset: 0.015, zOffset: -0.28, color: "#fde7b0" },
+      { start: 0.66, end: 0.995, yOffset: 0.028, zOffset: 0.12, color: "#f8d98f" },
+      { start: 0.7, end: 0.999, yOffset: 0.01, zOffset: -0.08, color: "#fff5d8" },
+    ] as const;
+
+    return configs.map((config) => {
+      const strandPoints = Array.from({ length: 18 }, (_, index) => {
+        const t = config.start + ((config.end - config.start) * index) / 17;
+        const point = curve.getPointAt(t);
+
+        return new THREE.Vector3(
+          point.x,
+          point.y + config.yOffset,
+          point.z + config.zOffset,
+        );
+      });
+
+      return {
+        ...config,
+        points: strandPoints,
+      };
+    });
+  }, [points]);
+
+  if (!strands.length) {
+    return null;
+  }
+
+  return (
+    <group>
+      {strands.map((strand, index) => (
+        <group key={`near-current-strand-${index}`}>
+          <Line
+            points={strand.points}
+            color={strand.color}
+            transparent
+            opacity={0.16 + warmth * 0.08 + index * 0.02}
+            lineWidth={index === 0 ? 2.8 : 2.2}
+          />
+          <Line
+            points={strand.points}
+            color="#fff8e2"
+            transparent
+            opacity={0.05 + warmth * 0.03}
+            lineWidth={index === 0 ? 5.4 : 4.4}
+          />
+          <RiverParticleStream
+            points={strand.points}
+            color={strand.color}
+            density={index === 0 ? 30 : 22}
+            flowSpeed={0.1 + index * 0.018}
+            spread={0.02}
+          />
+        </group>
+      ))}
+    </group>
+  );
+}
+
 function FlowBeacons({
   books,
   activeEra,
@@ -3498,6 +3574,10 @@ function RiverWorld({
             )}
             flowSpeed={(0.032 + mainStreamStats.averageVelocity * 0.16) * (0.82 + eraWarmth * 0.42)}
             spread={Math.max(0.05, 0.14 - eraWarmth * 0.035 + eraRiverMood.dryness * 0.06)}
+          />
+          <NearFieldCurrentStrands
+            points={mainStream}
+            activeEra={activeEra}
           />
         </>
       ) : null}
