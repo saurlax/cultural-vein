@@ -1913,7 +1913,7 @@ export function BookExplorer({
                           event.stopPropagation();
                           setTab("versions");
                         }}
-                        className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-stone-300 transition hover:bg-white/10"
+                        className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,244,214,0.12)]"
                       >
                         转看版本流变
                       </button>
@@ -2293,7 +2293,7 @@ export function BookExplorer({
             <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4">
               <div className="flex items-center justify-between">
                 <h4 className="text-sm font-medium text-stone-50">上图活动场馆资料</h4>
-                <span className="text-xs text-stone-400">真实数据辅助</span>
+                <span className="text-xs text-[#cdb98d]">真实数据辅助</span>
               </div>
               <div className="mt-3 grid gap-2">
                 {detail.realWorldSignals.venueSamples.map((venue) => (
@@ -2309,10 +2309,10 @@ export function BookExplorer({
 
                       setSelectedSourceEvidenceId("venue-samples");
                     }}
-                    className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-left text-sm transition hover:bg-white/10"
+                    className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-3 text-left text-sm transition hover:bg-[rgba(255,244,214,0.12)]"
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <span className="text-stone-200">{venue.name}</span>
+                      <span className="text-[#fbf3da]">{venue.name}</span>
                       <span className="rounded-full bg-amber-300/10 px-2 py-1 text-xs text-amber-100">
                         采样 {venue.sampleCount}
                       </span>
@@ -2327,7 +2327,7 @@ export function BookExplorer({
                             setSelectedSpreadId(linkedSpread.id);
                           }
                         }}
-                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-300 transition hover:bg-white/10"
+                        className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,244,214,0.12)]"
                       >
                         对应河段
                       </button>
@@ -2364,7 +2364,7 @@ export function BookExplorer({
                       </button>
                     </div>
                     {linkedVenueEventMap.get(venue.name)?.length ? (
-                      <div className="mt-3 text-xs leading-6 text-stone-400">
+                      <div className="mt-3 text-xs leading-6 text-[#cdb98d]">
                         已挂接 {linkedVenueEventMap.get(venue.name)!.length} 条活动事件，传播路径与现实时间已经彼此扣合。
                       </div>
                     ) : null}
@@ -3705,7 +3705,7 @@ export function BookExplorer({
                                   <span className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
                                     对应年份
                                   </span>
-                                  <span className="rounded-full border border-white/10 bg-black/15 px-3 py-1 text-[10px] text-stone-300">
+                                  <span className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-[10px] text-[#eadfbc]">
                                     事件证据
                                   </span>
                                 </div>
@@ -3741,7 +3741,7 @@ export function BookExplorer({
                                       event.stopPropagation();
                                       setTab("people");
                                     }}
-                                    className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-stone-300 transition hover:bg-white/10"
+                                    className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,244,214,0.12)]"
                                   >
                                     人物关系
                                   </button>
@@ -3789,7 +3789,7 @@ export function BookExplorer({
                             <button
                               type="button"
                               onClick={() => setTab("versions")}
-                              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                              className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                             >
                               版本流变
                             </button>
@@ -3923,7 +3923,7 @@ export function BookExplorer({
                           setSelectedSourceEvidenceId("venue-samples");
                           setTab("spread");
                         }}
-                        className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-stone-300 transition hover:bg-white/10"
+                        className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,244,214,0.12)]"
                       >
                         对应场馆传播
                       </button>
@@ -4203,7 +4203,7 @@ export function BookExplorer({
                   <button
                     type="button"
                     onClick={() => setTab("timeline")}
-                    className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                    className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                   >
                     时间回声
                   </button>
@@ -4466,7 +4466,7 @@ export function BookExplorer({
                                   className={`rounded-full px-3 py-1.5 text-xs transition ${
                                     activeLinkId === link.id
                                       ? "bg-amber-300 text-stone-950"
-                                      : "border border-white/10 bg-black/15 text-stone-300 hover:bg-white/10"
+                                      : "border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] text-[#eadfbc] hover:bg-[rgba(255,244,214,0.12)]"
                                   }`}
                                 >
                                   {activeLinkId === link.id ? "卷心证据" : "照亮此证"}
@@ -4575,18 +4575,18 @@ export function BookExplorer({
                                   className={`flex-1 rounded-2xl px-3 py-3 transition ${
                                     isActive
                                       ? "bg-amber-300/10 ring-1 ring-amber-300/15"
-                                      : "bg-black/15"
+                                      : "bg-[rgba(255,244,214,0.08)]"
                                   }`}
                                 >
                                   <div className="flex items-center justify-between gap-3">
-                                    <span className="font-medium text-stone-50">
+                                    <span className="font-medium text-[#fbf3da]">
                                       {trace.title}
                                     </span>
                                     <span className="rounded-full bg-amber-300/10 px-2 py-1 text-xs text-amber-100">
                                       {trace.relation}
                                     </span>
                                   </div>
-                                  <p className="mt-2 text-sm leading-6 text-stone-300">
+                                  <p className="mt-2 text-sm leading-6 text-[#eadfbc]">
                                     {trace.note}
                                   </p>
                                   <div className="mt-3 flex flex-wrap gap-2">
@@ -4612,8 +4612,8 @@ export function BookExplorer({
                         </div>
                       </div>
                     ) : (
-                        <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
-                        <div className="text-sm text-stone-200">这一段尚未显出更早的上游链路，证据、版本与时间仍在卷中保留源头回声。</div>
+                        <div className="mt-3 rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4">
+                        <div className="text-sm text-[#eadfbc]">这一段尚未显出更早的上游链路，证据、版本与时间仍在卷中保留源头回声。</div>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {activeLink ? (
                             <button
@@ -4627,14 +4627,14 @@ export function BookExplorer({
                           <button
                             type="button"
                             onClick={() => setTab("versions")}
-                            className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                            className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                           >
                             版本续脉
                           </button>
                           <button
                             type="button"
                             onClick={() => setTab("timeline")}
-                            className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                            className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                           >
                             时间回声
                           </button>
@@ -4676,21 +4676,21 @@ export function BookExplorer({
                                 {item.confidenceLabel}置信度
                               </span>
                             </div>
-                            <div className="mt-2 text-xs uppercase tracking-[0.2em] text-stone-400">
+                            <div className="mt-2 text-xs tracking-[0.2em] text-[#d8c9a3]">
                               {item.relation}
                             </div>
-                            <p className="mt-2 text-sm leading-6 text-stone-300">
+                            <p className="mt-2 text-sm leading-6 text-[#eadfbc]">
                               {item.note}
                             </p>
                             {item.confidenceLabel === "低" ? (
-                              <div className="mt-3 rounded-2xl border border-dashed border-white/14 bg-white/5 px-3 py-3">
-                                <div className="text-xs tracking-[0.2em] text-stone-400">时间回声</div>
+                              <div className="mt-3 rounded-2xl border border-dashed border-[#d8b56f]/24 bg-[rgba(255,244,214,0.04)] px-3 py-3">
+                                <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">时间回声</div>
                                 <div className="mt-3 flex flex-wrap gap-2">
                                   {activeLink ? (
                                     <button
                                       type="button"
                                       onClick={() => handleSelectLink(activeLink.id)}
-                                      className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                                      className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                                     >
                                       证据源头
                                     </button>
@@ -4698,8 +4698,8 @@ export function BookExplorer({
                                   <button
                                     type="button"
                                     onClick={() => setTab("timeline")}
-                                  className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
-                                >
+                                    className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
+                                  >
                                     时间回声
                                   </button>
                                 </div>
@@ -4725,8 +4725,8 @@ export function BookExplorer({
                         ))}
                       </div>
                     ) : (
-                      <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
-                        <div className="text-sm text-stone-200">这一段更晚的承接脉络尚未在现有材料里浮出，但下游回声仍被卷面保留下来。</div>
+                      <div className="mt-3 rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4">
+                        <div className="text-sm text-[#eadfbc]">这一段更晚的承接脉络尚未在现有材料里浮出，但下游回声仍被卷面保留下来。</div>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {activeLink ? (
                             <button
@@ -4740,14 +4740,14 @@ export function BookExplorer({
                           <button
                             type="button"
                             onClick={() => setTab("people")}
-                            className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                            className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                           >
                             人物余波
                           </button>
                           <button
                             type="button"
                             onClick={() => setTab("spread")}
-                            className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                            className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                           >
                             传播河势
                           </button>
