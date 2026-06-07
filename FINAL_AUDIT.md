@@ -312,6 +312,7 @@
   - `2026-06-07` 本地执行 `pnpm backend:dev` 后，请求 `http://127.0.0.1:4318/health` 返回 `{"status":"ok","service":"cultural-vein-backend",...}`
   - `2026-06-07` 在临时端口 `4321` 上启动独立后端后，请求 `http://127.0.0.1:4321/source-atlas` 成功返回来源河册与覆盖层 payload
   - `2026-06-07` 在临时端口 `4321` 上请求 `http://127.0.0.1:4321/source-atlas/cbdb` 成功返回单条来源明细、覆盖层信息与关联典籍摘要
+  - `2026-06-07` 在临时端口 `4321` 上请求 `http://127.0.0.1:4321/source-atlas?theme=人物支流&limit=1` 可按主题和数量返回过滤后的来源集合，并包含查询回显
 - 缺口：
   - 未真正接入 Neo4j
   - 未真正接入 MeiliSearch

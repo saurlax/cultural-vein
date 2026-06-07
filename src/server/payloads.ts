@@ -4,6 +4,15 @@ import { searchConcepts } from "@/lib/concept-search";
 import { buildSourceEvidence } from "@/lib/source-evidence";
 import type { DatasetInsight } from "@/types/domain";
 
+type SourceAtlasEntry = NonNullable<DatasetInsight["sourceAtlas"]>[number];
+
+interface SourceAtlasQueryOptions {
+  q?: string;
+  era?: string | null;
+  theme?: string | null;
+  limit?: number | null;
+}
+
 export function getGraphPayload() {
   return {
     books: riverDataset.books,
@@ -33,12 +42,161 @@ export function getSearchPayload(query: string) {
   return searchConcepts(query);
 }
 
-export function getSourceAtlasPayload() {
+function inferSourceAtlasEra(entry: SourceAtlasEntry) {
+  const yearText = entry.sampleRecords?.map((record) => record.year).find(Boolean);
+
+  if (yearText) {
+    const matched = yearText.match(/-?\d{3,4}/);
+
+    if (matched) {
+      const year = Number(matched[0]);
+
+      if (!Number.isNaN(year)) {
+        if (year <= -221) {
+          return "先秦";
+        }
+
+        if (year <= 220) {
+          return "两汉";
+        }
+
+        if (year <= 589) {
+          return "魏晋";
+        }
+
+        if (year <= 907) {
+          return "隋唐";
+        }
+
+        if (year <= 1368) {
+          return "宋元";
+        }
+
+        if (year <= 1911) {
+          return "明清";
+        }
+
+        return "近现代";
+      }
+    }
+  }
+
+  if (
+    entry.name.includes("南湖") ||
+    entry.name.includes("红色") ||
+    entry.name.includes("韬奋") ||
+    entry.name.includes("宋庆龄") ||
+    entry.name.includes("报刊") ||
+    entry.name.includes("专题片") ||
+    entry.name.includes("图书馆") ||
+    entry.name.includes("纪念馆")
+  ) {
+    return "近现代";
+  }
+
+  return null;
+}
+
+function getSourceThemeLabel(name: string) {
+  if (name.includes("红色") || name.includes("南湖")) {
+    return "红色支流";
+  }
+
+  if (name.includes("搜韵")) {
+    return "诗学支流";
+  }
+
+  if (name.includes("纪传")) {
+    return "人物支流";
+  }
+
+  if (name.includes("借阅")) {
+    return "公共流通";
+  }
+
+  if (name.includes("活动")) {
+    return "城市现场";
+  }
+
+  if (name.includes("专题片")) {
+    return "城市影像";
+  }
+
+  if (name.includes("报刊")) {
+    return "近现代文献";
+  }
+
+  if (name.includes("图书馆") || name.includes("馆藏") || name.includes("纪念馆")) {
+    return "馆藏支流";
+  }
+
+  if (name.includes("宋庆龄") || name.includes("韬奋")) {
+    return "近现代支流";
+  }
+
+  return "来源支流";
+}
+
+function enrichSourceAtlasEntry(entry: SourceAtlasEntry) {
+  return {
+    ...entry,
+    era: inferSourceAtlasEra(entry),
+    theme: getSourceThemeLabel(entry.name),
+  };
+}
+
+export function getSourceAtlasPayload(options?: SourceAtlasQueryOptions) {
   const insights = getInsightsPayload();
+  const normalizedQuery = options?.q?.trim() ?? "";
+  const normalizedEra = options?.era?.trim() ?? "";
+  const normalizedTheme = options?.theme?.trim() ?? "";
+  const normalizedLimit =
+    typeof options?.limit === "number" && Number.isFinite(options.limit) && options.limit > 0
+      ? Math.floor(options.limit)
+      : null;
+  const sourceAtlas = (insights.sourceAtlas ?? []).map(enrichSourceAtlasEntry);
+  const filteredSourceAtlas = sourceAtlas.filter((entry) => {
+    const matchesQuery =
+      !normalizedQuery ||
+      [
+        entry.id,
+        entry.name,
+        entry.summary,
+        entry.stat,
+        entry.evidenceLabel,
+        entry.evidenceNote,
+        entry.theme,
+        entry.era,
+        ...(entry.sampleTitles ?? []),
+        ...(entry.sampleRecords ?? []).flatMap((record) => [
+          record.title,
+          record.category,
+          record.year,
+          record.note,
+        ]),
+      ]
+        .filter(Boolean)
+        .some((value) => value?.includes(normalizedQuery));
+    const matchesEra = !normalizedEra || entry.era === normalizedEra;
+    const matchesTheme = !normalizedTheme || entry.theme === normalizedTheme;
+
+    return matchesQuery && matchesEra && matchesTheme;
+  });
+  const limitedSourceAtlas = normalizedLimit
+    ? filteredSourceAtlas.slice(0, normalizedLimit)
+    : filteredSourceAtlas;
 
   return {
-    sourceAtlas: insights.sourceAtlas ?? [],
+    sourceAtlas: limitedSourceAtlas,
     atlasMeta: insights.atlasMeta ?? null,
+    query: {
+      q: normalizedQuery || null,
+      era: normalizedEra || null,
+      theme: normalizedTheme || null,
+      limit: normalizedLimit,
+      total: sourceAtlas.length,
+      matched: filteredSourceAtlas.length,
+    },
   };
 }
 

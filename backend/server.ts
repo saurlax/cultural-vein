@@ -76,7 +76,19 @@ const server = createServer((request, response) => {
   }
 
   if (pathname === "/source-atlas") {
-    sendJson(response, 200, getSourceAtlasPayload());
+    const limitValue = url.searchParams.get("limit");
+    const limit = limitValue ? Number(limitValue) : null;
+
+    sendJson(
+      response,
+      200,
+      getSourceAtlasPayload({
+        q: url.searchParams.get("q") ?? undefined,
+        era: url.searchParams.get("era"),
+        theme: url.searchParams.get("theme"),
+        limit: Number.isFinite(limit) ? limit : null,
+      }),
+    );
     return;
   }
 
