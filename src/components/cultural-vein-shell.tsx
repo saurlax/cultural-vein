@@ -2179,16 +2179,21 @@ export function CulturalVeinShell() {
           </div>
         ) : null}
         <div className="pointer-events-none absolute bottom-4 right-3 z-30 md:hidden">
-          <div className="pointer-events-auto flex flex-col items-end gap-2">
+          <div className="pointer-events-auto">
+            <div className="flex items-center gap-2 rounded-full border border-[#e7c97b]/26 bg-[linear-gradient(180deg,rgba(143,104,40,0.92),rgba(92,61,20,0.92))] px-2 py-2 shadow-xl shadow-black/20 backdrop-blur-xl">
             <button
               type="button"
               onClick={() => {
                 setShowMobileDossier(false);
                 setShowMobileControls((current) => !current);
               }}
-              className="rounded-full border border-[#e7c97b]/30 bg-[linear-gradient(180deg,rgba(176,132,55,0.96),rgba(108,73,26,0.96))] px-4 py-2 text-[11px] tracking-[0.2em] text-[#fff0c7] shadow-xl shadow-black/20 backdrop-blur-xl"
+              className={`rounded-full px-3 py-1.5 text-[10px] tracking-[0.2em] transition ${
+                showMobileControls
+                  ? "bg-[#f3dfab] text-[#42290a]"
+                  : "border border-[#e7c97b]/20 bg-[rgba(255,240,199,0.08)] text-[#fff0c7]"
+              }`}
             >
-              {showMobileControls ? "收起河图" : "河图"}
+              河图
             </button>
             {selectedBook ? (
               <button
@@ -2197,11 +2202,16 @@ export function CulturalVeinShell() {
                   setShowMobileControls(false);
                   setShowMobileDossier((current) => !current);
                 }}
-                className="rounded-full border border-[#ead8a6]/20 bg-[rgba(93,62,20,0.82)] px-3 py-1.5 text-[10px] text-[#f8ebc6] shadow-lg shadow-black/10"
+                className={`rounded-full px-3 py-1.5 text-[10px] transition ${
+                  showMobileDossier
+                    ? "bg-[#f3dfab] text-[#42290a]"
+                    : "border border-[#ead8a6]/20 bg-[rgba(255,240,199,0.08)] text-[#f8ebc6]"
+                }`}
               >
-                {showMobileDossier ? "收起文卷" : `文卷 · 《${selectedBook.shortTitle}》`}
+                文卷
               </button>
             ) : null}
+            </div>
           </div>
         </div>
       </div>
