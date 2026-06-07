@@ -3132,8 +3132,21 @@ const mergeById = <T extends { id: string }>(existing: T[], additions: T[]) => {
 };
 
 const appendSourceLabel = (current: string | undefined, next: string) => {
+  const normalizeSourceToken = (token: string) => {
+    const normalized = token.trim();
+    if (normalized === "上图活动资料") {
+      return "上海图书馆活动资料";
+    }
+    if (normalized === "南京图书馆馆藏资料") {
+      return "南京图书馆图像资料";
+    }
+    if (normalized === "复旦大学图书馆馆藏资料") {
+      return "复旦馆藏资料";
+    }
+    return normalized;
+  };
   const tokens = [...(current ? current.split("+") : []), next]
-    .map((item) => item.trim())
+    .map((item) => normalizeSourceToken(item))
     .filter(Boolean);
   return Array.from(new Set(tokens)).join(" + ");
 };
@@ -4817,6 +4830,554 @@ if (shuowenDetail) {
   };
 }
 
+const daxueDetail = details.daxue;
+if (daxueDetail) {
+  daxueDetail.heroMetric = {
+    directCitations: Math.max(daxueDetail.heroMetric.directCitations, 88),
+    downstreamInfluence: Math.max(daxueDetail.heroMetric.downstreamInfluence, 258),
+    coveredRegions: Math.max(daxueDetail.heroMetric.coveredRegions, 7),
+  };
+  daxueDetail.places = mergeById(daxueDetail.places, [
+    {
+      id: "place-hangzhou-dx",
+      name: "杭州",
+      lat: 30.2741,
+      lng: 120.1551,
+      note: "南宋以后四书教学与书院刊刻继续巩固《大学》的教材地位。",
+    },
+  ]);
+  daxueDetail.spread = mergeById(daxueDetail.spread, [
+    {
+      id: "spread-dx-3",
+      fromPlaceId: "place-wuyishan-dx",
+      toPlaceId: "place-hangzhou-dx",
+      startYear: 1189,
+      endYear: 1300,
+      volume: 86,
+    },
+  ]);
+  daxueDetail.people = mergeById(daxueDetail.people, [
+    {
+      id: "person-chengyi-daxue",
+      name: "程颐",
+      role: "评论者",
+      birthYear: 1033,
+      deathYear: 1107,
+      era: "宋",
+      bio: "二程理学把《大学》从礼学篇章进一步推到修身工夫与政治秩序的核心位置。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "评",
+    },
+    {
+      id: "person-zhen-de-xiu-daxue",
+      name: "真德秀",
+      role: "承继者",
+      birthYear: 1178,
+      deathYear: 1235,
+      era: "宋元",
+      bio: "南宋学者，以四书讲习与政治实践继续放大《大学》的修齐治平话语。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+  ]);
+  daxueDetail.versions = mergeById(daxueDetail.versions, [
+    {
+      id: "version-dx-4",
+      label: "南宋书院《大学章句》讲本",
+      year: 1210,
+      place: "杭州",
+      library: "书院系统",
+      status: "存世",
+      parentId: "version-dx-3",
+      editionType: "重刊本",
+      note: "《大学》持续以四书起首文本身份进入更大范围的书院教学网络。",
+    },
+  ]);
+  daxueDetail.timeline = mergeById(daxueDetail.timeline, [
+    {
+      id: "tl-dx-4",
+      year: 1210,
+      title: "南宋书院进一步巩固《大学》起首地位",
+      detail: "《大学》在四书路径中不再只是义理文本，而是被固定为入门与工夫展开的教学起点。",
+    },
+  ]);
+  daxueDetail.passages = mergeById(daxueDetail.passages, [
+    {
+      id: "passage-dx-2",
+      section: "格物致知",
+      original: "格物、致知、诚意、正心，构成由内向外展开的工夫序列，也为后世四书学习建立了稳定路径。",
+      links: [
+        {
+          id: "passage-dx-2-link-1",
+          quote: "孔门学习工夫的外展",
+          sourceBookId: "book-lunyu",
+          sourceTitle: "论语",
+          layer: "semantic",
+          confidenceLabel: "中",
+          evidence: "《大学》把《论语》中的学习工夫系统化，转换为层次分明的修身路径。",
+        },
+        {
+          id: "passage-dx-2-link-2",
+          quote: "四书秩序的课程化入口",
+          sourceBookId: "book-sishu-zhangju",
+          sourceTitle: "四书章句集注",
+          layer: "explicit",
+          confidenceLabel: "高",
+          evidence: "《大学》在四书体系中长期承担课程起点的角色，其格物致知路径被稳定编入教材秩序。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-dx-4",
+          title: "论语",
+          relation: "学习原型",
+          note: "孔门语录提供工夫论的最初话语模板。",
+        },
+        {
+          id: "trace-dx-5",
+          title: "大学",
+          relation: "路径化",
+          note: "将零散工夫论组织成层次分明的纲领。",
+        },
+        {
+          id: "trace-dx-6",
+          title: "四书章句集注",
+          relation: "课程化",
+          note: "四书体系进一步把《大学》固化为入门路径。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-dx-2",
+          targetTitle: "四书章句集注",
+          relation: "课程起点",
+          note: "《大学》长期作为四书学习中最具路径感的起首文本存在。",
+          confidenceLabel: "高",
+        },
+      ],
+    },
+  ]);
+}
+
+const mengziDetail = details.mengzi;
+if (mengziDetail) {
+  mengziDetail.heroMetric = {
+    directCitations: Math.max(mengziDetail.heroMetric.directCitations, 86),
+    downstreamInfluence: Math.max(mengziDetail.heroMetric.downstreamInfluence, 266),
+    coveredRegions: Math.max(mengziDetail.heroMetric.coveredRegions, 7),
+  };
+  mengziDetail.people = mergeById(mengziDetail.people, [
+    {
+      id: "person-zhaoqi-mengzi",
+      name: "赵岐",
+      role: "注者",
+      birthYear: 108,
+      deathYear: 201,
+      era: "两汉",
+      bio: "东汉《孟子章句》系统长期构成《孟子》阅读的重要底座，为后世义理化与教材化提供注释前驱。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 1,
+      relationType: "注",
+    },
+    {
+      id: "person-zhangzai-mengzi",
+      name: "张载",
+      role: "承继者",
+      birthYear: 1020,
+      deathYear: 1077,
+      era: "宋",
+      bio: "宋代理学家，经由气论与性善论的再阐释，使《孟子》重新进入理学核心地带。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+  ]);
+  mengziDetail.timeline = mergeById(mengziDetail.timeline, [
+    {
+      id: "tl-mz-4",
+      year: 180,
+      title: "赵岐《孟子章句》稳定早期注释层",
+      detail: "《孟子》不仅以原典流布，也通过章句传统长期维持可讲授、可节录的解释入口。",
+    },
+  ]);
+  mengziDetail.passages = mergeById(mengziDetail.passages, [
+    {
+      id: "passage-mz-2",
+      section: "尽心知性",
+      original: "尽其心者，知其性也。知其性，则知天矣。",
+      links: [
+        {
+          id: "passage-mz-2-link-1",
+          quote: "性道结构向《中庸》汇流",
+          sourceBookId: "book-zhongyong",
+          sourceTitle: "中庸",
+          layer: "semantic",
+          confidenceLabel: "中",
+          evidence: "《孟子》心性论与《中庸》性道论在宋代理学中长期互相支撑，构成四书内部的形上义理层。",
+        },
+        {
+          id: "passage-mz-2-link-2",
+          quote: "四书教材化再编码",
+          sourceBookId: "book-sishu-zhangju",
+          sourceTitle: "四书章句集注",
+          layer: "explicit",
+          confidenceLabel: "高",
+          evidence: "朱熹四书体系使《孟子》的心性与王道论被统一编入课程化阅读次序。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-mz-4",
+          title: "孟子",
+          relation: "心性源流",
+          note: "确立性善、尽心与王道政治的基本话语。",
+        },
+        {
+          id: "trace-mz-5",
+          title: "中庸",
+          relation: "义理互证",
+          note: "性道与中和结构在后世理学中反复互释。",
+        },
+        {
+          id: "trace-mz-6",
+          title: "四书章句集注",
+          relation: "教材编排",
+          note: "心性与王道论被统一纳入四书义理秩序中。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-mz-2",
+          targetTitle: "四书章句集注",
+          relation: "义理入编",
+          note: "《孟子》在四书体系中承担心性与王道论的重要终段支撑。",
+          confidenceLabel: "高",
+        },
+      ],
+    },
+  ]);
+}
+
+const shangshuDetail = details.shangshu;
+if (shangshuDetail) {
+  shangshuDetail.heroMetric = {
+    directCitations: Math.max(shangshuDetail.heroMetric.directCitations, 90),
+    downstreamInfluence: Math.max(shangshuDetail.heroMetric.downstreamInfluence, 276),
+    coveredRegions: Math.max(shangshuDetail.heroMetric.coveredRegions, 7),
+  };
+  shangshuDetail.people = mergeById(shangshuDetail.people, [
+    {
+      id: "person-fusheng-shangshu",
+      name: "伏生",
+      role: "传者",
+      birthYear: -260,
+      deathYear: -161,
+      era: "两汉",
+      bio: "汉初今文《尚书》传承的重要人物，说明《尚书》主河道在两汉已形成强烈的经学传播层。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 1,
+      relationType: "承",
+    } as PersonNode,
+    {
+      id: "person-mei-ze-shangshu",
+      name: "梅赜",
+      role: "校传者",
+      era: "魏晋",
+      bio: "古文《尚书》流传与真伪争议长期伴随《尚书》主河道，使文本史本身也成为可讲的重要层次。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "校",
+    },
+  ]);
+  shangshuDetail.timeline = mergeById(shangshuDetail.timeline, [
+    {
+      id: "tl-ss-4",
+      year: -170,
+      title: "两汉《尚书》传承层逐步稳定",
+      detail: "今文《尚书》在经师传授与王官典籍记忆之间逐步形成可辨识的流布主线。",
+    },
+  ]);
+  shangshuDetail.passages = mergeById(shangshuDetail.passages, [
+    {
+      id: "passage-ss-2",
+      section: "典章政教",
+      original: "《尚书》不只是上古记言材料，更是后世不断回看政教秩序、制度设计与治道判断的源头典籍。",
+      links: [
+        {
+          id: "passage-ss-2-link-1",
+          quote: "官学经疏提供稳定讲授层",
+          sourceBookId: "book-shangshu-zhengyi",
+          sourceTitle: "尚书正义",
+          layer: "explicit",
+          confidenceLabel: "高",
+          evidence: "《尚书正义》直接把《尚书》政教语言转写为官学可授的义疏层，放大了它的传播范围。",
+        },
+        {
+          id: "passage-ss-2-link-2",
+          quote: "治道镜鉴向通史回流",
+          sourceBookId: "book-zi-zhi-tong-jian",
+          sourceTitle: "资治通鉴",
+          layer: "influence",
+          confidenceLabel: "中",
+          evidence: "《尚书》的政教判断与典章语言长期回流到后世史学的制度镜鉴之中。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-ss-4",
+          title: "尚书",
+          relation: "政教源典",
+          note: "上古政教与典章语言在此汇聚。",
+        },
+        {
+          id: "trace-ss-5",
+          title: "尚书正义",
+          relation: "经疏中继",
+          note: "提供稳定的官学讲授层与义疏解释层。",
+        },
+        {
+          id: "trace-ss-6",
+          title: "资治通鉴",
+          relation: "史鉴回流",
+          note: "政教语言继续回到历史判断与制度镜鉴之中。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-ss-2",
+          targetTitle: "尚书正义",
+          relation: "经疏定型",
+          note: "《尚书》主河道借助正义系统获得更稳定的教学与传播中继层。",
+          confidenceLabel: "高",
+        },
+      ],
+    },
+  ]);
+}
+
+const sishuZhangjuDetail = details["sishu-zhangju"];
+if (sishuZhangjuDetail) {
+  sishuZhangjuDetail.heroMetric = {
+    directCitations: Math.max(sishuZhangjuDetail.heroMetric.directCitations, 94),
+    downstreamInfluence: Math.max(sishuZhangjuDetail.heroMetric.downstreamInfluence, 302),
+    coveredRegions: Math.max(sishuZhangjuDetail.heroMetric.coveredRegions, 8),
+  };
+  sishuZhangjuDetail.people = mergeById(sishuZhangjuDetail.people, [
+    {
+      id: "person-lvzuqian-szj",
+      name: "吕祖谦",
+      role: "传播者",
+      birthYear: 1137,
+      deathYear: 1181,
+      era: "宋",
+      bio: "南宋书院讲会与刊刻网络共同推动四书体系扩散，吕祖谦所处学术环境正是这层传播中继的重要代表。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+    {
+      id: "person-xu-heng-szj",
+      name: "许衡",
+      role: "承继者",
+      birthYear: 1209,
+      deathYear: 1281,
+      era: "宋元",
+      bio: "元代儒者，继续推动四书义理与教学系统进入更稳定的官学与书院秩序。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+  ]);
+  sishuZhangjuDetail.timeline = mergeById(sishuZhangjuDetail.timeline, [
+    {
+      id: "tl-szj-4",
+      year: 1313,
+      title: "四书体系进入更稳定的官学与考试秩序",
+      detail: "四书章句不再只是私人讲学成果，而是被纳入更广阔的教学和阅读制度之中。",
+    },
+  ]);
+  sishuZhangjuDetail.passages = mergeById(sishuZhangjuDetail.passages, [
+    {
+      id: "passage-szj-3",
+      section: "教材重组",
+      original: "四书章句之功，在于把原本分散的经典义理重排为一条可循序推进、可教学传授、可反复回读的学习河道。",
+      links: [
+        {
+          id: "passage-szj-3-link-1",
+          quote: "《大学》承担起首纲领",
+          sourceBookId: "book-daxue",
+          sourceTitle: "大学",
+          layer: "explicit",
+          confidenceLabel: "高",
+          evidence: "四书路径中，《大学》长期承担学习起点和工夫纲领角色。",
+        },
+        {
+          id: "passage-szj-3-link-2",
+          quote: "《孟子》承担义理终段支撑",
+          sourceBookId: "book-mengzi",
+          sourceTitle: "孟子",
+          layer: "explicit",
+          confidenceLabel: "高",
+          evidence: "《孟子》在四书体系中长期承担心性与王道论的压轴位置。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-szj-7",
+          title: "大学",
+          relation: "起首",
+          note: "以纲领化路径提供入门次第。",
+        },
+        {
+          id: "trace-szj-8",
+          title: "四书章句集注",
+          relation: "重组",
+          note: "把四书各自的义理与工夫压成统一课程。",
+        },
+        {
+          id: "trace-szj-9",
+          title: "孟子",
+          relation: "压轴",
+          note: "以心性与王道论收束整条四书学习河道。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-szj-3",
+          targetTitle: "大学",
+          relation: "课程起点",
+          note: "四书结构进一步巩固了《大学》的纲领性地位。",
+          confidenceLabel: "高",
+        },
+      ],
+    },
+  ]);
+}
+
+const wenxuanDetail = details.wenxuan;
+if (wenxuanDetail) {
+  wenxuanDetail.heroMetric = {
+    directCitations: Math.max(wenxuanDetail.heroMetric.directCitations, 82),
+    downstreamInfluence: Math.max(wenxuanDetail.heroMetric.downstreamInfluence, 222),
+    coveredRegions: Math.max(wenxuanDetail.heroMetric.coveredRegions, 7),
+  };
+  wenxuanDetail.people = mergeById(wenxuanDetail.people, [
+    {
+      id: "person-xiao-yi-wx",
+      name: "萧绎",
+      role: "承继者",
+      birthYear: 508,
+      deathYear: 555,
+      era: "魏晋",
+      bio: "南朝总集与文体整理传统并非由《文选》孤立完成，萧梁文化网络共同构成其编纂背景和早期传播环境。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+    {
+      id: "person-yu-jiaxi-wx",
+      name: "余嘉锡",
+      role: "近代整理者",
+      birthYear: 1884,
+      deathYear: 1955,
+      era: "近现代",
+      bio: "现代目录学与文献整理继续回读《文选》传统，让总集不只是古典读本，也成为现代学术资源。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "评",
+    },
+  ]);
+  wenxuanDetail.versions = mergeById(wenxuanDetail.versions, [
+    {
+      id: "version-wx-3",
+      label: "宋刊《文选》本",
+      year: 1100,
+      place: "杭州",
+      library: "书院刊刻系统",
+      status: "存世",
+      parentId: "version-wx-2",
+      editionType: "刻本",
+      note: "《文选》继续从唐代注本进入更大的书院、诗文批评与科举阅读网络。",
+    },
+  ]);
+  wenxuanDetail.timeline = mergeById(wenxuanDetail.timeline, [
+    {
+      id: "tl-wx-3",
+      year: 1100,
+      title: "宋刊本继续放大总集阅读影响",
+      detail: "《文选》作为选本与注本双重经典，继续在宋代诗文学习与公共阅读中维持中心地位。",
+    },
+  ]);
+  wenxuanDetail.passages = mergeById(wenxuanDetail.passages, [
+    {
+      id: "passage-wx-2",
+      section: "选本秩序",
+      original: "总集之所以重要，不在于单篇保存，而在于重排古典资源的次序，使后世形成共同的阅读入口与审美记忆。",
+      links: [
+        {
+          id: "passage-wx-2-link-1",
+          quote: "六朝文论提供体类判断背景",
+          sourceBookId: "book-wenxin-diaolong",
+          sourceTitle: "文心雕龙",
+          layer: "semantic",
+          confidenceLabel: "中",
+          evidence: "《文心雕龙》所抽象的体类与风格问题，为《文选》式总集阅读提供了更强的理论背景。",
+        },
+        {
+          id: "passage-wx-2-link-2",
+          quote: "近代词学继续回看总集传统",
+          sourceBookId: "book-ren-jian-ci-hua",
+          sourceTitle: "人间词话",
+          layer: "influence",
+          confidenceLabel: "低",
+          evidence: "近代古典审美判断常以更大的总集传统为资源库，说明《文选》并未只停留在六朝与唐宋。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-wx-4",
+          title: "文心雕龙",
+          relation: "理论背景",
+          note: "体类、风格与辞采问题构成总集排序的深层前提。",
+        },
+        {
+          id: "trace-wx-5",
+          title: "昭明文选",
+          relation: "总集编排",
+          note: "将分散文本压入共享的阅读次序中。",
+        },
+        {
+          id: "trace-wx-6",
+          title: "人间词话",
+          relation: "近代回看",
+          note: "近代审美判断继续从总集传统中回看古典资源。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-wx-2",
+          targetTitle: "人间词话",
+          relation: "资源背景",
+          note: "总集传统为近代古典审美提供了长期组织古典文本的方式。",
+          confidenceLabel: "低",
+        },
+      ],
+    },
+  ]);
+}
+
 const cbdbPeople = (supplementPayload.cbdbPeople ?? []) as RealSupplementPerson[];
 const cbdbSummary = (supplementPayload.cbdbSummary ?? {}) as RealSupplementCbdbSummary;
 const shanghaiLibraryActivity = (supplementPayload.shanghaiLibraryActivity ??
@@ -4900,6 +5461,127 @@ for (const [slug, names] of Object.entries(peopleMergePlan)) {
     continue;
   }
   detail.people = mergePeople(names ?? [], detail.people);
+}
+
+const curatedPeopleSupplements: Partial<Record<string, PersonNode[]>> = {
+  daxue: [
+    {
+      id: "person-chengyi-daxue",
+      name: "程颐",
+      role: "评论者",
+      birthYear: 1033,
+      deathYear: 1107,
+      era: "宋",
+      bio: "二程理学把《大学》从礼学篇章进一步推到修身工夫与政治秩序的核心位置。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "评",
+    },
+    {
+      id: "person-zhen-de-xiu-daxue",
+      name: "真德秀",
+      role: "承继者",
+      birthYear: 1178,
+      deathYear: 1235,
+      era: "宋元",
+      bio: "南宋学者，以四书讲习与政治实践继续放大《大学》的修齐治平话语。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+  ],
+  mengzi: [
+    {
+      id: "person-zhaoqi-mengzi",
+      name: "赵岐",
+      role: "注者",
+      birthYear: 108,
+      deathYear: 201,
+      era: "两汉",
+      bio: "东汉《孟子章句》系统长期构成《孟子》阅读的重要底座，为后世义理化与教材化提供注释前驱。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 1,
+      relationType: "注",
+    },
+    {
+      id: "person-zhangzai-mengzi",
+      name: "张载",
+      role: "承继者",
+      birthYear: 1020,
+      deathYear: 1077,
+      era: "宋",
+      bio: "宋代理学家，经由气论与性善论的再阐释，使《孟子》重新进入理学核心地带。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+  ],
+  shangshu: [
+    {
+      id: "person-fusheng-shangshu",
+      name: "伏生",
+      role: "传者",
+      birthYear: -260,
+      deathYear: -161,
+      era: "两汉",
+      bio: "汉初今文《尚书》传承的重要人物，说明《尚书》主河道在两汉已形成强烈的经学传播层。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 1,
+      relationType: "承",
+    } as PersonNode,
+    {
+      id: "person-mei-ze-shangshu",
+      name: "梅赜",
+      role: "校传者",
+      era: "魏晋",
+      bio: "古文《尚书》流传与真伪争议长期伴随《尚书》主河道，使文本史本身也成为可讲的重要层次。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "校",
+    },
+  ],
+  "sishu-zhangju": [
+    {
+      id: "person-lvzuqian-szj",
+      name: "吕祖谦",
+      role: "传播者",
+      birthYear: 1137,
+      deathYear: 1181,
+      era: "宋",
+      bio: "南宋书院讲会与刊刻网络共同推动四书体系扩散，吕祖谦所处学术环境正是这层传播中继的重要代表。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+    {
+      id: "person-xu-heng-szj",
+      name: "许衡",
+      role: "承继者",
+      birthYear: 1209,
+      deathYear: 1281,
+      era: "宋元",
+      bio: "元代儒者，继续推动四书义理与教学系统进入更稳定的官学与书院秩序。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+  ],
+};
+
+for (const [slug, people] of Object.entries(curatedPeopleSupplements)) {
+  const detail = details[slug];
+  if (!detail || !people) {
+    continue;
+  }
+  detail.people = mergeById(detail.people, people);
 }
 
 if (shanghaiLibraryActivity.available) {
