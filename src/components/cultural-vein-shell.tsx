@@ -1394,15 +1394,15 @@ export function CulturalVeinShell() {
                             </div>
                             <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
                               <div className="flex items-center justify-between gap-3">
-                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">示范域策略</div>
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">长卷铺陈</div>
                                 <div className="rounded-full border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-2 py-0.5 text-[10px] text-[#f2dfab]">
                                   {demoCoveragePercent !== null
-                                    ? `${demoCoveragePercent.toFixed(3)}% 前景示范`
-                                    : "前景示范"}
+                                    ? `${demoCoveragePercent.toFixed(3)}% 已映主脉`
+                                    : "已映主脉"}
                                 </div>
                               </div>
                               <div className="mt-2 text-[10px] leading-5 text-[#dccb9c]">
-                                当前以前景示范域
+                                当前先以主脉长卷
                                 <span className="px-1 text-[#fbf3da]">
                                   {atlasMeta.demoBookCount.toLocaleString()}
                                 </span>
@@ -1520,10 +1520,10 @@ export function CulturalVeinShell() {
                                 </span>
                               </div>
                               <div className="mt-2 text-[10px] text-[#f2dfab]">
-                                {activeSourceAtlasEntry.stat ?? "来源片段"}
+                                {activeSourceAtlasEntry.stat ?? "来源线索"}
                               </div>
                               <div className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#e6d7ae]">
-                                {activeSourceAtlasEntry.summary ?? "这股来源正在河面留下对应片段与落点。"}
+                                {activeSourceAtlasEntry.summary ?? "这股来源正在河面留下对应线索与落点。"}
                               </div>
                               {activeSourceAtlasEntry.evidenceLabel ? (
                                 <div className="mt-2 rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-2.5 py-2">
@@ -1557,12 +1557,12 @@ export function CulturalVeinShell() {
                                         className="h-2.5 w-2.5 shrink-0 rounded-full"
                                         style={{ backgroundColor: route?.color ?? "#d6a33d" }}
                                       />
-                                      <span className="truncate text-[11px] text-[#eadfbc]">
-                                        {entry.name}
-                                      </span>
-                                    </div>
-                              <div className="mt-1 truncate text-[10px] text-[#cdb98d]">
-                                      {entry.stat ?? "来源片段"}
+                                    <span className="truncate text-[11px] text-[#eadfbc]">
+                                      {entry.name}
+                                    </span>
+                                  </div>
+                                    <div className="mt-1 truncate text-[10px] text-[#cdb98d]">
+                                      {entry.stat ?? "来源线索"}
                                     </div>
                                   </div>
                                   <div className="shrink-0 text-[10px] text-[#d8c9a3]">待映照</div>
@@ -1579,7 +1579,7 @@ export function CulturalVeinShell() {
                                   {activeSourceAtlasEntry.name}
                                 </div>
                                 <div className="mt-1 text-[11px] leading-5 text-[#e6d7ae]">
-                                  {activeSourceAtlasEntry.summary ?? "来源片段"}
+                                  {activeSourceAtlasEntry.summary ?? "来源线索"}
                                 </div>
                               </div>
                               <div className="shrink-0 text-[10px] text-[#f2dfab]">

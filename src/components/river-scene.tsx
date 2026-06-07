@@ -2364,8 +2364,8 @@ export function RiverScene(props: RiverSceneProps) {
       : hoveredDock
         ? `${hoveredDock.label} 正从河面浮起。${hoveredDock.note ? ` ${hoveredDock.note}` : ""}`
       : props.sourceAtlasLabel && props.dockMarkers?.length
-        ? `${props.sourceAtlasLabel} 的样本已映入河道，可沿码头顺流检阅。${props.sourceAtlasSummary ? ` ${props.sourceAtlasSummary}` : ""}`
-      : hoveredBook
+        ? `${props.sourceAtlasLabel} 的来源线索已映入河道，可沿码头顺流检阅。${props.sourceAtlasSummary ? ` ${props.sourceAtlasSummary}` : ""}`
+        : hoveredBook
         ? `${hoveredBook.shortTitle} 已浮出河心，点击即可入卷。`
       : hoveredBranch
           ? `${hoveredBranch.label} 正在显现，顺着支流便能入卷追看。`

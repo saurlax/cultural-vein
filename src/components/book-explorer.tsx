@@ -949,7 +949,7 @@ export function BookExplorer({
     ? "影像卷面"
     : activeInstitutionRecord?.sourceText
       ? "馆藏线索"
-      : "资源摘记";
+      : "馆藏摘记";
   const activeInstitutionPreviewText = activeInstitutionRecord
     ? activeInstitutionRecord.sourceText ??
       (activeInstitutionRecord.imageRef
