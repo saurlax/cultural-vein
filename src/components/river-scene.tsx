@@ -2776,6 +2776,38 @@ function RiverWorld({
       null,
     [branchAnnotations, hoveredBranchId, selectedBookSlug],
   );
+  const cruiseBranchAnnotation = useMemo(() => {
+    if (
+      branchAnnotations.length === 0 ||
+      selectedBookSlug ||
+      traceFocus?.active ||
+      sceneFocus?.active ||
+      searchFocusSlug
+    ) {
+      return null;
+    }
+
+    return branchAnnotations.reduce<RiverBranchAnnotation | null>((closest, annotation) => {
+      if (!closest) {
+        return annotation;
+      }
+
+      const closestProgress = THREE.MathUtils.clamp((closest.position[0] + 6.8) / 16.8, 0.08, 0.92);
+      const nextProgress = THREE.MathUtils.clamp((annotation.position[0] + 6.8) / 16.8, 0.08, 0.92);
+      const closestDistance = Math.abs(closestProgress - cruiseProgress);
+      const nextDistance = Math.abs(nextProgress - cruiseProgress);
+
+      return nextDistance < closestDistance ? annotation : closest;
+    }, null);
+  }, [
+    branchAnnotations,
+    cruiseProgress,
+    sceneFocus?.active,
+    searchFocusSlug,
+    selectedBookSlug,
+    traceFocus?.active,
+  ]);
+  const resolvedBranchAnnotation = activeBranchAnnotation ?? cruiseBranchAnnotation;
   const conceptFlowPoints = useMemo(() => {
     if (highlightedBookSlugs.length < 2) {
       return [];
@@ -2878,12 +2910,12 @@ function RiverWorld({
     [sourceAtlasPathPoints],
   );
   const activeBranchFlowPoints = useMemo(() => {
-    if (!activeBranchAnnotation) {
+    if (!resolvedBranchAnnotation) {
       return [];
     }
 
-    const sourceBook = books.find((book) => book.slug === activeBranchAnnotation.sourceSlug) ?? null;
-    const targetBook = books.find((book) => book.slug === activeBranchAnnotation.targetSlug) ?? null;
+    const sourceBook = books.find((book) => book.slug === resolvedBranchAnnotation.sourceSlug) ?? null;
+    const targetBook = books.find((book) => book.slug === resolvedBranchAnnotation.targetSlug) ?? null;
 
     if (!sourceBook || !targetBook) {
       return [];
@@ -2903,7 +2935,7 @@ function RiverWorld({
       );
 
     return [sourcePoint, midpoint, targetPoint];
-  }, [activeBranchAnnotation, books]);
+  }, [books, resolvedBranchAnnotation]);
   const sourceAtlasRouteCurves = useMemo(
     () =>
       sourceAtlasRoutes
@@ -3357,12 +3389,12 @@ function RiverWorld({
       activeBranchFlowPoints.length >= 2 ? (
         <group>
           <BranchConfluenceAura
-            focusPosition={activeBranchAnnotation ? new THREE.Vector3(...activeBranchAnnotation.position) : null}
-            color={activeBranchAnnotation?.accentColor ?? "#fcd34d"}
+            focusPosition={resolvedBranchAnnotation ? new THREE.Vector3(...resolvedBranchAnnotation.position) : null}
+            color={resolvedBranchAnnotation?.accentColor ?? "#fcd34d"}
           />
           <Line
             points={activeBranchFlowPoints}
-            color={activeBranchAnnotation?.accentColor ?? "#fcd34d"}
+            color={resolvedBranchAnnotation?.accentColor ?? "#fcd34d"}
             transparent
             opacity={0.94}
             lineWidth={2.8}
@@ -3376,7 +3408,7 @@ function RiverWorld({
           />
           <RiverParticleStream
             points={activeBranchFlowPoints}
-            color={activeBranchAnnotation?.accentColor ?? "#fde68a"}
+            color={resolvedBranchAnnotation?.accentColor ?? "#fde68a"}
             density={64}
             flowSpeed={0.11}
             spread={0.05}
