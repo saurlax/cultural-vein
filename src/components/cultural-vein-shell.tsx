@@ -713,16 +713,35 @@ export function CulturalVeinShell() {
   const sourceAtlasSuggestedEra = activeSourceAtlasEntry
     ? inferSourceAtlasEra(activeSourceAtlasEntry) ?? activeEra
     : null;
+  const getEntryAnchorBooks = useCallback(
+    (entry: NonNullable<typeof sourceAtlasEntries>[number]) => {
+      const linkedBooks = filteredBooks.filter((book) => entry.relatedBookSlugs?.includes(book.slug));
+
+      if (linkedBooks.length) {
+        return linkedBooks.sort((left, right) => left.year - right.year);
+      }
+
+      const inferredEra = inferSourceAtlasEra(entry);
+      const fallbackBooks = filteredBooks.filter((book) => {
+        if (inferredEra && book.dynasty !== inferredEra) {
+          return false;
+        }
+
+        return true;
+      });
+
+      return (fallbackBooks.length ? fallbackBooks : filteredBooks).sort(
+        (left, right) => left.year - right.year,
+      );
+    },
+    [filteredBooks, inferSourceAtlasEra],
+  );
   const sourceAtlasDockMarkers: RiverDockMarker[] = (() => {
     if (!activeSourceAtlasEntry?.sampleRecords?.length) {
       return [];
     }
 
-    const linkedBooks = filteredBooks.filter((book) =>
-      activeSourceAtlasEntry.relatedBookSlugs?.includes(book.slug),
-    );
-    const anchorBooks = (linkedBooks.length ? linkedBooks : filteredBooks)
-      .sort((left, right) => left.year - right.year);
+    const anchorBooks = getEntryAnchorBooks(activeSourceAtlasEntry);
 
     const accentPalette = ["#fbbf24", "#f59e0b", "#fcd34d", "#f97316"];
 
@@ -763,32 +782,27 @@ export function CulturalVeinShell() {
 
     return prioritizedSourceAtlasEntries
       .map((entry, entryIndex) => {
-        const samples = entry.sampleRecords?.slice(0, 3) ?? [];
+        const anchorBooks = getEntryAnchorBooks(entry);
+        const primaryAnchors = (anchorBooks.length ? anchorBooks : fallbackPool).slice(0, 4);
 
-        if (samples.length < 2) {
+        if (primaryAnchors.length < 2) {
           return null;
         }
 
-        const routePoints = samples
-          .map((_, sampleIndex) => {
-            const anchorBook =
-              fallbackPool[(entryIndex * 2 + sampleIndex * 3) % Math.max(fallbackPool.length, 1)];
+        const laneBias = entryIndex - (prioritizedSourceAtlasEntries.length - 1) / 2;
+        const routePoints = primaryAnchors.map((anchorBook, anchorIndex) => {
+          const [baseX, baseY, baseZ] = anchorBook.coordinates;
+          const sway = anchorIndex % 2 === 0 ? 1 : -1;
+          const depthOffset = entry.relatedBookSlugs?.length
+            ? sway * (0.22 + anchorIndex * 0.04)
+            : sway * (0.52 + entryIndex * 0.08);
 
-            if (!anchorBook) {
-              return null;
-            }
-
-            const [baseX, baseY, baseZ] = anchorBook.coordinates;
-            const laneBias = entryIndex - (prioritizedSourceAtlasEntries.length - 1) / 2;
-            const sway = sampleIndex % 2 === 0 ? 1 : -1;
-
-            return [
-              baseX + laneBias * 0.78 + sampleIndex * 0.18,
-              baseY + 0.03 + entryIndex * 0.01,
-              baseZ + sway * (0.72 + entryIndex * 0.12),
-            ] as [number, number, number];
-          })
-          .filter((point): point is [number, number, number] => Boolean(point));
+          return [
+            baseX + laneBias * (entry.relatedBookSlugs?.length ? 0.18 : 0.62) + anchorIndex * 0.08,
+            baseY + 0.03 + Math.min(entryIndex * 0.01, 0.04),
+            baseZ + depthOffset,
+          ] as [number, number, number];
+        });
 
         if (routePoints.length < 2) {
           return null;
@@ -908,6 +922,7 @@ export function CulturalVeinShell() {
   );
   const handleSourceAtlasSelect = (entryId: string) => {
     setActiveSourceAtlasId(entryId);
+    setActiveSourceAtlasDetail(null);
     setSelectedDockId(null);
     setShowDesktopControls(true);
     setShowDesktopDossier(false);
@@ -925,31 +940,8 @@ export function CulturalVeinShell() {
       }
 
       const focusBook =
-        filteredBooks
-          .filter((book) => {
-            if (inferredEra && book.dynasty !== inferredEra) {
-              return false;
-            }
-
-            if (selectedEntry.name.includes("搜韵")) {
-              return book.category === "集" || book.school.includes("诗");
-            }
-
-            if (selectedEntry.name.includes("报刊")) {
-              return book.dynasty === "近现代";
-            }
-
-            if (selectedEntry.name.includes("专题片")) {
-              return book.dynasty === "近现代" || book.dynasty === "明清";
-            }
-
-            if (selectedEntry.name.includes("CBDB")) {
-              return book.category === "史" || book.category === "经";
-            }
-
-            return true;
-          })
-          .sort((left, right) => right.influence - left.influence)[0] ?? null;
+        getEntryAnchorBooks(selectedEntry).sort((left, right) => right.influence - left.influence)[0] ??
+        null;
 
       setSceneFocus(
         focusBook
@@ -1079,7 +1071,9 @@ export function CulturalVeinShell() {
           .map((offset) => prioritizedSourceAtlasEntries[activeSourceAtlasIndex + offset])
           .filter((entry): entry is NonNullable<typeof sourceAtlasEntries>[number] => Boolean(entry))
       : prioritizedSourceAtlasEntries.slice(1, 2);
-  const activeSourceRelatedBooks = activeSourceAtlasDetail?.relatedBooks ?? [];
+  const visibleSourceAtlasDetail =
+    activeSourceAtlasDetail?.entry.id === activeSourceAtlasEntry?.id ? activeSourceAtlasDetail : null;
+  const activeSourceRelatedBooks = visibleSourceAtlasDetail?.relatedBooks ?? [];
   const cbdbPersonCount = insights?.cbdbSummary?.personCount ?? null;
   const eraRecommendedBooks = useMemo(() => {
     return filteredBooks
