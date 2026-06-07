@@ -2507,7 +2507,7 @@ export function RiverScene(props: RiverSceneProps) {
     <div
       ref={containerRef}
       onContextMenu={(event) => event.preventDefault()}
-      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#d7ab56]/46 bg-[radial-gradient(circle_at_50%_42%,#efc86c_0%,#d8a246_28%,#c28733_56%,#a96623_100%)] shadow-[0_0_140px_rgba(107,68,18,0.18)] [touch-action:pan-x_pinch-zoom]"
+      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#d7ab56]/46 bg-[radial-gradient(circle_at_50%_42%,#f8dd9a_0%,#e0b760_24%,#c88d39_54%,#9f6224_100%)] shadow-[0_0_140px_rgba(107,68,18,0.18)] [touch-action:none]"
     >
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-[linear-gradient(90deg,rgba(254,240,196,0.92),rgba(254,240,196,0.24),transparent)]" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-[linear-gradient(270deg,rgba(231,188,96,0.86),rgba(231,188,96,0.22),transparent)]" />
@@ -2576,7 +2576,7 @@ export function RiverScene(props: RiverSceneProps) {
         }}
         onPointerUp={() => setIsInteracting(false)}
         onPointerLeave={() => setIsInteracting(false)}
-        className={isInteracting ? "cursor-grabbing [touch-action:pan-x_pinch-zoom]" : "cursor-grab [touch-action:pan-x_pinch-zoom]"}
+        className={isInteracting ? "cursor-grabbing [touch-action:none]" : "cursor-grab [touch-action:none]"}
       >
         <RiverWorld
           {...props}

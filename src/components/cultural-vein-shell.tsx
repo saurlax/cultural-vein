@@ -123,7 +123,7 @@ const branchAccentByLayer = {
   metadata: "#f59e0b",
   explicit: "#34d399",
   semantic: "#38bdf8",
-  influence: "#c084fc",
+  influence: "#c0893d",
 } as const;
 
 const eraNarratives: Record<
@@ -578,6 +578,8 @@ export function CulturalVeinShell() {
     if (selectedBookSlug === slug && viewMode === "book") {
       setShowDesktopDossier(true);
       setShowDesktopControls(false);
+      setShowMobileControls(false);
+      setShowMobileDossier(false);
       setEntryExplorerTab(nextEntryTab);
       setSelectedBookSlug(slug);
       return;
@@ -591,7 +593,7 @@ export function CulturalVeinShell() {
       setShowDesktopDossier(true);
       setShowDesktopControls(false);
       setShowMobileControls(false);
-      setShowMobileDossier(true);
+      setShowMobileDossier(false);
       setSelectedBookSlug(slug);
       setTransitionState("settling");
     }, 180);
@@ -1036,7 +1038,7 @@ export function CulturalVeinShell() {
       ? resolvedSearchResult.relatedConcepts
       : defaultConceptSuggestions;
   const panelBaseClass =
-    "rounded-[28px] border border-[#e5c97f]/24 bg-[linear-gradient(180deg,rgba(171,131,57,0.78),rgba(99,67,24,0.68))] shadow-[0_18px_56px_rgba(68,39,9,0.22)] backdrop-blur-xl";
+    "rounded-[28px] border border-[#d8b565]/28 bg-[linear-gradient(180deg,rgba(236,214,159,0.94),rgba(207,168,90,0.88))] shadow-[0_18px_56px_rgba(92,58,16,0.18)] backdrop-blur-xl";
   const desktopPanels: Array<{
     id: "search" | "era" | "category" | "branch";
     label: string;
@@ -1947,19 +1949,19 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileControls ? (
-          <div className="absolute bottom-[4.8rem] right-3 z-40 md:hidden">
+          <div className="absolute inset-x-0 bottom-[4.8rem] z-40 px-3 md:hidden">
             <div
-              className={`pointer-events-auto w-[min(16.2rem,calc(100vw-1.5rem))] max-h-[min(12rem,28vh)] overflow-auto rounded-[28px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.24)] ${panelBaseClass}`}
+              className={`pointer-events-auto mx-auto w-full max-w-[24rem] max-h-[min(15rem,34vh)] overflow-auto rounded-[28px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.18)] ${panelBaseClass}`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">卷边题签</div>
-                  <div className="mt-1 text-sm font-medium text-[#fbf3da]">{activeDesktopPanelConfig.label}</div>
+                  <div className="text-[11px] tracking-[0.28em] text-[#8d6a2c]">卷边题签</div>
+                  <div className="mt-1 text-sm font-medium text-[#5b3a11]">{activeDesktopPanelConfig.label}</div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowMobileControls(false)}
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200"
+                  className="rounded-full border border-[#b89247]/20 bg-[rgba(255,255,255,0.18)] px-3 py-1.5 text-xs text-[#6f4b18]"
                 >
                   收起
                 </button>
@@ -2051,6 +2053,26 @@ export function CulturalVeinShell() {
                   </button>
                 ))}
               </div>
+              {selectedBook ? (
+                <div className="mt-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowMobileControls(false);
+                      setShowMobileDossier(true);
+                    }}
+                    className="w-full rounded-[22px] border border-[#b89247]/18 bg-[rgba(255,255,255,0.18)] px-4 py-3 text-left transition hover:bg-[rgba(255,255,255,0.24)]"
+                  >
+                    <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">文卷入口</div>
+                    <div className="mt-2 text-sm font-medium text-[#5b3a11]">
+                      展开《{selectedBook.shortTitle}》卷内细读
+                    </div>
+                    <div className="mt-1 text-[11px] leading-5 text-[#6f4b18]">
+                      地理传播、人物关系、版本流变、时间线与文本溯源都在卷内展开。
+                    </div>
+                  </button>
+                </div>
+              ) : null}
               {activeDesktopPanel === "search" ? (
                 <>
                   <label className="mt-3 block">
@@ -2255,38 +2277,22 @@ export function CulturalVeinShell() {
             </div>
           </div>
         ) : null}
-        <div className="pointer-events-none absolute bottom-3 right-3 z-30 md:hidden">
+        <div className="pointer-events-none absolute bottom-3 inset-x-0 z-30 md:hidden">
           <div className="pointer-events-auto">
-            <div className="flex items-center gap-2">
-            {selectedBook ? (
+            <div className="flex justify-center">
               <button
                 type="button"
                 onClick={() => {
-                  setShowMobileControls(false);
-                  setShowMobileDossier((current) => !current);
+                  setShowMobileDossier(false);
+                  setShowMobileControls((current) => !current);
                 }}
-                className={`rounded-full border px-3 py-2 text-[10px] shadow-[0_10px_22px_rgba(52,28,6,0.18)] backdrop-blur-xl transition ${
-                  showMobileDossier
+                className={`rounded-full border px-4 py-2 text-[10px] shadow-[0_10px_22px_rgba(52,28,6,0.18)] backdrop-blur-xl transition ${
+                  showMobileControls
                     ? "border-[#f0cf75]/34 bg-[#f3dfab] text-[#42290a]"
                     : "border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(182,134,53,0.88),rgba(109,73,24,0.82))] text-[#fff0c7]"
                 }`}
               >
-                文卷
-              </button>
-            ) : null}
-            <button
-              type="button"
-              onClick={() => {
-                setShowMobileDossier(false);
-                setShowMobileControls((current) => !current);
-              }}
-              className={`rounded-full border px-3 py-2 text-[10px] shadow-[0_10px_22px_rgba(52,28,6,0.18)] backdrop-blur-xl transition ${
-                showMobileControls
-                  ? "border-[#f0cf75]/34 bg-[#f3dfab] text-[#42290a]"
-                  : "border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(182,134,53,0.88),rgba(109,73,24,0.82))] text-[#fff0c7]"
-              }`}
-              >
-                {showMobileControls ? activeDesktopPanelConfig.label : "河册"}
+                {selectedBook ? "河册与文卷" : "河册"}
               </button>
             </div>
           </div>
