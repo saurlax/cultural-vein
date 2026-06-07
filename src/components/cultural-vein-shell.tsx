@@ -982,8 +982,6 @@ export function CulturalVeinShell() {
         activeSourceAtlasEntry?.sampleRecords?.[0] ??
         null
       : null;
-  const getSourceAtlasDockId = (index: number) =>
-    activeSourceAtlasEntry ? `source-atlas-${activeSourceAtlasEntry.id}-${index}` : null;
   const mergedDockMarkers = selectedBook ? riverDockMarkers : sourceAtlasDockMarkers;
   const sourceAtlasHighlightedBookSlugs = (() => {
     if (!activeSourceAtlasEntry || selectedBook) {
@@ -1139,18 +1137,6 @@ export function CulturalVeinShell() {
       handleSourceAtlasSelect(nextEntry.id);
     }
   };
-  const handleSourceRecordFocus = (index: number) => {
-    const dockId = getSourceAtlasDockId(index);
-
-    if (!dockId) {
-      return;
-    }
-
-    setSelectedDockId((current) => (current === dockId ? null : dockId));
-    setShowDesktopControls(true);
-    setShowDesktopDossier(false);
-    setShowMobileDossier(false);
-  };
   const focusModeLabel = traceFocus?.active
     ? "逆流溯源"
     : sceneFocus?.active
@@ -1299,7 +1285,6 @@ export function CulturalVeinShell() {
   ].filter((item): item is string => Boolean(item));
   const compactSourceThemeOptions = sourceAtlasThemeOptions.slice(0, 4);
   const compactSourceEraOptions = sourceAtlasEraOptions.slice(0, 4);
-  const compactSourceRouteEntries = prioritizedSourceAtlasEntries.slice(0, 2);
   const compactBranchLead = activeBranchAnnotation
     ? activeBranchSummary
       ? `${relationLayerMeta[activeBranchSummary.layer].label}当前显出 ${activeBranchSummary.count} 股。`
@@ -1759,62 +1744,48 @@ export function CulturalVeinShell() {
                       )}
                     </div>
                     {sourceAtlasEntries.length ? (
-                    <div className="mt-3 rounded-[18px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(127,87,27,0.24),rgba(58,36,10,0.16))] px-3 py-3">
-                      <div className="flex items-center justify-between gap-3">
-                        <div>
-                          <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">支流巡签</div>
-                          <div className="mt-1 text-[10px] text-[#cdb98d]">
-                            当前第{" "}
-                            {activeSourceAtlasIndex >= 0
-                              ? activeSourceAtlasIndex + 1
-                              : Math.min(prioritizedSourceAtlasEntries.length, 1)}
-                            /{prioritizedSourceAtlasEntries.length || 1} 股
+                      <div className="mt-3 rounded-[18px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(127,87,27,0.22),rgba(58,36,10,0.14))] px-3 py-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <div>
+                            <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">支流巡签</div>
+                            <div className="mt-1 text-[10px] text-[#cdb98d]">
+                              当前第{" "}
+                              {activeSourceAtlasIndex >= 0
+                                ? activeSourceAtlasIndex + 1
+                                : Math.min(prioritizedSourceAtlasEntries.length, 1)}
+                              /{prioritizedSourceAtlasEntries.length || 1} 股
+                            </div>
                           </div>
-                        </div>
-                        <div className="text-[10px] text-[#f2dfab]">
-                          {activeSourceAtlasEntry?.stat ?? "来源线索"}
-                        </div>
+                          <div className="text-[10px] text-[#f2dfab]">
+                            {activeSourceAtlasEntry?.stat ?? "来源线索"}
+                          </div>
                         </div>
                         <div className="mt-3 flex flex-wrap items-center gap-2">
                           <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
                             当前可见 {prioritizedSourceAtlasEntries.length} 股
                           </span>
+                          <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-2.5 py-1 text-[10px] text-amber-100">
+                            {sourceAtlasFilterActive ? `已筛 ${sourceAtlasFilterSummary}` : "全域支流"}
+                          </span>
                           {sourceAtlasFilterActive ? (
-                            <>
-                              <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-2.5 py-1 text-[10px] text-amber-100">
-                                已筛 {sourceAtlasFilterSummary}
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setSourceAtlasThemeFilter("全部");
-                                  setSourceAtlasEraFilter("全部");
-                                }}
-                                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
-                              >
-                                归零筛选
-                              </button>
-                            </>
-                          ) : (
-                            <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#dccb9c]">
-                              未加筛选
-                            </span>
-                          )}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSourceAtlasThemeFilter("全部");
+                                setSourceAtlasEraFilter("全部");
+                              }}
+                              className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                            >
+                              归零筛选
+                            </button>
+                          ) : null}
                         </div>
-                        <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.26)] px-3 py-3">
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="text-[11px] tracking-[0.2em] text-[#d8c9a3]">来源支流</div>
-                            <div className="text-[10px] text-[#c9b68a]">
-                              {activeSourceAtlasIndex >= 0
-                                ? `${activeSourceAtlasIndex + 1}/${prioritizedSourceAtlasEntries.length}`
-                                : `${Math.min(prioritizedSourceAtlasEntries.length, 1)}/${prioritizedSourceAtlasEntries.length}`}
-                            </div>
-                          </div>
-                          {activeSourceAtlasEntry ? (
+                        {activeSourceAtlasEntry ? (
+                          <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.24)] px-3 py-3">
                             <button
                               type="button"
                               onClick={() => handleSourceAtlasSelect(activeSourceAtlasEntry.id)}
-                              className="mt-3 w-full rounded-[14px] border border-amber-300/24 bg-[rgba(120,81,26,0.32)] px-3 py-3 text-left transition hover:bg-[rgba(131,90,29,0.4)]"
+                              className="w-full text-left"
                             >
                               <div className="flex items-center gap-2">
                                 <span
@@ -1825,23 +1796,49 @@ export function CulturalVeinShell() {
                                   {activeSourceAtlasEntry.name}
                                 </span>
                               </div>
-                              <div className="mt-2 inline-flex rounded-full border border-amber-200/22 bg-[rgba(255,244,214,0.08)] px-2.5 py-1 text-[10px] text-[#fff0c2]">
-                                {getSourceThemeLabel(activeSourceAtlasEntry.name)}
-                                {sourceAtlasSuggestedEra ? ` · ${sourceAtlasSuggestedEra}` : ""}
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                <span className="rounded-full border border-amber-200/22 bg-[rgba(255,244,214,0.08)] px-2.5 py-1 text-[10px] text-[#fff0c2]">
+                                  {getSourceThemeLabel(activeSourceAtlasEntry.name)}
+                                  {sourceAtlasSuggestedEra ? ` · ${sourceAtlasSuggestedEra}` : ""}
+                                </span>
+                                {activeSourceRoute ? (
+                                  <span className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#dccb9c]">
+                                    {activeSourceRoute.points.length} 个落点
+                                  </span>
+                                ) : null}
                               </div>
                               <div className="mt-2 line-clamp-2 text-[10px] leading-5 text-[#e6d7ae]">
                                 {activeSourceAtlasEntry.summary ?? "这股来源正在河面留下对应线索与落点。"}
                               </div>
                             </button>
-                          ) : (
-                            <div className="mt-3 rounded-[14px] border border-dashed border-[#ead8a6]/16 bg-[rgba(255,248,220,0.03)] px-3 py-3 text-[11px] leading-5 text-[#d8c9a3]">
-                              当前筛选下还没有映上河面的来源支流，换个主题或时代再看。
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => handleSourceAtlasStep(-1)}
+                                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                              >
+                                前一股
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSourceAtlasStep(1)}
+                                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                              >
+                                后一股
+                              </button>
+                              {activeSourceRelatedBooks.slice(0, 1).map((book) => (
+                                <button
+                                  key={`source-related-compact-${activeSourceAtlasEntry.id}-${book.slug}`}
+                                  type="button"
+                                  onClick={() => handleDiveToBook(book.slug)}
+                                  className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.12)] hover:text-[#fbf3da]"
+                                >
+                                  入《{book.title}》
+                                </button>
+                              ))}
                             </div>
-                          )}
-                          <div className="mt-3">
-                            <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">按主题看</div>
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {compactSourceThemeOptions.map((theme) => (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {compactSourceThemeOptions.slice(0, 3).map((theme) => (
                                 <button
                                   key={`source-theme-${theme}`}
                                   type="button"
@@ -1855,12 +1852,7 @@ export function CulturalVeinShell() {
                                   {theme}
                                 </button>
                               ))}
-                            </div>
-                          </div>
-                          <div className="mt-3">
-                            <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">按时代看</div>
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {compactSourceEraOptions.map((era) => (
+                              {compactSourceEraOptions.slice(0, 3).map((era) => (
                                 <button
                                   key={`source-era-${era}`}
                                   type="button"
@@ -1875,153 +1867,33 @@ export function CulturalVeinShell() {
                                 </button>
                               ))}
                             </div>
-                          </div>
-                          <div className="mt-3 flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => handleSourceAtlasStep(-1)}
-                              className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
-                            >
-                              前一股
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleSourceAtlasStep(1)}
-                              className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
-                            >
-                              后一股
-                            </button>
-                          </div>
-                          {compactSourceRouteEntries.length ? (
-                            <div className="mt-3 space-y-2">
-                              {compactSourceRouteEntries.map((entry) => {
-                                const route = sourceAtlasRouteMap.get(entry.id);
-
-                                return (
-                                  <button
-                                    key={`desktop-source-route-${entry.id}`}
-                                    type="button"
-                                    onClick={() => handleSourceAtlasSelect(entry.id)}
-                                    className="flex w-full items-center justify-between gap-3 rounded-[14px] border border-[#ead8a6]/10 bg-[rgba(255,248,220,0.03)] px-3 py-2.5 text-left transition hover:bg-[rgba(255,248,220,0.07)]"
-                                  >
-                                    <div className="min-w-0">
-                                      <div className="flex items-center gap-2">
-                                        <span
-                                          className="h-2.5 w-2.5 shrink-0 rounded-full"
-                                          style={{ backgroundColor: route?.color ?? "#d6a33d" }}
-                                        />
-                                      <span className="truncate text-[11px] text-[#eadfbc]">
-                                        {entry.name}
-                                      </span>
-                                    </div>
-                                      <div className="mt-1 truncate text-[10px] text-[#cdb98d]">
-                                        {entry.stat ?? "来源线索"}
-                                      </div>
-                                    </div>
-                                    <div className="shrink-0 text-[10px] text-[#d8c9a3]">
-                                      {getSourceThemeLabel(entry.name)}
-                                    </div>
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          ) : null}
-                        </div>
-                        {activeSourceAtlasEntry ? (
-                          <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3">
-                            {activeSourceAtlasEntry.sampleRecords?.slice(0, 2).length ? (
-                              <div className="flex flex-wrap gap-2">
-                                {activeSourceAtlasEntry.sampleRecords.slice(0, 2).map((record, index) => {
-                                  const dockId = getSourceAtlasDockId(index);
-                                  const isDockActive = dockId !== null && activeSourceDock?.id === dockId;
-
-                                  return (
-                                    <button
-                                      key={`desktop-source-record-${activeSourceAtlasEntry.id}-${record.title}`}
-                                      type="button"
-                                      onClick={() => handleSourceRecordFocus(index)}
-                                      className={`rounded-full px-3 py-1.5 text-[10px] transition ${
-                                        isDockActive
-                                          ? "bg-[#f3dfab] text-[#42290a]"
-                                          : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
-                                      }`}
-                                    >
-                                      {record.title}
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            ) : null}
-                            {activeSourceAtlasEntry.evidenceLabel ? (
-                              <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.22)] px-3 py-2.5">
-                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">原始凭据</div>
-                                <div className="mt-1 text-[11px] text-[#fbf3da]">
-                                  {activeSourceAtlasEntry.evidenceLabel}
-                                </div>
-                                {activeSourceAtlasEntry.evidenceNote ? (
+                            {(activeSourceRecord || activeSourceDock || activeSourceAtlasEntry.evidenceLabel) ? (
+                              <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.28)] px-3 py-2.5">
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">当前落点</div>
+                                {activeSourceRecord ? (
+                                  <div className="mt-1 text-[11px] leading-5 text-[#fbf3da]">
+                                    {activeSourceRecord.title}
+                                  </div>
+                                ) : null}
+                                {activeSourceDock ? (
                                   <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">
-                                    {activeSourceAtlasEntry.evidenceNote}
+                                    {activeSourceDock.label}
+                                    {activeSourceDock.note ? ` · ${activeSourceDock.note}` : ""}
                                   </div>
                                 ) : null}
-                              </div>
-                            ) : null}
-                            {activeSourceRoute ? (
-                              <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.26)] px-3 py-2.5 text-[11px] text-[#dccb9c]">
-                                这股来源支流沿
-                                <span className="px-1 text-[#fbf3da]">
-                                  {activeSourceRoute.points.length}
-                                </span>
-                                个码头落点铺开，河段与来源已彼此扣合。
-                              </div>
-                            ) : null}
-                            {activeSourceRelatedBooks.length ? (
-                              <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.3)] px-3 py-3">
-                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">顺流可入</div>
-                                <div className="mt-2 flex flex-wrap gap-2">
-                                  {activeSourceRelatedBooks.slice(0, 2).map((book) => (
-                                    <button
-                                      key={`source-related-${activeSourceAtlasEntry.id}-${book.slug}`}
-                                      type="button"
-                                      onClick={() => handleDiveToBook(book.slug)}
-                                      className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.12)] hover:text-[#fbf3da]"
-                                    >
-                                      {book.title} · {book.dynasty}
-                                    </button>
-                                  ))}
-                                </div>
-                              </div>
-                            ) : null}
-                            {activeSourceRecord ? (
-                              <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.34)] px-3 py-2.5">
-                                <div className="text-[11px] font-medium leading-5 text-[#fbf3da]">
-                                  {activeSourceRecord.title}
-                                </div>
-                                <div className="mt-1 text-[10px] text-[#f2dfab]">
-                                  {[activeSourceRecord.category, activeSourceRecord.year]
-                                    .filter(Boolean)
-                                    .join(" · ") || "来源条目"}
-                                </div>
-                                {activeSourceRecord.note ? (
-                                  <div className="mt-1 text-[11px] leading-5 text-[#dccb9c] line-clamp-4">
-                                    {activeSourceRecord.note}
-                                  </div>
-                                ) : null}
-                              </div>
-                            ) : null}
-                            {activeSourceDock ? (
-                              <div className="mt-2 rounded-[14px] border border-amber-300/18 bg-[rgba(89,60,19,0.34)] px-3 py-2.5">
-                                <div className="text-[11px] font-medium leading-5 text-[#fbf3da]">
-                                  {activeSourceDock.label}
-                                </div>
-                                {activeSourceDock.note ? (
-                                  <div className="mt-1 text-[11px] leading-5 text-[#dccb9c] line-clamp-4">
-                                    {activeSourceDock.note}
+                                {activeSourceAtlasEntry.evidenceLabel ? (
+                                  <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">
+                                    凭据 · {activeSourceAtlasEntry.evidenceLabel}
                                   </div>
                                 ) : null}
                               </div>
                             ) : null}
                           </div>
-                        ) : null}
+                        ) : (
+                          <div className="mt-3 rounded-[14px] border border-dashed border-[#ead8a6]/16 bg-[rgba(255,248,220,0.03)] px-3 py-3 text-[11px] leading-5 text-[#d8c9a3]">
+                            当前筛选下还没有映上河面的来源支流，换个主题或时代再看。
+                          </div>
+                        )}
                       </div>
                     ) : null}
                   </div>
