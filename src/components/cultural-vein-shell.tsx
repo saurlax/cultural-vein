@@ -2133,22 +2133,13 @@ export function CulturalVeinShell() {
                       {selectedBook.dynasty} · {focusModeLabel}
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <button
-                      type="button"
-                      onClick={handleReturnToRiver}
-                      className="rounded-full border border-amber-300/22 bg-amber-300/10 px-3 py-1.5 text-xs text-amber-100"
-                    >
-                      归河
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowMobileDossier(false)}
-                      className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-xs text-[#ead8bc]"
-                    >
-                      收卷
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={handleReturnToRiver}
+                    className="rounded-full border border-amber-300/22 bg-amber-300/10 px-3 py-1.5 text-xs text-amber-100"
+                  >
+                    归河
+                  </button>
                 </div>
                 <div className="mt-3 rounded-[24px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(247,237,206,0.98),rgba(230,204,140,0.94))] px-4 py-4 text-[#42290a]">
                   <div className="rounded-[20px] border border-[#b89247]/16 bg-[rgba(255,255,255,0.18)] px-4 py-3">
@@ -2169,7 +2160,7 @@ export function CulturalVeinShell() {
                     {selectedBook.dynasty} 的这部典籍此刻正以 {focusModeLabel} 停驻卷心，卷内已牵出 {selectedBookCitations.length} 条关联
                     {selectedSources.length ? ` 与 ${selectedSources.length} 类来源回声。` : "。"}
                   </div>
-                  <div className="mt-3 max-h-[calc(40vh-112px)] overflow-auto pr-1">
+                  <div className="max-h-[calc(40vh-112px)] overflow-auto pr-1">
                     <BookExplorer
                       key={`mobile-explorer-${selectedBook.slug}-${entryExplorerTab ?? "spread"}`}
                       book={selectedBook}
