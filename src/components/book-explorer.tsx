@@ -279,6 +279,65 @@ function timelineSourceMeta(source?: "curated" | "cbdb") {
   };
 }
 
+function buildInstitutionAccessMeta(record: {
+  institution: string;
+  title: string;
+  category?: string;
+  year?: string;
+  imageRef?: string;
+  sourceText?: string;
+}) {
+  if (record.institution.includes("韬奋纪念馆")) {
+    return {
+      label: "官方接口入口",
+      href: "https://data1.library.sh.cn/webapi/zoutaofen/getOrgYearListInterface",
+      note: "可继续顺着韬奋纪念馆开放接口回查机构年表、人物年表与图书关系。",
+    };
+  }
+
+  if (record.institution.includes("宋庆龄")) {
+    return {
+      label: "文献检索入口",
+      href: "http://www.sclrd.net.cn/api/search/competitionSearch",
+      note: "可按题名、作者、事件或地点字段继续回查宋庆龄文献数据中心原始结果。",
+    };
+  }
+
+  if (record.institution.includes("全国报刊索引")) {
+    return {
+      label: "报刊检索入口",
+      href: "https://data.cnbksy.com/competitionSearch",
+      note: "可继续回查期刊、摘要、主题词与全文路径字段。",
+    };
+  }
+
+  if (record.institution.includes("搜韵")) {
+    return {
+      label: "知识图谱入口",
+      href: "https://open.cnkgraph.com",
+      note: "可继续访问搜韵开放知识图谱、诗文库与古籍库入口。",
+    };
+  }
+
+  if (record.institution.includes("南京图书馆") && record.imageRef) {
+    return {
+      label: "图像路径线索",
+      href: null,
+      note: `当前保留影像号 ${record.imageRef} 与出处“${record.sourceText ?? "馆藏图像资料"}”，可据此继续回查南京图书馆原始图像库。`,
+    };
+  }
+
+  if (record.sourceText) {
+    return {
+      label: "馆藏路径线索",
+      href: null,
+      note: "当前样本保留了原始馆藏说明或专题路径，可继续作为后续挂接机构原件入口的索引。",
+    };
+  }
+
+  return null;
+}
+
 export function BookExplorer({
   book,
   detail,
@@ -1027,6 +1086,12 @@ export function BookExplorer({
         .filter(Boolean)
         .join(" · ")
     : `${activeVersion?.place ?? "版本河段"} · ${activeVersion?.library ?? "版本系统"}`;
+  const activeInstitutionAccessMeta = activeInstitutionRecord
+    ? buildInstitutionAccessMeta(activeInstitutionRecord)
+    : null;
+  const activeVersionAccessMeta = activeVersionPrimaryRecord
+    ? buildInstitutionAccessMeta(activeVersionPrimaryRecord)
+    : null;
   const linkedVenueEventMap = new Map(
     venuePreview.map((venue) => {
       const matchedEvents = (detail.realWorldSignals?.eventSamples ?? []).filter(
@@ -1519,6 +1584,17 @@ export function BookExplorer({
                     关联时间线
                   </button>
                 ) : null}
+                {activeInstitutionAccessMeta?.href ? (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      window.open(activeInstitutionAccessMeta.href, "_blank", "noopener,noreferrer")
+                    }
+                    className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                  >
+                    {activeInstitutionAccessMeta.label}
+                  </button>
+                ) : null}
               </div>
               <div className="mt-4 rounded-[24px] border border-[#d9bd79]/16 bg-[linear-gradient(180deg,rgba(244,230,188,0.94),rgba(226,201,146,0.9))] px-4 py-4 text-[#4a2c08] shadow-[inset_0_1px_0_rgba(255,255,255,0.24)]">
                 <div className="flex items-center justify-between gap-3">
@@ -1652,6 +1728,33 @@ export function BookExplorer({
                     机构归录会继续把馆藏与版本脉络并列展开。
                   </div>
                 </button>
+                {activeInstitutionAccessMeta ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (activeInstitutionAccessMeta.href) {
+                        window.open(activeInstitutionAccessMeta.href, "_blank", "noopener,noreferrer");
+                      }
+                    }}
+                    className={`rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4 text-left transition ${
+                      activeInstitutionAccessMeta.href
+                        ? "hover:bg-[rgba(255,244,214,0.12)]"
+                        : ""
+                    }`}
+                  >
+                    <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
+                      {activeInstitutionAccessMeta.label}
+                    </div>
+                    <div className="mt-2 text-sm leading-6 text-[#eadfbc]">
+                      {activeInstitutionAccessMeta.note}
+                    </div>
+                    <div className="mt-3 text-xs text-[#f0d79a]">
+                      {activeInstitutionAccessMeta.href
+                        ? "此处可继续打开官方接口或知识图谱入口。"
+                        : "当前样本只保留馆藏路径线索，尚未附带可公开直达的原图链接。"}
+                    </div>
+                  </button>
+                ) : null}
                 <button
                   type="button"
                   onClick={() => setManualTab("versions")}
@@ -3148,6 +3251,17 @@ export function BookExplorer({
                                 >
                                   打开馆藏总录
                                 </button>
+                                {activeVersionAccessMeta?.href ? (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      window.open(activeVersionAccessMeta.href, "_blank", "noopener,noreferrer")
+                                    }
+                                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                                  >
+                                    {activeVersionAccessMeta.label}
+                                  </button>
+                                ) : null}
                                 <button
                                   type="button"
                                   onClick={() => {
