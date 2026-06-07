@@ -2557,7 +2557,7 @@ export function BookExplorer({
                         </p>
 
                         <div className="mt-4 grid gap-3 md:grid-cols-2">
-                          <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                          <div className="rounded-2xl border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4">
                             <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
                               关系层级
                             </div>
@@ -2570,7 +2570,7 @@ export function BookExplorer({
                                 : "该人物代表后续引用、评论、校勘或再传播，是典籍向外扩散的支流节点。"}
                             </div>
                           </div>
-                          <div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                          <div className="rounded-2xl border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4">
                             <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
                               数据来源
                             </div>
@@ -2620,7 +2620,7 @@ export function BookExplorer({
                               {activePerson.activityPlaces.map((place) => (
                                 <div
                                   key={`${activePerson.id}-${place.name}`}
-                                  className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4"
+                                  className="rounded-2xl border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4"
                                 >
                                   <div className="flex items-center justify-between gap-3">
                                     <div className="text-base font-semibold text-stone-50">
@@ -2945,7 +2945,7 @@ export function BookExplorer({
                           <button
                             type="button"
                             onClick={() => handleOpenSourceEvidence("institution-samples")}
-                            className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-left transition hover:bg-white/10"
+                            className="rounded-2xl border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
                           >
                             <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
                               版本位置
@@ -2969,7 +2969,7 @@ export function BookExplorer({
                                 setSelectedVersionId(rootVersion.id);
                               }
                             }}
-                            className="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-left transition hover:bg-white/10"
+                            className="rounded-2xl border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
                           >
                             <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
                               传承位置
@@ -3004,7 +3004,7 @@ export function BookExplorer({
                             </div>
                           </div>
                           <div className="mt-4 grid gap-3 xl:grid-cols-[1.05fr_0.95fr]">
-                            <div className="rounded-[22px] border border-white/10 bg-black/15 px-4 py-4">
+                            <div className="rounded-[22px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4">
                               <div className="flex items-center justify-between gap-3">
                                 <div className="text-xs tracking-[0.2em] text-stone-400">卷面图录</div>
                                 <div className="text-[10px] text-stone-400">
@@ -3279,7 +3279,7 @@ export function BookExplorer({
                           </div>
                         </div>
 
-                        <div className="mt-4 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
+                        <div className="mt-4 rounded-2xl border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4">
                           <div className="flex items-center justify-between gap-3">
                             <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
                               版本凭据
