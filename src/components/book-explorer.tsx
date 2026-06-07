@@ -1049,8 +1049,11 @@ export function BookExplorer({
   const activeTabMeta = tabs.find((item) => item.id === activeTab) ?? tabs[0];
 
   return (
-    <div className="space-y-4">
-      <section className="overflow-hidden rounded-[28px] border border-[#caa45b]/24 bg-[linear-gradient(180deg,rgba(246,232,191,0.94),rgba(224,197,138,0.92))] px-5 py-5 text-[#4a2c08] shadow-[inset_0_1px_0_rgba(255,255,255,0.24)]">
+    <div className="relative space-y-4">
+      <div className="pointer-events-none absolute inset-x-4 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(233,202,128,0.55),transparent)]" />
+      <div className="pointer-events-none absolute inset-y-0 left-2 hidden w-px bg-[linear-gradient(180deg,transparent,rgba(180,136,53,0.22),transparent)] xl:block" />
+      <div className="pointer-events-none absolute inset-y-0 right-2 hidden w-px bg-[linear-gradient(180deg,transparent,rgba(180,136,53,0.18),transparent)] xl:block" />
+      <section className="overflow-hidden rounded-[28px] border border-[#d5b46f]/28 bg-[linear-gradient(180deg,rgba(247,235,200,0.98),rgba(232,208,151,0.96))] px-5 py-5 text-[#4a2c08] shadow-[inset_0_1px_0_rgba(255,255,255,0.26),0_18px_42px_rgba(79,52,16,0.08)]">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
             <p className="text-[11px] tracking-[0.3em] text-[#8d6a2c]">
@@ -1092,7 +1095,7 @@ export function BookExplorer({
         </div>
       </section>
 
-      <section className="rounded-[24px] border border-[#e1bd6e]/18 bg-[linear-gradient(180deg,rgba(194,140,42,0.16),rgba(78,50,14,0.2))] px-4 py-4">
+      <section className="rounded-[24px] border border-[#e1bd6e]/18 bg-[linear-gradient(180deg,rgba(214,170,84,0.2),rgba(98,65,20,0.24))] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,245,215,0.08)]">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="text-xs tracking-[0.2em] text-amber-100/75">
@@ -1110,7 +1113,7 @@ export function BookExplorer({
             可见年段 {eraLinkedSummary.timeline || 1} 条
           </button>
         </div>
-        <div className="mt-3 rounded-2xl border border-[#ead8a6]/12 bg-[rgba(54,33,10,0.28)] px-3 py-3 text-sm leading-7 text-[#f6e8bd]">
+        <div className="mt-3 rounded-[20px] border border-[#ead8a6]/12 bg-[linear-gradient(180deg,rgba(72,45,14,0.34),rgba(44,27,9,0.28))] px-3 py-3 text-sm leading-7 text-[#f6e8bd]">
           这一时代已显出 {eraLinkedSummary.spread} 段传播、{eraLinkedSummary.people} 位人物、{eraLinkedSummary.versions} 个版本节点与 {eraLinkedSummary.passages} 个文本片段，
           此刻卷心落在 {activeTabMeta.label}。
         </div>
@@ -1133,7 +1136,7 @@ export function BookExplorer({
       </section>
 
       {detail.realWorldSignals ? (
-        <section className="rounded-2xl border border-amber-300/15 bg-amber-300/6 px-4 py-4">
+        <section className="rounded-[24px] border border-amber-300/15 bg-[linear-gradient(180deg,rgba(183,129,39,0.14),rgba(77,49,15,0.16))] px-4 py-4">
           <div className="flex items-center justify-between gap-3">
             <div>
               <div className="text-xs tracking-[0.2em] text-amber-100/80">
