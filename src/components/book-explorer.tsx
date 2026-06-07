@@ -1901,7 +1901,7 @@ export function BookExplorer({
                     来源卷录
                   </div>
                   <div className="mt-1 text-sm text-stone-300">
-                    将真实来源按人物、场馆、事件与馆藏线索归并成可核验的凭据条目。
+                    将真实来源按人物、场馆、事件、借阅与馆藏线索归并成可核验的凭据条目。
                   </div>
                 </div>
                 <div className="rounded-full bg-amber-300/10 px-3 py-1 text-xs text-amber-100">

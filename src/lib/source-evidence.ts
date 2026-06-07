@@ -74,7 +74,7 @@ export function buildSourceEvidence(detail: BookDetail): SourceEvidenceItem[] {
         .map((item) => ({
           label: item.title,
           detail: `${item.venue} · ${item.startTime}`,
-      })),
+        })),
     });
   }
 
