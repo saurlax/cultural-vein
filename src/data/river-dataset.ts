@@ -3077,10 +3077,14 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
   },
 };
 
-const books = [
-  ...((supplementPayload.curatedBooks ?? supplementPayload.demoBooks ?? []) as RealSupplementBook[]),
-  ...coreClassicExtensions,
-] as RealSupplementBook[];
+const books = Array.from(
+  new Map(
+    [
+      ...((supplementPayload.curatedBooks ?? supplementPayload.demoBooks ?? []) as RealSupplementBook[]),
+      ...coreClassicExtensions,
+    ].map((book) => [book.slug, book]),
+  ).values(),
+) as RealSupplementBook[];
 const citations = [
   ...((supplementPayload.curatedCitations ?? supplementPayload.demoCitations ?? []) as RealSupplementCitation[]),
   ...coreClassicCitationExtensions,
