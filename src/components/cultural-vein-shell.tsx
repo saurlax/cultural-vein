@@ -1903,9 +1903,10 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileControls ? (
-          <div className="absolute inset-x-0 bottom-0 z-40 md:hidden">
-            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(67,42,11,0),rgba(67,42,11,0.26)_38%,rgba(67,42,11,0.46))]" />
-            <div className={`pointer-events-auto mx-3 mb-[4.3rem] max-h-[min(13.5rem,32vh)] overflow-auto rounded-[28px] p-3 ${panelBaseClass}`}>
+          <div className="absolute bottom-[4.4rem] right-3 z-40 md:hidden">
+            <div
+              className={`pointer-events-auto w-[min(17.25rem,calc(100vw-1.5rem))] max-h-[min(12.75rem,30vh)] overflow-auto rounded-[28px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.24)] ${panelBaseClass}`}
+            >
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">卷边题签</div>
@@ -2212,8 +2213,8 @@ export function CulturalVeinShell() {
         ) : null}
         <div className="pointer-events-none absolute inset-x-0 bottom-3 z-30 md:hidden">
           <div className="pointer-events-auto">
-            <div className="mx-auto flex w-[min(calc(100vw-1.4rem),17rem)] items-center justify-center gap-1 rounded-[999px] border border-[#e7c97b]/24 bg-[linear-gradient(180deg,rgba(182,134,53,0.88),rgba(109,73,24,0.82))] px-1.5 py-1.5 shadow-[0_12px_26px_rgba(52,28,6,0.18)] backdrop-blur-xl">
-            <div className="mr-1 h-8 w-2 rounded-full bg-[linear-gradient(180deg,rgba(252,239,189,0.78),rgba(219,175,82,0.58))]" />
+            <div className="mx-auto flex w-[min(calc(100vw-2.6rem),13.5rem)] items-center justify-center gap-1 rounded-[999px] border border-[#e7c97b]/24 bg-[linear-gradient(180deg,rgba(182,134,53,0.88),rgba(109,73,24,0.82))] px-1.5 py-1.5 shadow-[0_12px_26px_rgba(52,28,6,0.18)] backdrop-blur-xl">
+            <div className="mr-1 h-7 w-1.5 rounded-full bg-[linear-gradient(180deg,rgba(252,239,189,0.78),rgba(219,175,82,0.58))]" />
             <button
               type="button"
               onClick={() => {
@@ -2226,7 +2227,7 @@ export function CulturalVeinShell() {
                   : "border border-[#e7c97b]/20 bg-[rgba(255,240,199,0.08)] text-[#fff0c7]"
               }`}
               >
-                河册
+                {showMobileControls ? activeDesktopPanelConfig.label : "河册"}
               </button>
             {selectedBook ? (
               <button
@@ -2241,10 +2242,10 @@ export function CulturalVeinShell() {
                     : "border border-[#ead8a6]/20 bg-[rgba(255,240,199,0.08)] text-[#f8ebc6]"
                 }`}
               >
-                入卷
+                文卷
               </button>
             ) : null}
-            <div className="ml-1 h-8 w-2 rounded-full bg-[linear-gradient(180deg,rgba(252,239,189,0.78),rgba(219,175,82,0.58))]" />
+            <div className="ml-1 h-7 w-1.5 rounded-full bg-[linear-gradient(180deg,rgba(252,239,189,0.78),rgba(219,175,82,0.58))]" />
             </div>
           </div>
         </div>
