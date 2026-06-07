@@ -1246,14 +1246,6 @@ export function CulturalVeinShell() {
         : transitionState === "returning"
           ? "文卷正沿水势缓缓归回主河道"
           : null;
-  const openingLead =
-    activeSourceAtlasEntry
-      ? `先让 ${activeSourceAtlasEntry.name} 这股真实来源支流映上河身，再顺着主河追看典籍入卷。`
-      : activeEra === "先秦"
-        ? "从经典源头起笔，沿河看见文脉如何生长。"
-        : activeEra === "宋元"
-          ? "此处正是支流奔涌最盛的一段河身。"
-          : "顺着黄河长卷巡看主河、支流与时代起伏。";
   const openingSourcePreviewBooks = useMemo(() => {
     if (selectedBook) {
       return [];
@@ -1415,29 +1407,26 @@ export function CulturalVeinShell() {
                   </button>
                 </div>
 
-                <div className="mt-2 rounded-[14px] border border-[#d9b86b]/14 bg-[rgba(255,252,240,0.18)] px-2.5 py-2 text-[#6f4b18]">
-                  <div className="line-clamp-2 text-[10px] leading-5">{openingLead}</div>
-                  <div className="mt-1.5 flex flex-wrap gap-1.5">
-                    <span className="rounded-full border border-[#d9b86b]/20 bg-[rgba(255,255,255,0.16)] px-2.5 py-1 text-[9px] text-[#7a571d]">
-                      {focusModeLabel}
-                    </span>
-                    {openingSourcePreviewBooks.slice(0, 1).map((book) => (
-                      <button
-                        key={`opening-source-preview-${book.slug}`}
-                        type="button"
-                        onPointerEnter={() => setHoveredBookSlug(book.slug)}
-                        onPointerLeave={() => setHoveredBookSlug((current) => (current === book.slug ? null : current))}
-                        onClick={() => handleDiveToBook(book.slug)}
-                        className={`rounded-full border px-2.5 py-1 text-[9px] transition ${
-                          hoveredBookSlug === book.slug
-                            ? "border-[#c99d4f]/35 bg-[#f3dfab] text-[#42290a]"
-                            : "border-[#d9b86b]/22 bg-[rgba(255,255,255,0.14)] text-[#6f4b18] hover:bg-[rgba(255,255,255,0.22)]"
-                        }`}
-                      >
-                        《{book.title}》
-                      </button>
-                    ))}
-                  </div>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  <span className="rounded-full border border-[#d9b86b]/20 bg-[rgba(255,255,255,0.16)] px-2.5 py-1 text-[9px] text-[#7a571d]">
+                    {focusModeLabel}
+                  </span>
+                  {openingSourcePreviewBooks.slice(0, 1).map((book) => (
+                    <button
+                      key={`opening-source-preview-${book.slug}`}
+                      type="button"
+                      onPointerEnter={() => setHoveredBookSlug(book.slug)}
+                      onPointerLeave={() => setHoveredBookSlug((current) => (current === book.slug ? null : current))}
+                      onClick={() => handleDiveToBook(book.slug)}
+                      className={`rounded-full border px-2.5 py-1 text-[9px] transition ${
+                        hoveredBookSlug === book.slug
+                          ? "border-[#c99d4f]/35 bg-[#f3dfab] text-[#42290a]"
+                          : "border-[#d9b86b]/22 bg-[rgba(255,255,255,0.14)] text-[#6f4b18] hover:bg-[rgba(255,255,255,0.22)]"
+                      }`}
+                    >
+                      《{book.title}》
+                    </button>
+                  ))}
                 </div>
 
               <div className="mt-2 flex flex-wrap gap-1.5">
@@ -1459,11 +1448,8 @@ export function CulturalVeinShell() {
 
               <section className={`mt-2 max-h-[min(34vh,18rem)] overflow-auto rounded-[16px] border border-[#ead8a6]/10 bg-[rgba(93,62,18,0.12)] px-2.5 py-2.5 pr-2 transition-all duration-500 ease-out ${showDesktopControls ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}>
                 <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="text-[10px] tracking-[0.22em] text-[#d8c9a3]">
-                      {activeDesktopPanelConfig.summary}
-                    </div>
-                    {viewMode === "river" ? <div className="mt-1 text-[10px] leading-5 text-[#eadfbc]">拖河巡看，再择书入卷。</div> : null}
+                  <div className="text-[10px] tracking-[0.22em] text-[#d8c9a3]">
+                    {activeDesktopPanelConfig.summary}
                   </div>
                   {viewMode === "book" ? (
                     <button
@@ -1490,7 +1476,7 @@ export function CulturalVeinShell() {
                       />
                     </label>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {searchSuggestionChips.slice(0, 8).map((concept) => (
+                      {searchSuggestionChips.slice(0, 5).map((concept) => (
                         <button
                           key={concept}
                           type="button"
@@ -1507,7 +1493,7 @@ export function CulturalVeinShell() {
                     </div>
                     {resolvedSearchResult?.hits.length ? (
                       <div className="mt-3 space-y-2">
-                        {resolvedSearchResult.hits.slice(0, 3).map((hit) => (
+                        {resolvedSearchResult.hits.slice(0, 2).map((hit) => (
                           <button
                             key={hit.slug}
                             type="button"
@@ -1522,68 +1508,27 @@ export function CulturalVeinShell() {
                         ))}
                       </div>
                     ) : resolvedSearchResult?.query && !searchPending ? (
-                      <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3">
-                        <button
-                          type="button"
-                          onClick={() => setActiveDesktopPanel("branch")}
-                          className="text-left text-sm text-[#eadfbc] transition hover:text-[#fbf3da]"
-                        >
-                          这个词暂未照见河上节点，换一枚相关概念再看河面回响。
-                        </button>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {searchSuggestionChips.slice(0, 3).map((concept) => (
-                            <button
-                              key={`fallback-concept-${concept}`}
-                              type="button"
-                              onClick={() => handleSearchTermChange(concept)}
-                              className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
-                            >
-                              {concept}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
+                      <div className="mt-3 text-[11px] leading-5 text-[#d8c9a3]">河面暂未照见这一枚概念。</div>
                     ) : null}
                   </div>
                 ) : null}
 
                 {activeDesktopPanel === "era" ? (
                   <div className="mt-4">
-                    <div className="rounded-[18px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3">
-                      <div className="text-[11px] tracking-[0.22em] text-[#d8c9a3]">时代河段</div>
-                      <div className="mt-2 text-[12px] leading-6 text-[#f6e8c4]">
-                        {activeEraNarrative.lead}
+                    {eraRecommendedBooks.length ? (
+                      <div className="mb-3 flex flex-wrap gap-2">
+                        {eraRecommendedBooks.slice(0, 3).map((book) => (
+                          <button
+                            key={`era-recommend-${book.slug}`}
+                            type="button"
+                            onClick={() => handleDiveToBook(book.slug)}
+                            className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.12)] hover:text-[#fbf3da]"
+                          >
+                            {book.shortTitle}
+                          </button>
+                        ))}
                       </div>
-                      <div className="mt-3 rounded-[14px] border border-[#ead8a6]/10 bg-[rgba(42,26,9,0.28)] px-3 py-2.5">
-                        <div className="text-[10px] tracking-[0.2em] text-[#d8c9a3]">主干</div>
-                        <div className="mt-1 text-[11px] leading-5 text-[#eadfbc]">
-                          {activeEraNarrative.trunk}
-                        </div>
-                      </div>
-                      <div className="mt-2 rounded-[14px] border border-[#ead8a6]/10 bg-[rgba(42,26,9,0.28)] px-3 py-2.5">
-                        <div className="text-[10px] tracking-[0.2em] text-[#d8c9a3]">支流</div>
-                        <div className="mt-1 text-[11px] leading-5 text-[#eadfbc]">
-                          {activeEraNarrative.branch}
-                        </div>
-                      </div>
-                      {eraRecommendedBooks.length ? (
-                        <div className="mt-2 rounded-[14px] border border-[#ead8a6]/10 bg-[rgba(42,26,9,0.28)] px-3 py-2.5">
-                          <div className="text-[10px] tracking-[0.2em] text-[#d8c9a3]">河段节点</div>
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {eraRecommendedBooks.map((book) => (
-                              <button
-                                key={`era-recommend-${book.slug}`}
-                                type="button"
-                                onClick={() => handleDiveToBook(book.slug)}
-                                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.12)] hover:text-[#fbf3da]"
-                              >
-                                {book.shortTitle}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      ) : null}
-                    </div>
+                    ) : null}
                     <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-[#d8c9a3]">
                       <span>时代水位</span>
                       <span className="text-amber-100">{activeEra}</span>
@@ -1657,15 +1602,6 @@ export function CulturalVeinShell() {
                           {school}
                         </button>
                       ))}
-                    </div>
-                    <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-sm text-[#eadfbc]">
-                      <button
-                        type="button"
-                        onClick={() => setActiveDesktopPanel("branch")}
-                        className="text-left transition hover:text-[#fbf3da]"
-                      >
-                        {activeEra} 河段中，{categoryFilter} 与 {schoolFilter} 的典籍主线已经在河面收束成形。
-                      </button>
                     </div>
                   </div>
                 ) : null}
@@ -2441,10 +2377,7 @@ export function CulturalVeinShell() {
               {activeDesktopPanel === "branch" ? (
                 <>
                   <div className="mt-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.08)] px-3 py-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">关系层级</div>
-                      <div className="text-[11px] text-[#8d6a2c]">点层级切河道</div>
-                    </div>
+                    <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">关系层级</div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {relationSummary.map(({ layer, count }) => (
                         <button
@@ -2465,7 +2398,7 @@ export function CulturalVeinShell() {
                       ))}
                     </div>
                   </div>
-                  <div className="mt-3 rounded-[22px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.08)] px-3 py-3 text-sm text-[#5b3a11]">
+                  <div className="mt-3 rounded-[22px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.08)] px-3 py-3 text-sm text-[#5b3a11] line-clamp-3">
                     {activeBranchAnnotation ? activeBranchAnnotation.description : "河上节点已经浮起，可择一典籍顺势入卷细看。"}
                   </div>
                 </>
