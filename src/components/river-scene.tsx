@@ -2560,21 +2560,6 @@ export function RiverScene(props: RiverSceneProps) {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-48 bg-[linear-gradient(0deg,rgba(140,92,27,0.52),rgba(157,104,29,0.08),rgba(157,104,29,0))]" />
       <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_44%,rgba(255,241,189,0.22),transparent_38%),radial-gradient(circle_at_50%_78%,rgba(112,68,18,0.16),transparent_34%),linear-gradient(90deg,rgba(250,228,160,0.08),transparent_14%,transparent_86%,rgba(250,228,160,0.08))]" />
       <div className="pointer-events-none absolute inset-0 z-[1] opacity-35 [background-image:linear-gradient(rgba(132,86,28,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(132,86,28,0.05)_1px,transparent_1px)] [background-size:100%_42px,56px_100%]" />
-      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#efd38f]/20 bg-[rgba(148,101,30,0.12)] px-3 py-1.5 text-[10px] text-[#fff3d0] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
-        <span className="tracking-[0.28em] text-[#fff0c2]">河面行卷</span>
-        <span className="hidden h-3 w-px bg-[#ead8a6]/24 sm:block" />
-        <span className="truncate text-[#f1e3bd]/86">
-          {props.traceFocus?.active
-            ? `溯源 ${props.traceFocus.progress}/${props.traceFocus.total}`
-            : props.sceneFocus?.active
-              ? props.sceneFocus.contextLabel
-              : props.cinematicState === "diving"
-                ? "入卷中"
-                : props.cinematicState === "returning"
-                  ? "归河中"
-                  : props.activeEra}
-        </span>
-      </div>
       <div
         className={`pointer-events-none absolute left-1/2 top-3 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
           (showMobileTouchHint || isInteracting) && !mobilePanelOpen ? "opacity-100" : "opacity-0"
