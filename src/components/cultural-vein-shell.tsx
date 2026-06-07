@@ -915,12 +915,6 @@ export function CulturalVeinShell() {
       : sourceAtlasEntries.slice(1, 3);
   const coverageLayers = atlasMeta?.coverageLayers ?? [];
   const cbdbPersonCount = insights?.cbdbSummary?.personCount ?? null;
-  const demoCoveragePercent = atlasMeta
-    ? Math.max(
-        0.01,
-        (atlasMeta.demoBookCount / Math.max(atlasMeta.totalBookCount, 1)) * 100,
-      )
-    : null;
   const eraRecommendedBooks = useMemo(() => {
     return filteredBooks
       .filter((book) => book.dynasty === activeEra)
@@ -1380,48 +1374,44 @@ export function CulturalVeinShell() {
                             <div className="mt-2 text-[11px] leading-5 text-[#e6d7ae]">
                               {atlasMeta.expansionNote}
                             </div>
-                            <div className="mt-3 grid grid-cols-3 gap-2">
+                            <div className="mt-3 grid gap-2 md:grid-cols-3">
                               <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
-                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">古籍规模</div>
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">卷中所见</div>
                                 <div className="mt-1 text-sm font-medium text-[#fbf3da]">
-                                  {atlasMeta.totalBookCount.toLocaleString()}
+                                  {atlasMeta.demoBookCount.toLocaleString()} 部典籍
                                 </div>
-                                <div className="mt-1 text-[10px] text-[#dccb9c]">长卷远景书目</div>
+                                <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">这一段先让主河道、支流与关键节点完整显影。</div>
                               </div>
                               <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
-                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">河上关系</div>
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">卷中牵连</div>
                                 <div className="mt-1 text-sm font-medium text-[#fbf3da]">
-                                  {atlasMeta.totalCitationCount.toLocaleString()}
+                                  {atlasMeta.totalCitationCount.toLocaleString()} 道文脉
                                 </div>
-                                <div className="mt-1 text-[10px] text-[#dccb9c]">长卷此刻已显关系</div>
+                                <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">引用、注疏与影响关系会在河面上彼此牵出。</div>
                               </div>
                               <div className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-2">
-                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">人物源流</div>
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">卷中人物</div>
                                 <div className="mt-1 text-sm font-medium text-[#fbf3da]">
-                                  {cbdbPersonCount?.toLocaleString() ?? "--"}
+                                  {cbdbPersonCount?.toLocaleString() ?? "--"} 位纪传人物
                                 </div>
-                                <div className="mt-1 text-[10px] text-[#dccb9c]">纪传人物库长线依据</div>
+                                <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">纪传人物库为人物网络、地点与时代回声托底。</div>
                               </div>
                             </div>
                             <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
                               <div className="flex items-center justify-between gap-3">
                                 <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">长卷铺陈</div>
-                                <div className="rounded-full border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-2 py-0.5 text-[10px] text-[#f2dfab]">
-                                  {demoCoveragePercent !== null
-                                    ? `${demoCoveragePercent.toFixed(3)}% 已映主脉`
-                                    : "已映主脉"}
-                                </div>
+                                <div className="rounded-full border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-2 py-0.5 text-[10px] text-[#f2dfab]">主脉先行</div>
                               </div>
                               <div className="mt-2 text-[10px] leading-5 text-[#dccb9c]">
                                 眼前先以主脉长卷
                                 <span className="px-1 text-[#fbf3da]">
                                   {atlasMeta.demoBookCount.toLocaleString()}
                                 </span>
-                                部主线典籍串起完整体验，把宏观河流、中观钻入与微观溯源先做深；远处仍对齐
+                                部主线典籍串起完整体验，把宏观河流、中观钻入与微观溯源先做深；更远处仍对齐
                                 <span className="px-1 text-[#fbf3da]">
                                   {atlasMeta.totalBookCount.toLocaleString()}
                                 </span>
-                                部古籍底盘，后续可沿统一装配链自然长出新支流。
+                                部古籍远景，后续可沿统一装配链自然长出新支流。
                               </div>
                             </div>
                             <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
