@@ -825,7 +825,7 @@ export function CulturalVeinShell() {
       ? resolvedSearchResult.relatedConcepts
       : defaultConceptSuggestions;
   const panelBaseClass =
-    "rounded-[28px] border border-[#e0c27a]/30 bg-[linear-gradient(180deg,rgba(128,93,39,0.9),rgba(56,37,12,0.88))] shadow-2xl shadow-black/30 backdrop-blur-xl";
+    "rounded-[28px] border border-[#dfbf74]/34 bg-[linear-gradient(180deg,rgba(151,114,52,0.92),rgba(88,58,19,0.9))] shadow-2xl shadow-black/30 backdrop-blur-xl";
   const desktopPanels: Array<{
     id: "search" | "era" | "category" | "branch";
     label: string;
@@ -907,9 +907,9 @@ export function CulturalVeinShell() {
     eras.length > 1 ? Math.round((activeEraIndex / (eras.length - 1)) * 100) : 0;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#2b1906] text-stone-100">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_14%,rgba(250,220,132,0.3),transparent_28%),radial-gradient(circle_at_80%_16%,rgba(224,181,83,0.22),transparent_26%),radial-gradient(circle_at_50%_100%,rgba(214,170,74,0.16),transparent_36%),linear-gradient(180deg,#b98635_0%,#7a5220_28%,#3f270d_58%,#1d1004_100%)]" />
-      <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(255,244,209,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,244,209,0.06)_1px,transparent_1px)] [background-size:96px_96px]" />
+    <div className="relative min-h-screen overflow-hidden bg-[#2d1a07] text-stone-100">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_14%,rgba(249,224,150,0.34),transparent_26%),radial-gradient(circle_at_82%_12%,rgba(222,183,87,0.2),transparent_24%),radial-gradient(circle_at_50%_100%,rgba(207,158,60,0.18),transparent_36%),linear-gradient(180deg,#d1ae61_0%,#8c6327_24%,#4a2f10_56%,#201103_100%)]" />
+      <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,244,209,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,244,209,0.05)_1px,transparent_1px)] [background-size:112px_112px]" />
 
       {showDiveOverlay ? (
         <div className="pointer-events-none absolute inset-0 z-40 overflow-hidden">
@@ -974,7 +974,7 @@ export function CulturalVeinShell() {
                 setShowMobileDossier(false);
                 setShowDesktopControls((current) => !current);
               }}
-              className="hidden rounded-full border border-[#ead8a6]/24 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-4 py-2 text-xs text-[#f7edd1] backdrop-blur-xl md:inline-flex"
+              className="hidden rounded-full border border-[#e7c97b]/24 bg-[linear-gradient(180deg,rgba(108,77,29,0.92),rgba(58,37,12,0.84))] px-4 py-2 text-xs text-[#f7edd1] backdrop-blur-xl md:inline-flex"
             >
               {showDesktopControls ? "收起题签" : "展开题签"}
             </button>
@@ -985,7 +985,7 @@ export function CulturalVeinShell() {
                   setShowDesktopControls(false);
                   setShowDesktopDossier((current) => !current);
                 }}
-                className="hidden rounded-full border border-amber-200/20 bg-[linear-gradient(180deg,rgba(87,59,19,0.9),rgba(42,28,10,0.82))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl md:inline-flex"
+                className="hidden rounded-full border border-amber-200/24 bg-[linear-gradient(180deg,rgba(108,77,29,0.92),rgba(58,37,12,0.84))] px-4 py-2 text-xs text-amber-50 backdrop-blur-xl md:inline-flex"
               >
                 {showDesktopDossier ? "收起文卷" : "展开文卷"}
               </button>
@@ -1674,52 +1674,9 @@ export function CulturalVeinShell() {
           />
         </main>
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-4 z-30 hidden justify-center px-4 md:flex">
-          <div className="pointer-events-auto w-[min(720px,calc(100vw-26rem))] rounded-[28px] border border-[#ead8a6]/24 bg-[linear-gradient(180deg,rgba(121,82,28,0.92),rgba(58,37,12,0.9))] px-5 py-4 shadow-2xl shadow-black/30 backdrop-blur-xl">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <div className="text-[11px] tracking-[0.3em] text-[#f2dfab]/80">时代水位轴</div>
-                <div className="mt-1 text-sm text-[#fbf3da]">
-                  顺着时间推移，看主河道如何由先秦缓缓长到近现代
-                </div>
-              </div>
-              <div className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.08)] px-3 py-1.5 text-xs text-[#f5e6bf]">
-                {activeEra} · {eraProgressPercent}%
-              </div>
-            </div>
-            <div className="mt-4">
-              <input
-                type="range"
-                min={0}
-                max={eras.length - 1}
-                step={1}
-                value={activeEraIndex}
-                onChange={(event) => setActiveEra(eras[Number(event.target.value)] ?? eras[0])}
-                className="h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
-              />
-              <div className="mt-3 grid grid-cols-7 gap-2 text-center text-[11px]">
-                {eras.map((era) => (
-                  <button
-                    key={`bottom-era-${era}`}
-                    type="button"
-                    onClick={() => setActiveEra(era)}
-                    className={`rounded-full px-2 py-1.5 transition ${
-                      activeEra === era
-                        ? "bg-amber-300/16 text-amber-100"
-                        : "text-[#d7c49a] hover:bg-[rgba(255,248,220,0.06)] hover:text-[#f0e0b8]"
-                    }`}
-                  >
-                    {era}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
         {showMobileControls ? (
-          <div className="absolute inset-x-3 bottom-20 z-40 md:hidden">
-            <div className={`pointer-events-auto max-h-[48vh] overflow-auto p-3 ${panelBaseClass}`}>
+          <div className="absolute inset-x-3 bottom-[5.5rem] z-40 md:hidden">
+            <div className={`pointer-events-auto max-h-[56vh] overflow-auto p-3 ${panelBaseClass}`}>
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">河上题签</div>
@@ -1746,6 +1703,37 @@ export function CulturalVeinShell() {
                     {item.label} {item.value}
                   </button>
                 ))}
+              </div>
+              <div className="mt-3 rounded-[22px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-3">
+                <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-[#d8c9a3]">
+                  <span>时代水位</span>
+                  <span className="text-amber-100">{activeEra} · {eraProgressPercent}%</span>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={eras.length - 1}
+                  step={1}
+                  value={activeEraIndex}
+                  onChange={(event) => setActiveEra(eras[Number(event.target.value)] ?? eras[0])}
+                  className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
+                />
+                <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-[#c9b68a]">
+                  {eras.map((era) => (
+                    <button
+                      key={`mobile-inline-era-${era}`}
+                      type="button"
+                      onClick={() => setActiveEra(era)}
+                      className={`rounded-full px-2 py-1 transition ${
+                        activeEra === era
+                          ? "bg-amber-300/14 text-amber-100"
+                          : "bg-white/0 text-[#c9b68a] hover:bg-[rgba(255,248,220,0.05)] hover:text-[#eadfbc]"
+                      }`}
+                    >
+                      {era}
+                    </button>
+                  ))}
+                </div>
               </div>
               {activeDesktopPanel === "era" ? (
                 <div className="mt-3 rounded-[20px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3">
@@ -2157,41 +2145,9 @@ export function CulturalVeinShell() {
             </div>
           </div>
         ) : null}
-        <div className="pointer-events-none absolute inset-x-0 bottom-[4.75rem] z-30 px-3 md:hidden">
-          <div className="pointer-events-auto rounded-[24px] border border-[#ead8a6]/24 bg-[linear-gradient(180deg,rgba(121,82,28,0.9),rgba(58,37,12,0.88))] px-3 py-3 shadow-xl shadow-black/25 backdrop-blur-xl">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className="text-[10px] tracking-[0.24em] text-[#f2dfab]/80">时代水位轴</div>
-                <div className="mt-1 text-xs text-[#fbf3da]">{activeEra}</div>
-              </div>
-              <div className="text-[10px] text-[#e6d2a1]">{eraProgressPercent}%</div>
-            </div>
-            <input
-              type="range"
-              min={0}
-              max={eras.length - 1}
-              step={1}
-              value={activeEraIndex}
-              onChange={(event) => setActiveEra(eras[Number(event.target.value)] ?? eras[0])}
-              className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
-            />
-            <div className="mt-2 flex flex-wrap justify-between gap-x-2 gap-y-1 text-[10px] text-[#d7c49a]">
-              {eras.map((era) => (
-                <button
-                  key={`mobile-bottom-era-${era}`}
-                  type="button"
-                  onClick={() => setActiveEra(era)}
-                  className={activeEra === era ? "text-amber-100" : ""}
-                >
-                  {era}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-4 z-30 md:hidden">
           <div className="pointer-events-auto flex justify-center px-3">
-            <div className="flex items-center gap-2 rounded-full border border-[#ead8a6]/24 bg-[linear-gradient(180deg,rgba(132,94,35,0.94),rgba(70,45,14,0.94))] px-2 py-2 shadow-xl shadow-black/25 backdrop-blur-xl">
+            <div className="flex items-center gap-2 rounded-full border border-[#e7c97b]/26 bg-[linear-gradient(180deg,rgba(150,112,46,0.95),rgba(86,57,19,0.95))] px-2 py-2 shadow-xl shadow-black/25 backdrop-blur-xl">
               <div className="px-2 text-[10px] tracking-[0.24em] text-[#f7e8bf]">黄河长卷</div>
               <button
                 type="button"

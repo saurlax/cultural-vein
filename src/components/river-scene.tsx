@@ -2287,7 +2287,7 @@ export function RiverScene(props: RiverSceneProps) {
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-[linear-gradient(180deg,rgba(146,102,36,0.4),rgba(78,51,15,0))]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-[linear-gradient(0deg,rgba(44,26,8,0.74),rgba(44,26,8,0))]" />
-      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#ead8a6]/22 bg-[rgba(113,75,24,0.52)] px-4 py-2 text-[10px] text-[#f7edd1] sm:left-5 sm:top-5 sm:flex sm:max-w-none sm:text-[11px]">
+      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#e7c97b]/28 bg-[rgba(128,88,28,0.44)] px-4 py-2 text-[10px] text-[#f8efd4] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
         <span className="tracking-[0.28em] text-[#fff0c2]">黄河文脉长卷</span>
         <span className="hidden h-3 w-px bg-[#ead8a6]/24 sm:block" />
         <span className="truncate text-[#f1e3bd]">
@@ -2303,53 +2303,32 @@ export function RiverScene(props: RiverSceneProps) {
         </span>
       </div>
       <div className="pointer-events-none absolute left-1/2 top-16 z-10 hidden w-[min(420px,calc(100vw-2.5rem))] -translate-x-1/2 px-3 lg:block lg:top-20">
-        <div className="rounded-[26px] border border-[#f2dfab]/18 bg-[linear-gradient(180deg,rgba(115,78,27,0.78),rgba(70,45,14,0.72))] px-5 py-3 text-center shadow-lg shadow-black/20 backdrop-blur-md">
+        <div className="rounded-[26px] border border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(145,104,37,0.72),rgba(83,54,16,0.68))] px-5 py-3 text-center shadow-lg shadow-black/20 backdrop-blur-md">
           <div className="text-[10px] tracking-[0.34em] text-[#f4e2b0]">卷首题签</div>
           <div className="mt-2 text-[11px] leading-6 text-[#fbf1d2] sm:text-xs">
             {sceneHint}
           </div>
         </div>
       </div>
-      <div className="pointer-events-none absolute left-4 top-16 z-10 hidden rounded-full border border-[#ead8a6]/16 bg-[rgba(79,52,16,0.42)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md xl:flex">
+      <div className="pointer-events-none absolute left-4 top-16 z-10 hidden rounded-full border border-[#e7c97b]/18 bg-[rgba(91,60,18,0.34)] px-4 py-2 text-[10px] tracking-[0.22em] text-[#f3e5be] backdrop-blur-md xl:flex">
         {isInteracting ? "正在拖动画卷" : "拖移河面巡看文脉"}
-      </div>
-      <div className="pointer-events-none absolute right-4 top-16 z-10 hidden w-56 rounded-[22px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(88,58,19,0.72),rgba(54,34,11,0.72))] px-4 py-3 text-[#f4e8c6] shadow-lg shadow-black/20 backdrop-blur-md xl:block">
-        <div className="text-[10px] tracking-[0.28em] text-[#e5d1a1]">关系图例</div>
-        <div className="mt-3 space-y-2 text-[11px]">
-          <div className="flex items-center gap-3">
-            <span className="h-px w-8 bg-white/70" />
-            <span>书目关联</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="h-px w-8 bg-emerald-300" />
-            <span>显式引用 · 高置信</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="h-px w-8 bg-[repeating-linear-gradient(to_right,#fcd34d_0_6px,transparent_6px_10px)]" />
-            <span>语义关联 · 中置信</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="h-px w-8 bg-[repeating-linear-gradient(to_right,#94a3b8_0_2px,transparent_2px_6px)]" />
-            <span>间接影响 · 低置信</span>
-          </div>
-        </div>
       </div>
       <div
         className={`pointer-events-none absolute left-1/2 top-5 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
           showMobileTouchHint || isInteracting ? "opacity-100" : "opacity-0"
         }`}
       >
-        <div className="rounded-full border border-[#ead8a6]/18 bg-[rgba(79,52,16,0.5)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
+        <div className="rounded-full border border-[#e7c97b]/18 bg-[rgba(106,72,24,0.48)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
           {isInteracting ? "正在拖移河面" : touchModeLabel}
         </div>
       </div>
       {canCruise ? (
         <div
-          className={`absolute bottom-4 left-1/2 z-20 w-[min(240px,calc(100vw-2.5rem))] -translate-x-1/2 transition-opacity duration-300 sm:bottom-5 sm:left-auto sm:right-5 sm:w-[min(300px,calc(100vw-2.5rem))] sm:translate-x-0 ${
+          className={`absolute bottom-5 right-5 z-20 hidden w-[min(300px,calc(100vw-2.5rem))] transition-opacity duration-300 sm:block ${
             mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
           }`}
         >
-          <div className="pointer-events-auto rounded-[26px] border border-[#ead8a6]/18 bg-[linear-gradient(180deg,rgba(92,61,19,0.82),rgba(66,42,12,0.82))] px-4 py-3 text-[#f1e2bb] shadow-xl shadow-black/20 backdrop-blur-md sm:px-4 sm:py-4">
+          <div className="pointer-events-auto rounded-[26px] border border-[#e7c97b]/20 bg-[linear-gradient(180deg,rgba(118,84,30,0.84),rgba(72,46,14,0.84))] px-4 py-4 text-[#f1e2bb] shadow-xl shadow-black/20 backdrop-blur-md">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[10px] tracking-[0.26em] text-[#e5d1a1]">巡河题签</div>
