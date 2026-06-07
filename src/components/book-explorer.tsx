@@ -1320,6 +1320,36 @@ export function BookExplorer({
       onClick: () => setManualTab("spread"),
     },
   ] as const;
+  const versionStageSummary = activeVersion
+    ? `${activeVersion.label} 正停在第 ${Math.max(activeVersionSequenceIndex + 1, 1)} 层版本链上，${activeVersion.parentId ? "继续承接上一层文字流传" : "作为祖本起点托出整条流变长链"}。`
+    : "这一层版本流变正在等待卷心版本显影。";
+  const versionStageActions = [
+    {
+      label: "机构归录",
+      note: "把当前版本重新挂回馆藏与影像线索。",
+      onClick: () => handleOpenSourceEvidence("institution-samples"),
+    },
+    {
+      label: "时间回声",
+      note: "把版本记载放回事件年代继续讲。",
+      onClick: () => setManualTab("timeline"),
+    },
+  ] as const;
+  const timelineStageSummary = activeTimelineItem
+    ? `${activeTimelineItem.year} 年的“${activeTimelineItem.title}”正托住当前时间卷心，成书、刊刻、注疏与现实回声会顺着这一事继续前后展开。`
+    : "时间脉络正在等待首个事件节点显影。";
+  const timelineStageActions = [
+    {
+      label: "事件证据",
+      note: "把当前时间节点接回现实活动或叙事材料。",
+      onClick: () => handleFocusEventEvidence(),
+    },
+    {
+      label: "版本流变",
+      note: "顺着事件继续回看对应版本位置。",
+      onClick: () => setManualTab("versions"),
+    },
+  ] as const;
 
   return (
     <div className="relative space-y-4">
@@ -1518,7 +1548,27 @@ export function BookExplorer({
             <p className="mt-3 text-sm leading-7 text-amber-50/90">
               {detail.realWorldSignals.venueSummary}
             </p>
-          ) : null}
+          ) : (
+            <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6">
+              <div className="text-sm text-stone-200">这一时代还没有显出可用的时间回声，可先从传播、版本或原文证据继续追看。</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setManualTab("versions")}
+                  className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                >
+                  版本流变
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setManualTab("passages")}
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                >
+                  文本溯源
+                </button>
+              </div>
+            </div>
+          )}
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             <button
               type="button"
@@ -1956,7 +2006,27 @@ export function BookExplorer({
                 </button>
               </div>
             </div>
-          ) : null}
+          ) : (
+            <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6">
+              <div className="text-sm text-stone-200">这一时代还没有显出可用的时间回声，可先从传播、版本或原文证据继续追看。</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setManualTab("versions")}
+                  className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                >
+                  版本流变
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setManualTab("passages")}
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                >
+                  文本溯源
+                </button>
+              </div>
+            </div>
+          )}
           {sourceEvidence.length ? (
             <div className="mt-4 rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4">
               <div className="flex items-center justify-between gap-3">
@@ -3247,6 +3317,48 @@ export function BookExplorer({
             </div>
           ) : (
             <>
+              <div className="rounded-[26px] border border-[#ead8a6]/14 bg-[linear-gradient(135deg,rgba(92,61,20,0.92),rgba(34,22,9,0.96))] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.08)]">
+                <div className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
+                  <div>
+                    <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">版本舞台</div>
+                    <div className="mt-2 text-lg font-semibold text-[#fbf3da]">
+                      {activeVersion?.label ?? "卷心版本"} · {activeVersion?.editionType ?? "版本节点"}
+                    </div>
+                    <div className="mt-2 text-sm leading-7 text-[#eadfbc]">{versionStageSummary}</div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {activeVersion ? (
+                        <span className="rounded-full border border-amber-300/22 bg-amber-300/10 px-3 py-1.5 text-xs text-amber-100">
+                          {activeVersion.year} · {activeVersion.place}
+                        </span>
+                      ) : null}
+                      {activeVersionStatusMeta ? (
+                        <span className={`rounded-full border px-3 py-1.5 text-xs ${activeVersionStatusMeta.badgeClass}`}>
+                          {activeVersionStatusMeta.badge}
+                        </span>
+                      ) : null}
+                      {activeVersionMeta ? (
+                        <span className={`rounded-full border px-3 py-1.5 text-xs ${sourceBadgeClass(activeVersionMeta.tone)}`}>
+                          {activeVersionMeta.label}
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-1">
+                    {versionStageActions.map((action) => (
+                      <button
+                        key={`version-stage-action-${action.label}`}
+                        type="button"
+                        onClick={action.onClick}
+                        className="rounded-[20px] border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
+                      >
+                        <div className="text-sm font-medium text-[#fbf3da]">{action.label}</div>
+                        <div className="mt-2 text-xs leading-6 text-[#cdb98d]">{action.note}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(96,66,22,0.72),rgba(42,27,9,0.8))] p-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.06)]">
                 <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
                   <VersionTree
@@ -3913,483 +4025,481 @@ export function BookExplorer({
             <span className="text-xs text-[#d8c9a3]">时间显影</span>
           </div>
           {visibleTimeline.length > 0 ? (
-            <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(96,66,22,0.72),rgba(42,27,9,0.8))] p-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.06)]">
-              <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(70,45,14,0.46),rgba(37,24,8,0.4))] px-4 py-4">
-                <div className="flex items-center justify-between gap-3">
+            <>
+              <div className="rounded-[26px] border border-[#ead8a6]/14 bg-[linear-gradient(135deg,rgba(88,58,19,0.92),rgba(33,22,9,0.96))] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.08)]">
+                <div className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
                   <div>
-                    <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
-                      横向年脉
+                    <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">时间舞台</div>
+                    <div className="mt-2 text-lg font-semibold text-[#fbf3da]">
+                      {activeTimelineItem?.title ?? "卷心事件"} · {activeTimelineItem?.year ?? "年代未定"}
                     </div>
-                    <div className="mt-1 text-sm text-[#eadfbc]">
-                      成书、刊刻、注疏与现实回声正在同一条时间轨上前后相接
+                    <div className="mt-2 text-sm leading-7 text-[#eadfbc]">{timelineStageSummary}</div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {activeTimelineItem ? (
+                        <span className="rounded-full border border-amber-300/22 bg-amber-300/10 px-3 py-1.5 text-xs text-amber-100">
+                          第 {Math.max(activeTimelineIndex + 1, 1)} / {Math.max(visibleTimeline.length, 1)} 事
+                        </span>
+                      ) : null}
+                      {activeTimelineMeta ? (
+                        <span
+                          className={`rounded-full border px-3 py-1.5 text-xs ${sourceBadgeClass(activeTimelineMeta.tone)}`}
+                        >
+                          {activeTimelineMeta.label}
+                        </span>
+                      ) : null}
                     </div>
                   </div>
-                  <div className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-xs text-[#eadfbc]">
-                    {visibleTimeline.length} 个节点
+                  <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-1">
+                    {timelineStageActions.map((action) => (
+                      <button
+                        key={`timeline-stage-action-${action.label}`}
+                        type="button"
+                        onClick={action.onClick}
+                        className="rounded-[20px] border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
+                      >
+                        <div className="text-sm font-medium text-[#fbf3da]">{action.label}</div>
+                        <div className="mt-2 text-xs leading-6 text-[#cdb98d]">{action.note}</div>
+                      </button>
+                    ))}
                   </div>
                 </div>
-                <div className="mt-4 overflow-x-auto pb-2">
-                  <div className="flex min-w-max items-start gap-3">
-                    {visibleTimeline.map((item, index) => {
-                      const isActive = activeTimelineItem?.id === item.id;
+              </div>
 
-                      return (
-                        <div
-                          key={`timeline-ribbon-${item.id}`}
-                          className="flex items-center gap-3"
+              <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(96,66,22,0.72),rgba(42,27,9,0.8))] p-4 shadow-[inset_0_1px_0_rgba(255,244,214,0.06)]">
+                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(70,45,14,0.46),rgba(37,24,8,0.4))] px-4 py-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">横向年脉</div>
+                      <div className="mt-1 text-sm text-[#eadfbc]">
+                        成书、刊刻、注疏与现实回声正在同一条时间轨上前后相接
+                      </div>
+                    </div>
+                    <div className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-xs text-[#eadfbc]">
+                      {visibleTimeline.length} 个节点
+                    </div>
+                  </div>
+                  <div className="mt-4 overflow-x-auto pb-2">
+                    <div className="flex min-w-max items-start gap-3">
+                      {visibleTimeline.map((item, index) => {
+                        const isActive = activeTimelineItem?.id === item.id;
+
+                        return (
+                          <div key={`timeline-ribbon-${item.id}`} className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => handleSelectTimelineItem(item.id)}
+                              className={`w-52 rounded-[22px] border px-4 py-4 text-left transition ${
+                                isActive
+                                  ? "border-amber-300/35 bg-amber-300/10 shadow-lg shadow-amber-500/10"
+                                  : "border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] hover:bg-[rgba(255,244,214,0.12)]"
+                              }`}
+                            >
+                              <div className="text-xs text-amber-100">{item.year}</div>
+                              <div className="mt-2 text-sm font-medium text-[#fbf3da]">{item.title}</div>
+                              <div className="mt-2 text-[11px] text-[#eadfbc]">
+                                {isActive ? "正在聚焦" : "同年回声"}
+                              </div>
+                            </button>
+                            {index < visibleTimeline.length - 1 ? (
+                              <div className="h-px w-10 shrink-0 bg-[linear-gradient(90deg,rgba(251,191,36,0.45),rgba(255,255,255,0.08))]" />
+                            ) : null}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
+                  <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(70,45,14,0.46),rgba(37,24,8,0.4))] px-4 py-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">年脉轨道</div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (activeTimelineItem) {
+                              handleFocusEventEvidence();
+                              return;
+                            }
+
+                            const firstTimelineItem = visibleTimeline[0];
+                            if (firstTimelineItem) {
+                              handleSelectTimelineItem(firstTimelineItem.id);
+                            }
+                          }}
+                          className="mt-1 text-left text-sm text-[#eadfbc] transition hover:text-[#fbf3da]"
                         >
+                          {activeTimelineItem
+                            ? "这一事件已经和现实材料彼此扣合。"
+                            : "最早显影的事件会在这里托起整条时间脉络。"}
+                        </button>
+                      </div>
+                      <div className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-xs text-[#eadfbc]">
+                        {visibleTimeline.length} 个事件
+                      </div>
+                    </div>
+
+                    <div className="mt-5 space-y-3">
+                      {visibleTimeline.map((item, index) => {
+                        const isActive = activeTimelineItem?.id === item.id;
+
+                        return (
                           <button
+                            key={item.id}
                             type="button"
                             onClick={() => handleSelectTimelineItem(item.id)}
-                            className={`w-52 rounded-[22px] border px-4 py-4 text-left transition ${
+                            className={`flex w-full gap-3 rounded-[22px] border px-4 py-4 text-left transition ${
                               isActive
                                 ? "border-amber-300/35 bg-amber-300/10 shadow-lg shadow-amber-500/10"
                                 : "border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] hover:bg-[rgba(255,244,214,0.12)]"
                             }`}
                           >
-                            <div className="text-xs text-amber-100">{item.year}</div>
-                            <div className="mt-2 text-sm font-medium text-[#fbf3da]">
-                              {item.title}
+                            <div className="flex w-10 flex-col items-center pt-1">
+                              <div className={`h-3 w-3 rounded-full ${isActive ? "bg-amber-300" : "bg-white/30"}`} />
+                              {index < visibleTimeline.length - 1 ? (
+                                <div className="mt-1 h-full w-px bg-white/10" />
+                              ) : null}
                             </div>
-                            <div className="mt-2 text-[11px] text-[#eadfbc]">
-                              {isActive ? "正在聚焦" : "同年回声"}
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <div className="text-sm text-amber-100">{item.year}</div>
+                                <span
+                                  className={`rounded-full border px-2 py-1 text-[10px] ${sourceBadgeClass(
+                                    timelineSourceMeta(item.source).tone,
+                                  )}`}
+                                >
+                                  {timelineSourceMeta(item.source).label}
+                                </span>
+                              </div>
+                              <div className="mt-1 font-medium text-[#fbf3da]">{item.title}</div>
                             </div>
                           </button>
-                          {index < visibleTimeline.length - 1 ? (
-                            <div className="h-px w-10 shrink-0 bg-[linear-gradient(90deg,rgba(251,191,36,0.45),rgba(255,255,255,0.08))]" />
-                          ) : null}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
-                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(70,45,14,0.46),rgba(37,24,8,0.4))] px-4 py-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
-                        年脉轨道
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (activeTimelineItem) {
-                            handleFocusEventEvidence();
-                            return;
-                          }
-
-                          const firstTimelineItem = visibleTimeline[0];
-                          if (firstTimelineItem) {
-                            handleSelectTimelineItem(firstTimelineItem.id);
-                          }
-                        }}
-                        className="mt-1 text-left text-sm text-[#eadfbc] transition hover:text-[#fbf3da]"
-                      >
-                        {activeTimelineItem
-                          ? "这一事件已经和现实材料彼此扣合。"
-                          : "最早显影的事件会在这里托起整条时间脉络。"}
-                      </button>
-                    </div>
-                    <div className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-xs text-[#eadfbc]">
-                      {visibleTimeline.length} 个事件
+                        );
+                      })}
                     </div>
                   </div>
 
-                  <div className="mt-5 space-y-3">
-                    {visibleTimeline.map((item, index) => {
-                      const isActive = activeTimelineItem?.id === item.id;
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => handleSelectTimelineItem(item.id)}
-                          className={`flex w-full gap-3 rounded-[22px] border px-4 py-4 text-left transition ${
-                            isActive
-                              ? "border-amber-300/35 bg-amber-300/10 shadow-lg shadow-amber-500/10"
-                              : "border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] hover:bg-[rgba(255,244,214,0.12)]"
-                          }`}
-                        >
-                          <div className="flex w-10 flex-col items-center pt-1">
-                            <div
-                              className={`h-3 w-3 rounded-full ${
-                                isActive ? "bg-amber-300" : "bg-white/30"
-                              }`}
-                            />
-                            {index < visibleTimeline.length - 1 ? (
-                              <div className="mt-1 h-full w-px bg-white/10" />
+                  <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4">
+                    {activeTimelineItem ? (
+                      <>
+                        <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">事件显影</div>
+                        <div className="mt-2 flex items-center justify-between gap-3">
+                          <div className="text-2xl font-semibold text-[#fbf3da]">{activeTimelineItem.title}</div>
+                          <div className="flex items-center gap-2">
+                            <div className="rounded-full bg-amber-300/10 px-3 py-1 text-sm text-amber-100">
+                              {activeTimelineItem.year}
+                            </div>
+                            {activeTimelineItem.source === "cbdb" ? (
+                              <div className="rounded-full bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
+                                真实活动信号
+                              </div>
                             ) : null}
                           </div>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <div className="text-sm text-amber-100">{item.year}</div>
-                              <span
-                                className={`rounded-full border px-2 py-1 text-[10px] ${
-                                  sourceBadgeClass(timelineSourceMeta(item.source).tone)
-                                }`}
-                              >
-                                {timelineSourceMeta(item.source).label}
-                              </span>
-                            </div>
-                            <div className="mt-1 font-medium text-[#fbf3da]">{item.title}</div>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4">
-                  {activeTimelineItem ? (
-                    <>
-                      <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
-                        事件显影
-                      </div>
-                      <div className="mt-2 flex items-center justify-between gap-3">
-                        <div className="text-2xl font-semibold text-[#fbf3da]">
-                          {activeTimelineItem.title}
                         </div>
-                        <div className="flex items-center gap-2">
-                          <div className="rounded-full bg-amber-300/10 px-3 py-1 text-sm text-amber-100">
-                            {activeTimelineItem.year}
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const previous = visibleTimeline[activeTimelineIndex - 1];
+                              if (previous) {
+                                handleSelectTimelineItem(previous.id);
+                              }
+                            }}
+                            disabled={activeTimelineIndex <= 0}
+                            className={`rounded-full px-3 py-1.5 text-xs transition ${
+                              activeTimelineIndex > 0
+                                ? "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                                : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                            }`}
+                          >
+                            前一事
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const next = visibleTimeline[activeTimelineIndex + 1];
+                              if (next) {
+                                handleSelectTimelineItem(next.id);
+                              }
+                            }}
+                            disabled={
+                              activeTimelineIndex < 0 || activeTimelineIndex >= visibleTimeline.length - 1
+                            }
+                            className={`rounded-full px-3 py-1.5 text-xs transition ${
+                              activeTimelineIndex >= 0 && activeTimelineIndex < visibleTimeline.length - 1
+                                ? "border border-amber-300/25 bg-amber-300/15 text-amber-50 hover:bg-amber-300/20"
+                                : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                            }`}
+                          >
+                            后一事
+                          </button>
+                        </div>
+                        <div className="mt-4 rounded-2xl border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-4 py-4">
+                          <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                              <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">时间卷轴</div>
+                              <div className="mt-1 text-sm text-[#eadfbc]">
+                                第 {Math.max(activeTimelineIndex + 1, 1)} / {Math.max(visibleTimeline.length, 1)} 事
+                              </div>
+                            </div>
+                            <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] text-stone-300">
+                              顺时推看
+                            </div>
                           </div>
-                          {activeTimelineItem.source === "cbdb" ? (
-                            <div className="rounded-full bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
-                              真实活动信号
+                          {activeTimelineWindow.length > 1 ? (
+                            <div className="mt-4 grid gap-3 md:grid-cols-3">
+                              {activeTimelineWindow.map((item) => {
+                                const isActive = item.id === activeTimelineItem.id;
+
+                                return (
+                                  <button
+                                    key={`timeline-window-${item.id}`}
+                                    type="button"
+                                    onClick={() => handleSelectTimelineItem(item.id)}
+                                    className={`rounded-[18px] border px-3 py-3 text-left transition ${
+                                      isActive
+                                        ? "border-amber-300/30 bg-amber-300/10"
+                                        : "border-white/10 bg-white/5 hover:bg-white/10"
+                                    }`}
+                                  >
+                                    <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">
+                                      {isActive ? "正在显影" : "邻近回声"}
+                                    </div>
+                                    <div className="mt-2 text-sm font-medium text-[#fbf3da]">{item.title}</div>
+                                    <div className="mt-2 text-[11px] text-amber-100">{item.year}</div>
+                                    <div className="mt-2 line-clamp-2 text-[11px] leading-5 text-stone-300">
+                                      {item.detail}
+                                    </div>
+                                  </button>
+                                );
+                              })}
                             </div>
                           ) : null}
                         </div>
-                      </div>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const previous = visibleTimeline[activeTimelineIndex - 1];
-                            if (previous) {
-                              handleSelectTimelineItem(previous.id);
-                            }
-                          }}
-                          disabled={activeTimelineIndex <= 0}
-                          className={`rounded-full px-3 py-1.5 text-xs transition ${
-                            activeTimelineIndex > 0
-                              ? "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
-                              : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
-                          }`}
-                        >
-                          前一事
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const next = visibleTimeline[activeTimelineIndex + 1];
-                            if (next) {
-                              handleSelectTimelineItem(next.id);
-                            }
-                          }}
-                          disabled={
-                            activeTimelineIndex < 0 ||
-                            activeTimelineIndex >= visibleTimeline.length - 1
-                          }
-                          className={`rounded-full px-3 py-1.5 text-xs transition ${
-                            activeTimelineIndex >= 0 &&
-                            activeTimelineIndex < visibleTimeline.length - 1
-                              ? "border border-amber-300/25 bg-amber-300/15 text-amber-50 hover:bg-amber-300/20"
-                              : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
-                          }`}
-                        >
-                            后一事
-                        </button>
-                      </div>
-                      <div className="mt-4 rounded-2xl border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-4 py-4">
-                        <div className="flex flex-wrap items-center justify-between gap-3">
-                          <div>
-                            <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">时间卷轴</div>
-                            <div className="mt-1 text-sm text-[#eadfbc]">
-                              第 {Math.max(activeTimelineIndex + 1, 1)} / {Math.max(visibleTimeline.length, 1)} 事
+                        <p className="mt-4 text-sm leading-7 text-stone-300">{activeTimelineItem.detail}</p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={handleFocusEventEvidence}
+                            className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                          >
+                            事件证据
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setManualTab("versions")}
+                            className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                          >
+                            版本流变
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setManualTab("passages")}
+                            className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,244,214,0.12)]"
+                          >
+                            文本溯源
+                          </button>
+                        </div>
+                        {activeTimelineMeta ? (
+                          <div className="mt-4 rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span
+                                className={`rounded-full border px-3 py-1 text-xs ${sourceBadgeClass(activeTimelineMeta.tone)}`}
+                              >
+                                {activeTimelineMeta.label}
+                              </span>
+                              <span className="text-sm text-stone-300">{activeTimelineMeta.detail}</span>
                             </div>
                           </div>
-                          <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] text-stone-300">
-                            顺时推看
+                        ) : null}
+                        {activeTimelineEventEchoes.length || activeTimelineInstitutionEchoes.length ? (
+                          <div className="mt-4 rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4">
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="text-xs tracking-[0.2em] text-amber-100/75">现实回声</div>
+                              <div className="text-[10px] text-amber-100/70">与此年最贴近</div>
+                            </div>
+                            <div className="mt-3 grid gap-3">
+                              {activeTimelineEventEchoes.map((event) => (
+                                <div
+                                  key={`timeline-event-echo-${event.venue}-${event.title}-${event.startTime}`}
+                                  className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4"
+                                >
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      handleSelectEventSample(event);
+                                      handleFocusEventEvidence();
+                                    }}
+                                    className="w-full text-left"
+                                  >
+                                    <div className="flex items-center justify-between gap-3">
+                                      <div className="text-sm font-medium text-stone-50">{event.title}</div>
+                                      <div className="rounded-full bg-amber-300/10 px-2 py-1 text-[10px] text-amber-100">
+                                        事件证据
+                                      </div>
+                                    </div>
+                                    <div className="mt-2 text-xs text-stone-400">
+                                      {event.venue} · {event.startTime}
+                                    </div>
+                                    <div className="mt-2 text-sm text-stone-300">{event.status}</div>
+                                  </button>
+                                  <div className="mt-3 flex flex-wrap gap-2">
+                                    <span className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
+                                      对应年份
+                                    </span>
+                                    <span className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-[10px] text-[#eadfbc]">
+                                      事件证据
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
+                              {activeTimelineInstitutionEchoes.map((item) => (
+                                <div
+                                  key={`timeline-institution-echo-${item.institution}-${item.title}-${item.year ?? "unknown"}`}
+                                  className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4"
+                                >
+                                  <button
+                                    type="button"
+                                    onClick={() => handleSelectInstitutionRecord(item)}
+                                    className="w-full text-left"
+                                  >
+                                    <div className="flex items-center justify-between gap-3">
+                                      <div className="text-sm font-medium text-stone-50">{item.title}</div>
+                                      <div className="rounded-full bg-white/10 px-2 py-1 text-[10px] text-stone-300">
+                                        馆藏去处
+                                      </div>
+                                    </div>
+                                    <div className="mt-2 text-xs text-stone-400">
+                                      {item.institution}
+                                      {item.category ? ` · ${item.category}` : ""}
+                                      {item.year ? ` · ${item.year}` : ""}
+                                    </div>
+                                    {item.sourceText ? (
+                                      <div className="mt-2 text-sm leading-6 text-stone-300">{item.sourceText}</div>
+                                    ) : null}
+                                  </button>
+                                  <div className="mt-3 flex flex-wrap gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => setManualTab("people")}
+                                      className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,244,214,0.12)]"
+                                    >
+                                      人物关系
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => setManualTab("passages")}
+                                      className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                                    >
+                                      文本溯源
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleOpenSourceEvidence("institution-samples")}
+                                      className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
+                                    >
+                                      机构卷录
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                        {activeTimelineWindow.length > 1 ? (
-                          <div className="mt-4 grid gap-3 md:grid-cols-3">
-                            {activeTimelineWindow.map((item) => {
+                        ) : fallbackTimelineInstitutionEchoes.length ? (
+                          <div className="mt-4 rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4">
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">现实回声</div>
+                              <div className="text-[10px] text-[#cdb98d]">机构回查线索</div>
+                            </div>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => handleOpenSourceEvidence("institution-samples")}
+                                className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                              >
+                                机构卷录
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setManualTab("versions")}
+                                className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
+                              >
+                                版本流变
+                              </button>
+                            </div>
+                            <div className="mt-3 grid gap-3">
+                              {fallbackTimelineInstitutionEchoes.map((item) => (
+                                <div
+                                  key={`timeline-fallback-echo-${item.institution}-${item.title}-${item.year ?? "unknown"}`}
+                                  className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4"
+                                >
+                                  <button
+                                    type="button"
+                                    onClick={() => handleSelectInstitutionRecord(item)}
+                                    className="w-full text-left"
+                                  >
+                                    <div className="text-sm font-medium text-[#fbf3da]">{item.title}</div>
+                                    <div className="mt-2 text-xs text-[#cdb98d]">
+                                      {item.institution}
+                                      {item.category ? ` · ${item.category}` : ""}
+                                      {item.year ? ` · ${item.year}` : ""}
+                                    </div>
+                                  </button>
+                                  <div className="mt-3 flex flex-wrap gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => setManualTab("people")}
+                                      className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,244,214,0.12)]"
+                                    >
+                                      人物关系
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => setManualTab("passages")}
+                                      className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
+                                    >
+                                      文本溯源
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
+                        <div className="mt-5 rounded-[22px] border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4">
+                          <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">时间定位</div>
+                          <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2">
+                            {visibleTimeline.map((item) => {
                               const isActive = item.id === activeTimelineItem.id;
 
                               return (
-                                <button
-                                  key={`timeline-window-${item.id}`}
-                                  type="button"
-                                  onClick={() => handleSelectTimelineItem(item.id)}
-                                  className={`rounded-[18px] border px-3 py-3 text-left transition ${
-                                    isActive
-                                      ? "border-amber-300/30 bg-amber-300/10"
-                                      : "border-white/10 bg-white/5 hover:bg-white/10"
-                                  }`}
-                                >
-                                  <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">
-                                    {isActive ? "正在显影" : "邻近回声"}
-                                  </div>
-                                  <div className="mt-2 text-sm font-medium text-[#fbf3da]">
-                                    {item.title}
-                                  </div>
-                                  <div className="mt-2 text-[11px] text-amber-100">{item.year}</div>
-                                  <div className="mt-2 line-clamp-2 text-[11px] leading-5 text-stone-300">
-                                    {item.detail}
-                                  </div>
-                                </button>
+                                <div key={item.id} className="flex min-w-max items-center gap-3">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleSelectTimelineItem(item.id)}
+                                    className={`rounded-full px-3 py-2 text-xs ${
+                                      isActive
+                                        ? "bg-amber-300 text-stone-950"
+                                        : "border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] text-[#eadfbc] hover:bg-[rgba(255,244,214,0.12)]"
+                                    }`}
+                                  >
+                                    {item.year}
+                                  </button>
+                                  {item.id !== visibleTimeline[visibleTimeline.length - 1]?.id ? (
+                                    <div className="h-px w-8 bg-gradient-to-r from-amber-300/35 to-transparent" />
+                                  ) : null}
+                                </div>
                               );
                             })}
                           </div>
-                        ) : null}
-                      </div>
-                      <p className="mt-4 text-sm leading-7 text-stone-300">
-                        {activeTimelineItem.detail}
-                      </p>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleFocusEventEvidence();
-                          }}
-                          className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
-                        >
-                          事件证据
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setManualTab("versions")}
-                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
-                        >
-                          版本流变
-                        </button>
-                      </div>
-                      {activeTimelineMeta ? (
-                        <div className="mt-4 rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span
-                              className={`rounded-full border px-3 py-1 text-xs ${sourceBadgeClass(activeTimelineMeta.tone)}`}
-                            >
-                              {activeTimelineMeta.label}
-                            </span>
-                            <span className="text-sm text-stone-300">
-                              {activeTimelineMeta.detail}
-                            </span>
-                          </div>
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            <button
-                              type="button"
-                              onClick={() => setManualTab("passages")}
-                              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
-                            >
-                              文本溯源
-                            </button>
-                          </div>
                         </div>
-                      ) : null}
-                      {activeTimelineEventEchoes.length || activeTimelineInstitutionEchoes.length ? (
-                        <div className="mt-4 rounded-2xl border border-amber-300/10 bg-amber-300/5 px-4 py-4">
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                              现实回声
-                            </div>
-                            <div className="text-[10px] text-amber-100/70">
-                              与此年最贴近
-                            </div>
-                          </div>
-                          <div className="mt-3 grid gap-3">
-                            {activeTimelineEventEchoes.map((event) => (
-                              <button
-                                key={`timeline-event-echo-${event.venue}-${event.title}-${event.startTime}`}
-                                type="button"
-                                onClick={() => {
-                                  handleSelectEventSample(event);
-                                  handleFocusEventEvidence();
-                                }}
-                                className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4 text-left transition hover:bg-[rgba(255,255,255,0.08)]"
-                              >
-                                <div className="flex items-center justify-between gap-3">
-                                  <div className="text-sm font-medium text-stone-50">{event.title}</div>
-                                  <div className="rounded-full bg-amber-300/10 px-2 py-1 text-[10px] text-amber-100">
-                                    事件证据
-                                  </div>
-                                </div>
-                                <div className="mt-2 text-xs text-stone-400">
-                                  {event.venue} · {event.startTime}
-                                </div>
-                                <div className="mt-2 text-sm text-stone-300">
-                                  {event.status}
-                                </div>
-                                <div className="mt-3 flex flex-wrap gap-2">
-                                  <span className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
-                                    对应年份
-                                  </span>
-                                  <span className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-[10px] text-[#eadfbc]">
-                                    事件证据
-                                  </span>
-                                </div>
-                              </button>
-                            ))}
-                            {activeTimelineInstitutionEchoes.map((item) => (
-                              <button
-                                key={`timeline-institution-echo-${item.institution}-${item.title}-${item.year ?? "unknown"}`}
-                                type="button"
-                                onClick={() => handleSelectInstitutionRecord(item)}
-                                className="rounded-2xl border border-white/10 bg-[rgba(255,255,255,0.05)] px-4 py-4 text-left transition hover:bg-[rgba(255,255,255,0.08)]"
-                              >
-                                <div className="flex items-center justify-between gap-3">
-                                  <div className="text-sm font-medium text-stone-50">{item.title}</div>
-                                  <div className="rounded-full bg-white/10 px-2 py-1 text-[10px] text-stone-300">
-                                    馆藏去处
-                                  </div>
-                                </div>
-                                <div className="mt-2 text-xs text-stone-400">
-                                  {item.institution}
-                                  {item.category ? ` · ${item.category}` : ""}
-                                  {item.year ? ` · ${item.year}` : ""}
-                                </div>
-                                {item.sourceText ? (
-                                  <div className="mt-2 text-sm leading-6 text-stone-300">
-                                    {item.sourceText}
-                                  </div>
-                                ) : null}
-                                <div className="mt-3 flex flex-wrap gap-2">
-                                  <button
-                                    type="button"
-                                    onClick={(event) => {
-                                      event.stopPropagation();
-                                      setManualTab("people");
-                                    }}
-                                    className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,244,214,0.12)]"
-                                  >
-                                    人物关系
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={(event) => {
-                                      event.stopPropagation();
-                                      setManualTab("passages");
-                                    }}
-                                    className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
-                                  >
-                                    文本溯源
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={(event) => {
-                                      event.stopPropagation();
-                                      handleOpenSourceEvidence("institution-samples");
-                                    }}
-                                    className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
-                                  >
-                                    机构卷录
-                                  </button>
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      ) : fallbackTimelineInstitutionEchoes.length ? (
-                        <div className="mt-4 rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4">
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
-                              现实回声
-                            </div>
-                            <div className="text-[10px] text-[#cdb98d]">机构回查线索</div>
-                          </div>
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            <button
-                              type="button"
-                              onClick={() => handleOpenSourceEvidence("institution-samples")}
-                              className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
-                            >
-                              机构卷录
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setManualTab("versions")}
-                              className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
-                            >
-                              版本流变
-                            </button>
-                          </div>
-                          <div className="mt-3 grid gap-3">
-                            {fallbackTimelineInstitutionEchoes.map((item) => (
-                              <button
-                                key={`timeline-fallback-echo-${item.institution}-${item.title}-${item.year ?? "unknown"}`}
-                                type="button"
-                                onClick={() => handleSelectInstitutionRecord(item)}
-                                className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
-                              >
-                                <div className="text-sm font-medium text-[#fbf3da]">{item.title}</div>
-                                <div className="mt-2 text-xs text-[#cdb98d]">
-                                  {item.institution}
-                                  {item.category ? ` · ${item.category}` : ""}
-                                  {item.year ? ` · ${item.year}` : ""}
-                                </div>
-                                <div className="mt-3 flex flex-wrap gap-2">
-                                  <button
-                                    type="button"
-                                    onClick={(event) => {
-                                      event.stopPropagation();
-                                      setManualTab("people");
-                                    }}
-                                    className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,244,214,0.12)]"
-                                  >
-                                    人物关系
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={(event) => {
-                                      event.stopPropagation();
-                                      setManualTab("passages");
-                                    }}
-                                    className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
-                                  >
-                                    文本溯源
-                                  </button>
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      ) : null}
-
-                      <div className="mt-5 rounded-[22px] border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-4 py-4">
-                        <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
-                          时间定位
-                        </div>
-                        <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2">
-                          {visibleTimeline.map((item) => {
-                            const isActive = item.id === activeTimelineItem.id;
-                            return (
-                              <div key={item.id} className="flex min-w-max items-center gap-3">
-                                <button
-                                  type="button"
-                                  onClick={() => handleSelectTimelineItem(item.id)}
-                                  className={`rounded-full px-3 py-2 text-xs ${
-                                    isActive
-                                      ? "bg-amber-300 text-stone-950"
-                                      : "border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] text-[#eadfbc] hover:bg-[rgba(255,244,214,0.12)]"
-                                  }`}
-                                >
-                                  {item.year}
-                                </button>
-                                {item.id !== visibleTimeline[visibleTimeline.length - 1]?.id ? (
-                                  <div className="h-px w-8 bg-gradient-to-r from-amber-300/35 to-transparent" />
-                                ) : null}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </>
-                  ) : null}
+                      </>
+                    ) : null}
+                  </div>
                 </div>
               </div>
-            </div>
+            </>
           ) : null}
           {detail.realWorldSignals?.eventSamples?.length ? (
             <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4">
@@ -4399,23 +4509,25 @@ export function BookExplorer({
               </div>
               <div className="mt-3 space-y-2">
                 {detail.realWorldSignals.eventSamples.map((event) => (
-                  <button
+                  <div
                     key={`${event.venue}-${event.title}-${event.startTime}`}
-                    type="button"
-                    onClick={() => handleSelectEventSample(event)}
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left transition hover:bg-white/10"
+                    className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3"
                   >
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="text-sm font-medium text-stone-100">
-                        {event.title}
-                      </span>
-                      <span className="rounded-full bg-amber-300/10 px-2 py-1 text-xs text-amber-100">
-                        {event.status}
-                      </span>
-                    </div>
-                    <div className="mt-2 text-xs text-stone-400">
-                      {event.venue} · {event.startTime}
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleSelectEventSample(event)}
+                      className="w-full text-left"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-sm font-medium text-stone-100">{event.title}</span>
+                        <span className="rounded-full bg-amber-300/10 px-2 py-1 text-xs text-amber-100">
+                          {event.status}
+                        </span>
+                      </div>
+                      <div className="mt-2 text-xs text-stone-400">
+                        {event.venue} · {event.startTime}
+                      </div>
+                    </button>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
@@ -4449,7 +4561,7 @@ export function BookExplorer({
                         对应场馆传播
                       </button>
                     </div>
-                  </button>
+                  </div>
                 ))}
               </div>
             </div>
