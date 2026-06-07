@@ -1659,11 +1659,11 @@ export function BookExplorer({
                             event.stopPropagation();
                             handleOpenSourceSample(item.id, sample);
                           }}
-                          className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3 text-left transition hover:bg-white/10"
+                          className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-3 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
                         >
-                          <div className="text-sm text-stone-100">{sample.label}</div>
+                          <div className="text-sm text-[#fbf3da]">{sample.label}</div>
                           {sample.detail ? (
-                            <div className="mt-1 text-xs text-stone-400">{sample.detail}</div>
+                            <div className="mt-1 text-xs text-[#cdb98d]">{sample.detail}</div>
                           ) : null}
                         </button>
                       ))}
@@ -1682,7 +1682,7 @@ export function BookExplorer({
                         <div className="mt-2 text-base font-semibold text-stone-50">
                           {activeSourceEvidence.source}
                         </div>
-                        <div className="mt-1 text-sm text-stone-300">
+                        <div className="mt-1 text-sm text-[#eadfbc]">
                           {activeSourceEvidence.category}
                         </div>
                       </div>
@@ -1750,16 +1750,16 @@ export function BookExplorer({
                                 className={`rounded-[18px] border px-3 py-3 text-left transition ${
                                   isActive
                                     ? "border-amber-300/30 bg-amber-300/10"
-                                    : "border-white/10 bg-white/5 hover:bg-white/10"
+                                    : "border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] hover:bg-[rgba(255,244,214,0.12)]"
                                 }`}
                               >
                                 <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">
                                   {isActive ? "当前凭据" : "相邻凭据"}
                                 </div>
-                                <div className="mt-2 text-sm font-medium text-stone-100">
+                                <div className="mt-2 text-sm font-medium text-[#fbf3da]">
                                   {item.source}
                                 </div>
-                                <div className="mt-1 text-[11px] text-stone-400">
+                                <div className="mt-1 text-[11px] text-[#cdb98d]">
                                   {item.category}
                                 </div>
                                 <div className="mt-2 text-[11px] leading-5 text-[#d8c9a3]">
@@ -1771,7 +1771,7 @@ export function BookExplorer({
                         </div>
                       ) : null}
                     </div>
-                    <p className="mt-4 text-sm leading-7 text-stone-300">
+                    <p className="mt-4 text-sm leading-7 text-[#eadfbc]">
                       {activeSourceEvidence.summary}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -1823,7 +1823,7 @@ export function BookExplorer({
                               ? "转入关联时间线"
                               : activeSourceEvidence.id === "institution-samples"
                                 ? "转入版本与馆藏线索"
-                                : "前往相关视图"}
+                                : "转入对应卷面"}
                       </button>
                     </div>
                     <div className="mt-3 grid gap-2">
@@ -1873,26 +1873,26 @@ export function BookExplorer({
                     className={`rounded-2xl border px-4 py-4 text-left transition ${
                       isActive
                         ? "border-amber-300/35 bg-amber-300/10"
-                        : "border-white/10 bg-white/5 hover:bg-white/10"
+                        : "border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] hover:bg-[rgba(255,244,214,0.12)]"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <div className="text-sm font-medium text-stone-50">{item.title}</div>
-                        <div className="mt-1 text-xs text-stone-400">
+                        <div className="text-sm font-medium text-[#fbf3da]">{item.title}</div>
+                        <div className="mt-1 text-xs text-[#cdb98d]">
                           {item.institution}
                           {item.category ? ` · ${item.category}` : ""}
                           {item.year ? ` · ${item.year}` : ""}
                         </div>
                       </div>
                       {item.imageRef ? (
-                        <div className="rounded-full bg-white/10 px-3 py-1 text-[10px] text-stone-300">
+                        <div className="rounded-full bg-[rgba(255,244,214,0.08)] px-3 py-1 text-[10px] text-[#eadfbc]">
                           {item.imageRef}
                         </div>
                       ) : null}
                     </div>
                     {item.sourceText ? (
-                      <p className="mt-2 text-sm leading-6 text-stone-300">
+                      <p className="mt-2 text-sm leading-6 text-[#eadfbc]">
                         图像出处：{item.sourceText}
                       </p>
                     ) : null}
@@ -2947,13 +2947,13 @@ export function BookExplorer({
                             onClick={() => handleOpenSourceEvidence("institution-samples")}
                             className="rounded-2xl border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
                           >
-                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                            <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
                               版本位置
                             </div>
-                            <div className="mt-2 text-base font-semibold text-stone-50">
+                            <div className="mt-2 text-base font-semibold text-[#fbf3da]">
                               {activeVersion.place}
                             </div>
-                            <div className="mt-2 text-sm text-stone-300">
+                            <div className="mt-2 text-sm text-[#eadfbc]">
                               藏馆题录：{activeVersion.library}
                             </div>
                             <div className="mt-3 text-xs text-amber-100/80">
@@ -2971,13 +2971,13 @@ export function BookExplorer({
                             }}
                             className="rounded-2xl border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
                           >
-                            <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
+                            <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
                               传承位置
                             </div>
-                            <div className="mt-2 text-base font-semibold text-stone-50">
+                            <div className="mt-2 text-base font-semibold text-[#fbf3da]">
                               {activeVersion.parentId ? "承接上一个版本" : "祖本起点"}
                             </div>
-                            <div className="mt-2 text-sm text-stone-300">
+                            <div className="mt-2 text-sm text-[#eadfbc]">
                               {activeVersion.parentId
                                 ? "这层版本位于链路中段或后段，继续承接前一层文字流传。"
                                 : "该节点作为版本流变链的起点，承担源头层标记。"}
@@ -2995,7 +2995,7 @@ export function BookExplorer({
                               <div className="mt-2 text-base font-semibold text-[#fbf3da]">
                                 {activeVersionPrimaryRecord?.title ?? activeVersion.label}
                               </div>
-                              <div className="mt-2 text-sm text-stone-300">
+                              <div className="mt-2 text-sm text-[#eadfbc]">
                                 {activeVersionArchiveSummary}
                               </div>
                             </div>
@@ -3006,8 +3006,8 @@ export function BookExplorer({
                           <div className="mt-4 grid gap-3 xl:grid-cols-[1.05fr_0.95fr]">
                             <div className="rounded-[22px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-4 py-4">
                               <div className="flex items-center justify-between gap-3">
-                                <div className="text-xs tracking-[0.2em] text-stone-400">卷面图录</div>
-                                <div className="text-[10px] text-stone-400">
+                                <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">卷面图录</div>
+                                <div className="text-[10px] text-[#cdb98d]">
                                   {activeVersionGalleryRecords.length} 条线索
                                 </div>
                               </div>
@@ -3017,7 +3017,7 @@ export function BookExplorer({
                                     key={`version-gallery-${item.institution}-${item.title}-${item.imageRef ?? item.sourceText ?? "trace"}`}
                                     type="button"
                                     onClick={() => handleSelectInstitutionRecord(item)}
-                                    className="rounded-[18px] border border-white/10 bg-[rgba(255,255,255,0.05)] px-3 py-3 text-left transition hover:bg-[rgba(255,255,255,0.08)]"
+                                    className="rounded-[18px] border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-3 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
                                   >
                                     <div className="flex h-28 items-end rounded-[14px] border border-amber-300/12 bg-[linear-gradient(180deg,rgba(245,229,188,0.16),rgba(77,51,18,0.28))] p-3">
                                       <div className="w-full">
@@ -3029,10 +3029,10 @@ export function BookExplorer({
                                         </div>
                                       </div>
                                     </div>
-                                    <div className="mt-3 text-xs text-stone-300">
+                                    <div className="mt-3 text-xs text-[#eadfbc]">
                                       {item.institution}
                                     </div>
-                                    <div className="mt-1 text-[11px] text-stone-400">
+                                    <div className="mt-1 text-[11px] text-[#cdb98d]">
                                       {item.imageRef ?? item.category ?? item.year ?? "馆藏条目"}
                                     </div>
                                   </button>
@@ -3063,7 +3063,7 @@ export function BookExplorer({
                                   disabled={!activeVersionPrimaryRecord}
                                   className={`rounded-full px-3 py-1.5 text-xs transition ${
                                     activeVersionPrimaryRecord
-                                      ? "border border-white/10 bg-white/5 text-stone-200 hover:bg-white/10"
+                                      ? "border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] text-[#fbf3da] hover:bg-[rgba(255,244,214,0.12)]"
                                       : "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
                                   }`}
                                 >
@@ -3143,7 +3143,7 @@ export function BookExplorer({
                                   <button
                                     type="button"
                                     onClick={() => setTab("passages")}
-                                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                                    className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                                   >
                                     原文证据
                                   </button>
@@ -3204,7 +3204,7 @@ export function BookExplorer({
                               <div className="text-xs tracking-[0.2em] text-amber-100/75">
                                     影像与馆藏线索
                                   </div>
-                                  <div className="mt-1 text-sm text-stone-200">
+                                  <div className="mt-1 text-sm text-[#eadfbc]">
                                   顺着这一层版本，馆藏与影像线索会继续展开。
                                   </div>
                                 </div>
@@ -3261,7 +3261,7 @@ export function BookExplorer({
                                     <button
                                       type="button"
                                       onClick={() => setTab("spread")}
-                                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
+                                      className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1.5 text-xs text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                                     >
                                       传播河势
                                     </button>
@@ -3288,7 +3288,7 @@ export function BookExplorer({
                               {activeVersion.editionType ?? "版本节点"}
                             </div>
                           </div>
-                          <div className="mt-3 grid gap-2 text-sm text-stone-300">
+                          <div className="mt-3 grid gap-2 text-sm text-[#eadfbc]">
                             <button
                               type="button"
                               onClick={() => {
@@ -3301,11 +3301,11 @@ export function BookExplorer({
 
                                 handleOpenSourceEvidence("institution-samples");
                               }}
-                              className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left transition hover:bg-white/10"
+                              className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-3 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
                             >
-                              <div className="text-xs tracking-[0.2em] text-stone-400">馆藏题录</div>
-                              <div className="mt-1 font-medium text-stone-100">{activeVersion.library}</div>
-                              <div className="mt-2 text-sm leading-6 text-stone-300">
+                              <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">馆藏题录</div>
+                              <div className="mt-1 font-medium text-[#fbf3da]">{activeVersion.library}</div>
+                              <div className="mt-2 text-sm leading-6 text-[#eadfbc]">
                                 {versionEvidenceSamples.length || institutionPreview.length
                                   ? "这一层版本最贴近的馆藏线索或影像线索会在这里显影。"
                                   : "这一层尚未挂到更细线索，机构归录里仍保留馆藏去处。"}
@@ -3324,11 +3324,11 @@ export function BookExplorer({
                                   setSelectedVersionId(rootVersion.id);
                                 }
                               }}
-                              className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left transition hover:bg-white/10"
+                              className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-3 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
                             >
-                              <div className="text-xs tracking-[0.2em] text-stone-400">存佚状态</div>
-                              <div className="mt-1 font-medium text-stone-100">{activeVersion.status}</div>
-                              <div className="mt-2 text-sm leading-6 text-stone-300">
+                              <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">存佚状态</div>
+                              <div className="mt-1 font-medium text-[#fbf3da]">{activeVersion.status}</div>
+                              <div className="mt-2 text-sm leading-6 text-[#eadfbc]">
                                 {activeVersionParent?.id
                                   ? "沿着上游承接，这层版本从何传下、如何保留都会在这里显影。"
                                   : "祖本源头会托出这条版本长链最早的留存起点。"}
@@ -3349,13 +3349,13 @@ export function BookExplorer({
 
                                 handleOpenSourceEvidence("institution-samples");
                               }}
-                              className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left transition hover:bg-white/10"
+                              className="rounded-2xl border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-3 text-left transition hover:bg-[rgba(255,244,214,0.12)]"
                             >
-                              <div className="text-xs tracking-[0.2em] text-stone-400">版本记载</div>
-                              <div className="mt-1 font-medium text-stone-100">
+                              <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">版本记载</div>
+                              <div className="mt-1 font-medium text-[#fbf3da]">
                                 {activeVersion.note ?? "这一层版本用来标记流变位置。"}
                               </div>
-                              <div className="mt-2 text-sm leading-6 text-stone-300">
+                              <div className="mt-2 text-sm leading-6 text-[#eadfbc]">
                                 {activeVersion.note
                                   ? "时间线会把这条版本记载重新落到年代与事件里。"
                                   : activeVersionChildren.length
@@ -3403,7 +3403,7 @@ export function BookExplorer({
                       成书、刊刻、注疏与现实回声正在同一条时间轨上前后相接
                     </div>
                   </div>
-                  <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
+                  <div className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-xs text-[#eadfbc]">
                     {visibleTimeline.length} 个节点
                   </div>
                 </div>
@@ -3423,14 +3423,14 @@ export function BookExplorer({
                             className={`w-52 rounded-[22px] border px-4 py-4 text-left transition ${
                               isActive
                                 ? "border-amber-300/35 bg-amber-300/10 shadow-lg shadow-amber-500/10"
-                                : "border-white/10 bg-white/5 hover:bg-white/10"
+                                : "border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] hover:bg-[rgba(255,244,214,0.12)]"
                             }`}
                           >
                             <div className="text-xs text-amber-100">{item.year}</div>
-                            <div className="mt-2 text-sm font-medium text-stone-50">
+                            <div className="mt-2 text-sm font-medium text-[#fbf3da]">
                               {item.title}
                             </div>
-                            <div className="mt-2 text-[11px] text-stone-300">
+                            <div className="mt-2 text-[11px] text-[#eadfbc]">
                               {isActive ? "正在聚焦" : "同年回声"}
                             </div>
                           </button>
@@ -3471,7 +3471,7 @@ export function BookExplorer({
                           : "最早显影的事件会在这里托起整条时间脉络。"}
                       </button>
                     </div>
-                    <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
+                    <div className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-xs text-[#eadfbc]">
                       {visibleTimeline.length} 个事件
                     </div>
                   </div>
@@ -3487,7 +3487,7 @@ export function BookExplorer({
                           className={`flex w-full gap-3 rounded-[22px] border px-4 py-4 text-left transition ${
                             isActive
                               ? "border-amber-300/35 bg-amber-300/10 shadow-lg shadow-amber-500/10"
-                              : "border-white/10 bg-white/5 hover:bg-white/10"
+                              : "border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] hover:bg-[rgba(255,244,214,0.12)]"
                           }`}
                         >
                           <div className="flex w-10 flex-col items-center pt-1">
@@ -3511,7 +3511,7 @@ export function BookExplorer({
                                 {timelineSourceMeta(item.source).label}
                               </span>
                             </div>
-                            <div className="mt-1 font-medium text-stone-50">{item.title}</div>
+                            <div className="mt-1 font-medium text-[#fbf3da]">{item.title}</div>
                           </div>
                         </button>
                       );
