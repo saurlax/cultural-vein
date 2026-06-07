@@ -1822,10 +1822,51 @@ export function BookExplorer({
                     {visibleSpread.length > 1 ? (
                       <div className="mt-4 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
                         <div className="flex items-center justify-between gap-3 text-[11px] tracking-[0.22em] text-stone-400">
-                          <span>传播阶段巡览</span>
+                          <span>传播时间轴</span>
                           <span className="text-amber-100">
                             第 {Math.max(activeSpreadIndex + 1, 1)} / {visibleSpread.length} 段
                           </span>
+                        </div>
+                        <div className="mt-3 rounded-[18px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.04)] px-3 py-3">
+                          <div className="flex items-center justify-between gap-3">
+                            <div>
+                              <div className="text-[10px] tracking-[0.2em] text-[#d8c9a3]">当前传播年代</div>
+                              <div className="mt-1 text-sm font-medium text-[#f3e6c1]">
+                                {activeSpread ? `${activeSpread.startYear} - ${activeSpread.endYear}` : "传播阶段"}
+                              </div>
+                            </div>
+                            <div className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
+                              {activeSpreadPlaces?.from?.name ?? "起点"} → {activeSpreadPlaces?.to?.name ?? "终点"}
+                            </div>
+                          </div>
+                          <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1">
+                            {visibleSpread.map((item, index) => {
+                              const isActive = activeSpread?.id === item.id;
+
+                              return (
+                                <button
+                                  key={`spread-era-chip-${item.id}`}
+                                  type="button"
+                                  onClick={() => handleSelectSpreadIndex(index)}
+                                  className={`shrink-0 rounded-full border px-3 py-1.5 text-[10px] transition ${
+                                    isActive
+                                      ? "border-amber-300/35 bg-amber-300/14 text-amber-50"
+                                      : "border-white/10 bg-white/5 text-stone-300 hover:bg-white/10"
+                                  }`}
+                                >
+                                  {item.startYear}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <div className="mt-3 h-1.5 rounded-full bg-white/10">
+                            <div
+                              className="h-full rounded-full bg-[linear-gradient(90deg,#f59e0b,#fcd34d)] transition-all duration-300"
+                              style={{
+                                width: `${visibleSpread.length <= 1 ? 100 : ((Math.max(activeSpreadIndex, 0) + 1) / visibleSpread.length) * 100}%`,
+                              }}
+                            />
+                          </div>
                         </div>
                         <input
                           type="range"
