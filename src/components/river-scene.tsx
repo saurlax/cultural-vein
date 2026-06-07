@@ -82,6 +82,9 @@ interface RiverRibbonProps {
   color: string;
   glow: string;
   animated?: boolean;
+  opacity?: number;
+  glowOpacity?: number;
+  emissiveIntensity?: number;
 }
 
 function pseudoNoise(seed: number) {
@@ -95,6 +98,9 @@ function RiverRibbon({
   color,
   glow,
   animated = false,
+  opacity = 0.85,
+  glowOpacity = 0.08,
+  emissiveIntensity = 0.45,
 }: RiverRibbonProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const curve = useMemo(() => new THREE.CatmullRomCurve3(points), [points]);
@@ -117,15 +123,15 @@ function RiverRibbon({
         <meshStandardMaterial
           color={color}
           transparent
-          opacity={0.85}
+          opacity={opacity}
           roughness={0.22}
           metalness={0.08}
           emissive={new THREE.Color(glow)}
-          emissiveIntensity={0.45}
+          emissiveIntensity={emissiveIntensity}
         />
       </mesh>
       <mesh geometry={geometry} scale={[1.02, 1.02, 1.02]}>
-        <meshBasicMaterial color={glow} transparent opacity={0.08} />
+        <meshBasicMaterial color={glow} transparent opacity={glowOpacity} />
       </mesh>
     </group>
   );
@@ -1701,6 +1707,21 @@ function RiverWorld({
       }),
     [books],
   );
+  const eraRiverMood = useMemo(() => {
+    const fullness = 0.58 + eraWarmth * 0.5;
+    const mainOpacity = 0.5 + eraWarmth * 0.3;
+    const branchOpacity = 0.22 + eraWarmth * 0.46;
+    const branchVisibility = 0.38 + eraWarmth * 0.84;
+    const glowStrength = 0.18 + eraWarmth * 0.42 + scenePulse * 0.08;
+
+    return {
+      fullness,
+      mainOpacity,
+      branchOpacity,
+      branchVisibility,
+      glowStrength,
+    };
+  }, [eraWarmth, scenePulse]);
   useEffect(() => {
     const focusPoint = traceFocus?.active || sceneFocus?.active
       ? cameraTarget.clone()
@@ -1875,17 +1896,23 @@ function RiverWorld({
         <>
           <RiverRibbon
             points={mainStream}
-            width={0.16 + mainStreamStats.averageInfluence / 420}
+            width={(0.16 + mainStreamStats.averageInfluence / 420) * eraRiverMood.fullness}
             color="#b45309"
             glow="#fbbf24"
             animated
+            opacity={eraRiverMood.mainOpacity}
+            glowOpacity={0.03 + eraWarmth * 0.09}
+            emissiveIntensity={eraRiverMood.glowStrength}
           />
           <RiverParticleStream
             points={mainStream}
             color="#fde68a"
-            density={180 + Math.round(mainStreamStats.averageInfluence * 0.9)}
-            flowSpeed={0.045 + mainStreamStats.averageVelocity * 0.18}
-            spread={0.1}
+            density={Math.max(
+              84,
+              Math.round((180 + mainStreamStats.averageInfluence * 0.9) * eraRiverMood.fullness),
+            )}
+            flowSpeed={(0.032 + mainStreamStats.averageVelocity * 0.16) * (0.82 + eraWarmth * 0.42)}
+            spread={0.12 - eraWarmth * 0.04}
           />
         </>
       ) : null}
@@ -1898,20 +1925,28 @@ function RiverWorld({
               width={
                 Math.max(
                   0.07,
-                  0.08 + branchStreamStats[index]!.averageInfluence / 520 - index * 0.012,
+                  (0.08 + branchStreamStats[index]!.averageInfluence / 520 - index * 0.012) *
+                    eraRiverMood.branchVisibility,
                 )
               }
               color={index === 0 ? "#d97706" : "#92400e"}
               glow={index === 0 ? "#fcd34d" : "#fef3c7"}
+              opacity={eraRiverMood.branchOpacity}
+              glowOpacity={0.02 + eraWarmth * 0.07}
+              emissiveIntensity={0.12 + eraWarmth * 0.34}
             />
             <RiverParticleStream
               points={stream}
               color={index === 0 ? "#fde68a" : "#fef3c7"}
-              density={Math.round(
-                (index === 0 ? 120 : 92) + branchStreamStats[index]!.averageInfluence * 0.56,
+              density={Math.max(
+                28,
+                Math.round(
+                  ((index === 0 ? 120 : 92) + branchStreamStats[index]!.averageInfluence * 0.56) *
+                    eraRiverMood.branchVisibility,
+                ),
               )}
-              flowSpeed={0.05 + branchStreamStats[index]!.averageVelocity * 0.2}
-              spread={0.09}
+              flowSpeed={(0.038 + branchStreamStats[index]!.averageVelocity * 0.18) * (0.78 + eraWarmth * 0.48)}
+              spread={0.1 - eraWarmth * 0.03}
             />
           </group>
         ) : null,
