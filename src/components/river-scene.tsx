@@ -2592,6 +2592,35 @@ export function RiverScene(props: RiverSceneProps) {
             <div className="mt-3 text-[10px] leading-5 text-[#e8d6aa]">
               {activeCruiseStory?.trunk ?? sceneHint}
             </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {props.onOpenEraPanel ? (
+                <button
+                  type="button"
+                  onClick={props.onOpenEraPanel}
+                  className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                >
+                  切时代
+                </button>
+              ) : null}
+              {props.onOpenControlPanel ? (
+                <button
+                  type="button"
+                  onClick={props.onOpenControlPanel}
+                  className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                >
+                  看来源
+                </button>
+              ) : null}
+              {props.onReturnToRiver && props.selectedBookSlug ? (
+                <button
+                  type="button"
+                  onClick={props.onReturnToRiver}
+                  className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1.5 text-[10px] text-amber-100 transition hover:bg-amber-300/15"
+                >
+                  归河
+                </button>
+              ) : null}
+            </div>
           </div>
         </div>
       ) : null}

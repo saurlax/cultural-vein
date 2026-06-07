@@ -556,9 +556,12 @@ export function CulturalVeinShell() {
       setSceneFocus(null);
       setEntryExplorerTab(null);
       setShowDesktopDossier(false);
-      setShowDesktopControls(false);
+      setShowDesktopControls(Boolean(activeSourceAtlasEntry));
       setShowMobileDossier(false);
       setShowMobileControls(false);
+      if (activeSourceAtlasEntry) {
+        setActiveDesktopPanel("branch");
+      }
       resetSelection();
     }, 120);
   };
@@ -858,7 +861,11 @@ export function CulturalVeinShell() {
     setShowMobileDossier(false);
 
     const selectedEntry = prioritizedSourceAtlasEntries.find((entry) => entry.id === entryId);
-    if (!selectedBook && selectedEntry) {
+    const applySourceEntry = () => {
+      if (!selectedEntry) {
+        return;
+      }
+
       const inferredEra = inferSourceAtlasEra(selectedEntry);
       if (inferredEra && inferredEra !== activeEra) {
         setActiveEra(inferredEra);
@@ -902,7 +909,27 @@ export function CulturalVeinShell() {
             }
           : null,
       );
+    };
+
+    if (selectedBook) {
+      setTransitionTargetSlug(selectedBook.slug);
+      setTransitionState("returning");
+      window.setTimeout(() => {
+        setTraceFocus(null);
+        setSceneFocus(null);
+        setEntryExplorerTab(null);
+        setShowDesktopDossier(false);
+        setShowMobileDossier(false);
+        setShowMobileControls(false);
+        resetSelection();
+        setActiveDesktopPanel("branch");
+        setShowDesktopControls(true);
+        applySourceEntry();
+      }, 120);
+      return;
     }
+
+    applySourceEntry();
   };
   const handleSourceAtlasStep = (direction: -1 | 1) => {
     if (!prioritizedSourceAtlasEntries.length) {
