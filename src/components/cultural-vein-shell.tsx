@@ -1450,7 +1450,7 @@ export function CulturalVeinShell() {
                               <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
                                 <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">数据覆盖图</div>
                                 <div className="mt-2 grid gap-2">
-                                  {coverageLayers.slice(0, 5).map((layer) => (
+                                  {coverageLayers.slice(0, 6).map((layer) => (
                                     <div
                                       key={`desktop-coverage-${layer.id}`}
                                       className="rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(255,248,220,0.04)] px-3 py-2"

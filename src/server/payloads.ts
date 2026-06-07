@@ -362,6 +362,13 @@ export function getInsightsPayload(): DatasetInsight {
           usage: "地理传播、时间回声与真实场景挂接",
         },
         {
+          id: "public-circulation",
+          label: "公共流通",
+          status: "已接入",
+          scope: "上图借阅流通样本",
+          usage: "现实阅读传播、馆际落点与公共借阅证据",
+        },
+        {
           id: "special-archives",
           label: "专题文献",
           status: "已接入",
