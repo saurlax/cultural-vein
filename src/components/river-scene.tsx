@@ -356,6 +356,59 @@ function ScrollMistBands() {
   );
 }
 
+function ScrollCanopy({
+  activeEra,
+  traceFocus,
+  sceneFocus,
+}: Pick<RiverSceneProps, "activeEra" | "traceFocus" | "sceneFocus">) {
+  const canopyRef = useRef<THREE.Group>(null);
+  const eraIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
+  const warmth = eraIndex / Math.max(RIVER_ERA_ORDER.length - 1, 1);
+  const focusBoost = traceFocus?.active ? 0.08 : sceneFocus?.active ? 0.05 : 0;
+  const scrollGold = warmth > 0.55 ? "#f4d389" : "#d8ab56";
+  const scrollPaper = warmth > 0.65 ? "#f7e7bf" : "#ead19a";
+  const shadowTone = warmth > 0.7 ? "#6f4718" : "#55340f";
+
+  useFrame((state) => {
+    if (!canopyRef.current) {
+      return;
+    }
+
+    canopyRef.current.children.forEach((child, index) => {
+      const mesh = child as THREE.Mesh;
+      mesh.position.y =
+        (index === 0 ? 5.4 : index === 1 ? 4.7 : 4.05) +
+        Math.sin(state.clock.elapsedTime * (0.07 + index * 0.015) + index * 0.8) * 0.08;
+      mesh.rotation.z = Math.sin(state.clock.elapsedTime * 0.05 + index * 0.45) * 0.03;
+    });
+  });
+
+  return (
+    <group ref={canopyRef}>
+      <mesh position={[3.2, 5.4, -8.2]} scale={[18.5, 6.8, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color={scrollPaper} transparent opacity={0.08 + warmth * 0.05 + focusBoost} />
+      </mesh>
+      <mesh position={[8.8, 4.7, -7.6]} scale={[14.2, 5.2, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color={scrollGold} transparent opacity={0.06 + warmth * 0.04 + focusBoost * 0.75} />
+      </mesh>
+      <mesh position={[-1.5, 4.05, -7.1]} scale={[10.6, 4.2, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color={shadowTone} transparent opacity={0.055 + warmth * 0.03 + focusBoost * 0.65} />
+      </mesh>
+      <mesh position={[3.5, 5.9, -8.8]} scale={[20.4, 0.34, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#fff3cc" transparent opacity={0.08 + warmth * 0.03} />
+      </mesh>
+      <mesh position={[3.6, 3.28, -8.55]} scale={[19.6, 0.26, 1]}>
+        <planeGeometry args={[1, 1, 1, 1]} />
+        <meshBasicMaterial color="#8b5a21" transparent opacity={0.07 + warmth * 0.03} />
+      </mesh>
+    </group>
+  );
+}
+
 function EraRiverZones({
   books,
 }: {
@@ -1716,6 +1769,7 @@ function RiverWorld({
         color={traceFocus?.active ? "#ffd27a" : "#fde68a"}
       />
 
+      <ScrollCanopy activeEra={activeEra} traceFocus={traceFocus} sceneFocus={sceneFocus} />
       <AtmosphereField activeEra={activeEra} traceFocus={traceFocus} sceneFocus={sceneFocus} />
       <ScrollMistBands />
       <RiverBed />
