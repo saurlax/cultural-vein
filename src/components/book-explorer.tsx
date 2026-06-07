@@ -3074,6 +3074,57 @@ export function BookExplorer({
           </div>
           {visibleTimeline.length > 0 ? (
             <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(79,53,18,0.82),rgba(33,21,8,0.92))] p-4">
+              <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(37,24,8,0.52)] px-4 py-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-xs tracking-[0.22em] text-[#d8c9a3]">
+                      横向时间轨
+                    </div>
+                    <div className="mt-1 text-sm text-[#eadfbc]">
+                      顺着时间向右推进，查看成书、刊刻、注疏与现实回声如何前后相接
+                    </div>
+                  </div>
+                  <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
+                    {visibleTimeline.length} 个节点
+                  </div>
+                </div>
+                <div className="mt-4 overflow-x-auto pb-2">
+                  <div className="flex min-w-max items-start gap-3">
+                    {visibleTimeline.map((item, index) => {
+                      const isActive = activeTimelineItem?.id === item.id;
+
+                      return (
+                        <div
+                          key={`timeline-ribbon-${item.id}`}
+                          className="flex items-center gap-3"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => setSelectedTimelineId(item.id)}
+                            className={`w-52 rounded-[22px] border px-4 py-4 text-left transition ${
+                              isActive
+                                ? "border-amber-300/35 bg-amber-300/10 shadow-lg shadow-amber-500/10"
+                                : "border-white/10 bg-white/5 hover:bg-white/10"
+                            }`}
+                          >
+                            <div className="text-xs text-amber-100">{item.year}</div>
+                            <div className="mt-2 text-sm font-medium text-stone-50">
+                              {item.title}
+                            </div>
+                            <div className="mt-2 text-[11px] text-stone-300">
+                              {isActive ? "当前聚焦事件" : "点此切入此年事件"}
+                            </div>
+                          </button>
+                          {index < visibleTimeline.length - 1 ? (
+                            <div className="h-px w-10 shrink-0 bg-[linear-gradient(90deg,rgba(251,191,36,0.45),rgba(255,255,255,0.08))]" />
+                          ) : null}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
               <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
                 <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(37,24,8,0.52)] px-4 py-4">
                   <div className="flex items-center justify-between gap-3">
