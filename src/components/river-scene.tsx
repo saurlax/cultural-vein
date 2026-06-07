@@ -175,6 +175,7 @@ interface RiverSceneProps {
   onSelectDock?: (dockId: string | null) => void;
   sourceAtlasLabel?: string | null;
   sourceAtlasSummary?: string | null;
+  sourceAtlasActiveRouteId?: string | null;
   riverStageBadges?: string[];
   sourceAtlasPathPoints?: Array<[number, number, number]>;
   sourceAtlasRoutes?: SourceAtlasRoute[];
@@ -2390,6 +2391,7 @@ function RiverWorld({
   onSelectDock,
   sourceAtlasLabel,
   sourceAtlasPathPoints = [],
+  sourceAtlasActiveRouteId,
   sourceAtlasRoutes = [],
   eraTransitionProgress = 1,
   onInteractionStart,
@@ -2594,6 +2596,17 @@ function RiverWorld({
         }))
         .filter((route) => route.points.length >= 2),
     [sourceAtlasRoutes],
+  );
+  const ambientSourceAtlasRouteCurves = useMemo(
+    () => sourceAtlasRouteCurves.slice(0, 4),
+    [sourceAtlasRouteCurves],
+  );
+  const activeSourceAtlasRoute = useMemo(
+    () =>
+      sourceAtlasActiveRouteId
+        ? sourceAtlasRouteCurves.find((route) => route.id === sourceAtlasActiveRouteId) ?? null
+        : null,
+    [sourceAtlasActiveRouteId, sourceAtlasRouteCurves],
   );
   const eraIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
   const eraWarmth = eraIndex / Math.max(RIVER_ERA_ORDER.length - 1, 1);
@@ -3060,24 +3073,49 @@ function RiverWorld({
       ) : null}
       {!selectedBookSlug && sourceAtlasRouteCurves.length ? (
         <group>
-          {sourceAtlasRouteCurves.map((route) => (
+          {ambientSourceAtlasRouteCurves.map((route, index) => (
             <group key={route.id}>
               <Line
                 points={route.points}
                 color={route.color}
                 transparent
-                opacity={0.2}
-                lineWidth={1.2}
+                opacity={route.id === sourceAtlasActiveRouteId ? 0.4 : 0.2}
+                lineWidth={route.id === sourceAtlasActiveRouteId ? 2.2 : 1.2}
               />
               <Line
                 points={route.points}
                 color="#fef3c7"
                 transparent
-                opacity={0.06}
-                lineWidth={3.4}
+                opacity={route.id === sourceAtlasActiveRouteId ? 0.12 : 0.06}
+                lineWidth={route.id === sourceAtlasActiveRouteId ? 4.8 : 3.4}
+              />
+              <RiverParticleStream
+                points={route.points}
+                color={route.id === sourceAtlasActiveRouteId ? "#fde68a" : route.color}
+                density={route.id === sourceAtlasActiveRouteId ? 64 : Math.max(18, 32 - index * 4)}
+                flowSpeed={0.048 + index * 0.008}
+                spread={route.id === sourceAtlasActiveRouteId ? 0.045 : 0.032}
               />
             </group>
           ))}
+        </group>
+      ) : null}
+      {!selectedBookSlug && activeSourceAtlasRoute ? (
+        <group>
+          <Line
+            points={activeSourceAtlasRoute.points}
+            color="#fff3bf"
+            transparent
+            opacity={0.16}
+            lineWidth={7.2}
+          />
+          <RiverParticleStream
+            points={activeSourceAtlasRoute.points}
+            color="#fff0b3"
+            density={92}
+            flowSpeed={0.082}
+            spread={0.04}
+          />
         </group>
       ) : null}
       <FocusCurrentAura focusPosition={selectedBookPosition} color={focusAuraColor} />

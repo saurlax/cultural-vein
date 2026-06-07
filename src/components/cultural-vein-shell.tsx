@@ -2049,6 +2049,7 @@ export function CulturalVeinShell() {
             dockMarkers={mergedDockMarkers}
             sourceAtlasLabel={!selectedBook ? activeSourceAtlasEntry?.name ?? null : null}
             sourceAtlasSummary={!selectedBook ? activeSourceAtlasEntry?.summary ?? null : null}
+            sourceAtlasActiveRouteId={!selectedBook ? activeSourceAtlasEntry?.id ?? null : null}
             riverStageBadges={!selectedBook ? riverStageBadges : []}
             sourceAtlasPathPoints={!selectedBook ? sourceAtlasPathPoints : []}
             sourceAtlasRoutes={!selectedBook ? sourceAtlasRoutes : []}
