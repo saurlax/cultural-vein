@@ -6,7 +6,7 @@ import { PersonNetwork3D } from "@/components/person-network-3d";
 import { SpreadGlobe } from "@/components/spread-globe";
 import { TraceLightField } from "@/components/trace-light-field";
 import { VersionTree } from "@/components/version-tree";
-import { buildSourceEvidence } from "@/lib/source-evidence";
+import { buildSourceEvidence, type SourceEvidenceItem } from "@/lib/source-evidence";
 import type { BookDetail, BookNode, RiverEra, VersionNode } from "@/types/domain";
 
 const tabs = [
@@ -336,6 +336,65 @@ function buildInstitutionAccessMeta(record: {
   }
 
   return null;
+}
+
+function buildSourceEvidenceAccessEntries(item: SourceEvidenceItem, detail: BookDetail) {
+  if (item.id === "cbdb-people") {
+    return [
+      {
+        id: "cbdb-ledger",
+        label: "纪传人物回查",
+        href: null,
+        note: "当前人物关系、活动地点和命中人数已经保留 CBDB 纪传线索，可据此继续回查人物传记与活动原条目。",
+      },
+    ];
+  }
+
+  if (item.id === "venue-samples") {
+    return [
+      {
+        id: "venue-ledger",
+        label: "上图场馆回查",
+        href: null,
+        note: "已保留场馆名称与活动记录数，可继续顺着上海图书馆开放数据回查具体场馆与传播现场。",
+      },
+    ];
+  }
+
+  if (item.id === "event-samples") {
+    return [
+      {
+        id: "event-ledger",
+        label: "活动事件回查",
+        href: null,
+        note: "活动标题、场馆与时间字段已经保留，足以继续顺着上海图书馆开放数据回查原始事件记录。",
+      },
+    ];
+  }
+
+  if (item.id === "institution-samples") {
+    const seen = new Set<string>();
+
+    return (detail.realWorldSignals?.institutionSamples ?? [])
+      .map((record) => buildInstitutionAccessMeta(record))
+      .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
+      .filter((entry) => {
+        const key = `${entry.label}-${entry.href ?? "local"}-${entry.note}`;
+        if (seen.has(key)) {
+          return false;
+        }
+        seen.add(key);
+        return true;
+      })
+      .map((entry, index) => ({
+        id: `institution-access-${index}`,
+        label: entry.label,
+        href: entry.href,
+        note: entry.note,
+      }));
+  }
+
+  return [];
 }
 
 export function BookExplorer({
@@ -686,6 +745,21 @@ export function BookExplorer({
     return `${sourceBadges.slice(0, -1).join("、")}与${sourceBadges[sourceBadges.length - 1]}`;
   })();
   const sourceEvidence = useMemo(() => buildSourceEvidence(detail), [detail]);
+  const sourceEvidenceAccessMap = useMemo(
+    () =>
+      Object.fromEntries(
+        sourceEvidence.map((item) => [item.id, buildSourceEvidenceAccessEntries(item, detail)]),
+      ) as Record<
+        string,
+        Array<{
+          id: string;
+          label: string;
+          href: string | null;
+          note: string;
+        }>
+      >,
+    [detail, sourceEvidence],
+  );
   const institutionRecords = useMemo(
     () => detail.realWorldSignals?.institutionSamples ?? [],
     [detail.realWorldSignals?.institutionSamples],
@@ -938,6 +1012,9 @@ export function BookExplorer({
     : null;
   const activeSourceEvidence =
     sourceEvidence.find((item) => item.id === selectedSourceEvidenceId) ?? sourceEvidence[0] ?? null;
+  const activeSourceEvidenceAccessEntries = activeSourceEvidence
+    ? sourceEvidenceAccessMap[activeSourceEvidence.id] ?? []
+    : [];
   const activeSourceEvidenceIndex = activeSourceEvidence
     ? sourceEvidence.findIndex((item) => item.id === activeSourceEvidence.id)
     : -1;
@@ -1827,6 +1904,11 @@ export function BookExplorer({
                       <span className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-[#eadfbc]">
                         {item.traceNote}
                       </span>
+                      {(sourceEvidenceAccessMap[item.id]?.length ?? 0) > 0 ? (
+                        <span className="rounded-full border border-emerald-300/18 bg-emerald-300/10 px-3 py-1 text-emerald-100">
+                          原始凭据
+                        </span>
+                      ) : null}
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
@@ -2007,6 +2089,52 @@ export function BookExplorer({
                         ))}
                       </div>
                     </div>
+                    {activeSourceEvidenceAccessEntries.length ? (
+                      <div className="mt-3 rounded-2xl border border-emerald-300/14 bg-emerald-300/8 px-4 py-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="text-xs tracking-[0.2em] text-emerald-100/80">
+                            原始凭据
+                          </div>
+                          <div className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-[10px] text-emerald-100">
+                            {activeSourceEvidenceAccessEntries.length} 条入口
+                          </div>
+                        </div>
+                        <div className="mt-3 grid gap-3">
+                          {activeSourceEvidenceAccessEntries.map((entry) => (
+                            <div
+                              key={`source-access-${activeSourceEvidence.id}-${entry.id}`}
+                              className="rounded-2xl border border-emerald-300/14 bg-[rgba(255,255,255,0.04)] px-3 py-3"
+                            >
+                              <div className="flex flex-wrap items-start justify-between gap-3">
+                                <div className="text-sm font-medium text-emerald-50">
+                                  {entry.label}
+                                </div>
+                                {entry.href ? (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (entry.href) {
+                                        window.open(entry.href, "_blank", "noopener,noreferrer");
+                                      }
+                                    }}
+                                    className="rounded-full border border-emerald-300/22 bg-emerald-300/12 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/18"
+                                  >
+                                    打开入口
+                                  </button>
+                                ) : (
+                                  <span className="rounded-full border border-[#d8b56f]/18 bg-[rgba(255,244,214,0.08)] px-3 py-1 text-[10px] text-[#eadfbc]">
+                                    保留本地线索
+                                  </span>
+                                )}
+                              </div>
+                              <div className="mt-2 text-sm leading-6 text-[#dff8ea]">
+                                {entry.note}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
