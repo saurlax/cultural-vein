@@ -2132,6 +2132,90 @@ function FocusCurrentAura({
   );
 }
 
+function CruiseCurrentAura({
+  focusPosition,
+  tailPoints,
+  color,
+}: {
+  focusPosition: THREE.Vector3 | null;
+  tailPoints: THREE.Vector3[];
+  color: string;
+}) {
+  const ringRef = useRef<THREE.Mesh>(null);
+  const glowRef = useRef<THREE.Mesh>(null);
+
+  useFrame((state) => {
+    const primaryPulse = 1 + Math.sin(state.clock.elapsedTime * 1.45) * 0.1;
+    const secondaryPulse = 1 + Math.sin(state.clock.elapsedTime * 1.1 + 0.5) * 0.14;
+
+    if (ringRef.current) {
+      ringRef.current.scale.set(primaryPulse, primaryPulse, primaryPulse);
+      const material = ringRef.current.material;
+      if (material instanceof THREE.MeshBasicMaterial) {
+        material.opacity = 0.16 + Math.max(0, Math.sin(state.clock.elapsedTime * 1.45)) * 0.12;
+      }
+    }
+
+    if (glowRef.current) {
+      glowRef.current.scale.set(secondaryPulse, secondaryPulse, secondaryPulse);
+      const material = glowRef.current.material;
+      if (material instanceof THREE.MeshBasicMaterial) {
+        material.opacity = 0.08 + Math.max(0, Math.sin(state.clock.elapsedTime * 1.1 + 0.5)) * 0.08;
+      }
+    }
+  });
+
+  if (!focusPosition) {
+    return null;
+  }
+
+  return (
+    <group>
+      {tailPoints.length >= 2 ? (
+        <group>
+          <Line
+            points={tailPoints}
+            color={color}
+            transparent
+            opacity={0.42}
+            lineWidth={5.8}
+          />
+          <Line
+            points={tailPoints}
+            color="#fff4c7"
+            transparent
+            opacity={0.16}
+            lineWidth={10.2}
+          />
+          <RiverParticleStream
+            points={tailPoints}
+            color="#fde68a"
+            density={54}
+            flowSpeed={0.18}
+            spread={0.035}
+          />
+        </group>
+      ) : null}
+      <mesh
+        ref={glowRef}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[focusPosition.x, focusPosition.y - 0.08, focusPosition.z]}
+      >
+        <circleGeometry args={[0.82, 40]} />
+        <meshBasicMaterial color={color} transparent opacity={0.1} />
+      </mesh>
+      <mesh
+        ref={ringRef}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[focusPosition.x, focusPosition.y - 0.05, focusPosition.z]}
+      >
+        <ringGeometry args={[0.46, 0.8, 48]} />
+        <meshBasicMaterial color="#fff4c7" transparent opacity={0.18} />
+      </mesh>
+    </group>
+  );
+}
+
 function BranchMarkers({
   annotations,
   selectedBookSlug,
@@ -2494,6 +2578,30 @@ function RiverWorld({
       .sort((left, right) => left.year - right.year)
       .map((book) => new THREE.Vector3(...book.coordinates));
   }, [books, highlightedBookSlugs]);
+  const cruiseTailPoints = useMemo(() => {
+    if (!mainStreamCurve) {
+      return [];
+    }
+
+    const center = THREE.MathUtils.clamp(cruiseProgress, 0.06, 0.98);
+    const steps = [-0.16, -0.11, -0.065, -0.025, 0];
+
+    return steps.map((offset) =>
+      mainStreamCurve.getPointAt(THREE.MathUtils.clamp(center + offset, 0.001, 0.999)),
+    );
+  }, [cruiseProgress, mainStreamCurve]);
+  const cruiseFocusPosition = useMemo(() => {
+    if (!cruiseSnapshot) {
+      return null;
+    }
+
+    return cruiseSnapshot.point.clone();
+  }, [cruiseSnapshot]);
+  const cruiseVisualRunning =
+    viewMode === "river" &&
+    !traceFocus?.active &&
+    !sceneFocus?.active &&
+    !searchFocusSlug;
   const openingSpotlightSlugs = useMemo(
     () =>
       books
@@ -2966,6 +3074,17 @@ function RiverWorld({
         traceFocus={traceFocus}
         sceneFocus={sceneFocus}
       />
+      {!selectedBookSlug &&
+      !traceFocus?.active &&
+      !sceneFocus?.active &&
+      cruiseVisualRunning &&
+      !searchFocusSlug ? (
+        <CruiseCurrentAura
+          focusPosition={cruiseFocusPosition}
+          tailPoints={cruiseTailPoints}
+          color="#fcd34d"
+        />
+      ) : null}
       {!selectedBookSlug &&
       !traceFocus?.active &&
       !sceneFocus?.active &&
