@@ -1126,7 +1126,9 @@ export function CulturalVeinShell() {
         </div>
 
         <div className="pointer-events-none absolute right-4 top-1/2 z-30 hidden -translate-y-1/2 md:block lg:right-5">
-          <div className="pointer-events-auto flex flex-col items-center gap-2 rounded-[28px] border border-[#e3c47a]/22 bg-[linear-gradient(180deg,rgba(164,121,47,0.68),rgba(91,60,20,0.62))] px-2 py-3 shadow-[0_16px_40px_rgba(61,34,8,0.18)] backdrop-blur-xl">
+          <div className="pointer-events-auto relative flex flex-col items-center gap-1.5 rounded-[30px] border border-[#e3c47a]/18 bg-[linear-gradient(180deg,rgba(170,126,51,0.8),rgba(95,64,23,0.74))] px-1.5 py-2 shadow-[0_12px_32px_rgba(61,34,8,0.12)] backdrop-blur-xl">
+            <div className="pointer-events-none absolute inset-y-3 left-1 w-[3px] rounded-full bg-[linear-gradient(180deg,rgba(253,239,191,0.9),rgba(213,166,70,0.46),rgba(253,239,191,0.82))]" />
+            <div className="pointer-events-none absolute inset-y-3 right-1 w-[3px] rounded-full bg-[linear-gradient(180deg,rgba(253,239,191,0.82),rgba(189,133,40,0.44),rgba(253,239,191,0.74))]" />
             <button
               type="button"
               onClick={() => {
@@ -1135,10 +1137,10 @@ export function CulturalVeinShell() {
                 setShowDesktopDossier(false);
                 setShowDesktopControls((current) => !current);
               }}
-              className={`min-w-[3.6rem] rounded-full border px-3 py-2 text-[11px] transition ${
+              className={`min-w-[3.15rem] rounded-full border px-2.5 py-1.5 text-[10px] tracking-[0.18em] transition ${
                 showDesktopControls
                   ? "border-[#f5dfab]/40 bg-[#f3dfab] text-[#42290a]"
-                  : "border-[#ead8a6]/20 bg-[rgba(255,248,220,0.06)] text-[#f5ebc8]"
+                  : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#f5ebc8]"
               }`}
             >
               河册
@@ -1152,7 +1154,7 @@ export function CulturalVeinShell() {
                 setShowMobileControls(false);
                 setShowMobileDossier(false);
               }}
-              className="min-w-[3.6rem] rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-[11px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+              className="min-w-[3.15rem] rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.04)] px-2.5 py-1.5 text-[10px] tracking-[0.18em] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
             >
               时代
             </button>
@@ -1165,7 +1167,7 @@ export function CulturalVeinShell() {
                 setShowMobileControls(false);
                 setShowMobileDossier(false);
               }}
-              className="min-w-[3.6rem] rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-[11px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+              className="min-w-[3.15rem] rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.04)] px-2.5 py-1.5 text-[10px] tracking-[0.18em] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
             >
               寻章
             </button>
@@ -1176,10 +1178,10 @@ export function CulturalVeinShell() {
                   setShowDesktopControls(false);
                   setShowDesktopDossier((current) => !current);
                 }}
-                className={`min-w-[3.6rem] rounded-full border px-3 py-2 text-[11px] transition ${
+                className={`min-w-[3.15rem] rounded-full border px-2.5 py-1.5 text-[10px] tracking-[0.18em] transition ${
                   showDesktopDossier
                     ? "border-[#f5dfab]/40 bg-[#f3dfab] text-[#42290a]"
-                    : "border-[#ead8a6]/20 bg-[rgba(255,248,220,0.06)] text-[#f5ebc8]"
+                    : "border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#f5ebc8]"
                 }`}
               >
                 文卷
@@ -1189,32 +1191,34 @@ export function CulturalVeinShell() {
         </div>
 
         {showDesktopControls ? (
-          <div className="absolute right-[4.8rem] top-1/2 z-20 hidden w-[204px] -translate-y-1/2 md:block lg:right-[5.2rem] lg:w-[212px]">
+          <div className="absolute right-[4.15rem] top-1/2 z-20 hidden w-[196px] -translate-y-1/2 md:block lg:right-[4.55rem] lg:w-[204px]">
             <aside className="pointer-events-auto xl:pt-2">
-              <div className={`p-4 ${panelBaseClass}`}>
+              <div className={`relative overflow-hidden p-3.5 ${panelBaseClass}`}>
+              <div className="pointer-events-none absolute inset-y-5 left-2 w-px bg-[linear-gradient(180deg,transparent,rgba(244,220,156,0.42),transparent)]" />
+              <div className="pointer-events-none absolute inset-y-5 right-2 w-px bg-[linear-gradient(180deg,transparent,rgba(213,167,70,0.34),transparent)]" />
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-[10px] tracking-[0.28em] text-[#d8c9a3]">卷边题签</div>
-                  <div className="mt-1 text-sm font-medium text-[#fbf3da]">
+                  <div className="text-[10px] tracking-[0.24em] text-[#d8c9a3]">卷边题签</div>
+                  <div className="mt-1 text-[13px] font-medium text-[#fbf3da]">
                     {activeDesktopPanelConfig.label}
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowDesktopControls(false)}
-                  className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-1.5 text-[10px] text-[#eadfbc]"
+                  className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#eadfbc]"
                 >
-                  收起
+                  合卷
                 </button>
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-3 flex flex-wrap gap-1.5">
                 {desktopPanels.map((panel) => (
                   <button
                     key={panel.id}
                     type="button"
                     onClick={() => setActiveDesktopPanel(panel.id)}
-                    className={`rounded-full px-3 py-1.5 text-[11px] transition ${
+                    className={`rounded-full px-2.5 py-1 text-[10px] transition ${
                       activeDesktopPanel === panel.id
                         ? "bg-[#f3dfab] text-[#42290a]"
                         : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
@@ -1225,7 +1229,7 @@ export function CulturalVeinShell() {
                 ))}
               </div>
 
-              <section className={`mt-4 rounded-[24px] border border-[#ead8a6]/16 bg-[rgba(62,40,11,0.2)] px-4 py-4 transition-all duration-500 ease-out ${showDesktopControls ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}>
+              <section className={`mt-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(62,40,11,0.18)] px-3 py-3 transition-all duration-500 ease-out ${showDesktopControls ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-[10px] tracking-[0.22em] text-[#d8c9a3]">
