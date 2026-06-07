@@ -405,6 +405,13 @@ export function BookExplorer({
     visibleSpread.find((item) => item.id === resolvedSpreadId) ?? visibleSpread[0];
   const activeVersion =
     visibleVersions.find((item) => item.id === resolvedVersionId) ?? visibleVersions[0];
+  const orderedVisibleVersions = useMemo(
+    () => [...visibleVersions].sort((left, right) => left.year - right.year),
+    [visibleVersions],
+  );
+  const activeVersionSequenceIndex = activeVersion
+    ? orderedVisibleVersions.findIndex((version) => version.id === activeVersion.id)
+    : -1;
   const activeTimelineItem =
     visibleTimeline.find((item) => item.id === resolvedTimelineId) ?? visibleTimeline[0];
   const activeTimelineIndex = activeTimelineItem
@@ -877,6 +884,12 @@ export function BookExplorer({
         .filter((version) => version.parentId === activeVersion.id)
         .sort((left, right) => left.year - right.year)
     : [];
+  const activeVersionSequenceWindow = activeVersion
+    ? orderedVisibleVersions.slice(
+        Math.max(0, activeVersionSequenceIndex - 1),
+        Math.min(orderedVisibleVersions.length, activeVersionSequenceIndex + 2),
+      )
+    : orderedVisibleVersions.slice(0, 3);
   const activeVersionTrail = activeVersion
     ? (() => {
         const trail: VersionNode[] = [];
@@ -2781,6 +2794,85 @@ export function BookExplorer({
                             {activeVersion.note}
                           </p>
                         ) : null}
+                        <div className="mt-4 rounded-2xl border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-4 py-4">
+                          <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                              <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">版本卷轴</div>
+                              <div className="mt-1 text-sm text-[#eadfbc]">
+                                第 {Math.max(activeVersionSequenceIndex + 1, 1)} / {Math.max(orderedVisibleVersions.length, 1)} 层
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const previousVersion = orderedVisibleVersions[activeVersionSequenceIndex - 1];
+                                  if (previousVersion?.id) {
+                                    setSelectedVersionId(previousVersion.id);
+                                  }
+                                }}
+                                disabled={activeVersionSequenceIndex <= 0}
+                                className={`rounded-full px-3 py-1.5 text-xs transition ${
+                                  activeVersionSequenceIndex <= 0
+                                    ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                                    : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                                }`}
+                              >
+                                前一版
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const nextVersion = orderedVisibleVersions[activeVersionSequenceIndex + 1];
+                                  if (nextVersion?.id) {
+                                    setSelectedVersionId(nextVersion.id);
+                                  }
+                                }}
+                                disabled={activeVersionSequenceIndex >= orderedVisibleVersions.length - 1}
+                                className={`rounded-full px-3 py-1.5 text-xs transition ${
+                                  activeVersionSequenceIndex >= orderedVisibleVersions.length - 1
+                                    ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                                    : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                                }`}
+                              >
+                                后一版
+                              </button>
+                            </div>
+                          </div>
+                          {activeVersionSequenceWindow.length > 1 ? (
+                            <div className="mt-4 grid gap-3 md:grid-cols-3">
+                              {activeVersionSequenceWindow.map((version) => {
+                                const isActive = version.id === activeVersion.id;
+
+                                return (
+                                  <button
+                                    key={`version-window-${version.id}`}
+                                    type="button"
+                                    onClick={() => setSelectedVersionId(version.id)}
+                                    className={`rounded-[18px] border px-3 py-3 text-left transition ${
+                                      isActive
+                                        ? "border-amber-300/30 bg-amber-300/10"
+                                        : "border-white/10 bg-white/5 hover:bg-white/10"
+                                    }`}
+                                  >
+                                    <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">
+                                      {isActive ? "当前版本" : "相邻版本"}
+                                    </div>
+                                    <div className="mt-2 text-sm font-medium text-[#fbf3da]">
+                                      {version.label}
+                                    </div>
+                                    <div className="mt-2 text-[11px] text-stone-300">
+                                      {version.year} · {version.place}
+                                    </div>
+                                    <div className="mt-2 text-[11px] leading-5 text-[#d8c9a3]">
+                                      {version.library}
+                                    </div>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ) : null}
+                        </div>
                         {activeVersionStatusMeta ? (
                           <div className="mt-4 rounded-2xl border border-slate-300/10 bg-slate-300/5 px-4 py-4">
                             <div className="flex flex-wrap items-center gap-2">
