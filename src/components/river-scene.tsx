@@ -1290,6 +1290,129 @@ function EraMilestones({
   );
 }
 
+function EraCurrentWash({
+  books,
+  activeEra,
+  eraTransitionProgress = 1,
+}: {
+  books: BookNode[];
+  activeEra: RiverEra;
+  eraTransitionProgress?: number;
+}) {
+  const washRef = useRef<THREE.Group>(null);
+  const activeBooks = useMemo(
+    () =>
+      books
+        .filter((book) => book.dynasty === activeEra && book.branchLevel === 0)
+        .sort((left, right) => left.year - right.year),
+    [activeEra, books],
+  );
+  const washPosition = useMemo(() => {
+    if (!activeBooks.length) {
+      return null;
+    }
+
+    const totals = activeBooks.reduce(
+      (accumulator, book) => {
+        accumulator.x += book.coordinates[0];
+        accumulator.y += book.coordinates[1];
+        accumulator.z += book.coordinates[2];
+        return accumulator;
+      },
+      { x: 0, y: 0, z: 0 },
+    );
+    const count = Math.max(activeBooks.length, 1);
+
+    return new THREE.Vector3(
+      totals.x / count,
+      totals.y / count - 0.12,
+      totals.z / count,
+    );
+  }, [activeBooks]);
+  const washScale = useMemo(() => {
+    if (!activeBooks.length) {
+      return null;
+    }
+
+    const xValues = activeBooks.map((book) => book.coordinates[0]);
+    const zValues = activeBooks.map((book) => book.coordinates[2]);
+    const width = Math.max(...xValues) - Math.min(...xValues);
+    const depth = Math.max(...zValues) - Math.min(...zValues);
+
+    return {
+      x: Math.max(2.8, width * 1.18 + 1.6),
+      z: Math.max(2.2, depth * 1.5 + 2.1),
+    };
+  }, [activeBooks]);
+  const washFlowPoints = useMemo(
+    () => activeBooks.map((book) => new THREE.Vector3(...book.coordinates)),
+    [activeBooks],
+  );
+
+  useFrame((state) => {
+    if (!washRef.current || !washPosition) {
+      return;
+    }
+
+    washRef.current.position.y =
+      washPosition.y + Math.sin(state.clock.elapsedTime * 0.34) * 0.03;
+    washRef.current.children.forEach((child, index) => {
+      const mesh = child as THREE.Mesh;
+      const material = mesh.material;
+
+      if (material instanceof THREE.MeshBasicMaterial) {
+        material.opacity =
+          (index === 0 ? 0.1 : 0.07) * (0.45 + eraTransitionProgress * 0.55) +
+          Math.max(0, Math.sin(state.clock.elapsedTime * (0.72 + index * 0.18))) * 0.06;
+      }
+    });
+  });
+
+  if (!washPosition || !washScale) {
+    return null;
+  }
+
+  return (
+    <group>
+      <group ref={washRef} position={[washPosition.x, washPosition.y, washPosition.z]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} scale={[washScale.x, 1, washScale.z]}>
+          <planeGeometry args={[1, 1, 1, 1]} />
+          <meshBasicMaterial color="#f6cf71" transparent opacity={0.1} />
+        </mesh>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.018, 0]} scale={[washScale.x * 0.72, 1, washScale.z * 0.62]}>
+          <planeGeometry args={[1, 1, 1, 1]} />
+          <meshBasicMaterial color="#fff0c2" transparent opacity={0.07} />
+        </mesh>
+      </group>
+      {washFlowPoints.length >= 2 ? (
+        <group>
+          <Line
+            points={washFlowPoints}
+            color="#fde68a"
+            transparent
+            opacity={0.38 + eraTransitionProgress * 0.24}
+            lineWidth={4.6}
+          />
+          <Line
+            points={washFlowPoints}
+            color="#fff4c7"
+            transparent
+            opacity={0.12 + eraTransitionProgress * 0.1}
+            lineWidth={9.2}
+          />
+          <RiverParticleStream
+            points={washFlowPoints}
+            color="#fff0b8"
+            density={72}
+            flowSpeed={0.08 + eraTransitionProgress * 0.05}
+            spread={0.045}
+          />
+        </group>
+      ) : null}
+    </group>
+  );
+}
+
 function BackgroundBranchField({
   books,
   activeEra,
@@ -3040,6 +3163,11 @@ function RiverWorld({
         books={books}
         activeEra={activeEra}
         spotlightSlugs={!selectedBookSlug && !traceFocus?.active && !sceneFocus?.active ? openingSpotlightSlugs : []}
+      />
+      <EraCurrentWash
+        books={books}
+        activeEra={activeEra}
+        eraTransitionProgress={eraTransitionProgress}
       />
       <EraMilestones books={books} activeEra={activeEra} />
       {tracePathPoints.length >= 2 ? (
