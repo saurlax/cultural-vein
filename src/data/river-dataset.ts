@@ -5961,6 +5961,32 @@ if (fudanArchiveSample.available) {
         "复旦大学图书馆馆藏资料已映入这段河面。",
     };
   }
+
+  const genealogySamples = (fudanArchiveSample.sampleRecords ?? []).slice(0, 1).map((record) => ({
+    ...record,
+    category: "家学 / 递藏 / 地方书楼",
+  }));
+  const genealogySummary =
+    "复旦馆藏中的周氏族裔、来雨楼递藏与地方藏书线索，已经把家学、家礼与家族传播正式挂进这段河面。";
+
+  for (const slug of ["xiaojing", "liji", "daxue"] as const) {
+    const detail = details[slug];
+    detail.realWorldSignals = {
+      ...detail.realWorldSignals,
+      sourceLabel: appendSourceLabel(
+        detail.realWorldSignals?.sourceLabel,
+        "家谱文献线索",
+      ),
+      institutionSamples: [
+        ...(detail.realWorldSignals?.institutionSamples ?? []),
+        ...genealogySamples,
+      ],
+      venueSummary:
+        detail.realWorldSignals?.venueSummary
+          ? `${detail.realWorldSignals.venueSummary} 复旦馆藏中的家学与族裔递藏线索，也已把家族传播支流接入当前河段。`
+          : genealogySummary,
+    };
+  }
 }
 
 if (nanhuArchiveSample.available) {

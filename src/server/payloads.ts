@@ -356,6 +356,30 @@ export function getInsightsPayload(): DatasetInsight {
             })),
         }
       : null,
+    realSupplements.fudanArchiveSample?.available
+      ? {
+          id: "genealogy-archive",
+          name: "家谱文献",
+          summary:
+            "以上海地方藏书与族裔递藏线索为引，把家学、藏书楼与家礼传播牵成一股可回查的家族支流。",
+          stat: "家族传播线索已显河面",
+          magnitude: realSupplements.fudanArchiveSample.sampleRecords?.length ?? 0,
+          evidenceLabel: "族裔递藏与家学线索",
+          evidenceNote:
+            "依据复旦馆藏摘要中的周氏族裔、藏书递藏与地方书楼叙述，当前已把家族传播落点挂入《孝经》《礼记》《大学》等河段。",
+          sampleTitles: (realSupplements.fudanArchiveSample.sampleRecords ?? [])
+            .slice(0, 3)
+            .map((item) => item.title),
+          sampleRecords: (realSupplements.fudanArchiveSample.sampleRecords ?? [])
+            .slice(0, 3)
+            .map((item) => ({
+              title: item.title,
+              category: "家学 / 递藏 / 地方藏书",
+              year: item.year,
+              note: item.sourceText,
+            })),
+        }
+      : null,
     realSupplements.nanhuArchiveSample?.available
       ? {
           id: "nanhu-archive",
@@ -611,9 +635,9 @@ export function getInsightsPayload(): DatasetInsight {
         {
           id: "genealogy",
           label: "家谱文献",
-          status: "正在铺开",
+          status: "已显河面",
           scope: "家礼、家学与家族传播落点",
-          usage: "已在《孝经》等河段预留家族传播叙事脉络，可继续挂接家谱资料。",
+          usage: "已由复旦馆藏中的族裔递藏与地方书楼线索接入《孝经》《礼记》《大学》等河段，形成可回查的家族传播支流。",
         },
         {
           id: "red-archives",
