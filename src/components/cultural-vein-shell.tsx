@@ -1130,6 +1130,12 @@ export function CulturalVeinShell() {
         : transitionState === "returning"
           ? "文卷正沿水势缓缓归回主河道"
           : null;
+  const openingLead =
+    activeEra === "先秦"
+      ? "从经典源头起笔，沿河看见文脉如何生长。"
+      : activeEra === "宋元"
+        ? "此处正是支流奔涌最盛的一段河身。"
+        : "顺着黄河长卷巡看主河、支流与时代起伏。";
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#e2c372] text-stone-100">
@@ -1182,14 +1188,17 @@ export function CulturalVeinShell() {
       <div className="relative z-10 min-h-screen">
         <div className="pointer-events-none absolute inset-x-0 top-0 z-30 hidden px-4 py-3 md:block sm:px-6 lg:px-8">
           <div
-            className={`pointer-events-auto inline-flex max-w-[min(28rem,calc(100vw-10rem))] items-center gap-3 rounded-full border border-[#e7c97b]/26 bg-[linear-gradient(180deg,rgba(116,77,24,0.72),rgba(78,50,16,0.68))] px-3 py-2 shadow-[0_10px_28px_rgba(61,34,8,0.1)] backdrop-blur-xl`}
+            className={`pointer-events-auto inline-flex max-w-[min(31rem,calc(100vw-10rem))] items-center gap-3 rounded-full border border-[#e7c97b]/26 bg-[linear-gradient(180deg,rgba(116,77,24,0.6),rgba(78,50,16,0.56))] px-3 py-2 shadow-[0_10px_28px_rgba(61,34,8,0.1)] backdrop-blur-xl`}
           >
             <div>
               <div className="text-[9px] tracking-[0.28em] text-[#f2dfab]/70">黄河长卷</div>
               <h1 className="mt-0.5 text-[1rem] font-semibold text-[#fff4d6]">文脉溯源</h1>
             </div>
             <div className="h-6 w-px bg-[#c99d4f]/28" />
-            <div className="min-w-0 text-[10px] leading-5 text-[#f6e8bd] line-clamp-1">{landingNarrative}</div>
+            <div className="min-w-0">
+              <div className="text-[10px] leading-5 text-[#fff0c7] line-clamp-1">{openingLead}</div>
+              <div className="text-[9px] leading-4 text-[#f6e8bd]/80 line-clamp-1">{landingNarrative}</div>
+            </div>
           </div>
         </div>
 

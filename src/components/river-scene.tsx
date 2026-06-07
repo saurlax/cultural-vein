@@ -2677,6 +2677,7 @@ export function RiverScene(props: RiverSceneProps) {
   const [isInteracting, setIsInteracting] = useState(false);
   const [showMobileTouchHint, setShowMobileTouchHint] = useState(true);
   const [eraTransitionProgress, setEraTransitionProgress] = useState(1);
+  const [openingSweep, setOpeningSweep] = useState(true);
   const previousEraRef = useRef<RiverEra>(props.activeEra);
   const canCruise =
     props.viewMode === "river" &&
@@ -2761,6 +2762,7 @@ export function RiverScene(props: RiverSceneProps) {
     null;
   const activeCruiseStory =
     activeCruiseMoment?.era ? RIVER_ERA_STORIES[activeCruiseMoment.era] : null;
+  const openingLabel = openingSweep ? "飞越文脉" : null;
   const sceneHint = props.traceFocus?.active
     ? `逆流正经过 ${props.traceFocus.currentTitle ?? "此处节点"}。`
     : props.sceneFocus?.active
@@ -2781,6 +2783,8 @@ export function RiverScene(props: RiverSceneProps) {
           ? `${hoveredBranch.label} 正在显现。`
           : props.selectedBookSlug
             ? "典籍已经停驻岸边。"
+            : openingSweep
+              ? "镜头正沿黄河长卷掠过主河与支流，稍后便会落稳在可巡看的河面上。"
             : cruiseRunning
               ? "长河正自上游缓缓展开，先看支流落点，再顺势入卷。"
               : "拖动长河巡看文脉起伏，顺着来源支流择书入卷。";
@@ -2824,6 +2828,14 @@ export function RiverScene(props: RiverSceneProps) {
 
     return () => window.clearTimeout(timer);
   }, [showMobileTouchHint]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setOpeningSweep(false);
+    }, 4200);
+
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (!cruiseRunning) {
@@ -2882,10 +2894,10 @@ export function RiverScene(props: RiverSceneProps) {
           <div className="pointer-events-none rounded-[24px] border border-[#e7c97b]/10 bg-[linear-gradient(180deg,rgba(190,145,57,0.18),rgba(121,82,29,0.12))] px-3 py-3 text-[#f1e2bb] shadow-[0_14px_34px_rgba(35,20,6,0.06)] backdrop-blur-md">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0 truncate text-[10px] tracking-[0.18em] text-[#fbf3da]">
-                {activeCruiseMoment ? activeCruiseMoment.label : "上游入画"}
+                {openingLabel ?? (activeCruiseMoment ? activeCruiseMoment.label : "上游入画")}
               </div>
               <div className="rounded-full border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#eadfbc]">
-                {cruiseRunning ? "巡河中" : "停驻中"}
+                {openingSweep ? "开场中" : cruiseRunning ? "巡河中" : "停驻中"}
               </div>
             </div>
             <div className="mt-2.5 h-1 overflow-hidden rounded-full bg-white/10">
