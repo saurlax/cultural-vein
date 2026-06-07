@@ -23,7 +23,7 @@ interface CulturalVeinState {
 export const useCulturalVeinStore = create<CulturalVeinState>((set) => ({
   activeEra: "宋元",
   searchTerm: "",
-  selectedBookSlug: "sishu-zhangju",
+  selectedBookSlug: "",
   categoryFilter: "全部",
   schoolFilter: "全部",
   viewMode: "river",
@@ -34,5 +34,5 @@ export const useCulturalVeinStore = create<CulturalVeinState>((set) => ({
   setCategoryFilter: (categoryFilter) => set({ categoryFilter }),
   setSchoolFilter: (schoolFilter) => set({ schoolFilter }),
   setViewMode: (viewMode) => set({ viewMode }),
-  resetSelection: () => set({ viewMode: "river" }),
+  resetSelection: () => set({ selectedBookSlug: "", viewMode: "river" }),
 }));

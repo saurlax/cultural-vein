@@ -2420,11 +2420,11 @@ export function RiverScene(props: RiverSceneProps) {
     <div
       ref={containerRef}
       onContextMenu={(event) => event.preventDefault()}
-      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#dfb55f]/60 bg-[#8b5a21] shadow-[0_0_110px_rgba(77,45,13,0.4)] [touch-action:none]"
+      className="relative h-full min-h-screen select-none overflow-hidden rounded-[32px] border border-[#dfb55f]/60 bg-[#b77b2f] shadow-[0_0_110px_rgba(77,45,13,0.28)] [touch-action:none]"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-36 bg-[linear-gradient(180deg,rgba(247,226,166,0.34),rgba(165,112,39,0))]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-44 bg-[linear-gradient(0deg,rgba(104,62,18,0.68),rgba(104,62,18,0))]" />
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_46%,rgba(244,210,133,0.12),transparent_40%),linear-gradient(90deg,rgba(241,214,152,0.06),transparent_18%,transparent_82%,rgba(241,214,152,0.06))]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-36 bg-[linear-gradient(180deg,rgba(252,239,191,0.42),rgba(195,138,53,0))]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-44 bg-[linear-gradient(0deg,rgba(145,94,28,0.46),rgba(145,94,28,0))]" />
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_46%,rgba(250,228,157,0.18),transparent_42%),linear-gradient(90deg,rgba(247,223,154,0.08),transparent_18%,transparent_82%,rgba(247,223,154,0.08))]" />
       <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#efd38f]/34 bg-[rgba(132,88,27,0.34)] px-4 py-2 text-[10px] text-[#fff3d0] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
         <span className="tracking-[0.28em] text-[#fff0c2]">黄河文脉长卷</span>
         <span className="hidden h-3 w-px bg-[#ead8a6]/24 sm:block" />
@@ -2445,17 +2445,17 @@ export function RiverScene(props: RiverSceneProps) {
           showMobileTouchHint || isInteracting ? "opacity-100" : "opacity-0"
         }`}
       >
-        <div className="rounded-full border border-[#e7c97b]/18 bg-[rgba(106,72,24,0.48)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
+        <div className="rounded-full border border-[#e7c97b]/18 bg-[rgba(132,92,31,0.42)] px-3 py-1.5 text-[10px] text-[#f6e8bd] backdrop-blur-md">
           {isInteracting ? "正在拖移长河" : touchModeLabel}
         </div>
       </div>
       {canCruise ? (
         <div
-          className={`absolute bottom-5 left-5 z-20 hidden w-[min(220px,calc(100vw-2.5rem))] transition-opacity duration-300 xl:block ${
-            mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
-          }`}
-        >
-          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/16 bg-[linear-gradient(180deg,rgba(145,104,38,0.64),rgba(88,57,18,0.58))] px-3 py-3 text-[#f1e2bb] shadow-xl shadow-black/10 backdrop-blur-md">
+        className={`absolute bottom-5 left-5 z-20 hidden w-[min(220px,calc(100vw-2.5rem))] transition-opacity duration-300 xl:block ${
+          mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
+        }`}
+      >
+          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/16 bg-[linear-gradient(180deg,rgba(179,132,53,0.62),rgba(112,75,24,0.54))] px-3 py-3 text-[#f1e2bb] shadow-xl shadow-black/10 backdrop-blur-md">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-[10px] tracking-[0.24em] text-[#e5d1a1]">河势卷签</div>
