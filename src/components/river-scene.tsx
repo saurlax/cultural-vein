@@ -1955,12 +1955,50 @@ export function RiverScene(props: RiverSceneProps) {
   const hoveredBranch = props.branchAnnotations?.find(
     (annotation) => annotation.id === props.hoveredBranchId,
   ) ?? null;
+  const cruiseAnchorMoments = useMemo(() => {
+    const bookAnchors = props.books
+      .filter((book) => book.branchLevel === 0)
+      .sort((left, right) => left.year - right.year)
+      .map((book, index, orderedBooks) => ({
+        id: `book-${book.slug}`,
+        progress:
+          orderedBooks.length <= 1 ? 0.1 : 0.08 + (index / (orderedBooks.length - 1)) * 0.84,
+        label: book.shortTitle,
+        detail: `${book.shortTitle} 正浮出主河道，可顺势入卷查看这一段文脉主干。`,
+        emphasis: 1,
+      }));
+    const branchAnchors = (props.branchAnnotations ?? [])
+      .map((annotation) => ({
+        id: `branch-${annotation.id}`,
+        progress: THREE.MathUtils.clamp((annotation.position[0] + 6.8) / 16.8, 0.08, 0.92),
+        label: annotation.label,
+        detail: `${annotation.label} 已临近镜头，${annotation.description}`,
+        emphasis: 0.72,
+      }))
+      .sort((left, right) => left.progress - right.progress);
+
+    return [...bookAnchors, ...branchAnchors]
+      .sort((left, right) => left.progress - right.progress)
+      .filter((anchor, index, anchors) => {
+        if (index === 0) {
+          return true;
+        }
+
+        return Math.abs(anchor.progress - anchors[index - 1]!.progress) > 0.045;
+      })
+      .slice(0, 10);
+  }, [props.books, props.branchAnnotations]);
+  const activeCruiseMoment =
+    cruiseAnchorMoments.find((anchor) => Math.abs(anchor.progress - cruiseProgress) <= 0.045) ??
+    null;
   const sceneHint = props.traceFocus?.active
     ? `逆流正经过 ${props.traceFocus.currentTitle ?? "此处节点"}，沿链回看文脉源头。`
     : props.sceneFocus?.active
       ? props.sceneFocus.detail
       : isInteracting
         ? "长河正在掌中转景，松手后可继续点选典籍与码头。"
+      : activeCruiseMoment
+        ? activeCruiseMoment.detail
       : hoveredDock
         ? `${hoveredDock.label} 正从河面浮起。${hoveredDock.note ? ` ${hoveredDock.note}` : ""}`
       : props.sourceAtlasLabel && props.dockMarkers?.length
@@ -1996,18 +2034,17 @@ export function RiverScene(props: RiverSceneProps) {
       return;
     }
 
-    const cruiseAnchors = [0.12, 0.24, 0.38, 0.54, 0.71, 0.86];
     const timer = window.setInterval(() => {
       setCruiseProgress((current) => {
-        const slowFactor = cruiseAnchors.reduce((factor, anchor) => {
-          const distance = Math.abs(current - anchor);
+        const slowFactor = cruiseAnchorMoments.reduce((factor, anchor) => {
+          const distance = Math.abs(current - anchor.progress);
 
           if (distance > 0.06) {
             return factor;
           }
 
           const easing = 1 - distance / 0.06;
-          return Math.min(factor, 1 - easing * 0.55);
+          return Math.min(factor, 1 - easing * (0.45 + anchor.emphasis * 0.2));
         }, 1);
         const next = current + 0.0065 * slowFactor;
         return next >= 0.99 ? 0.04 : next;
@@ -2015,7 +2052,7 @@ export function RiverScene(props: RiverSceneProps) {
     }, 120);
 
     return () => window.clearInterval(timer);
-  }, [cruiseRunning]);
+  }, [cruiseAnchorMoments, cruiseRunning]);
 
   const nudgeCruise = (delta: number) => {
     setCruiseProgress((current) => THREE.MathUtils.clamp(current + delta, 0.02, 0.98));
@@ -2096,10 +2133,12 @@ export function RiverScene(props: RiverSceneProps) {
               <div>
                 <div className="text-[10px] tracking-[0.26em] text-[#e5d1a1]">巡河题签</div>
                 <div className="mt-1 text-xs text-[#fbf3da] sm:text-sm">
-                  从上游缓缓入画
+                  {activeCruiseMoment ? `停驻 ${activeCruiseMoment.label}` : "从上游缓缓入画"}
                 </div>
                 <div className="mt-2 hidden text-[10px] leading-5 text-[#e8d6aa] sm:block">
-                  让镜头顺着黄河文脉徐徐铺展，再停到要讲的节点附近。
+                  {activeCruiseMoment
+                    ? activeCruiseMoment.detail
+                    : "让镜头顺着黄河文脉徐徐铺展，再停到要讲的节点附近。"}
                 </div>
               </div>
               <button
