@@ -1595,6 +1595,17 @@ function RiverWorld({
     () => books.find((book) => book.slug === selectedBookSlug) ?? null,
     [books, selectedBookSlug],
   );
+  const conceptFlowPoints = useMemo(() => {
+    if (highlightedBookSlugs.length < 2) {
+      return [];
+    }
+
+    const highlightedSet = new Set(highlightedBookSlugs);
+    return books
+      .filter((book) => highlightedSet.has(book.slug))
+      .sort((left, right) => left.year - right.year)
+      .map((book) => new THREE.Vector3(...book.coordinates));
+  }, [books, highlightedBookSlugs]);
   const focusStreamPoints = useMemo(() => {
     if (tracePathPoints.length >= 2) {
       return tracePathPoints;
@@ -1940,6 +1951,34 @@ function RiverWorld({
         traceFocus={traceFocus}
         sceneFocus={sceneFocus}
       />
+      {!selectedBookSlug &&
+      !traceFocus?.active &&
+      !sceneFocus?.active &&
+      conceptFlowPoints.length >= 2 ? (
+        <group>
+          <Line
+            points={conceptFlowPoints}
+            color="#fde68a"
+            transparent
+            opacity={0.88}
+            lineWidth={3}
+          />
+          <Line
+            points={conceptFlowPoints}
+            color="#f59e0b"
+            transparent
+            opacity={0.2}
+            lineWidth={7}
+          />
+          <RiverParticleStream
+            points={conceptFlowPoints}
+            color="#fde68a"
+            density={84}
+            flowSpeed={0.14}
+            spread={0.06}
+          />
+        </group>
+      ) : null}
       {focusStreamPoints.length >= 2 ? (
         <group>
           <Line
