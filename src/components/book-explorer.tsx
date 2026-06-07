@@ -954,7 +954,7 @@ export function BookExplorer({
     ? activeInstitutionRecord.sourceText ??
       (activeInstitutionRecord.imageRef
         ? `影像号 ${activeInstitutionRecord.imageRef} 已与 ${activeInstitutionRecord.institution} 的馆藏线索相互扣合。`
-        : "馆藏条目已经落到版本资源层，卷面与版本位置彼此对应。")
+        : "馆藏条目已经落到版本脉络中，卷内位置与流变先后彼此对应。")
     : null;
   const activeInstitutionPreviewWindow = activeInstitutionRecord
     ? institutionRecords
@@ -1206,7 +1206,7 @@ export function BookExplorer({
                   ))
                 ) : (
                   <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4">
-                    <div className="text-sm text-stone-200">这一层尚未落到场馆样本，时间与传播两条线仍在为现实落点保留回声。</div>
+                    <div className="text-sm text-stone-200">这一层尚未落到具体场馆，时间与传播两条线仍在为现实去处保留回声。</div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
@@ -1256,7 +1256,7 @@ export function BookExplorer({
                   ))
                 ) : (
                   <div className="rounded-2xl border border-dashed border-white/10 px-3 py-4">
-                    <div className="text-sm text-stone-200">这一层尚未落到活动事件样本，传播与人物两条支流仍在托住扩散路径。</div>
+                    <div className="text-sm text-stone-200">这一层尚未落到具体活动事件，传播与人物两条支流仍在托住扩散路径。</div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button
                         type="button"
@@ -1280,7 +1280,7 @@ export function BookExplorer({
             <div className="rounded-2xl border border-amber-300/10 bg-black/15 px-4 py-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                  机构资源
+                  机构馆藏
                 </div>
                 <div className="rounded-full bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
                   {detail.realWorldSignals.institutionSamples?.length ?? 0} 条
@@ -1453,11 +1453,11 @@ export function BookExplorer({
                       </div>
                     </div>
                     <div className="rounded-full border border-[#b89247]/18 bg-[rgba(255,255,255,0.22)] px-3 py-1 text-[10px] text-[#7a571d]">
-                      版本资源
+                      版本脉络
                     </div>
                   </div>
                   <div className="mt-4 grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm text-[#5b3a11]">
-                    <div className="text-[#8d6a2c]">资源类型</div>
+                    <div className="text-[#8d6a2c]">馆藏类型</div>
                     <div>{activeInstitutionRecord.category ?? "古籍馆藏 / 影像线索"}</div>
                     <div className="text-[#8d6a2c]">馆藏摘要</div>
                     <div className="leading-6">{activeInstitutionPreviewText}</div>
@@ -1548,7 +1548,7 @@ export function BookExplorer({
                     来源卷录
                   </div>
                   <div className="mt-1 text-sm text-stone-300">
-                    将真实来源按人物、场馆、事件与馆藏资源归并成可核验的凭据条目。
+                    将真实来源按人物、场馆、事件与馆藏线索归并成可核验的凭据条目。
                   </div>
                 </div>
                 <div className="rounded-full bg-amber-300/10 px-3 py-1 text-xs text-amber-100">
@@ -2155,7 +2155,7 @@ export function BookExplorer({
                                 {activeSpreadPlaces?.from?.note ?? "当前航段已落到这座城市，可结合年份与航线继续追看传播落点。"}
                               </p>
                               <div className="mt-3 text-xs text-amber-100/80">
-                                打开场馆证据，从起点城市继续核对真实传播样本。
+                                打开场馆凭据，从起点城市继续核对真实传播落点。
                               </div>
                             </button>
                             <button
@@ -2243,14 +2243,14 @@ export function BookExplorer({
               }}
               className="rounded-[24px] border border-amber-300/14 bg-[linear-gradient(180deg,rgba(191,140,40,0.16),rgba(56,35,11,0.24))] px-4 py-4 text-left transition hover:bg-[linear-gradient(180deg,rgba(191,140,40,0.22),rgba(56,35,11,0.3))]"
             >
-              <div className="text-xs tracking-[0.2em] text-amber-100/75">场馆样本</div>
+              <div className="text-xs tracking-[0.2em] text-amber-100/75">场馆落点</div>
               <div className="mt-2 text-sm font-medium text-amber-50">
-                {detail.realWorldSignals?.venueSamples?.length ? "上图场馆样本" : "时间回声"}
+                {detail.realWorldSignals?.venueSamples?.length ? "上图场馆落点" : "时间回声"}
               </div>
               <div className="mt-2 text-sm leading-7 text-amber-50/90">
                 {detail.realWorldSignals?.venueSamples?.length
                   ? "场馆与活动信号已经把传播河段压到现实空间的具体落点上。"
-                  : "这段传播尚未落到场馆样本，年代回声仍保留它的事件踪迹。"}
+                  : "这段传播尚未落到具体场馆，年代回声仍保留它的事件踪迹。"}
               </div>
             </button>
           </div>
@@ -3128,7 +3128,7 @@ export function BookExplorer({
                               ))}
                               {!versionEvidenceSamples.length && !institutionPreview.length ? (
                                 <div className="rounded-2xl border border-dashed border-white/10 px-4 py-4">
-                                  <div className="text-sm text-stone-200">这一层版本尚未落到更细的影像或馆藏样本，机构、传播与时间仍在替它保留资源回声。</div>
+                                  <div className="text-sm text-stone-200">这一层版本尚未落到更细的影像或馆藏线索，机构、传播与时间仍在替它保留回声。</div>
                                   <div className="mt-3 flex flex-wrap gap-2">
                                     <button
                                       type="button"
@@ -3186,8 +3186,8 @@ export function BookExplorer({
                               <div className="mt-1 font-medium text-stone-100">{activeVersion.library}</div>
                               <div className="mt-2 text-sm leading-6 text-stone-300">
                                 {versionEvidenceSamples.length || institutionPreview.length
-                                  ? "这一层版本最贴近的馆藏样本或影像线索会在这里显影。"
-                                  : "这一层尚未挂到更细样本，机构归录里仍保留馆藏线索。"}
+                                  ? "这一层版本最贴近的馆藏线索或影像线索会在这里显影。"
+                                  : "这一层尚未挂到更细线索，机构归录里仍保留馆藏去处。"}
                               </div>
                             </button>
                             <button
