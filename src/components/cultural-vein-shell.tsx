@@ -1475,6 +1475,7 @@ export function CulturalVeinShell() {
                         detail={selectedDetail}
                         forcedTab={entryExplorerTab}
                         activeEra={activeEra}
+                        onRequestEraChange={setActiveEra}
                         onTraceFocusChange={setTraceFocus}
                         onSceneFocusChange={setSceneFocus}
                         onOpenBook={handleDiveToBook}
@@ -1963,6 +1964,7 @@ export function CulturalVeinShell() {
                       detail={selectedDetail}
                       forcedTab={entryExplorerTab}
                       activeEra={activeEra}
+                      onRequestEraChange={setActiveEra}
                       onTraceFocusChange={setTraceFocus}
                       onSceneFocusChange={setSceneFocus}
                       onOpenBook={handleDiveToBook}

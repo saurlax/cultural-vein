@@ -50,6 +50,15 @@ const eraYearRange: Record<RiverEra, { start: number; end: number }> = {
   "近现代": { start: 1912, end: 9999 },
 };
 
+function inferEraFromYear(year: number): RiverEra {
+  const matchedEra = eraOrder.find((era) => {
+    const range = eraYearRange[era];
+    return year >= range.start && year <= range.end;
+  });
+
+  return matchedEra ?? "近现代";
+}
+
 function relationTypeClass(type?: string) {
   switch (type) {
     case "著":
@@ -246,6 +255,7 @@ export function BookExplorer({
   detail,
   forcedTab,
   activeEra,
+  onRequestEraChange,
   onTraceFocusChange,
   onSceneFocusChange,
   onOpenBook,
@@ -254,6 +264,7 @@ export function BookExplorer({
   detail: BookDetail;
   forcedTab?: ExplorerTab | null;
   activeEra: RiverEra;
+  onRequestEraChange?: (era: RiverEra) => void;
   onTraceFocusChange?: (focus: TraceFocusState | null) => void;
   onSceneFocusChange?: (focus: SceneFocusState | null) => void;
   onOpenBook?: (slug: string, options?: ExplorerOpenOptions) => void;
@@ -683,6 +694,15 @@ export function BookExplorer({
   const handleFocusEventEvidence = () => {
     setSelectedSourceEvidenceId("event-samples");
   };
+  const handleSelectTimelineItem = (timelineId: string) => {
+    const targetTimeline = detail.timeline.find((item) => item.id === timelineId);
+
+    if (targetTimeline) {
+      onRequestEraChange?.(inferEraFromYear(targetTimeline.year));
+    }
+
+    setSelectedTimelineId(timelineId);
+  };
   const handleSelectEventSample = (event: {
     venue: string;
     title: string;
@@ -699,7 +719,7 @@ export function BookExplorer({
       }) ?? null;
 
     if (matchedTimeline?.id) {
-      setSelectedTimelineId(matchedTimeline.id);
+      handleSelectTimelineItem(matchedTimeline.id);
     }
 
     setSelectedSourceEvidenceId("event-samples");
@@ -732,7 +752,7 @@ export function BookExplorer({
 
     if (evidenceId === "event-samples") {
       if (visibleTimeline[0]?.id) {
-        setSelectedTimelineId(visibleTimeline[0].id);
+        handleSelectTimelineItem(visibleTimeline[0].id);
       }
       setTab("timeline");
       return;
@@ -1392,7 +1412,7 @@ export function BookExplorer({
                   <button
                     type="button"
                     onClick={() => {
-                      setSelectedTimelineId(linkedTimelineFromInstitution.id);
+                      handleSelectTimelineItem(linkedTimelineFromInstitution.id);
                       setTab("timeline");
                     }}
                     className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
@@ -2086,7 +2106,7 @@ export function BookExplorer({
                             );
 
                             if (matchedTimeline?.id) {
-                              setSelectedTimelineId(matchedTimeline.id);
+                              handleSelectTimelineItem(matchedTimeline.id);
                             }
                           }
 
@@ -3100,7 +3120,7 @@ export function BookExplorer({
                         >
                           <button
                             type="button"
-                            onClick={() => setSelectedTimelineId(item.id)}
+                            onClick={() => handleSelectTimelineItem(item.id)}
                             className={`w-52 rounded-[22px] border px-4 py-4 text-left transition ${
                               isActive
                                 ? "border-amber-300/35 bg-amber-300/10 shadow-lg shadow-amber-500/10"
@@ -3142,7 +3162,7 @@ export function BookExplorer({
 
                           const firstTimelineItem = visibleTimeline[0];
                           if (firstTimelineItem) {
-                            setSelectedTimelineId(firstTimelineItem.id);
+                            handleSelectTimelineItem(firstTimelineItem.id);
                           }
                         }}
                         className="mt-1 text-left text-sm text-[#eadfbc] transition hover:text-[#fbf3da]"
@@ -3164,7 +3184,7 @@ export function BookExplorer({
                         <button
                           key={item.id}
                           type="button"
-                          onClick={() => setSelectedTimelineId(item.id)}
+                          onClick={() => handleSelectTimelineItem(item.id)}
                           className={`flex w-full gap-3 rounded-[22px] border px-4 py-4 text-left transition ${
                             isActive
                               ? "border-amber-300/35 bg-amber-300/10 shadow-lg shadow-amber-500/10"
@@ -3227,7 +3247,7 @@ export function BookExplorer({
                           onClick={() => {
                             const previous = visibleTimeline[activeTimelineIndex - 1];
                             if (previous) {
-                              setSelectedTimelineId(previous.id);
+                              handleSelectTimelineItem(previous.id);
                             }
                           }}
                           disabled={activeTimelineIndex <= 0}
@@ -3244,7 +3264,7 @@ export function BookExplorer({
                           onClick={() => {
                             const next = visibleTimeline[activeTimelineIndex + 1];
                             if (next) {
-                              setSelectedTimelineId(next.id);
+                              handleSelectTimelineItem(next.id);
                             }
                           }}
                           disabled={
@@ -3484,7 +3504,7 @@ export function BookExplorer({
                               <div key={item.id} className="flex min-w-max items-center gap-3">
                                 <button
                                   type="button"
-                                  onClick={() => setSelectedTimelineId(item.id)}
+                                  onClick={() => handleSelectTimelineItem(item.id)}
                                   className={`rounded-full px-3 py-2 text-xs ${
                                     isActive
                                       ? "bg-amber-300 text-stone-950"
