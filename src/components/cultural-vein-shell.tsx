@@ -340,7 +340,7 @@ export function CulturalVeinShell() {
   >(null);
   const [activeDesktopPanel, setActiveDesktopPanel] = useState<
     "search" | "era" | "category" | "branch"
-  >("search");
+  >("branch");
   const [transitionState, setTransitionState] = useState<
     "idle" | "diving" | "settling" | "returning"
   >("idle");
@@ -1072,6 +1072,9 @@ export function CulturalVeinShell() {
   const activeDesktopPanelConfig =
     desktopPanels.find((panel) => panel.id === activeDesktopPanel) ?? desktopPanels[0];
   const activeEraNarrative = eraNarratives[activeEra];
+  const landingNarrative = activeSourceAtlasEntry
+    ? `眼前先以《${activeSourceAtlasEntry.relatedBookSlugs?.length ? "主线典籍" : "河上节点"}》串起 ${activeSourceAtlasEntry.name} 这股来源支流，再顺着河册、时代与卷内细读逐段入画。`
+    : "眼前先以主线典籍托住河身，再顺着来源河册、时代水位与卷内细读逐段入画。";
   const sourceAtlasNeighborEntries =
     activeSourceAtlasIndex >= 0
       ? [1]
@@ -1174,6 +1177,9 @@ export function CulturalVeinShell() {
                 {viewMode === "river" ? "巡河" : "入卷"}
               </div>
             </div>
+            <div className="mt-3 rounded-[18px] border border-[#ead8a6]/12 bg-[rgba(76,49,16,0.22)] px-3 py-3 text-[11px] leading-6 text-[#f6e8bd]">
+              {landingNarrative}
+            </div>
           </div>
         </div>
 
@@ -1261,6 +1267,11 @@ export function CulturalVeinShell() {
                     <div className="text-[10px] tracking-[0.22em] text-[#d8c9a3]">
                       {activeDesktopPanelConfig.summary}
                     </div>
+                    {viewMode === "river" ? (
+                      <div className="mt-2 text-[11px] leading-5 text-[#eadfbc]">
+                        先看来源河册辨认支流，再拖河巡看时代起伏，最后择一典籍入卷细读。
+                      </div>
+                    ) : null}
                   </div>
                   {viewMode === "book" ? (
                     <button

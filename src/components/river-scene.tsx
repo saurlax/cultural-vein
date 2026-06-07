@@ -2455,7 +2455,7 @@ export function RiverScene(props: RiverSceneProps) {
       : hoveredDock
         ? `${hoveredDock.label} 正从河面浮起。`
       : props.sourceAtlasLabel && props.dockMarkers?.length
-        ? `${props.sourceAtlasLabel} 的来源线索已映入河道。`
+        ? `${props.sourceAtlasLabel} 的来源线索已映入河道，顺着这股支流便可择书入卷。`
         : hoveredBook
         ? `${hoveredBook.shortTitle} 已浮出河心。`
       : hoveredBranch
@@ -2463,8 +2463,8 @@ export function RiverScene(props: RiverSceneProps) {
           : props.selectedBookSlug
             ? "典籍已经停驻岸边。"
             : cruiseRunning
-              ? "长河正自上游缓缓展开。"
-              : "拖动长河巡看文脉起伏。";
+              ? "长河正自上游缓缓展开，先看支流落点，再顺势入卷。"
+              : "拖动长河巡看文脉起伏，顺着来源支流择书入卷。";
 
   useEffect(() => {
     if (!showMobileTouchHint) {
