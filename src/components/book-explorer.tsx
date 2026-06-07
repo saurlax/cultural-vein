@@ -2660,62 +2660,14 @@ export function BookExplorer({
                 </div>
               </div>
 
-              <div className="grid gap-3 md:grid-cols-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const primaryTarget = primaryPeople[0] ?? visiblePeople[0] ?? null;
-
-                    if (primaryTarget?.id) {
-                      setSelectedPersonId(primaryTarget.id);
-                    }
-                  }}
-                  className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
-                >
-                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">核心人物</div>
-                  <div className="mt-2 text-sm font-medium text-[#fbf3da]">
-                    {primaryPeople[0]?.name ?? visiblePeople[0]?.name ?? "卷心人物"}
-                  </div>
-                  <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
-                    作者、注者与编纂者共同托住这部典籍的人物主干。
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (secondaryPeople.length) {
-                      setShowSecondaryPeople(true);
-                      setSelectedPersonId(secondaryPeople[0]?.id ?? null);
-                      return;
-                    }
-
-                    setTab("spread");
-                  }}
-                  className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
-                >
-                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">支流人物</div>
-                  <div className="mt-2 text-sm font-medium text-[#fbf3da]">
-                    {secondaryPeople[0]?.name ?? "传播河势"}
-                  </div>
-                  <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
-                    {secondaryPeople.length
-                      ? "引用者、评论者与校勘者会把典籍的外扩关系继续向外推开。"
-                      : "这部典籍的外扩人物支流尚未在这一河段显影。"}
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleOpenSourceEvidence("cbdb-people")}
-                  className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
-                >
-                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">纪传对照</div>
-                  <div className="mt-2 text-sm font-medium text-[#fbf3da]">
-                    {visiblePeople.find((person) => person.source === "cbdb")?.name ?? "人物证据总览"}
-                  </div>
-                  <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
-                    纪传材料与卷内人物网络会在这里相互校照。
-                  </div>
-                </button>
+              <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-sm leading-7 text-[#eadfbc]">
+                人物主干由 {primaryPeople[0]?.name ?? visiblePeople[0]?.name ?? "卷心人物"} 托住，
+                {secondaryPeople.length
+                  ? ` ${secondaryPeople[0]?.name ?? "支流人物"} 等支流人物继续把典籍关系向外推开。`
+                  : " 外扩人物支流尚未在这一河段显影。"}
+                {visiblePeople.find((person) => person.source === "cbdb")
+                  ? ` 纪传材料也已与 ${visiblePeople.find((person) => person.source === "cbdb")?.name} 的人物线索相互校照。`
+                  : " 纪传材料会在后续显影时继续补足人物线索。"}
               </div>
             </>
           )}
@@ -3298,68 +3250,14 @@ export function BookExplorer({
                 </div>
               </div>
 
-              <div className="grid gap-3 md:grid-cols-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const rootVersion = activeVersionTrail[0];
-
-                    if (rootVersion?.id) {
-                      setSelectedVersionId(rootVersion.id);
-                    }
-                  }}
-                  className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
-                >
-                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">祖本源头</div>
-                  <div className="mt-2 text-sm font-medium text-[#fbf3da]">
-                    {activeVersionTrail[0]?.label ?? "祖本卷首"}
-                  </div>
-                  <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
-                    版本源头会把这部典籍最早显现的形态重新托出来。
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const targetRecord = versionEvidenceSamples[0] ?? institutionPreview[0];
-
-                    if (targetRecord) {
-                      handleSelectInstitutionRecord(targetRecord);
-                    }
-                  }}
-                  className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
-                >
-                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">馆藏落点</div>
-                  <div className="mt-2 text-sm font-medium text-[#fbf3da]">
-                    {versionEvidenceSamples[0]?.title ?? institutionPreview[0]?.title ?? "就近馆藏线索"}
-                  </div>
-                  <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
-                    {versionEvidenceSamples.length || institutionPreview.length
-                      ? "这一版的馆藏与影像落点已经在卷面旁侧显出。"
-                      : "这层版本尚未落到更细的馆藏或影像样本。"}
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const nextVersion = activeVersionChildren[0];
-
-                    if (nextVersion?.id) {
-                      setSelectedVersionId(nextVersion.id);
-                    }
-                  }}
-                  className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
-                >
-                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">下游分化</div>
-                  <div className="mt-2 text-sm font-medium text-[#fbf3da]">
-                    {activeVersionChildren[0]?.label ?? "这一时代未再分化更晚版本"}
-                  </div>
-                  <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
-                    {activeVersionChildren.length
-                      ? "这一版之后的分化层已经沿时间继续展开。"
-                      : "这一时代河段里，更晚的分化层尚未继续浮出。"}
-                  </div>
-                </button>
+              <div className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-sm leading-7 text-[#eadfbc]">
+                版本源头由 {activeVersionTrail[0]?.label ?? "祖本卷首"} 托出，
+                {versionEvidenceSamples[0]?.title ?? institutionPreview[0]?.title
+                  ? ` ${versionEvidenceSamples[0]?.title ?? institutionPreview[0]?.title} 已在卷旁显出馆藏落点。`
+                  : " 这一层尚未落到更细的馆藏或影像样本。"}
+                {activeVersionChildren.length
+                  ? ` ${activeVersionChildren[0]?.label ?? "下游版本"} 正把后续分化继续向下游展开。`
+                  : " 更晚的分化层在这一时代河段里尚未继续浮出。"}
               </div>
             </>
           )}
