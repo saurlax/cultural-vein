@@ -1149,15 +1149,39 @@ function FlowBeacons({
 
   return (
     <group ref={beaconRef}>
-      {latestBooks.map((book) => (
-        <mesh
+      {latestBooks.map((book, index) => (
+        <group
           key={`beacon-${book.id}`}
-          rotation={[-Math.PI / 2, 0, 0]}
           position={[book.coordinates[0], book.coordinates[1] - 0.03, book.coordinates[2]]}
         >
-          <ringGeometry args={[0.28, 0.46, 40]} />
-          <meshBasicMaterial color="#fde68a" transparent opacity={0.24} />
-        </mesh>
+          <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.28, 0.46, 40]} />
+            <meshBasicMaterial color="#fde68a" transparent opacity={0.24} />
+          </mesh>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.015, 0]}>
+            <circleGeometry args={[0.18, 28]} />
+            <meshBasicMaterial color="#fff5cf" transparent opacity={0.14} />
+          </mesh>
+          {[
+            [-0.18, 0.02, 0.09],
+            [0.16, 0.018, -0.08],
+            [0.08, 0.014, 0.19],
+          ].map((offset, lightIndex) => (
+            <mesh
+              key={`beacon-light-${book.id}-${lightIndex}`}
+              position={[offset[0], offset[1], offset[2]]}
+            >
+              <sphereGeometry args={[index === 0 ? 0.038 : 0.03, 12, 12]} />
+              <meshStandardMaterial
+                color="#fef3c7"
+                emissive={new THREE.Color(lightIndex === 1 ? "#fbbf24" : "#fde68a")}
+                emissiveIntensity={1.3 + lightIndex * 0.18}
+                transparent
+                opacity={0.9}
+              />
+            </mesh>
+          ))}
+        </group>
       ))}
     </group>
   );
@@ -1506,6 +1530,41 @@ function BookMarkers({
 
         return (
           <group key={book.id} position={book.coordinates}>
+            {isSelected || isHovered || isSearchHighlighted || isTraceLinked || isCruiseStrong ? (
+              <>
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.035, 0]}>
+                  <circleGeometry args={[markerSize + 0.18, 32]} />
+                  <meshBasicMaterial
+                    color={isSelected || isHovered ? "#fff3c5" : "#f7d987"}
+                    transparent
+                    opacity={(isHovered || isSelected ? 0.2 : isCruiseStrong ? 0.12 + revealBlend * 0.1 : 0.11) * opacityFactor}
+                  />
+                </mesh>
+                {[
+                  [-0.16, 0.015, 0.11],
+                  [0.14, 0.023, -0.1],
+                  [0.06, 0.03, 0.19],
+                ].map((offset, lightIndex) => (
+                  <mesh
+                    key={`book-harbor-light-${book.id}-${lightIndex}`}
+                    position={[offset[0], offset[1], offset[2]]}
+                  >
+                    <sphereGeometry args={[isHovered || isSelected ? 0.026 : 0.02, 10, 10]} />
+                    <meshStandardMaterial
+                      color="#fef3c7"
+                      emissive={new THREE.Color(lightIndex === 1 ? "#f59e0b" : "#fde68a")}
+                      emissiveIntensity={
+                        isHovered || isSelected
+                          ? 1.55 + lightIndex * 0.12
+                          : 0.88 + lightIndex * 0.08
+                      }
+                      transparent
+                      opacity={0.92}
+                    />
+                  </mesh>
+                ))}
+              </>
+            ) : null}
             <mesh
               onClick={() => onSelectBook(book.slug)}
               onPointerOver={() => onHoverBook?.(book.slug)}
@@ -2050,6 +2109,19 @@ function DockMarkers({
       {dockMarkers.map((dock, index) => (
         <group key={dock.id} position={dock.position}>
           {/** Selected or hovered data docks should feel anchored and readable. */}
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.03, 0]}>
+            <circleGeometry
+              args={[
+                hoveredDockId === dock.id || selectedDockId === dock.id ? 0.26 : 0.2,
+                28,
+              ]}
+            />
+            <meshBasicMaterial
+              color="#fff1c7"
+              transparent
+              opacity={hoveredDockId === dock.id || selectedDockId === dock.id ? 0.18 : 0.1}
+            />
+          </mesh>
           <mesh
             position={[0, 0.12, 0]}
             onPointerOver={() => onHoverDock?.(dock.id)}
@@ -2098,6 +2170,24 @@ function DockMarkers({
               }
             />
           </mesh>
+          {[
+            [-0.11, 0.08, 0.08],
+            [0.12, 0.06, -0.06],
+          ].map((offset, lightIndex) => (
+            <mesh
+              key={`dock-light-${dock.id}-${lightIndex}`}
+              position={[offset[0], offset[1], offset[2]]}
+            >
+              <sphereGeometry args={[0.026, 10, 10]} />
+              <meshStandardMaterial
+                color="#fff7dc"
+                emissive={new THREE.Color(dock.accentColor ?? activeColor)}
+                emissiveIntensity={
+                  hoveredDockId === dock.id || selectedDockId === dock.id ? 1.28 : 0.82
+                }
+              />
+            </mesh>
+          ))}
           <Text
             position={[0, 0.48, 0]}
             fontSize={0.1}
