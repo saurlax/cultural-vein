@@ -2406,6 +2406,44 @@ export function CulturalVeinShell() {
                       ))}
                     </div>
                   </div>
+                  {resolvedSearchResult?.hits.length ? (
+                    <div className="mt-3 space-y-2">
+                      {resolvedSearchResult.hits.slice(0, 3).map((hit) => (
+                        <button
+                          key={`mobile-search-hit-${hit.slug}`}
+                          type="button"
+                          onClick={() => {
+                            setShowMobileControls(false);
+                            handleDiveToBook(hit.slug);
+                          }}
+                          className="w-full rounded-[20px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-3 text-left transition hover:bg-[rgba(255,248,220,0.12)]"
+                        >
+                          <div className="text-sm font-medium text-[#fbf3da]">{hit.title}</div>
+                          <div className="mt-1 text-[11px] text-[#cdb98d]">
+                            {hit.dynasty} · {hit.category} · {hit.school}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  ) : resolvedSearchResult?.query && !searchPending ? (
+                    <div className="mt-3 rounded-[20px] border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.06)] px-3 py-3">
+                      <div className="text-sm leading-6 text-[#eadfbc]">
+                        这一枚概念暂未照见河上节点，换一组相关概念再看河面回响。
+                      </div>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {searchSuggestionChips.slice(0, 3).map((concept) => (
+                          <button
+                            key={`mobile-fallback-concept-${concept}`}
+                            type="button"
+                            onClick={() => handleSearchTermChange(concept)}
+                            className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                          >
+                            {concept}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
                 </>
               ) : null}
               {activeDesktopPanel === "era" ? (
