@@ -1293,6 +1293,35 @@ export function BookExplorer({
   const spreadStageSummary = activeSpread && activeSpreadPlaces
     ? `${activeSpreadPlaces.from?.name ?? "起点"} 至 ${activeSpreadPlaces.to?.name ?? "终点"} 的传播正在 ${activeSpread.startYear} - ${activeSpread.endYear} 年间抬升成当前主航段。`
     : "这一段传播河势正在把知识流动压成可见航线。";
+  const accumulatedSpreadSegments = useMemo(() => {
+    if (!activeSpread) {
+      return visibleSpread.slice(0, 1);
+    }
+
+    return visibleSpread.filter((item) => item.endYear <= activeSpread.endYear);
+  }, [activeSpread, visibleSpread]);
+  const accumulatedSpreadIds = useMemo(
+    () => accumulatedSpreadSegments.map((item) => item.id),
+    [accumulatedSpreadSegments],
+  );
+  const accumulatedSpreadPlaceIds = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          accumulatedSpreadSegments.flatMap((item) => [item.fromPlaceId, item.toPlaceId]),
+        ),
+      ),
+    [accumulatedSpreadSegments],
+  );
+  const spreadEvolutionSummary = activeSpread
+    ? `截至 ${activeSpread.endYear} 年，已累计显出 ${accumulatedSpreadSegments.length} 段传播链，河势从 ${accumulatedSpreadSegments[0]?.startYear ?? activeSpread.startYear} 年前后一路推演到当前节点。`
+    : "当前时代可见的传播链会沿时间次第逐段展开。";
+  const spreadStageLabel = activeSpread
+    ? `传播演进 · 第 ${Math.max(activeSpreadIndex + 1, 1)} 段`
+    : "传播演进";
+  const spreadGlobeDetail = activeSpreadPlaces
+    ? `已形成航段以金色留痕，当前推进航段高亮停驻在 ${activeSpreadPlaces.from?.name ?? "起点"} 至 ${activeSpreadPlaces.to?.name ?? "终点"}。`
+    : "已形成航段会在球面上保留成链，当前推进节点会继续抬亮。";
   const spreadStageActions = [
     {
       label: "时间回声",
@@ -2516,6 +2545,7 @@ export function BookExplorer({
                       {activeSpreadPlaces?.from?.name ?? "起点"} → {activeSpreadPlaces?.to?.name ?? "终点"}
                     </div>
                     <div className="mt-2 text-sm leading-7 text-[#eadfbc]">{spreadStageSummary}</div>
+                    <div className="mt-2 text-sm leading-7 text-[#d8c9a3]">{spreadEvolutionSummary}</div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <span className="rounded-full border border-amber-300/22 bg-amber-300/10 px-3 py-1.5 text-xs text-amber-100">
                         {activeSpread ? `${activeSpread.startYear} - ${activeSpread.endYear}` : "传播年代"}
@@ -2829,10 +2859,14 @@ export function BookExplorer({
                     places={detail.places}
                     spreads={visibleSpread}
                     activeSpreadId={activeSpread?.id ?? null}
+                    highlightedSpreadIds={accumulatedSpreadIds}
                     activePlaceIds={[
                       activeSpreadPlaces?.from?.id ?? "",
                       activeSpreadPlaces?.to?.id ?? "",
                     ].filter(Boolean)}
+                    settledPlaceIds={accumulatedSpreadPlaceIds}
+                    stageLabel={spreadStageLabel}
+                    stageDetail={spreadGlobeDetail}
                     onSelectSpread={setSelectedSpreadId}
                   />
                 </div>
