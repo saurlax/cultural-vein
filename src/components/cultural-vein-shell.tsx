@@ -201,6 +201,10 @@ function getSourceThemeLabel(name: string) {
     return "城市影像";
   }
 
+  if (name.includes("Artlib") || name.includes("艺术")) {
+    return "艺术图像";
+  }
+
   if (name.includes("报刊")) {
     return "近现代文献";
   }
