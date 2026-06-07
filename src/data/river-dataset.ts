@@ -456,6 +456,22 @@ const coreClassicExtensions: RealSupplementBook[] = [
     coordinates: [7.82, 0.38, -1.26],
   },
   {
+    id: "book-nanhu-jinian",
+    slug: "nanhu-jinian",
+    title: "南湖纪念文献",
+    shortTitle: "南湖纪念",
+    dynasty: "近现代",
+    year: 1959,
+    category: "史",
+    school: "红色文献",
+    influence: 77,
+    velocity: 0.44,
+    branchLevel: 2,
+    summary: "围绕中共“一大”南湖会议、代表人物与题词题诗形成的纪念文献群，把古典经史中的治道与人物书写转译为近现代红色记忆支流。",
+    concepts: ["南湖", "一大", "纪念书写", "红色文献"],
+    coordinates: [10.24, 0.52, 0.96],
+  },
+  {
     id: "book-wenxuan",
     slug: "wenxuan",
     title: "昭明文选",
@@ -716,6 +732,33 @@ const coreClassicCitationExtensions: RealSupplementCitation[] = [
     confidence: 0.78,
     label: "批评并流",
     evidence: "《诗品》与《文心雕龙》同处六朝诗学高峰，一个偏重品第与诗人，一个偏重体类与理论，构成并行批评支流。",
+  },
+  {
+    id: "edge-nanhu-1",
+    source: "book-nanhu-jinian",
+    target: "book-shiji",
+    layer: "influence",
+    confidence: 0.67,
+    label: "人物纪念回望",
+    evidence: "南湖纪念文献中的代表人物书写，延续了《史记》以来以人物为轴组织时代记忆的历史叙事方式。",
+  },
+  {
+    id: "edge-nanhu-2",
+    source: "book-nanhu-jinian",
+    target: "book-zi-zhi-tong-jian",
+    layer: "influence",
+    confidence: 0.71,
+    label: "治道镜鉴转写",
+    evidence: "南湖纪念文献把《资治通鉴》式兴亡、治乱与历史镜鉴转写为近现代革命记忆和政治叙事。",
+  },
+  {
+    id: "edge-nanhu-3",
+    source: "book-nanhu-jinian",
+    target: "book-ren-jian-ci-hua",
+    layer: "semantic",
+    confidence: 0.59,
+    label: "纪念抒情回响",
+    evidence: "南湖题词题诗和纪念书写延续了近现代审美化历史记忆表达，使《人间词话》之后的抒情判断也能回流到红色纪念语境中。",
   },
   {
     id: "edge-rjch-shipin-1",
@@ -3668,6 +3711,249 @@ const coreClassicDetailExtensions: Record<string, BookDetail> = {
       venueSummary: "补入《诗品》后，诗学支流从六朝文论进一步落到具体诗歌高下与风格品评，不再只停在抽象体类层。",
     },
   },
+  "nanhu-jinian": {
+    bookId: "book-nanhu-jinian",
+    heroMetric: {
+      directCitations: 69,
+      downstreamInfluence: 183,
+      coveredRegions: 5,
+    },
+    spread: [
+      {
+        id: "spread-nh-1",
+        fromPlaceId: "place-shanghai-nh",
+        toPlaceId: "place-jiaxing-nh",
+        startYear: 1921,
+        endYear: 1959,
+        volume: 82,
+      },
+      {
+        id: "spread-nh-2",
+        fromPlaceId: "place-jiaxing-nh",
+        toPlaceId: "place-shanghai-screen-nh",
+        startYear: 1959,
+        endYear: 2010,
+        volume: 74,
+      },
+    ],
+    people: [
+      {
+        id: "person-maozedong-nh",
+        name: "毛泽东",
+        role: "代表人物",
+        birthYear: 1893,
+        deathYear: 1976,
+        era: "近现代",
+        bio: "中共“一大”代表之一，南湖纪念文献中的代表人物叙述让革命开端被压成可回查的人物记忆层。",
+        source: "curated",
+        sourceStatus: "curated",
+        relationTier: 1,
+        relationType: "承",
+      },
+      {
+        id: "person-he-shuheng-nh",
+        name: "何叔衡",
+        role: "代表人物",
+        birthYear: 1876,
+        deathYear: 1935,
+        era: "近现代",
+        bio: "南湖专题中保留其代表简介，是把“一大”参会人物具象化为纪念文献支流的重要节点。",
+        source: "curated",
+        sourceStatus: "curated",
+        relationTier: 1,
+        relationType: "承",
+      },
+      {
+        id: "person-dong-biwu-nh",
+        name: "董必武",
+        role: "题词关联者",
+        birthYear: 1886,
+        deathYear: 1975,
+        era: "近现代",
+        bio: "南湖题词题诗与纪念书写常借中央领导人与知名人士的笔墨继续放大纪念叙事。",
+        source: "curated",
+        sourceStatus: "curated",
+        relationTier: 2,
+        relationType: "评",
+      },
+    ],
+    places: [
+      {
+        id: "place-shanghai-nh",
+        name: "上海",
+        lat: 31.2304,
+        lng: 121.4737,
+        note: "中共“一大”召开与近现代城市文化传播的起点空间。",
+      },
+      {
+        id: "place-jiaxing-nh",
+        name: "嘉兴南湖",
+        lat: 30.7474,
+        lng: 120.7555,
+        note: "南湖会议闭幕与纪念馆建立后，红色记忆在此固定成可回查的纪念河段。",
+      },
+      {
+        id: "place-shanghai-screen-nh",
+        name: "上海影像传播场",
+        lat: 31.2219,
+        lng: 121.4554,
+        note: "近代上海城市专题片与公共文化传播继续把南湖纪念书写带回城市影像网络。",
+      },
+    ],
+    versions: [
+      {
+        id: "version-nh-1",
+        label: "中共“一大”南湖会议资料整理稿",
+        year: 1959,
+        place: "嘉兴南湖",
+        library: "南湖革命纪念馆",
+        status: "存世",
+        editionType: "整理本",
+        note: "纪念馆成立后形成的系统整理层，把会议综述、代表简介与题词题诗汇成稳定纪念文本群。",
+      },
+      {
+        id: "version-nh-2",
+        label: "南湖纪念题词题诗汇编",
+        year: 1975,
+        place: "嘉兴南湖",
+        library: "纪念文献整理系统",
+        status: "存世",
+        parentId: "version-nh-1",
+        editionType: "重刊本",
+        note: "题词题诗被单独抽出后，让纪念书写从史料层继续外展到公共抒情层。",
+      },
+      {
+        id: "version-nh-3",
+        label: "上海图书馆移交数字化专题本",
+        year: 2021,
+        place: "上海",
+        library: "南湖文献数据库",
+        status: "存世",
+        parentId: "version-nh-2",
+        editionType: "整理本",
+        note: "数字化移交后，南湖文献以专题数据库形式重新进入公共文化数据场。",
+      },
+    ],
+    timeline: [
+      {
+        id: "tl-nh-1",
+        year: 1921,
+        title: "中共“一大”南湖会议形成革命记忆原点",
+        detail: "会议闭幕与纪念船意象成为后续全部南湖纪念文献的源头场景。",
+      },
+      {
+        id: "tl-nh-2",
+        year: 1959,
+        title: "南湖革命纪念馆成立并系统整理史料",
+        detail: "会议综述、代表人物与题词题诗开始被稳定组织成可展、可讲、可回查的纪念文本群。",
+      },
+      {
+        id: "tl-nh-3",
+        year: 2021,
+        title: "南湖专题数字化移交进入开放数据场",
+        detail: "专题数据库让红色记忆从纪念馆空间继续进入数字展陈与数据驱动叙事场景。",
+      },
+    ],
+    passages: [
+      {
+        id: "passage-nh-1",
+        section: "人物纪念",
+        original: "南湖纪念文献先把会议、人物与纪念船固定成可讲述的历史原点，再借代表简介与题词题诗把革命开端不断回写到后来者的记忆里。",
+        links: [
+          {
+            id: "passage-nh-1-link-1",
+            quote: "人物史写转入革命纪念",
+            sourceBookId: "book-shiji",
+            sourceTitle: "史记",
+            layer: "influence",
+            confidenceLabel: "中",
+            evidence: "《史记》式人物纪传与时代并置结构，在南湖代表人物叙述中被转写成近现代革命记忆的人物轴线。",
+          },
+          {
+            id: "passage-nh-1-link-2",
+            quote: "治乱镜鉴转成革命叙事",
+            sourceBookId: "book-zi-zhi-tong-jian",
+            sourceTitle: "资治通鉴",
+            layer: "influence",
+            confidenceLabel: "中",
+            evidence: "《资治通鉴》以历史镜鉴组织政治判断的方式，在南湖纪念文献中被转化为革命史叙述和时代意义说明。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-nh-1",
+            title: "史记",
+            relation: "人物叙事源头",
+            note: "先把时代记忆压到人物与事件并置的历史书写中。",
+          },
+          {
+            id: "trace-nh-2",
+            title: "资治通鉴",
+            relation: "历史镜鉴",
+            note: "再把历史回看方式稳定成可反复调用的政治镜面。",
+          },
+          {
+            id: "trace-nh-3",
+            title: "南湖纪念文献",
+            relation: "红色转写",
+            note: "最终把人物、会议与纪念书写组织成近现代红色记忆支流。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-nh-1",
+            targetTitle: "人间词话",
+            relation: "抒情回响",
+            note: "题词题诗与纪念书写把历史记忆继续推入近现代抒情与审美表达层。",
+            confidenceLabel: "低",
+          },
+        ],
+      },
+      {
+        id: "passage-nh-2",
+        section: "城市传播",
+        original: "当南湖史料进入纪念馆、数据库与城市影像，它就不再只是档案，而是会沿展陈、专题片与公共叙事继续扩散的一股现实文化水流。",
+        links: [
+          {
+            id: "passage-nh-2-link-1",
+            quote: "纪念抒情与近现代审美传播",
+            sourceBookId: "book-ren-jian-ci-hua",
+            sourceTitle: "人间词话",
+            layer: "semantic",
+            confidenceLabel: "低",
+            evidence: "题词题诗与城市影像中的纪念书写，让近现代抒情判断继续承担历史记忆的传播功能。",
+          },
+        ],
+        tracePath: [
+          {
+            id: "trace-nh-4",
+            title: "南湖纪念文献",
+            relation: "纪念定型",
+            note: "先把革命记忆固定成专题资料与纪念文本群。",
+          },
+          {
+            id: "trace-nh-5",
+            title: "人间词话",
+            relation: "抒情回声",
+            note: "再借近现代抒情判断说明纪念书写为何能持续进入公共文化场。",
+          },
+        ],
+        downstreamInfluence: [
+          {
+            id: "down-nh-2",
+            targetTitle: "资治通鉴",
+            relation: "历史回看",
+            note: "南湖纪念叙事不断把革命记忆重新拉回更长时段的历史镜鉴之中。",
+            confidenceLabel: "低",
+          },
+        ],
+      },
+    ],
+    realWorldSignals: {
+      sourceLabel: "南湖文献 + 近代上海城市文化专题片",
+      venueSummary: "补入《南湖纪念文献》后，红色支流终于有了可钻入的近现代节点，能够把“一大”史料、人物记忆、题词题诗和城市传播场景接成一段完整河面。",
+    },
+  },
 };
 
 const books = Array.from(
@@ -6216,6 +6502,7 @@ const peopleMergePlan: Partial<Record<string, string[]>> = {
   "zi-zhi-tong-jian": ["司马光", "刘恕"],
   "ri-zhi-lu": ["顾炎武"],
   "ren-jian-ci-hua": ["王国维"],
+  "nanhu-jinian": ["毛泽东", "何叔衡"],
   shipin: ["钟嵘"],
 };
 
@@ -6679,7 +6966,7 @@ if (fudanArchiveSample.available) {
 
 if (nanhuArchiveSample.available) {
   const institutionSamples = (nanhuArchiveSample.sampleRecords ?? []).slice(0, 3);
-  for (const slug of ["zi-zhi-tong-jian", "chuci-zhangju", "wenxuan"] as const) {
+  for (const slug of ["zi-zhi-tong-jian", "chuci-zhangju", "wenxuan", "nanhu-jinian"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -6718,7 +7005,7 @@ if (nanhuArchiveSample.available) {
   const redVenueSummary =
     "南湖专题中的中共“一大”、代表人物与题词题诗线索，已经把近现代回望主线牵成一股可回查的红色支流。";
 
-  for (const slug of ["shiji", "zi-zhi-tong-jian", "ren-jian-ci-hua"] as const) {
+  for (const slug of ["shiji", "zi-zhi-tong-jian", "ren-jian-ci-hua", "nanhu-jinian"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -6739,7 +7026,7 @@ if (nanhuArchiveSample.available) {
 
 if (videoTopicSample.available) {
   const institutionSamples = (videoTopicSample.sampleRecords ?? []).slice(0, 4);
-  for (const slug of ["ren-jian-ci-hua", "wenxuan", "wenxin-diaolong", "shipin"] as const) {
+  for (const slug of ["ren-jian-ci-hua", "wenxuan", "wenxin-diaolong", "shipin", "nanhu-jinian"] as const) {
     const detail = details[slug];
     detail.realWorldSignals = {
       ...detail.realWorldSignals,
@@ -6917,6 +7204,7 @@ if (cbdbSummary.available) {
     "chuci-zhangju",
     "wenxin-diaolong",
     "shipin",
+    "nanhu-jinian",
     "wenxuan",
   ] as const) {
     const detail = details[slug];

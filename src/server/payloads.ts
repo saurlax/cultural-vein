@@ -399,7 +399,7 @@ export function getInsightsPayload(): DatasetInsight {
             (realSupplements.nanhuArchiveSample.imageCount ?? 0),
           evidenceLabel: realSupplements.nanhuArchiveSample.collectionTitle ?? "文献 / 图像统计",
           evidenceNote: "原始资料可回查文献数量、图像数量与专题条目摘记。",
-          relatedBookSlugs: ["zi-zhi-tong-jian", "chuci-zhangju", "wenxuan"],
+          relatedBookSlugs: ["zi-zhi-tong-jian", "chuci-zhangju", "wenxuan", "nanhu-jinian"],
           sampleTitles: (realSupplements.nanhuArchiveSample.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => item.title),
@@ -423,7 +423,7 @@ export function getInsightsPayload(): DatasetInsight {
           magnitude: redArchiveRecords.length,
           evidenceLabel: "南湖红色专题",
           evidenceNote: "直接取自南湖文献数据库中的中共“一大”、题词题诗与代表人物资料。",
-          relatedBookSlugs: ["shiji", "zi-zhi-tong-jian", "ren-jian-ci-hua"],
+          relatedBookSlugs: ["shiji", "zi-zhi-tong-jian", "ren-jian-ci-hua", "nanhu-jinian"],
           sampleTitles: redArchiveRecords.map((item) => item.title),
           sampleRecords: redArchiveRecords.map((item) => ({
               title: item.title,
