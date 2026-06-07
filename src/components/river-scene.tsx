@@ -777,83 +777,157 @@ function ScrollRiverBackdrop({
   const eraIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
   const warmth = eraIndex / Math.max(RIVER_ERA_ORDER.length - 1, 1);
   const focusBoost = traceFocus?.active ? 0.16 : sceneFocus?.active ? 0.1 : 0;
-  const channelOpacity = 0.66 + warmth * 0.12 + focusBoost;
-  const branchOpacity = 0.26 + warmth * 0.08 + focusBoost * 0.45;
-  const segments = [
-    { left: "5%", top: "6%", width: "40%", height: "12%", rotate: -11 },
-    { left: "17%", top: "18%", width: "44%", height: "15%", rotate: 9 },
-    { left: "28%", top: "34%", width: "41%", height: "16%", rotate: -8 },
-    { left: "24%", top: "51%", width: "43%", height: "17%", rotate: 10 },
-    { left: "18%", top: "69%", width: "46%", height: "18%", rotate: -7 },
-    { left: "17%", top: "84%", width: "36%", height: "12%", rotate: 6 },
-  ] as const;
-  const branchStreams = [
-    { left: "45%", top: "20%", width: "19%", height: "6%", rotate: -24 },
-    { left: "47%", top: "48%", width: "23%", height: "7%", rotate: 18 },
-    { left: "10%", top: "58%", width: "18%", height: "6%", rotate: -30 },
-    { left: "39%", top: "77%", width: "21%", height: "6%", rotate: 26 },
-  ] as const;
+  const channelOpacity = 0.58 + warmth * 0.12 + focusBoost;
+  const branchOpacity = 0.18 + warmth * 0.08 + focusBoost * 0.4;
   const confluences = [
-    { left: "23%", top: "18%", size: "11rem" },
-    { left: "33%", top: "42%", size: "13rem" },
-    { left: "29%", top: "70%", size: "14rem" },
+    { left: "17%", top: "15%", size: "10rem" },
+    { left: "24%", top: "44%", size: "14rem" },
+    { left: "18%", top: "73%", size: "16rem" },
   ] as const;
 
   return (
     <div className="pointer-events-none absolute inset-[4%_3%_4%_3%] z-[2] overflow-hidden">
-      {segments.map((segment, index) => (
-        <div
-          key={`scroll-river-segment-${index}`}
-          className="absolute rounded-[999px]"
-          style={{
-            left: segment.left,
-            top: segment.top,
-            width: segment.width,
-            height: segment.height,
-            transform: `rotate(${segment.rotate}deg)`,
-            opacity: channelOpacity,
-            background:
-              "radial-gradient(circle at 30% 50%, rgba(255,249,226,0.98) 0%, rgba(253,231,171,0.95) 18%, rgba(244,199,95,0.88) 40%, rgba(198,130,42,0.72) 72%, rgba(142,87,28,0.16) 100%)",
-            boxShadow:
-              "0 0 28px rgba(255,236,179,0.48), 0 0 68px rgba(214,156,54,0.28), inset 0 0 34px rgba(255,244,214,0.62)",
-          }}
-        >
-          <div
-            className="absolute inset-y-[18%] left-[10%] right-[16%] rounded-[999px]"
-            style={{
-              background:
-                "linear-gradient(90deg, rgba(255,251,239,0.88), rgba(255,240,187,0.82) 24%, rgba(247,206,111,0.58) 58%, rgba(255,246,221,0.76) 100%)",
-              opacity: 0.92,
-              filter: "blur(0.5px)",
-            }}
-          />
-          <div
-            className="absolute inset-y-[34%] left-[12%] right-[28%] rounded-[999px]"
-            style={{
-              background:
-                "linear-gradient(90deg, rgba(255,255,249,0.78), rgba(255,249,228,0.32), rgba(255,255,249,0.74))",
-              opacity: 0.72,
-            }}
-          />
-        </div>
-      ))}
-      {branchStreams.map((branch, index) => (
-        <div
-          key={`scroll-river-branch-${index}`}
-          className="absolute rounded-[999px] blur-[0.4px]"
-          style={{
-            left: branch.left,
-            top: branch.top,
-            width: branch.width,
-            height: branch.height,
-            transform: `rotate(${branch.rotate}deg)`,
-            opacity: branchOpacity,
-            background:
-              "linear-gradient(90deg, rgba(255,247,214,0), rgba(250,222,154,0.86) 18%, rgba(225,174,74,0.78) 48%, rgba(153,96,30,0.18) 100%)",
-            boxShadow: "0 0 22px rgba(237,196,103,0.24)",
-          }}
+      <svg
+        className="absolute inset-0 h-full w-full"
+        viewBox="0 0 1000 1600"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="scroll-river-fill" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="rgba(255,251,237,0.98)" />
+            <stop offset="22%" stopColor="rgba(252,228,166,0.95)" />
+            <stop offset="54%" stopColor="rgba(243,197,90,0.9)" />
+            <stop offset="100%" stopColor="rgba(182,116,34,0.42)" />
+          </linearGradient>
+          <linearGradient id="scroll-river-core" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="rgba(255,255,248,0.84)" />
+            <stop offset="48%" stopColor="rgba(255,241,190,0.78)" />
+            <stop offset="100%" stopColor="rgba(255,252,238,0.7)" />
+          </linearGradient>
+          <linearGradient id="scroll-river-branch" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="rgba(255,244,203,0.62)" />
+            <stop offset="50%" stopColor="rgba(236,188,84,0.56)" />
+            <stop offset="100%" stopColor="rgba(157,96,30,0.08)" />
+          </linearGradient>
+          <filter id="scroll-river-glow" x="-30%" y="-20%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="22" result="blur" />
+            <feColorMatrix
+              in="blur"
+              type="matrix"
+              values="1 0 0 0 0  0 0.84 0 0 0  0 0 0.44 0 0  0 0 0 0.78 0"
+            />
+          </filter>
+          <filter id="scroll-river-soft" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="8" />
+          </filter>
+        </defs>
+
+        <path
+          d="M150 120
+             C300 90, 365 70, 470 118
+             C555 156, 548 245, 448 274
+             C334 308, 204 270, 122 330
+             C48 384, 74 488, 196 506
+             C365 531, 521 444, 656 485
+             C754 514, 790 610, 716 676
+             C633 750, 468 713, 316 748
+             C183 779, 123 874, 174 947
+             C232 1031, 386 1008, 539 1051
+             C687 1092, 724 1221, 633 1286
+             C547 1347, 382 1311, 238 1348
+             C112 1381, 84 1486, 168 1532
+             C242 1571, 410 1542, 528 1510"
+          fill="none"
+          stroke="url(#scroll-river-fill)"
+          strokeWidth="110"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          opacity={channelOpacity}
+          filter="url(#scroll-river-glow)"
         />
-      ))}
+        <path
+          d="M150 120
+             C300 90, 365 70, 470 118
+             C555 156, 548 245, 448 274
+             C334 308, 204 270, 122 330
+             C48 384, 74 488, 196 506
+             C365 531, 521 444, 656 485
+             C754 514, 790 610, 716 676
+             C633 750, 468 713, 316 748
+             C183 779, 123 874, 174 947
+             C232 1031, 386 1008, 539 1051
+             C687 1092, 724 1221, 633 1286
+             C547 1347, 382 1311, 238 1348
+             C112 1381, 84 1486, 168 1532
+             C242 1571, 410 1542, 528 1510"
+          fill="none"
+          stroke="url(#scroll-river-fill)"
+          strokeWidth="84"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          opacity={Math.min(0.96, channelOpacity + 0.18)}
+        />
+        <path
+          d="M152 136
+             C286 109, 355 94, 449 131
+             C515 158, 503 225, 419 246
+             C319 271, 207 243, 145 289
+             C90 331, 112 404, 217 420
+             C366 443, 514 372, 625 406
+             C698 429, 725 500, 668 549
+             C601 607, 457 580, 333 607
+             C225 631, 182 712, 228 772
+             C277 836, 409 815, 527 847
+             C646 879, 681 981, 607 1034
+             C534 1086, 393 1058, 275 1084
+             C173 1108, 136 1188, 185 1239
+             C241 1299, 390 1277, 488 1248"
+          fill="none"
+          stroke="url(#scroll-river-core)"
+          strokeWidth="38"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          opacity={0.82 + warmth * 0.08}
+        />
+
+        <path
+          d="M472 292 C548 236, 612 202, 692 218"
+          fill="none"
+          stroke="url(#scroll-river-branch)"
+          strokeWidth="34"
+          strokeLinecap="round"
+          opacity={branchOpacity}
+          filter="url(#scroll-river-soft)"
+        />
+        <path
+          d="M587 665 C701 645, 790 678, 844 745"
+          fill="none"
+          stroke="url(#scroll-river-branch)"
+          strokeWidth="30"
+          strokeLinecap="round"
+          opacity={branchOpacity + 0.04}
+          filter="url(#scroll-river-soft)"
+        />
+        <path
+          d="M224 845 C147 835, 102 877, 86 949"
+          fill="none"
+          stroke="url(#scroll-river-branch)"
+          strokeWidth="28"
+          strokeLinecap="round"
+          opacity={branchOpacity - 0.03}
+          filter="url(#scroll-river-soft)"
+        />
+        <path
+          d="M518 1198 C634 1230, 706 1284, 759 1372"
+          fill="none"
+          stroke="url(#scroll-river-branch)"
+          strokeWidth="32"
+          strokeLinecap="round"
+          opacity={branchOpacity}
+          filter="url(#scroll-river-soft)"
+        />
+      </svg>
       {confluences.map((pool, index) => (
         <div
           key={`scroll-river-pool-${index}`}
