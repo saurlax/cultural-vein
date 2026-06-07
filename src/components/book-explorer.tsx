@@ -875,6 +875,15 @@ export function BookExplorer({
     : null;
   const activeSourceEvidence =
     sourceEvidence.find((item) => item.id === selectedSourceEvidenceId) ?? sourceEvidence[0] ?? null;
+  const activeSourceEvidenceIndex = activeSourceEvidence
+    ? sourceEvidence.findIndex((item) => item.id === activeSourceEvidence.id)
+    : -1;
+  const activeSourceEvidenceWindow = activeSourceEvidence
+    ? sourceEvidence.slice(
+        Math.max(0, activeSourceEvidenceIndex - 1),
+        Math.min(sourceEvidence.length, activeSourceEvidenceIndex + 2),
+      )
+    : sourceEvidence.slice(0, 3);
   const activeInstitutionRecord =
     institutionRecords.find(
       (item) =>
@@ -1739,6 +1748,87 @@ export function BookExplorer({
                       <div className="rounded-full bg-amber-300/10 px-3 py-1 text-[10px] text-amber-100">
                         {activeSourceEvidence.countLabel}
                       </div>
+                    </div>
+                    <div className="mt-4 rounded-2xl border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-4 py-4">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                          <div className="text-xs tracking-[0.2em] text-amber-100/75">
+                            证据卷轴
+                          </div>
+                          <div className="mt-1 text-sm text-stone-300">
+                            第 {Math.max(activeSourceEvidenceIndex + 1, 1)} / {Math.max(sourceEvidence.length, 1)} 类
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const previousEvidence = sourceEvidence[activeSourceEvidenceIndex - 1];
+                              if (previousEvidence?.id) {
+                                setSelectedSourceEvidenceId(previousEvidence.id);
+                              }
+                            }}
+                            disabled={activeSourceEvidenceIndex <= 0}
+                            className={`rounded-full px-3 py-1.5 text-xs transition ${
+                              activeSourceEvidenceIndex <= 0
+                                ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                                : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                            }`}
+                          >
+                            前一类
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const nextEvidence = sourceEvidence[activeSourceEvidenceIndex + 1];
+                              if (nextEvidence?.id) {
+                                setSelectedSourceEvidenceId(nextEvidence.id);
+                              }
+                            }}
+                            disabled={activeSourceEvidenceIndex >= sourceEvidence.length - 1}
+                            className={`rounded-full px-3 py-1.5 text-xs transition ${
+                              activeSourceEvidenceIndex >= sourceEvidence.length - 1
+                                ? "cursor-not-allowed border border-white/10 bg-white/5 text-stone-500"
+                                : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
+                            }`}
+                          >
+                            后一类
+                          </button>
+                        </div>
+                      </div>
+                      {activeSourceEvidenceWindow.length > 1 ? (
+                        <div className="mt-4 grid gap-3 md:grid-cols-3">
+                          {activeSourceEvidenceWindow.map((item) => {
+                            const isActive = item.id === activeSourceEvidence.id;
+
+                            return (
+                              <button
+                                key={`source-window-${item.id}`}
+                                type="button"
+                                onClick={() => setSelectedSourceEvidenceId(item.id)}
+                                className={`rounded-[18px] border px-3 py-3 text-left transition ${
+                                  isActive
+                                    ? "border-amber-300/30 bg-amber-300/10"
+                                    : "border-white/10 bg-white/5 hover:bg-white/10"
+                                }`}
+                              >
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">
+                                  {isActive ? "当前证据" : "相邻证据"}
+                                </div>
+                                <div className="mt-2 text-sm font-medium text-stone-100">
+                                  {item.source}
+                                </div>
+                                <div className="mt-1 text-[11px] text-stone-400">
+                                  {item.category}
+                                </div>
+                                <div className="mt-2 text-[11px] leading-5 text-[#d8c9a3]">
+                                  {item.countLabel}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ) : null}
                     </div>
                     <p className="mt-4 text-sm leading-7 text-stone-300">
                       {activeSourceEvidence.summary}
