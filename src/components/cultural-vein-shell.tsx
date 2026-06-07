@@ -552,8 +552,10 @@ export function CulturalVeinShell() {
     return () => window.clearTimeout(timer);
   }, [transitionState]);
 
+  const resolvedActiveSourceAtlasId = activeSourceAtlasId ?? insights?.sourceAtlas?.[0]?.id ?? null;
+
   useEffect(() => {
-    if (!activeSourceAtlasId) {
+    if (!resolvedActiveSourceAtlasId) {
       return;
     }
 
@@ -562,7 +564,7 @@ export function CulturalVeinShell() {
     const loadSourceAtlasDetail = async () => {
       try {
         const response = await fetch(
-          `/api/source-atlas/${encodeURIComponent(activeSourceAtlasId)}`,
+          `/api/source-atlas/${encodeURIComponent(resolvedActiveSourceAtlasId)}`,
         );
 
         if (!response.ok) {
@@ -588,7 +590,7 @@ export function CulturalVeinShell() {
     return () => {
       cancelled = true;
     };
-  }, [activeSourceAtlasId]);
+  }, [resolvedActiveSourceAtlasId]);
 
   const handleDiveToBook = (slug: string, options?: ExplorerOpenOptions) => {
     const nextEntryTab =
@@ -1194,11 +1196,13 @@ export function CulturalVeinShell() {
           ? "文卷正沿水势缓缓归回主河道"
           : null;
   const openingLead =
-    activeEra === "先秦"
-      ? "从经典源头起笔，沿河看见文脉如何生长。"
-      : activeEra === "宋元"
-        ? "此处正是支流奔涌最盛的一段河身。"
-        : "顺着黄河长卷巡看主河、支流与时代起伏。";
+    activeSourceAtlasEntry
+      ? `先让 ${activeSourceAtlasEntry.name} 这股真实来源支流映上河身，再顺着主河追看典籍入卷。`
+      : activeEra === "先秦"
+        ? "从经典源头起笔，沿河看见文脉如何生长。"
+        : activeEra === "宋元"
+          ? "此处正是支流奔涌最盛的一段河身。"
+          : "顺着黄河长卷巡看主河、支流与时代起伏。";
   const openingSourcePreviewBooks = useMemo(() => {
     if (selectedBook) {
       return [];
@@ -1222,6 +1226,10 @@ export function CulturalVeinShell() {
 
     return previewBooks.slice(0, 3);
   }, [activeSourceAtlasEntry, activeSourceRelatedBooks, getEntryAnchorBooks, selectedBook]);
+  const openingPreviewLead =
+    openingSourcePreviewBooks.length > 0
+      ? `首屏先把 ${openingSourcePreviewBooks.map((book) => `《${book.title}》`).join("、")} 牵到这股水势周围。`
+      : landingNarrative;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#e7c978] text-stone-100">
@@ -1291,7 +1299,7 @@ export function CulturalVeinShell() {
 
               <div className="mt-3 rounded-[22px] border border-[#d9b86b]/18 bg-[rgba(255,252,240,0.32)] px-3 py-3 text-[#6f4b18]">
                 <div className="text-[12px] leading-6">{openingLead}</div>
-                <div className="mt-2 text-[11px] leading-5 text-[#8d6a2c]">{landingNarrative}</div>
+                <div className="mt-2 text-[11px] leading-5 text-[#8d6a2c]">{openingPreviewLead}</div>
                 {openingSourcePreviewBooks.length ? (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {openingSourcePreviewBooks.map((book) => (

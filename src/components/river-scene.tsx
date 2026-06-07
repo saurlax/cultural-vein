@@ -3133,7 +3133,7 @@ function RiverWorld({
 
 export function RiverScene(props: RiverSceneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [cruiseProgress, setCruiseProgress] = useState(0.1);
+  const [cruiseProgress, setCruiseProgress] = useState(0.18);
   const [autoCruise, setAutoCruise] = useState(true);
   const [isInteracting, setIsInteracting] = useState(false);
   const [showMobileTouchHint, setShowMobileTouchHint] = useState(true);
@@ -3243,7 +3243,7 @@ export function RiverScene(props: RiverSceneProps) {
 
     const timer = window.setTimeout(() => {
       setShowMobileTouchHint(false);
-    }, 2600);
+    }, 2200);
 
     return () => window.clearTimeout(timer);
   }, [showMobileTouchHint]);
