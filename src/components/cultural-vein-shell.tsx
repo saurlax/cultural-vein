@@ -904,6 +904,12 @@ export function CulturalVeinShell() {
       : sourceAtlasEntries.slice(1, 3);
   const coverageLayers = atlasMeta?.coverageLayers ?? [];
   const cbdbPersonCount = insights?.cbdbSummary?.personCount ?? null;
+  const demoCoveragePercent = atlasMeta
+    ? Math.max(
+        0.01,
+        (atlasMeta.demoBookCount / Math.max(atlasMeta.totalBookCount, 1)) * 100,
+      )
+    : null;
   const eraRecommendedBooks = useMemo(() => {
     return filteredBooks
       .filter((book) => book.dynasty === activeEra)
@@ -1384,6 +1390,27 @@ export function CulturalVeinShell() {
                                   {cbdbPersonCount?.toLocaleString() ?? "--"}
                                 </div>
                                 <div className="mt-1 text-[10px] text-[#dccb9c]">CBDB 纪传可用人物</div>
+                              </div>
+                            </div>
+                            <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">示范域策略</div>
+                                <div className="rounded-full border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-2 py-0.5 text-[10px] text-[#f2dfab]">
+                                  {demoCoveragePercent !== null
+                                    ? `${demoCoveragePercent.toFixed(3)}% 前景显影`
+                                    : "前景显影"}
+                                </div>
+                              </div>
+                              <div className="mt-2 text-[10px] leading-5 text-[#dccb9c]">
+                                当前以前景示范域
+                                <span className="px-1 text-[#fbf3da]">
+                                  {atlasMeta.demoBookCount.toLocaleString()}
+                                </span>
+                                部主线典籍串起完整体验，把宏观河流、中观钻入与微观溯源先做深；底层仍对齐
+                                <span className="px-1 text-[#fbf3da]">
+                                  {atlasMeta.totalBookCount.toLocaleString()}
+                                </span>
+                                部古籍底盘，后续可沿统一装配链自然长出新支流。
                               </div>
                             </div>
                             <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.2)] px-3 py-3">
@@ -1893,6 +1920,20 @@ export function CulturalVeinShell() {
                           <div className="mt-1 text-[11px] font-medium text-[#fbf3da]">
                             {cbdbPersonCount?.toLocaleString() ?? "--"}
                           </div>
+                        </div>
+                      </div>
+                      <div className="mt-3 rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="text-[10px] tracking-[0.16em] text-[#d8c9a3]">示范域策略</div>
+                          <div className="rounded-full border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-2 py-0.5 text-[10px] text-[#f2dfab]">
+                            {demoCoveragePercent !== null
+                              ? `${demoCoveragePercent.toFixed(3)}%`
+                              : "前景显影"}
+                          </div>
+                        </div>
+                        <div className="mt-2 text-[10px] leading-5 text-[#dccb9c]">
+                          先把 {atlasMeta.demoBookCount.toLocaleString()} 部主线典籍做深做透，再沿
+                          {atlasMeta.totalBookCount.toLocaleString()} 部古籍底盘继续扩河。
                         </div>
                       </div>
                       <div className="mt-3 rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-3 py-3">
