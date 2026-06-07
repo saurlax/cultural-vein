@@ -1273,6 +1273,35 @@ export function CulturalVeinShell() {
             ) : null}
           </div>
         </div>
+        {!selectedBook && activeSourceAtlasEntry ? (
+          <div className="pointer-events-none absolute left-4 top-28 z-30 hidden md:block lg:left-6">
+            <div className="pointer-events-auto max-w-[18rem] rounded-[20px] border border-[#e7c97b]/18 bg-[linear-gradient(180deg,rgba(109,73,24,0.58),rgba(78,50,16,0.5))] px-3 py-3 shadow-[0_12px_26px_rgba(61,34,8,0.08)] backdrop-blur-xl">
+              <div className="flex items-center gap-2">
+                <span
+                  className="h-2.5 w-2.5 shrink-0 rounded-full"
+                  style={{ backgroundColor: activeSourceRoute?.color ?? "#d6a33d" }}
+                />
+                <div className="text-[10px] tracking-[0.24em] text-[#f4d892]/82">真实来源图例</div>
+              </div>
+              <div className="mt-2 text-[11px] text-[#fff2cf]">{activeSourceAtlasEntry.name}</div>
+              <div className="mt-1 text-[10px] leading-5 text-[#e8d7ab]">
+                {getSourceThemeLabel(activeSourceAtlasEntry.name)} · {activeSourceAtlasEntry.stat ?? "来源支流"}
+              </div>
+              {atlasCoverageHighlights.length ? (
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {atlasCoverageHighlights.map((label) => (
+                    <span
+                      key={`coverage-layer-${label}`}
+                      className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]"
+                    >
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
 
         <div className="pointer-events-none absolute right-4 top-1/2 z-30 hidden -translate-y-1/2 md:block lg:right-5">
           <div className="pointer-events-auto relative flex flex-col items-center gap-1.5 rounded-[30px] border border-[#e3c47a]/18 bg-[linear-gradient(180deg,rgba(170,126,51,0.8),rgba(95,64,23,0.74))] px-1.5 py-2 shadow-[0_12px_32px_rgba(61,34,8,0.12)] backdrop-blur-xl">
