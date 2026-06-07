@@ -12,6 +12,42 @@ import type { RiverEra, ViewMode } from "@/types/domain";
 type OrbitControlsInstance = ElementRef<typeof OrbitControls>;
 const RIVER_ERA_ORDER: RiverEra[] = ["先秦", "两汉", "魏晋", "隋唐", "宋元", "明清", "近现代"];
 const touchModeLabel = "单指拖移河面 · 双指缩放并旋看";
+const RIVER_ERA_STORIES: Record<
+  RiverEra,
+  {
+    lead: string;
+    trunk: string;
+  }
+> = {
+  "先秦": {
+    lead: "主河仍在上游聚束，经典原点与最初的思想定型正在成势。",
+    trunk: "主干以《诗经》《尚书》《周易》《论语》为轴，奠定后世经学源头。",
+  },
+  "两汉": {
+    lead: "河道开始放宽，整理、篇章析出与训诂系统同步成形。",
+    trunk: "《礼记》《大学》《中庸》《孝经》重编礼治与修身秩序，主河开始稳固。",
+  },
+  "魏晋": {
+    lead: "主河进入重释与转写阶段，经学资源向文论与总集扩散。",
+    trunk: "《文心雕龙》《昭明文选》把经典源流转译成新的诗文阅读传统。",
+  },
+  "隋唐": {
+    lead: "河势转入官学整理期，正义、疏解与制度化讲授让主流更稳定。",
+    trunk: "《尚书正义》代表的经疏，把原典固定为更大范围的教学主线。",
+  },
+  "宋元": {
+    lead: "这是支流爆发的一层，理学重组与通史编纂让整条河强烈分流。",
+    trunk: "《四书章句集注》《论语集注》《资治通鉴》把教材化与义理化推到高峰。",
+  },
+  "明清": {
+    lead: "河道进入考据、反思与再整理阶段，旧支流收束，新支流转深。",
+    trunk: "《日知录》把经世批评、训诂回流与制度反思重新压回主线。",
+  },
+  "近现代": {
+    lead: "河面抵达近现代，古典资源被改写成新的出版与公共文化话语。",
+    trunk: "《人间词话》把古典诗学转译为现代审美判断，让整条河重新发光。",
+  },
+};
 
 export interface RiverBranchAnnotation {
   id: string;
@@ -75,6 +111,16 @@ interface RiverSceneProps {
 interface CruiseSnapshot {
   point: THREE.Vector3;
   tangent: THREE.Vector3;
+}
+
+interface CruiseAnchorMoment {
+  id: string;
+  progress: number;
+  label: string;
+  detail: string;
+  emphasis: number;
+  kind: "era" | "book" | "branch";
+  era?: RiverEra;
 }
 
 interface RiverRibbonProps {
@@ -2236,7 +2282,32 @@ export function RiverScene(props: RiverSceneProps) {
   const hoveredBranch = props.branchAnnotations?.find(
     (annotation) => annotation.id === props.hoveredBranchId,
   ) ?? null;
-  const cruiseAnchorMoments = useMemo(() => {
+  const cruiseAnchorMoments = useMemo<CruiseAnchorMoment[]>(() => {
+    const eraAnchors = RIVER_ERA_ORDER.map((era) => {
+      const eraBooks = props.books
+        .filter((book) => book.dynasty === era && book.branchLevel === 0)
+        .sort((left, right) => left.year - right.year);
+
+      if (!eraBooks.length) {
+        return null;
+      }
+
+      const averageX =
+        eraBooks.reduce((sum, book) => sum + book.coordinates[0], 0) / Math.max(eraBooks.length, 1);
+      const progress = THREE.MathUtils.clamp((averageX + 6.8) / 16.8, 0.08, 0.92);
+      const story = RIVER_ERA_STORIES[era];
+
+      return {
+        id: `era-${era}`,
+        progress,
+        label: `${era}河段`,
+        detail: `${story.lead} ${story.trunk}`,
+        emphasis: 0.95,
+        kind: "era" as const,
+        era,
+      };
+    }).filter((anchor): anchor is NonNullable<typeof anchor> => anchor !== null);
+
     const bookAnchors = props.books
       .filter((book) => book.branchLevel === 0)
       .sort((left, right) => left.year - right.year)
@@ -2247,6 +2318,8 @@ export function RiverScene(props: RiverSceneProps) {
         label: book.shortTitle,
         detail: `${book.shortTitle} 正浮出主河道，可顺势入卷查看这一段文脉主干。`,
         emphasis: 1,
+        kind: "book" as const,
+        era: book.dynasty,
       }));
     const branchAnchors = (props.branchAnnotations ?? [])
       .map((annotation) => ({
@@ -2255,10 +2328,11 @@ export function RiverScene(props: RiverSceneProps) {
         label: annotation.label,
         detail: `${annotation.label} 已临近镜头，${annotation.description}`,
         emphasis: 0.72,
+        kind: "branch" as const,
       }))
       .sort((left, right) => left.progress - right.progress);
 
-    return [...bookAnchors, ...branchAnchors]
+    return [...eraAnchors, ...bookAnchors, ...branchAnchors]
       .sort((left, right) => left.progress - right.progress)
       .filter((anchor, index, anchors) => {
         if (index === 0) {
@@ -2272,6 +2346,8 @@ export function RiverScene(props: RiverSceneProps) {
   const activeCruiseMoment =
     cruiseAnchorMoments.find((anchor) => Math.abs(anchor.progress - cruiseProgress) <= 0.045) ??
     null;
+  const activeCruiseStory =
+    activeCruiseMoment?.era ? RIVER_ERA_STORIES[activeCruiseMoment.era] : null;
   const sceneHint = props.traceFocus?.active
     ? `逆流正经过 ${props.traceFocus.currentTitle ?? "此处节点"}，沿链回看文脉源头。`
     : props.sceneFocus?.active
@@ -2389,6 +2465,11 @@ export function RiverScene(props: RiverSceneProps) {
                 <div className="mt-1 text-xs text-[#fbf3da] sm:text-sm">
                   {activeCruiseMoment ? `停驻 ${activeCruiseMoment.label}` : "从上游缓缓入画"}
                 </div>
+                {activeCruiseMoment?.kind === "era" ? (
+                  <div className="mt-2 inline-flex rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.06)] px-2.5 py-1 text-[10px] text-[#f4e2b0]">
+                    时代段落 · {activeCruiseMoment.era}
+                  </div>
+                ) : null}
                 <div className="mt-2 hidden text-[10px] leading-5 text-[#e8d6aa] sm:block">
                   {activeCruiseMoment
                     ? activeCruiseMoment.detail
@@ -2413,6 +2494,12 @@ export function RiverScene(props: RiverSceneProps) {
                 style={{ width: `${Math.max(6, cruiseProgress * 100)}%` }}
               />
             </div>
+            {activeCruiseStory ? (
+              <div className="mt-3 rounded-[18px] border border-[#ead8a6]/14 bg-[rgba(45,28,9,0.34)] px-3 py-3">
+                <div className="text-[10px] tracking-[0.22em] text-[#d9c18a]">这一段主干</div>
+                <div className="mt-2 text-[11px] leading-5 text-[#f3e6c1]">{activeCruiseStory.trunk}</div>
+              </div>
+            ) : null}
             <div className="mt-3 flex items-center gap-2">
               <button
                 type="button"
