@@ -1132,24 +1132,26 @@ export function CulturalVeinShell() {
   const dossierToneClass = traceFocus?.active
     ? "border-amber-200/24 bg-[linear-gradient(135deg,rgba(125,82,18,0.4),rgba(37,24,8,0.9))]"
     : transitionState === "diving" || transitionState === "settling"
-      ? "border-amber-300/20 bg-[linear-gradient(135deg,rgba(121,75,14,0.48),rgba(42,26,9,0.9))]"
+      ? "border-amber-300/22 bg-[linear-gradient(135deg,rgba(133,84,18,0.48),rgba(52,32,10,0.92))]"
       : "border-amber-200/18 bg-[linear-gradient(135deg,rgba(97,63,14,0.42),rgba(34,22,8,0.9))]";
   const dossierMotionClass =
     transitionState === "diving"
-      ? "translate-y-8 scale-[0.972] opacity-0 blur-[1px]"
+      ? "translate-x-10 translate-y-5 scale-x-[0.92] scale-y-[1.02] opacity-0 blur-[2px]"
       : transitionState === "settling"
         ? "translate-y-0 scale-100 opacity-100"
         : transitionState === "returning"
-          ? "-translate-y-4 scale-[1.018] opacity-0 blur-[1px]"
+          ? "translate-x-12 -translate-y-2 scale-x-[0.9] scale-y-[1.01] opacity-0 blur-[2px]"
           : "translate-y-0 scale-100 opacity-100";
+  const dossierShellClass =
+    transitionState === "diving" || transitionState === "settling"
+      ? "shadow-[0_0_42px_rgba(245,158,11,0.16)]"
+      : "shadow-[0_18px_48px_rgba(41,22,5,0.18)]";
   const resolvedSearchResult =
     searchResult?.query.trim() === searchTerm.trim() ? searchResult : null;
   const searchSuggestionChips =
     resolvedSearchResult?.relatedConcepts.length
       ? resolvedSearchResult.relatedConcepts
       : defaultConceptSuggestions;
-  const panelBaseClass =
-    "rounded-[28px] border border-[#c89b43]/30 bg-[linear-gradient(180deg,rgba(245,232,189,0.96),rgba(225,191,112,0.92))] shadow-[0_18px_56px_rgba(92,58,16,0.16)] backdrop-blur-xl";
   const desktopControlPanelClass =
     "rounded-[24px] border border-[#c89b43]/22 bg-[linear-gradient(180deg,rgba(248,238,206,0.94),rgba(224,189,104,0.88))] shadow-[0_14px_40px_rgba(92,58,16,0.12)] backdrop-blur-xl";
   const mobileSheetClass =
@@ -1299,6 +1301,15 @@ export function CulturalVeinShell() {
             }`}
           />
           <div
+            className={`absolute right-[min(16vw,10rem)] top-[10%] h-[76%] w-[min(36vw,28rem)] rounded-[42px] border border-[#f3dfab]/14 bg-[linear-gradient(180deg,rgba(255,244,205,0.16),rgba(255,244,205,0.03),rgba(210,163,66,0.14))] transition-all duration-500 ${
+              transitionState === "diving"
+                ? "translate-x-10 opacity-100 blur-[6px] scale-x-[0.86]"
+                : transitionState === "settling"
+                  ? "translate-x-0 opacity-70 blur-[10px] scale-x-100"
+                  : "translate-x-14 opacity-0 blur-[18px] scale-x-[0.82]"
+            }`}
+          />
+          <div
             className={`absolute inset-y-0 left-1/2 w-[min(38vw,440px)] -translate-x-1/2 bg-[linear-gradient(180deg,rgba(248,223,154,0.16),rgba(248,223,154,0.03),rgba(248,223,154,0.14))] transition-all duration-500 ${
               transitionState === "diving"
                 ? "opacity-90 blur-[8px] scale-x-[1.02]"
@@ -1314,6 +1325,24 @@ export function CulturalVeinShell() {
                 : transitionState === "settling"
                   ? "opacity-66 blur-[12px] scale-y-100"
                   : "opacity-0 blur-[18px] scale-y-[0.92]"
+            }`}
+          />
+          <div
+            className={`absolute right-[min(13vw,8rem)] top-[14%] h-[68%] w-[14px] rounded-full bg-[linear-gradient(180deg,rgba(255,241,189,0.96),rgba(197,136,45,0.84),rgba(255,241,189,0.94))] transition-all duration-500 ${
+              transitionState === "diving"
+                ? "translate-x-10 opacity-95 blur-[1px]"
+                : transitionState === "settling"
+                  ? "translate-x-0 opacity-68 blur-[2px]"
+                  : "translate-x-12 opacity-0 blur-[6px]"
+            }`}
+          />
+          <div
+            className={`absolute right-[min(13vw,8rem)] top-[14%] h-[68%] w-[min(30vw,24rem)] rounded-r-[34px] border-y border-r border-[#f2dfab]/12 bg-[linear-gradient(90deg,rgba(255,241,201,0.18),rgba(255,241,201,0.04),rgba(255,241,201,0))] transition-all duration-500 ${
+              transitionState === "diving"
+                ? "translate-x-8 opacity-90 blur-[4px]"
+                : transitionState === "settling"
+                  ? "translate-x-0 opacity-54 blur-[8px]"
+                  : "translate-x-12 opacity-0 blur-[16px]"
             }`}
           />
           {transitionLabel ? (
@@ -1962,9 +1991,11 @@ export function CulturalVeinShell() {
         ) : null}
 
         {showDesktopDossier && selectedBook && selectedDetail ? (
-          <div className="absolute right-4 top-[104px] z-20 hidden w-[min(400px,calc(100vw-20rem))] sm:right-6 lg:right-8 xl:block">
+          <div className="absolute right-4 top-[86px] z-20 hidden w-[min(428px,calc(100vw-19rem))] sm:right-6 lg:right-8 xl:block">
             <aside className={`pointer-events-auto transition-all duration-500 ease-out xl:pt-2 ${dossierMotionClass}`}>
-              <div className={`overflow-hidden p-4 ${panelBaseClass}`}>
+              <div className={`overflow-hidden rounded-[34px] border border-[#d6b166]/18 bg-[linear-gradient(180deg,rgba(248,236,198,0.24),rgba(84,56,18,0.22))] p-3 backdrop-blur-xl ${dossierShellClass}`}>
+                <div className="pointer-events-none absolute inset-y-10 left-3 w-3 rounded-full bg-[linear-gradient(180deg,rgba(255,239,196,0.96),rgba(205,144,47,0.74),rgba(255,239,196,0.94))]" />
+                <div className="pointer-events-none absolute inset-y-10 right-3 w-3 rounded-full bg-[linear-gradient(180deg,rgba(255,236,186,0.92),rgba(190,131,42,0.72),rgba(255,236,186,0.9))]" />
                 <div
                   className={`relative rounded-[30px] border border-[#ead8a6]/20 bg-[linear-gradient(180deg,rgba(245,231,188,0.14),rgba(104,72,25,0.14))] p-3 ${
                     traceFocus?.active
@@ -1974,9 +2005,7 @@ export function CulturalVeinShell() {
                         : ""
                   }`}
                 >
-                  <div className="pointer-events-none absolute inset-y-6 left-2 w-3 rounded-full bg-[linear-gradient(180deg,rgba(255,239,196,0.9),rgba(212,164,72,0.58),rgba(255,239,196,0.84))]" />
-                  <div className="pointer-events-none absolute inset-y-6 right-2 w-3 rounded-full bg-[linear-gradient(180deg,rgba(255,232,184,0.88),rgba(196,138,47,0.58),rgba(255,232,184,0.84))]" />
-                  <div className="pointer-events-none absolute inset-x-8 top-3 h-px bg-[linear-gradient(90deg,transparent,rgba(246,221,160,0.6),transparent)]" />
+                  <div className="pointer-events-none absolute inset-x-10 top-3 h-px bg-[linear-gradient(90deg,transparent,rgba(246,221,160,0.6),transparent)]" />
                   <div className="flex items-start justify-between gap-3 rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(61,40,11,0.45)] px-4 py-3">
                     <div className="min-w-0">
                       <div className="text-[11px] tracking-[0.28em] text-[#f2dfab]/80">
@@ -2052,9 +2081,10 @@ export function CulturalVeinShell() {
                     </div>
                   </div>
 
-                  <div className="relative mt-3 rounded-[28px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(248,236,198,0.98),rgba(227,204,148,0.94))] px-4 py-4 text-[#42290a] shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
+                  <div className="relative mt-3 rounded-[30px] border border-[#ead8a6]/16 bg-[linear-gradient(180deg,rgba(250,240,210,0.98),rgba(228,205,150,0.95))] px-5 py-4 text-[#42290a] shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
                     <div className="pointer-events-none absolute inset-y-4 left-2 w-px bg-[linear-gradient(180deg,transparent,rgba(178,139,71,0.35),transparent)]" />
                     <div className="pointer-events-none absolute inset-y-4 right-2 w-px bg-[linear-gradient(180deg,transparent,rgba(178,139,71,0.28),transparent)]" />
+                    <div className="pointer-events-none absolute left-4 top-4 h-[calc(100%-2rem)] w-2 rounded-full bg-[linear-gradient(180deg,rgba(255,241,203,0.78),rgba(194,139,52,0.42),rgba(255,241,203,0.72))]" />
                     <div className="mb-3 flex items-center justify-between gap-3 border-b border-[#b89247]/20 pb-3">
                       <div>
                       <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">
