@@ -3660,6 +3660,37 @@ export function BookExplorer({
                       </button>
                     ))}
                   </div>
+                  <div className="mt-4 rounded-[20px] border border-[#ead8a6]/14 bg-[rgba(36,22,8,0.28)] px-3 py-3">
+                    <div className="text-[11px] tracking-[0.22em] text-[#d8c9a3]">
+                      溯源判读图例
+                    </div>
+                    <div className="mt-3 grid gap-2 text-[11px] text-[#eadfbc] md:grid-cols-2">
+                      <div className="flex items-center gap-2">
+                        <span className="rounded border border-emerald-300/24 bg-emerald-300/14 px-2 py-1 text-emerald-100">
+                          高
+                        </span>
+                        <span>显式引用：如“某书云”等直接引述</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="rounded border border-amber-300/24 bg-amber-300/14 px-2 py-1 text-amber-100">
+                          中
+                        </span>
+                        <span>语义关联：文字相近而未明引</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="rounded border border-dashed border-white/18 bg-white/6 px-2 py-1 text-stone-300">
+                          低
+                        </span>
+                        <span>间接影响：思想呼应但文本差异较大</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="rounded border border-white/14 bg-white/8 px-2 py-1 text-stone-200">
+                          书目
+                        </span>
+                        <span>书目关联：来自元数据与版本关系</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="rounded-[24px] border border-amber-300/15 bg-[linear-gradient(180deg,rgba(191,140,40,0.16),rgba(56,35,11,0.24))] px-4 py-4">
