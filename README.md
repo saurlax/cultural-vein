@@ -185,6 +185,7 @@ tmp_generated/           # 中间文件
 5. 归河后切换来源河册，展示真实来源如何反向驱动河面焦点
 
 更完整的现场展示说明、提交前检查清单和交付要点见 [DELIVERY.md](./DELIVERY.md)。
+按方案逐项核对当前实现与直接证据，可查看 [REQUIREMENTS_MATRIX.md](./REQUIREMENTS_MATRIX.md)。
 
 ## 后续建议
 
