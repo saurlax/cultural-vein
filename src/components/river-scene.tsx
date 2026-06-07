@@ -179,6 +179,9 @@ interface RiverSceneProps {
   sourceAtlasRoutes?: SourceAtlasRoute[];
   onOpenControlPanel?: (() => void) | null;
   onOpenEraPanel?: (() => void) | null;
+  onAdvanceEra?: ((direction: -1 | 1) => void) | null;
+  onToggleEraPlayback?: (() => void) | null;
+  eraPlaybackActive?: boolean;
   onReturnToRiver?: (() => void) | null;
   mobilePanelOpen?: boolean;
   overlayBusy?: boolean;
@@ -3177,6 +3180,8 @@ export function RiverScene(props: RiverSceneProps) {
       ? "场景联动"
       : props.selectedBookSlug
         ? "入卷细览"
+        : props.eraPlaybackActive
+          ? "时代顺演"
         : cruiseRunning
           ? "顺河巡航"
           : "河面驻看";
@@ -3451,6 +3456,33 @@ export function RiverScene(props: RiverSceneProps) {
                   className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.06)] px-2.5 py-1 text-[10px] text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                 >
                   时代
+                </button>
+              ) : null}
+              {!props.selectedBookSlug && props.onAdvanceEra ? (
+                <button
+                  type="button"
+                  onClick={() => props.onAdvanceEra?.(-1)}
+                  className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.06)] px-2.5 py-1 text-[10px] text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
+                >
+                  前朝
+                </button>
+              ) : null}
+              {!props.selectedBookSlug && props.onToggleEraPlayback ? (
+                <button
+                  type="button"
+                  onClick={props.onToggleEraPlayback}
+                  className="rounded-full border border-amber-300/18 bg-amber-300/10 px-2.5 py-1 text-[10px] text-amber-50 transition hover:bg-amber-300/16"
+                >
+                  {props.eraPlaybackActive ? "停演" : "顺演"}
+                </button>
+              ) : null}
+              {!props.selectedBookSlug && props.onAdvanceEra ? (
+                <button
+                  type="button"
+                  onClick={() => props.onAdvanceEra?.(1)}
+                  className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.06)] px-2.5 py-1 text-[10px] text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
+                >
+                  后朝
                 </button>
               ) : null}
               {props.onOpenControlPanel ? (

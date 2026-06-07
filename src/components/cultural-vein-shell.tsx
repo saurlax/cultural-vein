@@ -358,6 +358,7 @@ export function CulturalVeinShell() {
     "idle" | "diving" | "settling" | "returning"
   >("idle");
   const [transitionTargetSlug, setTransitionTargetSlug] = useState<string | null>(null);
+  const [eraPlaybackActive, setEraPlaybackActive] = useState(false);
   const isMobileViewport = () =>
     typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
 
@@ -659,10 +660,42 @@ export function CulturalVeinShell() {
       setTraceFocus(null);
       setSelectedDockId(null);
       setHoveredBranchId(null);
+      setEraPlaybackActive(false);
       setActiveEra(era);
     },
     [clearSearchContext, setActiveEra],
   );
+  const handleAdvanceEra = useCallback(
+    (direction: -1 | 1) => {
+      const nextIndex = Math.max(0, Math.min(activeEraIndex + direction, eras.length - 1));
+      const nextEra = eras[nextIndex] ?? eras[0];
+      handleEraFocus(nextEra);
+    },
+    [activeEraIndex, handleEraFocus],
+  );
+  const handleToggleEraPlayback = useCallback(() => {
+    setEraPlaybackActive((current) => !current);
+  }, []);
+
+  useEffect(() => {
+    if (!eraPlaybackActive || selectedBookSlug || showDesktopDossier || showMobileDossier) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      const nextIndex = activeEraIndex >= eras.length - 1 ? 0 : activeEraIndex + 1;
+      setActiveEra(eras[nextIndex] ?? eras[0]);
+    }, 2400);
+
+    return () => window.clearInterval(timer);
+  }, [
+    activeEraIndex,
+    eraPlaybackActive,
+    selectedBookSlug,
+    setActiveEra,
+    showDesktopDossier,
+    showMobileDossier,
+  ]);
   const handleOpenDesktopPanel = (panel: "search" | "era" | "category" | "branch") => {
     if (panel !== "search") {
       clearSearchContext();
@@ -2200,6 +2233,9 @@ export function CulturalVeinShell() {
             searchFocusSlug={!selectedBook ? primarySearchFocusSlug : null}
             onOpenControlPanel={() => handleOpenDesktopPanel("branch")}
             onOpenEraPanel={() => handleOpenDesktopPanel("era")}
+            onAdvanceEra={!selectedBook ? handleAdvanceEra : null}
+            onToggleEraPlayback={!selectedBook ? handleToggleEraPlayback : null}
+            eraPlaybackActive={eraPlaybackActive}
             onReturnToRiver={selectedBook ? handleReturnToRiver : null}
             mobilePanelOpen={showMobileSheet}
             overlayBusy={showDesktopControls || showDesktopDossier || showMobileSheet}
