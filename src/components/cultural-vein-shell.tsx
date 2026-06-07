@@ -1591,9 +1591,14 @@ export function CulturalVeinShell() {
                               {(activeSourceAtlasEntry.name.includes("南湖") ||
                                 activeSourceAtlasEntry.name.includes("红色") ||
                                 activeSourceAtlasEntry.name.includes("韬奋") ||
-                                activeSourceAtlasEntry.name.includes("宋庆龄")) ? (
+                                activeSourceAtlasEntry.name.includes("宋庆龄") ||
+                                activeSourceAtlasEntry.name.includes("搜韵")) ? (
                                 <div className="mt-2 inline-flex rounded-full border border-rose-300/24 bg-rose-300/10 px-2.5 py-1 text-[10px] text-rose-100">
-                                  {activeSourceAtlasEntry.name.includes("红色") ? "红色支流" : "近现代支流"}
+                                  {activeSourceAtlasEntry.name.includes("红色")
+                                    ? "红色支流"
+                                    : activeSourceAtlasEntry.name.includes("搜韵")
+                                      ? "诗学支流"
+                                      : "近现代支流"}
                                 </div>
                               ) : null}
                               <div className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#e6d7ae]">
@@ -1643,9 +1648,12 @@ export function CulturalVeinShell() {
                                     {entry.name.includes("南湖") ||
                                     entry.name.includes("红色") ||
                                     entry.name.includes("韬奋") ||
-                                    entry.name.includes("宋庆龄")
+                                    entry.name.includes("宋庆龄") ||
+                                    entry.name.includes("搜韵")
                                       ? entry.name.includes("红色")
                                         ? "红色支流"
+                                        : entry.name.includes("搜韵")
+                                          ? "诗学支流"
                                         : "近现代支流"
                                       : "待映照"}
                                   </div>
