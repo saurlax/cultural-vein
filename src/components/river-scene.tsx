@@ -175,6 +175,7 @@ interface RiverSceneProps {
   onSelectDock?: (dockId: string | null) => void;
   sourceAtlasLabel?: string | null;
   sourceAtlasSummary?: string | null;
+  riverStageBadges?: string[];
   sourceAtlasPathPoints?: Array<[number, number, number]>;
   sourceAtlasRoutes?: SourceAtlasRoute[];
   onOpenControlPanel?: (() => void) | null;
@@ -3413,6 +3414,14 @@ export function RiverScene(props: RiverSceneProps) {
                 <span className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.08)] px-2.5 py-1 text-[10px] text-[#f1e0b4]">
                   {riverStageModeLabel}
                 </span>
+                {(props.riverStageBadges ?? []).slice(0, 3).map((badge) => (
+                  <span
+                    key={badge}
+                    className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.08)] px-2.5 py-1 text-[10px] text-[#f1e0b4]"
+                  >
+                    {badge}
+                  </span>
+                ))}
               </div>
               <div className="mt-2 line-clamp-2 text-[12px] font-medium leading-5 text-[#fbf3da]">
                 {stageLead}

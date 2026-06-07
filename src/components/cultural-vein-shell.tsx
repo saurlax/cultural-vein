@@ -1290,6 +1290,12 @@ export function CulturalVeinShell() {
       ? `${relationLayerMeta[activeBranchSummary.layer].label}当前显出 ${activeBranchSummary.count} 股。`
       : "顺着这一股支流继续入卷。"
     : "河上节点已经浮起，可择一典籍顺势入卷。";
+  const riverStageBadges = [
+    resolvedSearchResult?.query ? `检索 · ${resolvedSearchResult.total} 本` : null,
+    categoryFilter !== "全部" ? `门类 · ${categoryFilter}` : null,
+    schoolFilter !== "全部" ? `学派 · ${schoolFilter}` : null,
+    sourceAtlasFilterActive ? `支流 · ${sourceAtlasFilterSummary}` : null,
+  ].filter((item): item is string => Boolean(item));
   const collapsedDesktopLead = selectedBook
     ? `《${selectedBook.shortTitle}》已入卷`
     : activeSourceAtlasEntry
@@ -2093,6 +2099,7 @@ export function CulturalVeinShell() {
             dockMarkers={mergedDockMarkers}
             sourceAtlasLabel={!selectedBook ? activeSourceAtlasEntry?.name ?? null : null}
             sourceAtlasSummary={!selectedBook ? activeSourceAtlasEntry?.summary ?? null : null}
+            riverStageBadges={!selectedBook ? riverStageBadges : []}
             sourceAtlasPathPoints={!selectedBook ? sourceAtlasPathPoints : []}
             sourceAtlasRoutes={!selectedBook ? sourceAtlasRoutes : []}
             visibleNodeCount={filteredBooks.length}
