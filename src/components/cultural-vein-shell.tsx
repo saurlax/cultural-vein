@@ -409,18 +409,29 @@ export function CulturalVeinShell() {
     };
   }, [searchTerm]);
 
-  const handleSearchTermChange = (value: string) => {
-    setSearchPending(value.trim().length > 0);
-    setSearchTerm(value);
-  };
-  const handleSearchShortcut = (value: string) => {
-    handleSearchTermChange(value);
-    setShowDesktopDossier(false);
-    setShowMobileDossier(false);
-    setActiveDesktopPanel("search");
-    setShowDesktopControls(true);
-    setShowMobileControls(false);
-  };
+  const handleSearchTermChange = useCallback(
+    (value: string) => {
+      setSearchPending(value.trim().length > 0);
+      setSearchTerm(value);
+    },
+    [setSearchTerm],
+  );
+  const clearSearchContext = useCallback(() => {
+    setSearchPending(false);
+    setSearchResult(null);
+    setSearchTerm("");
+  }, [setSearchTerm]);
+  const handleSearchShortcut = useCallback(
+    (value: string) => {
+      handleSearchTermChange(value);
+      setShowDesktopDossier(false);
+      setShowMobileDossier(false);
+      setActiveDesktopPanel("search");
+      setShowDesktopControls(true);
+      setShowMobileControls(false);
+    },
+    [handleSearchTermChange],
+  );
 
   const filteredBooks = useMemo(() => {
     return riverDataset.books.filter((book) => {
@@ -652,7 +663,29 @@ export function CulturalVeinShell() {
       resetSelection();
     }, 120);
   };
+  const handleEraFocus = useCallback(
+    (era: (typeof eras)[number]) => {
+      clearSearchContext();
+      setSceneFocus(null);
+      setTraceFocus(null);
+      setSelectedDockId(null);
+      setHoveredBranchId(null);
+      setActiveEra(era);
+    },
+    [clearSearchContext, setActiveEra],
+  );
   const handleOpenDesktopPanel = (panel: "search" | "era" | "category" | "branch") => {
+    if (panel !== "search") {
+      clearSearchContext();
+    }
+
+    if (panel === "era" || panel === "branch" || panel === "category") {
+      setSceneFocus(null);
+      setTraceFocus(null);
+      setSelectedDockId(null);
+      setHoveredBranchId(null);
+    }
+
     setShowMobileControls(false);
     setShowMobileDossier(false);
     setShowDesktopDossier(false);
@@ -1010,7 +1043,7 @@ export function CulturalVeinShell() {
     (entry: NonNullable<typeof sourceAtlasEntries>[number]) => {
       const inferredEra = inferSourceAtlasEra(entry);
       if (inferredEra && inferredEra !== activeEra) {
-        setActiveEra(inferredEra);
+        handleEraFocus(inferredEra);
       }
 
       const focusBook =
@@ -1028,9 +1061,12 @@ export function CulturalVeinShell() {
           : null,
       );
     },
-    [activeEra, getEntryAnchorBooks, inferSourceAtlasEra, setActiveEra],
+    [activeEra, getEntryAnchorBooks, handleEraFocus, inferSourceAtlasEra],
   );
   const handleSourceAtlasSelect = (entryId: string) => {
+    clearSearchContext();
+    setTraceFocus(null);
+    setHoveredBranchId(null);
     setActiveSourceAtlasId(entryId);
     setActiveSourceAtlasDetail(null);
     setSelectedDockId(null);
@@ -1565,7 +1601,7 @@ export function CulturalVeinShell() {
                       step={1}
                       value={activeEraIndex}
                       onChange={(event) =>
-                        setActiveEra(eras[Number(event.target.value)] ?? eras[0])
+                        handleEraFocus(eras[Number(event.target.value)] ?? eras[0])
                       }
                       className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
                     />
@@ -1574,7 +1610,7 @@ export function CulturalVeinShell() {
                         <button
                           key={era}
                           type="button"
-                          onClick={() => setActiveEra(era)}
+                          onClick={() => handleEraFocus(era)}
                           className={`rounded-full px-2 py-1 transition ${
                             activeEra === era
                               ? "bg-amber-300/14 text-amber-100"
@@ -2596,7 +2632,7 @@ export function CulturalVeinShell() {
                     max={eras.length - 1}
                     step={1}
                     value={activeEraIndex}
-                    onChange={(event) => setActiveEra(eras[Number(event.target.value)] ?? eras[0])}
+                    onChange={(event) => handleEraFocus(eras[Number(event.target.value)] ?? eras[0])}
                     className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
                   />
                   <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-[#c9b68a]">
@@ -2604,7 +2640,7 @@ export function CulturalVeinShell() {
                       <button
                         key={era}
                         type="button"
-                        onClick={() => setActiveEra(era)}
+                        onClick={() => handleEraFocus(era)}
                         className={`rounded-full px-2 py-1 transition ${
                           activeEra === era
                             ? "bg-amber-300/14 text-amber-100"
