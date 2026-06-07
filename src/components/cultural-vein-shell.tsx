@@ -886,17 +886,17 @@ export function CulturalVeinShell() {
   const activePanelNarrative =
     activeDesktopPanel === "search"
       ? resolvedSearchResult?.query
-        ? `先由“${resolvedSearchResult.query}”照见河上典籍，再顺势入卷细读其文脉来路。`
-        : "先从概念起笔，在河面上找到可切入的典籍节点。"
+        ? `“${resolvedSearchResult.query}”已在河面照出相应典籍与支流脉络。`
+        : "概念、典籍与支流正在同一条河面上彼此映照。"
       : activeDesktopPanel === "era"
-        ? `${activeEra} 这层河段里，${activeEraNarrative.lead}`
+        ? `${activeEra} 河段里，${activeEraNarrative.lead}`
         : activeDesktopPanel === "category"
-          ? `先收束门类与学派，再沿筛出的主线节点进入更清晰的讲述路径。`
+          ? "门类与学派收束之后，主线脉络会在河面上显得更清晰。"
           : activeSourceAtlasEntry
-            ? `这股来源已经映上河面，可先看来源，再点样本，最后回到河上码头。`
+            ? "这股来源已经映上河面，与主河道共同构成可回查的现实落点。"
             : activeBranchAnnotation
-              ? `${activeBranchAnnotation.description} 点中对应支流后，可直接入卷接着讲。`
-              : "先看主河道与来源如何交汇，再挑一处节点入卷展开。";
+              ? activeBranchAnnotation.description
+              : "主河道与来源支流正在同一卷面上交汇展开。";
   const compactStatButtons = [
     {
       label: "典籍",
@@ -1096,7 +1096,7 @@ export function CulturalVeinShell() {
                     </div>
                   </div>
                   <div className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">
-                    长卷题签
+                    卷面
                   </div>
                 </div>
                 <div className="mt-3 rounded-2xl border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-[12px] leading-6 text-[#e8d8af]">
@@ -1155,7 +1155,7 @@ export function CulturalVeinShell() {
                           onClick={() => setActiveDesktopPanel("branch")}
                           className="text-left text-sm text-[#eadfbc] transition hover:text-[#fbf3da]"
                         >
-                          这个检索词还没有直接照见河上节点，先切到支流题签顺着主河道继续找入口。
+                          这个词暂未照见河上节点，换一枚相关概念再看河面回响。
                         </button>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {searchSuggestionChips.slice(0, 3).map((concept) => (
@@ -1165,7 +1165,7 @@ export function CulturalVeinShell() {
                               onClick={() => handleSearchTermChange(concept)}
                               className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-xs text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
                             >
-                              转搜 {concept}
+                              {concept}
                             </button>
                           ))}
                         </div>
@@ -1177,7 +1177,7 @@ export function CulturalVeinShell() {
                 {activeDesktopPanel === "era" ? (
                   <div className="mt-4">
                     <div className="rounded-[18px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3">
-                      <div className="text-[11px] tracking-[0.22em] text-[#d8c9a3]">时代提纲</div>
+                      <div className="text-[11px] tracking-[0.22em] text-[#d8c9a3]">时代河段</div>
                       <div className="mt-2 text-[12px] leading-6 text-[#f6e8c4]">
                         {activeEraNarrative.lead}
                       </div>
@@ -1195,7 +1195,7 @@ export function CulturalVeinShell() {
                       </div>
                       {eraRecommendedBooks.length ? (
                         <div className="mt-2 rounded-[14px] border border-[#ead8a6]/10 bg-[rgba(42,26,9,0.28)] px-3 py-2.5">
-                          <div className="text-[10px] tracking-[0.2em] text-[#d8c9a3]">直接入卷</div>
+                          <div className="text-[10px] tracking-[0.2em] text-[#d8c9a3]">河段节点</div>
                           <div className="mt-2 flex flex-wrap gap-2">
                             {eraRecommendedBooks.map((book) => (
                               <button
@@ -1291,7 +1291,7 @@ export function CulturalVeinShell() {
                         onClick={() => setActiveDesktopPanel("branch")}
                         className="text-left transition hover:text-[#fbf3da]"
                       >
-                        当前河段推进到 {activeEra}，河上保留 {categoryFilter} 与 {schoolFilter} 的主线节点。继续切到支流题签，顺着当前筛选后的主线节点入卷。
+                        {activeEra} 河段中，{categoryFilter} 与 {schoolFilter} 的典籍主线已经在河面收束成形。
                       </button>
                     </div>
                   </div>
@@ -1301,10 +1301,8 @@ export function CulturalVeinShell() {
                   <div className="mt-4">
                     <div className="rounded-[18px] border border-[#ead8a6]/14 bg-[rgba(27,17,7,0.22)] px-3 py-3">
                       <div className="flex items-center justify-between gap-3">
-                        <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">
-                          关系层级
-                        </div>
-                        <div className="text-[11px] text-[#c9b68a]">点层级切河道</div>
+                        <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">关系层级</div>
+                        <div className="text-[11px] text-[#c9b68a]">河上脉络</div>
                       </div>
                       <div className="mt-3 grid gap-2 text-[11px] text-[#eadfbc]">
                         {(Object.keys(relationLayerMeta) as Array<keyof typeof relationLayerMeta>).map((layer) => (
@@ -1367,7 +1365,7 @@ export function CulturalVeinShell() {
                         </>
                       ) : (
                         <div className="text-sm text-[#d8c9a3]">
-                          河面节点已经浮起，顺着水势入卷细看。
+                          河面节点已经浮起，文脉走向正在水势之间显现。
                         </div>
                       )}
                     </div>
@@ -1450,7 +1448,7 @@ export function CulturalVeinShell() {
                                 {activeSourceAtlasEntry.stat ?? "来源样本"}
                               </div>
                               <div className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#e6d7ae]">
-                                {activeSourceAtlasEntry.summary ?? "顺着这股来源继续切入河上样本。"}
+                                {activeSourceAtlasEntry.summary ?? "这股来源正在河面留下对应样本与落点。"}
                               </div>
                               {activeSourceAtlasEntry.evidenceLabel ? (
                                 <div className="mt-2 rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-2.5 py-2">
@@ -1492,7 +1490,7 @@ export function CulturalVeinShell() {
                                       {entry.stat ?? "来源样本"}
                                     </div>
                                   </div>
-                                  <div className="shrink-0 text-[10px] text-[#d8c9a3]">待翻看</div>
+                                  <div className="shrink-0 text-[10px] text-[#d8c9a3]">待映照</div>
                                 </button>
                               );
                             })}
@@ -1556,11 +1554,11 @@ export function CulturalVeinShell() {
                             ) : null}
                             {activeSourceRoute ? (
                               <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.26)] px-3 py-2.5 text-[11px] text-[#dccb9c]">
-                                这股来源支流当前沿
+                                这股来源支流沿
                                 <span className="px-1 text-[#fbf3da]">
                                   {activeSourceRoute.points.length}
                                 </span>
-                                个样本码头铺开，可直接点样本题签把镜头停到对应河段。
+                                个样本码头铺开，河段与来源已彼此扣合。
                               </div>
                             ) : null}
                             {activeSourceRecord ? (
@@ -1858,7 +1856,7 @@ export function CulturalVeinShell() {
               </div>
               {activeDesktopPanel === "era" ? (
                 <div className="mt-3 rounded-[20px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3">
-                  <div className="text-[11px] tracking-[0.22em] text-[#d8c9a3]">时代提纲</div>
+                  <div className="text-[11px] tracking-[0.22em] text-[#d8c9a3]">时代河段</div>
                   <div className="mt-2 text-[12px] leading-6 text-[#f6e8c4]">
                     {activeEraNarrative.lead}
                   </div>
@@ -1907,7 +1905,7 @@ export function CulturalVeinShell() {
                   <div className="mt-2 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(38,25,8,0.24)] px-3 py-3">
                     <div className="flex items-center justify-between gap-3">
                       <div className="text-[11px] tracking-[0.2em] text-[#d8c9a3]">来源支流</div>
-                      <div className="text-[10px] text-[#c9b68a]">点来源再点样本</div>
+                      <div className="text-[10px] text-[#c9b68a]">来源与样本</div>
                     </div>
                     <div className="mt-2 max-h-32 space-y-2 overflow-auto pr-1">
                       {sourceAtlasEntries.map((entry) => {
@@ -1938,7 +1936,7 @@ export function CulturalVeinShell() {
                               </div>
                             </div>
                             <div className="shrink-0 text-[10px] text-[#f2dfab]">
-                              {isActive ? "已映照" : route ? "已连河道" : "可映入河道"}
+                              {isActive ? "正在映照" : route ? "已连河道" : "待映照"}
                             </div>
                           </button>
                         );
@@ -1990,7 +1988,7 @@ export function CulturalVeinShell() {
                           }}
                           className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.04)] px-3 py-1.5 text-[10px] text-[#d8c9a3]"
                         >
-                          回到主河道
+                          归河
                         </button>
                       </div>
                       {activeSourceAtlasEntry.sampleRecords?.length ? (
@@ -2018,7 +2016,7 @@ export function CulturalVeinShell() {
                       ) : null}
                       {activeSourceRecord ? (
                         <div className="mt-2 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.34)] px-3 py-2.5">
-                          <div className="mb-1 text-[10px] tracking-[0.18em] text-[#c9b68a]">当前样本</div>
+                          <div className="mb-1 text-[10px] tracking-[0.18em] text-[#c9b68a]">样本切片</div>
                           <div className="text-[11px] font-medium leading-5 text-[#fbf3da]">
                             {activeSourceRecord.title}
                           </div>
@@ -2079,7 +2077,7 @@ export function CulturalVeinShell() {
                   </label>
                   <div className="mt-3 rounded-[22px] border border-[#ead8a6]/18 bg-[rgba(27,17,7,0.24)] px-3 py-3">
                     <div className="flex items-center justify-between gap-3">
-                      <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">概念联想</div>
+                      <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">相关概念</div>
                       <div className="text-[11px] text-[#c9b68a]">
                         {searchPending
                           ? "检索中"
@@ -2216,12 +2214,12 @@ export function CulturalVeinShell() {
               ) : null}
               <div className="mt-3 rounded-2xl border border-[#ead8a6]/16 bg-[rgba(27,17,7,0.18)] px-3 py-3 text-sm leading-6 text-[#eadfbc]">
                 {activeDesktopPanel === "search"
-                  ? `此刻河上保留 ${categoryFilter} 与 ${schoolFilter} 的主线节点，找到想讲的概念后就能顺势入卷。`
+                  ? `${categoryFilter} 与 ${schoolFilter} 的主线节点正在河面并行显现。`
                   : activeDesktopPanel === "era"
-                    ? `这道河段推进到 ${activeEra}，镜头会围绕这层时代水位继续铺开节点与支流。`
+                    ? `${activeEra} 的时代水位已经把这一段文脉河势完整托起。`
                     : activeDesktopPanel === "category"
-                      ? `筛到 ${categoryFilter} 与 ${schoolFilter} 后，河道已经更收束，适合直接挑主线节点展开讲述。`
-                      : "先顺着关系层级与来源河册找到入口，再从河面码头进入具体典籍与样本。"}
+                      ? `${categoryFilter} 与 ${schoolFilter} 的筛选结果已经让河道轮廓更集中。`
+                      : "关系层级、来源支流与河上码头正在同一卷面上彼此照应。"}
               </div>
             </div>
           </div>
