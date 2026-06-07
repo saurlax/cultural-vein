@@ -2454,38 +2454,35 @@ export function RiverScene(props: RiverSceneProps) {
       </div>
       {canCruise ? (
         <div
-          className={`absolute bottom-5 right-5 z-20 hidden w-[min(280px,calc(100vw-2.5rem))] transition-opacity duration-300 lg:block ${
+          className={`absolute bottom-5 right-5 z-20 hidden w-[min(208px,calc(100vw-2.5rem))] transition-opacity duration-300 lg:block ${
             mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
           }`}
         >
-          <div className="pointer-events-auto rounded-[26px] border border-[#e7c97b]/20 bg-[linear-gradient(180deg,rgba(118,84,30,0.84),rgba(72,46,14,0.84))] px-4 py-4 text-[#f1e2bb] shadow-xl shadow-black/20 backdrop-blur-md">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className="text-[10px] tracking-[0.26em] text-[#e5d1a1]">巡河题签</div>
-                <div className="mt-1 text-xs text-[#fbf3da] sm:text-sm">
-                  {activeCruiseMoment ? `停驻 ${activeCruiseMoment.label}` : "从上游缓缓入画"}
+          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/20 bg-[linear-gradient(180deg,rgba(118,84,30,0.76),rgba(72,46,14,0.76))] px-3 py-3 text-[#f1e2bb] shadow-xl shadow-black/15 backdrop-blur-md">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-[10px] tracking-[0.24em] text-[#e5d1a1]">巡河卷签</div>
+                <div className="mt-1 truncate text-xs text-[#fbf3da] sm:text-sm">
+                  {activeCruiseMoment ? activeCruiseMoment.label : "上游入画"}
                 </div>
-                {activeCruiseMoment?.kind === "era" ? (
-                  <div className="mt-2 inline-flex rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.06)] px-2.5 py-1 text-[10px] text-[#f4e2b0]">
-                    时代段落 · {activeCruiseMoment.era}
-                  </div>
-                ) : null}
-                <div className="mt-2 hidden text-[10px] leading-5 text-[#e8d6aa] sm:block">
-                  {activeCruiseMoment
-                    ? activeCruiseMoment.detail
-                    : "让镜头顺着黄河文脉徐徐铺展，再停到要讲的节点附近。"}
+                <div className="mt-1 text-[10px] text-[#e8d6aa]">
+                  {activeCruiseMoment?.kind === "era"
+                    ? `时代段落 · ${activeCruiseMoment.era}`
+                    : cruiseRunning
+                      ? "长河顺流铺展中"
+                      : "手动巡看中"}
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setAutoCruise((current) => !current)}
-                className={`rounded-full px-3 py-2 text-xs transition ${
+                className={`rounded-full px-3 py-1.5 text-[11px] transition ${
                   cruiseRunning
                     ? "bg-[#f3dfab] text-[#42290a]"
                     : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#eadfbc] hover:bg-[rgba(255,248,220,0.1)]"
                 }`}
               >
-                {cruiseRunning ? "暂停巡航" : "自动巡航"}
+                {cruiseRunning ? "暂停" : "巡航"}
               </button>
             </div>
             <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
@@ -2494,28 +2491,27 @@ export function RiverScene(props: RiverSceneProps) {
                 style={{ width: `${Math.max(6, cruiseProgress * 100)}%` }}
               />
             </div>
-            {activeCruiseStory ? (
-              <div className="mt-3 rounded-[18px] border border-[#ead8a6]/14 bg-[rgba(45,28,9,0.34)] px-3 py-3">
-                <div className="text-[10px] tracking-[0.22em] text-[#d9c18a]">这一段主干</div>
-                <div className="mt-2 text-[11px] leading-5 text-[#f3e6c1]">{activeCruiseStory.trunk}</div>
-              </div>
-            ) : null}
             <div className="mt-3 flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => nudgeCruise(-0.08)}
-                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-[11px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
               >
-                回溯上游
+                上游
               </button>
               <button
                 type="button"
                 onClick={() => nudgeCruise(0.08)}
-                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-2 text-[11px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
+                className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[10px] text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
               >
-                顺流下看
+                下游
               </button>
             </div>
+            {activeCruiseStory ? (
+              <div className="mt-3 line-clamp-2 text-[10px] leading-5 text-[#e8d6aa]">
+                {activeCruiseStory.trunk}
+              </div>
+            ) : null}
             <div className="mt-3 hidden flex-wrap gap-2 text-[10px] sm:flex">
               <button
                 type="button"
@@ -2529,7 +2525,7 @@ export function RiverScene(props: RiverSceneProps) {
                 onClick={() => props.onOpenEraPanel?.()}
                 className="rounded-full border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] px-3 py-1.5 text-[#eadfbc] transition hover:bg-[rgba(255,248,220,0.1)]"
               >
-                改看别的时代
+                换时代
               </button>
             </div>
           </div>
