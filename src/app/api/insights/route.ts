@@ -246,7 +246,7 @@ export function GET() {
       activeSources: sourceAtlas.length,
       plannedLayers: ["古籍循证", "人名规范", "书目版本", "地名事件", "专题文献", "诗词图谱"],
       expansionNote:
-        "当前首页先把示范域主河道、真实来源和样本码头做深；底层结构已预留继续长出更多典籍、地名、事件与专题支流的接口。",
+        "当前首页已先将主河道、真实来源与样本码头铺成一条可演示的长卷；后续还可继续接入更多典籍、地名、事件与专题支流。",
     },
     cbdbSummary: realSupplements.cbdbSummary,
     cbdbPeople: (realSupplements.cbdbPeople ?? []).map((person) => ({

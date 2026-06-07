@@ -567,19 +567,19 @@ export function BookExplorer({
     {
       label: "直接引用",
       value: detail.heroMetric.directCitations,
-      hint: "切到文本溯源",
+      hint: "顺看文本溯源",
       onClick: () => setTab("passages"),
     },
     {
       label: "下游影响",
       value: detail.heroMetric.downstreamInfluence,
-      hint: "切到人物关系",
+      hint: "顺看人物关系",
       onClick: () => setTab("people"),
     },
     {
       label: "传播区域",
       value: detail.heroMetric.coveredRegions,
-      hint: "切到地理传播",
+      hint: "顺看地理传播",
       onClick: () => setTab("spread"),
     },
   ] as const;
@@ -1164,7 +1164,7 @@ export function BookExplorer({
                 纪传库对照 {detail.realWorldSignals.cbdbMatchedPeople ?? 0} 人
               </div>
               <div className="mt-1 text-xs text-stone-400">
-                待续人物 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
+                可续校人物 {detail.realWorldSignals.cbdbFallbackPeople ?? 0} 人
               </div>
             </button>
             <button
@@ -4153,7 +4153,7 @@ export function BookExplorer({
                       </div>
                     ) : (
                       <div className="mt-3 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
-                        <div className="text-sm text-stone-200">这一段暂时没有更晚下游承接时，先折回当前证据，或者切到人物、传播层继续追扩散回声。</div>
+                        <div className="text-sm text-stone-200">这一段在现有材料里暂未显出更晚承接脉络，可先折回当前证据，或转看人物、传播层继续追索扩散回声。</div>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {activeLink ? (
                             <button
