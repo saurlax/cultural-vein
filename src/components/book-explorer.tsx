@@ -1345,7 +1345,7 @@ export function BookExplorer({
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                    资源近览
+                    馆藏落点
                   </div>
                   <div className="mt-2 text-base font-semibold text-stone-50">
                     {activeInstitutionRecord.title}
@@ -1399,7 +1399,7 @@ export function BookExplorer({
                 </div>
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-[#b89247]/14 bg-[rgba(255,255,255,0.18)] px-3 py-3">
                   <div>
-                    <div className="text-[10px] tracking-[0.2em] text-[#8d6a2c]">卷面序列</div>
+                    <div className="text-[10px] tracking-[0.2em] text-[#8d6a2c]">馆藏序列</div>
                     <div className="mt-1 text-xs text-[#7a571d]">
                       第 {Math.max(activeInstitutionRecordIndex + 1, 1)} / {Math.max(institutionRecords.length, 1)} 卷
                     </div>
@@ -1444,7 +1444,7 @@ export function BookExplorer({
                 <div className="mt-4 rounded-[20px] border border-[#b89247]/14 bg-[rgba(255,255,255,0.24)] px-4 py-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <div className="text-[10px] tracking-[0.2em] text-[#8d6a2c]">卷面来源</div>
+                      <div className="text-[10px] tracking-[0.2em] text-[#8d6a2c]">馆藏来源</div>
                       <div className="mt-2 text-base font-semibold text-[#5b3a11]">
                         {activeInstitutionRecord.institution}
                       </div>
@@ -1459,7 +1459,7 @@ export function BookExplorer({
                   <div className="mt-4 grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm text-[#5b3a11]">
                     <div className="text-[#8d6a2c]">资源类型</div>
                     <div>{activeInstitutionRecord.category ?? "古籍馆藏 / 影像线索"}</div>
-                    <div className="text-[#8d6a2c]">卷面摘要</div>
+                    <div className="text-[#8d6a2c]">馆藏摘要</div>
                     <div className="leading-6">{activeInstitutionPreviewText}</div>
                   </div>
                 </div>
@@ -1611,8 +1611,8 @@ export function BookExplorer({
                             : item.id === "event-samples"
                               ? "查看关联时间线"
                               : item.id === "institution-samples"
-                                ? "查看版本与资源"
-                                : "查看相关分栏"}
+                                  ? "查看版本与馆藏"
+                                : "转入相应层"}
                       </button>
                     </div>
                     <div className="mt-3 grid gap-2">
@@ -1642,7 +1642,7 @@ export function BookExplorer({
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                          证据近览
+                          凭据细览
                         </div>
                         <div className="mt-2 text-base font-semibold text-stone-50">
                           {activeSourceEvidence.source}

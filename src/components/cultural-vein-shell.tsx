@@ -1034,7 +1034,7 @@ export function CulturalVeinShell() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">河图</div>
-                  <div className="mt-1 text-base font-medium text-[#fbf3da]">河上题签</div>
+                  <div className="mt-1 text-base font-medium text-[#fbf3da]">河上长卷</div>
                 </div>
                 {viewMode === "book" ? (
                   <button
@@ -1074,7 +1074,7 @@ export function CulturalVeinShell() {
                       {activeDesktopPanelConfig.summary}
                     </div>
                   </div>
-                  <div className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">卷心</div>
+                  <div className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">卷面</div>
                 </div>
                 <div className="mt-3 rounded-2xl border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-[12px] leading-6 text-[#e8d8af]">
                   {activePanelNarrative}
@@ -1397,8 +1397,8 @@ export function CulturalVeinShell() {
                                 <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">示范域策略</div>
                                 <div className="rounded-full border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-2 py-0.5 text-[10px] text-[#f2dfab]">
                                   {demoCoveragePercent !== null
-                                    ? `${demoCoveragePercent.toFixed(3)}% 前景显影`
-                                    : "前景显影"}
+                                    ? `${demoCoveragePercent.toFixed(3)}% 前景示范`
+                                    : "前景示范"}
                                 </div>
                               </div>
                               <div className="mt-2 text-[10px] leading-5 text-[#dccb9c]">
@@ -1469,9 +1469,9 @@ export function CulturalVeinShell() {
                                           {layer.status}
                                         </div>
                                       </div>
-                                      <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">
-                                        {layer.scope} · {layer.usage}
-                                      </div>
+                              <div className="mt-1 text-[10px] leading-5 text-[#dccb9c]">
+                                {layer.scope} · {layer.usage}
+                              </div>
                                     </div>
                                   ))}
                                 </div>
@@ -1520,7 +1520,7 @@ export function CulturalVeinShell() {
                                 </span>
                               </div>
                               <div className="mt-2 text-[10px] text-[#f2dfab]">
-                                {activeSourceAtlasEntry.stat ?? "来源样本"}
+                                {activeSourceAtlasEntry.stat ?? "来源片段"}
                               </div>
                               <div className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#e6d7ae]">
                                 {activeSourceAtlasEntry.summary ?? "这股来源正在河面留下对应样本与落点。"}
@@ -1561,8 +1561,8 @@ export function CulturalVeinShell() {
                                         {entry.name}
                                       </span>
                                     </div>
-                                    <div className="mt-1 truncate text-[10px] text-[#cdb98d]">
-                                      {entry.stat ?? "来源样本"}
+                              <div className="mt-1 truncate text-[10px] text-[#cdb98d]">
+                                      {entry.stat ?? "来源片段"}
                                     </div>
                                   </div>
                                   <div className="shrink-0 text-[10px] text-[#d8c9a3]">待映照</div>
@@ -1579,7 +1579,7 @@ export function CulturalVeinShell() {
                                   {activeSourceAtlasEntry.name}
                                 </div>
                                 <div className="mt-1 text-[11px] leading-5 text-[#e6d7ae]">
-                                  {activeSourceAtlasEntry.summary ?? "来源样本"}
+                                  {activeSourceAtlasEntry.summary ?? "来源片段"}
                                 </div>
                               </div>
                               <div className="shrink-0 text-[10px] text-[#f2dfab]">
@@ -1644,7 +1644,7 @@ export function CulturalVeinShell() {
                                 <div className="mt-1 text-[10px] text-[#f2dfab]">
                                   {[activeSourceRecord.category, activeSourceRecord.year]
                                     .filter(Boolean)
-                                    .join(" · ") || "样本条目"}
+                                    .join(" · ") || "来源条目"}
                                 </div>
                                 {activeSourceRecord.note ? (
                                   <div className="mt-1 text-[11px] leading-5 text-[#dccb9c] line-clamp-4">
@@ -1928,7 +1928,7 @@ export function CulturalVeinShell() {
                           <div className="rounded-full border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-2 py-0.5 text-[10px] text-[#f2dfab]">
                             {demoCoveragePercent !== null
                               ? `${demoCoveragePercent.toFixed(3)}%`
-                              : "前景显影"}
+                              : "前景示范"}
                           </div>
                         </div>
                         <div className="mt-2 text-[10px] leading-5 text-[#dccb9c]">
@@ -2010,7 +2010,7 @@ export function CulturalVeinShell() {
                                 <span className="truncate text-[11px] text-[#fbf3da]">{entry.name}</span>
                               </div>
                               <div className="mt-1 truncate text-[10px] text-[#d8c9a3]">
-                                {entry.stat ?? "来源样本"}
+                                {entry.stat ?? "来源片段"}
                               </div>
                             </div>
                             <div className="shrink-0 text-[10px] text-[#f2dfab]">
@@ -2035,7 +2035,7 @@ export function CulturalVeinShell() {
                         <div className="shrink-0 text-[10px] text-[#f2dfab]">{activeSourceAtlasEntry.stat}</div>
                       </div>
                       <div className="mt-1 text-[11px] leading-5 text-[#e6d7ae]">
-                        {activeSourceAtlasEntry.summary ?? "来源样本"}
+                        {activeSourceAtlasEntry.summary ?? "来源片段"}
                       </div>
                       {activeSourceAtlasEntry.evidenceLabel ? (
                         <div className="mt-2 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.22)] px-3 py-2.5">
@@ -2094,7 +2094,7 @@ export function CulturalVeinShell() {
                       ) : null}
                       {activeSourceRecord ? (
                         <div className="mt-2 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.34)] px-3 py-2.5">
-                          <div className="mb-1 text-[10px] tracking-[0.18em] text-[#c9b68a]">样本切片</div>
+                          <div className="mb-1 text-[10px] tracking-[0.18em] text-[#c9b68a]">来源片段</div>
                           <div className="text-[11px] font-medium leading-5 text-[#fbf3da]">
                             {activeSourceRecord.title}
                           </div>
