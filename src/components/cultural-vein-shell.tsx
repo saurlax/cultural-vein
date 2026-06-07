@@ -245,6 +245,7 @@ function deriveBranchAnnotations(
         id: `branch-${citation.id}`,
         label,
         description: `${sourceBook.shortTitle} 由 ${targetBook.shortTitle} 这层文脉引出。${citation.evidence}`,
+        sourceSlug: targetBook.slug,
         targetSlug: sourceBook.slug,
         accentColor: branchAccentByLayer[citation.layer],
         position: [midX, midY, midZ + offsetZ] as [number, number, number],

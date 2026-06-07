@@ -17,6 +17,7 @@ export interface RiverBranchAnnotation {
   id: string;
   label: string;
   description: string;
+  sourceSlug: string;
   targetSlug: string;
   accentColor: string;
   position: [number, number, number];
@@ -1601,6 +1602,13 @@ function RiverWorld({
     () => books.find((book) => book.slug === selectedBookSlug) ?? null,
     [books, selectedBookSlug],
   );
+  const activeBranchAnnotation = useMemo(
+    () =>
+      branchAnnotations.find((annotation) => annotation.id === hoveredBranchId) ??
+      branchAnnotations.find((annotation) => annotation.targetSlug === selectedBookSlug) ??
+      null,
+    [branchAnnotations, hoveredBranchId, selectedBookSlug],
+  );
   const conceptFlowPoints = useMemo(() => {
     if (highlightedBookSlugs.length < 2) {
       return [];
@@ -1649,6 +1657,33 @@ function RiverWorld({
     () => sourceAtlasPathPoints.map((point) => new THREE.Vector3(...point)),
     [sourceAtlasPathPoints],
   );
+  const activeBranchFlowPoints = useMemo(() => {
+    if (!activeBranchAnnotation) {
+      return [];
+    }
+
+    const sourceBook = books.find((book) => book.slug === activeBranchAnnotation.sourceSlug) ?? null;
+    const targetBook = books.find((book) => book.slug === activeBranchAnnotation.targetSlug) ?? null;
+
+    if (!sourceBook || !targetBook) {
+      return [];
+    }
+
+    const sourcePoint = new THREE.Vector3(...sourceBook.coordinates);
+    const targetPoint = new THREE.Vector3(...targetBook.coordinates);
+    const midpoint = sourcePoint
+      .clone()
+      .lerp(targetPoint, 0.5)
+      .add(
+        new THREE.Vector3(
+          0,
+          0.34 + Math.abs(sourceBook.branchLevel - targetBook.branchLevel) * 0.08,
+          sourcePoint.z >= targetPoint.z ? 0.26 : -0.26,
+        ),
+      );
+
+    return [sourcePoint, midpoint, targetPoint];
+  }, [activeBranchAnnotation, books]);
   const sourceAtlasRouteCurves = useMemo(
     () =>
       sourceAtlasRoutes
@@ -2036,6 +2071,33 @@ function RiverWorld({
             density={96}
             flowSpeed={traceFocus?.active ? 0.16 : 0.11}
             spread={0.08}
+          />
+        </group>
+      ) : null}
+      {!traceFocus?.active &&
+      !sceneFocus?.active &&
+      activeBranchFlowPoints.length >= 2 ? (
+        <group>
+          <Line
+            points={activeBranchFlowPoints}
+            color={activeBranchAnnotation?.accentColor ?? "#fcd34d"}
+            transparent
+            opacity={0.94}
+            lineWidth={2.8}
+          />
+          <Line
+            points={activeBranchFlowPoints}
+            color="#fef3c7"
+            transparent
+            opacity={0.18}
+            lineWidth={6.6}
+          />
+          <RiverParticleStream
+            points={activeBranchFlowPoints}
+            color={activeBranchAnnotation?.accentColor ?? "#fde68a"}
+            density={64}
+            flowSpeed={0.11}
+            spread={0.05}
           />
         </group>
       ) : null}
