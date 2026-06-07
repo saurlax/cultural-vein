@@ -2443,28 +2443,28 @@ export function RiverScene(props: RiverSceneProps) {
   const activeCruiseStory =
     activeCruiseMoment?.era ? RIVER_ERA_STORIES[activeCruiseMoment.era] : null;
   const sceneHint = props.traceFocus?.active
-    ? `逆流正经过 ${props.traceFocus.currentTitle ?? "此处节点"}，沿链回看文脉源头。`
+    ? `逆流正经过 ${props.traceFocus.currentTitle ?? "此处节点"}。`
     : props.sceneFocus?.active
       ? props.sceneFocus.detail
       : searchFocusBook
-        ? `概念检索已把镜头带到 ${searchFocusBook.shortTitle} 所在河段，可顺势入卷继续追看这条文脉。`
+        ? `镜头已落到《${searchFocusBook.shortTitle}》所在河段。`
       : isInteracting
-        ? "长河正在掌中转景，松手后可继续点选典籍与码头。"
+        ? "长河正在掌中转景。"
       : activeCruiseMoment
         ? activeCruiseMoment.detail
       : hoveredDock
-        ? `${hoveredDock.label} 正从河面浮起。${hoveredDock.note ? ` ${hoveredDock.note}` : ""}`
+        ? `${hoveredDock.label} 正从河面浮起。`
       : props.sourceAtlasLabel && props.dockMarkers?.length
-        ? `${props.sourceAtlasLabel} 的来源线索已映入河道，可沿码头顺流检阅。${props.sourceAtlasSummary ? ` ${props.sourceAtlasSummary}` : ""}`
+        ? `${props.sourceAtlasLabel} 的来源线索已映入河道。`
         : hoveredBook
-        ? `${hoveredBook.shortTitle} 已浮出河心，点击即可入卷。`
+        ? `${hoveredBook.shortTitle} 已浮出河心。`
       : hoveredBranch
-          ? `${hoveredBranch.label} 正在显现，顺着支流便能入卷追看。`
+          ? `${hoveredBranch.label} 正在显现。`
           : props.selectedBookSlug
-            ? "典籍已经停驻岸边，可续展文卷，亦可归河巡看。"
+            ? "典籍已经停驻岸边。"
             : cruiseRunning
-              ? "长河正自上游缓缓展开，镜头会顺水带你进入文脉世界。"
-              : "拖动长河巡看文脉起伏，点中节点便可入卷。";
+              ? "长河正自上游缓缓展开。"
+              : "拖动长河巡看文脉起伏。";
 
   useEffect(() => {
     if (!showMobileTouchHint) {
@@ -2521,7 +2521,7 @@ export function RiverScene(props: RiverSceneProps) {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-48 bg-[linear-gradient(0deg,rgba(140,92,27,0.52),rgba(157,104,29,0.08),rgba(157,104,29,0))]" />
       <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_44%,rgba(255,241,189,0.22),transparent_38%),radial-gradient(circle_at_50%_78%,rgba(112,68,18,0.16),transparent_34%),linear-gradient(90deg,rgba(250,228,160,0.08),transparent_14%,transparent_86%,rgba(250,228,160,0.08))]" />
       <div className="pointer-events-none absolute inset-0 z-[1] opacity-35 [background-image:linear-gradient(rgba(132,86,28,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(132,86,28,0.05)_1px,transparent_1px)] [background-size:100%_42px,56px_100%]" />
-      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#efd38f]/22 bg-[rgba(150,104,31,0.18)] px-3 py-1.5 text-[10px] text-[#fff3d0] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
+      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#efd38f]/18 bg-[rgba(150,104,31,0.14)] px-3 py-1.5 text-[10px] text-[#fff3d0] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
         <span className="tracking-[0.28em] text-[#fff0c2]">黄河文脉长卷</span>
         <span className="hidden h-3 w-px bg-[#ead8a6]/24 sm:block" />
         <span className="truncate text-[#f1e3bd]/86">
@@ -2545,13 +2545,13 @@ export function RiverScene(props: RiverSceneProps) {
           {isInteracting ? "正在拖移长河" : touchModeLabel}
         </div>
       </div>
-      {canCruise ? (
+      {canCruise && (activeCruiseStory?.trunk || sceneHint) ? (
         <div
-        className={`absolute bottom-5 left-5 z-20 hidden w-[min(212px,calc(100vw-2.5rem))] transition-opacity duration-300 xl:block ${
+        className={`absolute bottom-5 left-5 z-20 hidden w-[min(188px,calc(100vw-2.5rem))] transition-all duration-300 xl:block ${
           mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
         }`}
       >
-          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/12 bg-[linear-gradient(180deg,rgba(187,142,59,0.34),rgba(124,84,28,0.26))] px-3 py-3 text-[#f1e2bb] shadow-[0_20px_50px_rgba(35,20,6,0.12)] backdrop-blur-md">
+          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/10 bg-[linear-gradient(180deg,rgba(187,142,59,0.26),rgba(124,84,28,0.18))] px-3 py-3 text-[#f1e2bb] shadow-[0_16px_40px_rgba(35,20,6,0.08)] backdrop-blur-md">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0 truncate text-[10px] tracking-[0.18em] text-[#fbf3da]">
                 {activeCruiseMoment ? activeCruiseMoment.label : "上游入画"}
@@ -2568,13 +2568,13 @@ export function RiverScene(props: RiverSceneProps) {
                 {cruiseRunning ? "暂停" : "巡航"}
               </button>
             </div>
-            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
+            <div className="mt-2.5 h-1 overflow-hidden rounded-full bg-white/10">
               <div
                 className="h-full rounded-full bg-[linear-gradient(90deg,#b45309,#fcd34d)]"
                 style={{ width: `${Math.max(6, cruiseProgress * 100)}%` }}
               />
             </div>
-            <div className="mt-3 flex items-center gap-2">
+            <div className="mt-2.5 flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => nudgeCruise(-0.08)}
@@ -2590,10 +2590,10 @@ export function RiverScene(props: RiverSceneProps) {
                 下游
               </button>
             </div>
-            <div className="mt-3 line-clamp-3 text-[10px] leading-5 text-[#e8d6aa]">
+            <div className="mt-2.5 line-clamp-2 text-[10px] leading-5 text-[#e8d6aa]">
               {activeCruiseStory?.trunk ?? sceneHint}
             </div>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-2.5 flex flex-wrap gap-2">
               {props.onOpenEraPanel ? (
                 <button
                   type="button"
