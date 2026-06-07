@@ -3843,6 +3843,17 @@ if (shijiDetail) {
       editionType: "重刊本",
       note: "裴骃集解、司马贞索隐、张守节正义共同构成后世最稳定的《史记》阅读层。",
     },
+    {
+      id: "version-sj-4",
+      label: "明南监《史记评林》本",
+      year: 1565,
+      place: "南京",
+      library: "评点刊刻系统",
+      status: "存世",
+      parentId: "version-sj-3",
+      editionType: "重刊本",
+      note: "明代评点本把《史记》重新压回案头阅读、文章批评与史法赏析三条并行线索。",
+    },
   ]);
   shijiDetail.timeline = mergeById(shijiDetail.timeline, [
     {
@@ -3856,6 +3867,12 @@ if (shijiDetail) {
       year: 720,
       title: "《史记》注释系统稳定",
       detail: "三家注使《史记》长期保持在注释化、教学化与案头研读的中心位置。",
+    },
+    {
+      id: "tl-sj-4",
+      year: 1565,
+      title: "《史记》进入评点与史法赏鉴网络",
+      detail: "明代评点刊本让《史记》既是史学底本，也是文章学、人物论与史法批评的常用资源库。",
     },
   ]);
   shijiDetail.passages = mergeById(shijiDetail.passages, [
@@ -3910,6 +3927,60 @@ if (shijiDetail) {
           relation: "通史互证",
           note: "《资治通鉴》在编年结构之外持续回应《史记》的人物与制度观察。",
           confidenceLabel: "中",
+        },
+      ],
+    },
+    {
+      id: "passage-sj-2",
+      section: "本纪与列传互照",
+      original: "《史记》将帝王本纪、世家与列传并列铺开，使制度秩序与个人命运能够在同一部通史中相互照见。",
+      links: [
+        {
+          id: "passage-sj-2-link-1",
+          quote: "《尚书》的政治叙事母题被移入人物史书写",
+          sourceBookId: "book-shangshu",
+          sourceTitle: "尚书",
+          layer: "semantic",
+          confidenceLabel: "中",
+          evidence: "《尚书》中的君臣政治叙事与治乱框架，在《史记》里被重组为人物传记与制度史并行的观察方式。",
+        },
+        {
+          id: "passage-sj-2-link-2",
+          quote: "《资治通鉴》继续把人物与制度并观",
+          sourceBookId: "book-zi-zhi-tong-jian",
+          sourceTitle: "资治通鉴",
+          layer: "influence",
+          confidenceLabel: "中",
+          evidence: "后世通史虽改采编年结构，但仍持续沿着《史记》的人物与制度双重视角组织历史判断。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-sj-4",
+          title: "尚书",
+          relation: "政治叙事源头",
+          note: "提供王政、君臣与治乱叙事的原始模板。",
+        },
+        {
+          id: "trace-sj-5",
+          title: "史记",
+          relation: "纪传扩写",
+          note: "把政治叙事改写为本纪、世家、列传并行的通史系统。",
+        },
+        {
+          id: "trace-sj-6",
+          title: "资治通鉴",
+          relation: "制度回看",
+          note: "后世继续把人物抉择与制度得失压到通史镜面中反复回看。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-sj-2",
+          targetTitle: "日知录",
+          relation: "制度回读",
+          note: "明清经世学常借《史记》的人物与制度观察回看国家治理与历史因果。",
+          confidenceLabel: "低",
         },
       ],
     },
@@ -3979,6 +4050,17 @@ if (zztjDetail) {
       editionType: "重刊本",
       note: "《通鉴》持续进入史学训练、政治议论与书院讲习环境。",
     },
+    {
+      id: "version-zztj-5",
+      label: "明嘉靖《资治通鉴纲目》通行本",
+      year: 1530,
+      place: "建阳",
+      library: "书坊讲读系统",
+      status: "存世",
+      parentId: "version-zztj-4",
+      editionType: "重刊本",
+      note: "纲目化与讲读化版本把《通鉴》进一步转成启蒙、治道与史学训练共用的阅读入口。",
+    },
   ]);
   zztjDetail.timeline = mergeById(zztjDetail.timeline, [
     {
@@ -3986,6 +4068,12 @@ if (zztjDetail) {
       year: 1150,
       title: "南宋继续扩大《通鉴》治道阅读",
       detail: "《通鉴》不止是史书，也成为议论政治得失与制度教训的常用底本。",
+    },
+    {
+      id: "tl-zztj-4",
+      year: 1530,
+      title: "《通鉴》进入纲目化讲读网络",
+      detail: "明代以来，围绕《通鉴》的纲目化、节要化与讲章化阅读进一步放大其启蒙与治道双重用途。",
     },
   ]);
   zztjDetail.passages = mergeById(zztjDetail.passages, [
@@ -4039,6 +4127,60 @@ if (zztjDetail) {
           targetTitle: "日知录",
           relation: "治道回读",
           note: "晚明清学者经常借《通鉴》与正史材料回看制度得失。",
+          confidenceLabel: "低",
+        },
+      ],
+    },
+    {
+      id: "passage-zztj-2",
+      section: "治乱镜鉴",
+      original: "《资治通鉴》将政治得失拆解成可逐年回看的因果链，使后世读者能够从时间推进中直接看见制度选择如何累积成治乱结果。",
+      links: [
+        {
+          id: "passage-zztj-2-link-1",
+          quote: "《尚书》政教判断被改写为编年镜鉴",
+          sourceBookId: "book-shangshu",
+          sourceTitle: "尚书",
+          layer: "semantic",
+          confidenceLabel: "中",
+          evidence: "《通鉴》把《尚书》传统中的政教判断推进到连续历史时间中，形成逐年检视制度得失的镜鉴结构。",
+        },
+        {
+          id: "passage-zztj-2-link-2",
+          quote: "《日知录》继续借史反推制度讨论",
+          sourceBookId: "book-ri-zhi-lu",
+          sourceTitle: "日知录",
+          layer: "influence",
+          confidenceLabel: "低",
+          evidence: "明清经世学者常通过《通鉴》与正史材料重建制度讨论的证据链，这种回读方式可直接下接《日知录》。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-zztj-4",
+          title: "尚书",
+          relation: "政教源头",
+          note: "提供王政得失与历史判断的最早母题层。",
+        },
+        {
+          id: "trace-zztj-5",
+          title: "资治通鉴",
+          relation: "编年镜鉴",
+          note: "将政教判断放进连续年代序列，形成可供治理回看的历史镜面。",
+        },
+        {
+          id: "trace-zztj-6",
+          title: "日知录",
+          relation: "经世回流",
+          note: "后世把《通鉴》重新拉回制度批评与现实经世讨论。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-zztj-2",
+          targetTitle: "人间词话",
+          relation: "历史感回声",
+          note: "近现代读史传统中的历史纵深感与兴亡意识，仍可远距离回听《通鉴》式时间镜鉴结构的影响。",
           confidenceLabel: "低",
         },
       ],
