@@ -52,6 +52,20 @@ pnpm dev
 
 打开 `http://localhost:3000` 查看应用。
 
+如需单独启动轻量后端骨架：
+
+```bash
+pnpm backend:dev
+```
+
+默认监听 `http://localhost:4318`，当前可提供：
+
+- `/health`
+- `/graph`
+- `/books/:slug`
+- `/insights`
+- `/search?q=关键词`
+
 生产构建验证：
 
 ```bash

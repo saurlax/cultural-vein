@@ -144,6 +144,7 @@
 
 - `pnpm lint`
 - `pnpm build`
+- 如需单独演示 API，执行 `pnpm backend:dev` 并确认 `http://localhost:4318/health` 返回 `status: ok`
 - 确认 `/` 首页可正常打开
 - 确认核心案例《四书章句集注》可进入中观与微观层
 - 确认 README 与本手册内容和当前实现一致
