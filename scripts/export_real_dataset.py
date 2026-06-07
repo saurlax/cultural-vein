@@ -1676,7 +1676,7 @@ def fetch_shanghai_activity_sample() -> dict[str, object]:
 
     return {
         "available": True,
-        "sourceWorkbook": Path(target_name).name,
+        "sourceWorkbook": "上海图书馆开放数据 2026 / 活动预约数据",
         "sheetName": sheet_name,
         "columns": columns,
         "topVenues": top_venues,
@@ -1743,7 +1743,7 @@ def fetch_shanghai_borrow_sample() -> dict[str, object]:
 
     return {
         "available": True,
-        "sourceWorkbook": Path(borrow_name).name,
+        "sourceWorkbook": "上海图书馆开放数据 2026 / 借阅数据",
         "sheetName": sheet_name,
         "columns": columns,
         "topLibraries": top_libraries,

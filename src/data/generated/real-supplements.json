@@ -1912,7 +1912,7 @@
   },
   "shanghaiLibraryActivity": {
     "available": true,
-    "sourceWorkbook": "µ┤╗σè¿Θóäτ║ªµò░µì«∩╝ê2025∩╝ë.xlsx",
+    "sourceWorkbook": "上海图书馆开放数据 2026 / 活动预约数据",
     "sheetName": "查询活动",
     "columns": [
       "预约人",
@@ -1991,7 +1991,7 @@
   },
   "shanghaiLibraryBorrow": {
     "available": true,
-    "sourceWorkbook": "σÇƒΘÿàµò░µì«∩╝ê2025∩╝ë.xlsx",
+    "sourceWorkbook": "上海图书馆开放数据 2026 / 借阅数据",
     "sheetName": "Sheet1",
     "columns": [
       "流通日期",
