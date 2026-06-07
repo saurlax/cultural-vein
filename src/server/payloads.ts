@@ -212,9 +212,7 @@ export function getSourceAtlasEntryPayload(id: string) {
     entry,
     atlasMeta: atlas.atlasMeta,
     relatedBooks: riverDataset.books
-      .filter((book) =>
-        entry.sampleTitles?.some((title) => book.title.includes(title) || title.includes(book.title)),
-      )
+      .filter((book) => entry.relatedBookSlugs?.includes(book.slug))
       .slice(0, 6)
       .map((book) => ({
         id: book.id,
@@ -251,6 +249,7 @@ export function getInsightsPayload(): DatasetInsight {
           magnitude: realSupplements.cbdbSummary.personCount ?? 0,
           evidenceLabel: "纪传人物统计",
           evidenceNote: "依据朝代分布与人物总量字段，当前用于人物关系与时间线补证。",
+          relatedBookSlugs: ["shiji", "zi-zhi-tong-jian", "lunyu", "mengzi", "shijing"],
           sampleTitles: (realSupplements.cbdbSummary.topDynasties ?? [])
             .slice(0, 3)
             .map((item) => `${item.name} ${item.count}`),
@@ -276,6 +275,7 @@ export function getInsightsPayload(): DatasetInsight {
             0,
           evidenceLabel: realSupplements.shanghaiLibraryActivity.sheetName ?? "活动预约字段",
           evidenceNote: "原始字段包含活动名称、场馆名称、预约状态与预约开始时间。",
+          relatedBookSlugs: ["lunyu", "liji", "daxue", "zhongyong", "xiaojing", "sishu-zhangju"],
           sampleTitles: (realSupplements.shanghaiLibraryActivity.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => item.活动名称 ?? item.场馆名称 ?? "活动资料"),
@@ -301,6 +301,7 @@ export function getInsightsPayload(): DatasetInsight {
             0,
           evidenceLabel: realSupplements.shanghaiLibraryBorrow.sheetName ?? "借阅流通字段",
           evidenceNote: "原始字段包含流通馆、流通操作、馆藏类型、书名、作者、出版社与出版年。",
+          relatedBookSlugs: ["shijing", "lunyu", "liji", "daxue", "zhongyong", "xiaojing"],
           sampleTitles: (realSupplements.shanghaiLibraryBorrow.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => item.书名 ?? item.流通馆 ?? "借阅记录"),
@@ -323,6 +324,7 @@ export function getInsightsPayload(): DatasetInsight {
           magnitude: realSupplements.nanjingLibrarySample.recordCount ?? 0,
           evidenceLabel: realSupplements.nanjingLibrarySample.institution ?? "图像资源条目",
           evidenceNote: "原始条目保留题名、分类、年代与图像出处说明。",
+          relatedBookSlugs: ["ren-jian-ci-hua", "ri-zhi-lu", "shangshu-zhengyi", "wenxuan"],
           sampleTitles: realSupplements.nanjingLibrarySample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.nanjingLibrarySample.sampleRecords ?? [])
             .slice(0, 3)
@@ -343,6 +345,7 @@ export function getInsightsPayload(): DatasetInsight {
           magnitude: realSupplements.fudanArchiveSample.sampleRecords?.length ?? 0,
           evidenceLabel: realSupplements.fudanArchiveSample.collectionTitle ?? "馆藏说明",
           evidenceNote: "当前保留馆藏题名、类别、年代与资料出处。",
+          relatedBookSlugs: ["ren-jian-ci-hua", "shuowen"],
           sampleTitles: (realSupplements.fudanArchiveSample.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => item.title),
@@ -367,6 +370,7 @@ export function getInsightsPayload(): DatasetInsight {
           evidenceLabel: "族裔递藏与家学线索",
           evidenceNote:
             "依据复旦馆藏摘要中的周氏族裔、藏书递藏与地方书楼叙述，当前已把家族传播落点挂入《孝经》《礼记》《大学》等河段。",
+          relatedBookSlugs: ["xiaojing", "liji", "daxue"],
           sampleTitles: (realSupplements.fudanArchiveSample.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => item.title),
@@ -391,6 +395,7 @@ export function getInsightsPayload(): DatasetInsight {
             (realSupplements.nanhuArchiveSample.imageCount ?? 0),
           evidenceLabel: realSupplements.nanhuArchiveSample.collectionTitle ?? "文献 / 图像统计",
           evidenceNote: "原始资料可回查文献数量、图像数量与专题条目摘记。",
+          relatedBookSlugs: ["zi-zhi-tong-jian", "chuci-zhangju", "wenxuan"],
           sampleTitles: (realSupplements.nanhuArchiveSample.sampleRecords ?? [])
             .slice(0, 3)
             .map((item) => item.title),
@@ -414,6 +419,7 @@ export function getInsightsPayload(): DatasetInsight {
           magnitude: redArchiveRecords.length,
           evidenceLabel: "南湖红色专题",
           evidenceNote: "直接取自南湖文献数据库中的中共“一大”、题词题诗与代表人物资料。",
+          relatedBookSlugs: ["shiji", "zi-zhi-tong-jian", "ren-jian-ci-hua"],
           sampleTitles: redArchiveRecords.map((item) => item.title),
           sampleRecords: redArchiveRecords.map((item) => ({
               title: item.title,
@@ -435,6 +441,7 @@ export function getInsightsPayload(): DatasetInsight {
             0,
           evidenceLabel: realSupplements.shenzhenLibrarySample.collectionTitle ?? "专题库线索",
           evidenceNote: "当前保留专题库名称、类别、年代与来源文本。",
+          relatedBookSlugs: ["ren-jian-ci-hua", "zi-zhi-tong-jian", "shangshu-zhengyi"],
           sampleTitles: realSupplements.shenzhenLibrarySample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.shenzhenLibrarySample.sampleRecords ?? [])
             .slice(0, 3)
@@ -458,6 +465,7 @@ export function getInsightsPayload(): DatasetInsight {
             0,
           evidenceLabel: realSupplements.taofenMuseumSample.collectionTitle ?? "馆方资料条目",
           evidenceNote: "原始资料包含机构年表、人物年表与图书列表等线索。",
+          relatedBookSlugs: ["ren-jian-ci-hua", "ri-zhi-lu"],
           sampleTitles: realSupplements.taofenMuseumSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.taofenMuseumSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -481,6 +489,7 @@ export function getInsightsPayload(): DatasetInsight {
             0,
           evidenceLabel: realSupplements.soongLiteratureSample.collectionTitle ?? "人物事件字段",
           evidenceNote: "原始字段覆盖文中人名、事件组织、写作地点与题词对象。",
+          relatedBookSlugs: ["ren-jian-ci-hua", "shiji", "wenxuan"],
           sampleTitles: realSupplements.soongLiteratureSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.soongLiteratureSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -504,6 +513,7 @@ export function getInsightsPayload(): DatasetInsight {
             0,
           evidenceLabel: realSupplements.videoTopicSample.collectionTitle ?? "专题片资料",
           evidenceNote: "当前保留片名、类别、年代与专题说明文本。",
+          relatedBookSlugs: ["ren-jian-ci-hua", "wenxuan", "wenxin-diaolong"],
           sampleTitles: realSupplements.videoTopicSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.videoTopicSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -527,6 +537,20 @@ export function getInsightsPayload(): DatasetInsight {
             0,
           evidenceLabel: realSupplements.souyunKnowledgeGraphSample.collectionTitle ?? "诗文图谱 / 古籍库",
           evidenceNote: "原始资料保留诗文库与古籍库的字段说明。",
+          relatedBookSlugs: [
+            "shijing",
+            "lunyu",
+            "liji",
+            "daxue",
+            "zhongyong",
+            "zhouyi",
+            "mengzi",
+            "sishu-zhangju",
+            "ren-jian-ci-hua",
+            "chuci-zhangju",
+            "wenxin-diaolong",
+            "wenxuan",
+          ],
           sampleTitles: realSupplements.souyunKnowledgeGraphSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.souyunKnowledgeGraphSample.sampleRecords ?? [])
             .slice(0, 3)
@@ -550,6 +574,7 @@ export function getInsightsPayload(): DatasetInsight {
             0,
           evidenceLabel: realSupplements.periodicalIndexSample.collectionTitle ?? "期刊检索字段",
           evidenceNote: "原始资料可回查题名、主题词、摘要与全文路径等字段。",
+          relatedBookSlugs: ["ren-jian-ci-hua", "ri-zhi-lu", "wenxin-diaolong"],
           sampleTitles: realSupplements.periodicalIndexSample.sampleTitles?.slice(0, 3),
           sampleRecords: (realSupplements.periodicalIndexSample.sampleRecords ?? [])
             .slice(0, 3)

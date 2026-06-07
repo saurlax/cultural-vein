@@ -667,17 +667,10 @@ export function CulturalVeinShell() {
       return [];
     }
 
-    const anchorBooks = filteredBooks
-      .filter((book) => {
-        if (
-          !activeSourceAtlasEntry.name.includes("报刊") &&
-          !activeSourceAtlasEntry.name.includes("专题片")
-        ) {
-          return true;
-        }
-
-        return book.dynasty === "近现代" || book.dynasty === "明清";
-      })
+    const linkedBooks = filteredBooks.filter((book) =>
+      activeSourceAtlasEntry.relatedBookSlugs?.includes(book.slug),
+    );
+    const anchorBooks = (linkedBooks.length ? linkedBooks : filteredBooks)
       .sort((left, right) => left.year - right.year);
 
     const accentPalette = ["#fbbf24", "#f59e0b", "#fcd34d", "#f97316"];
@@ -808,6 +801,12 @@ export function CulturalVeinShell() {
   const sourceAtlasHighlightedBookSlugs = (() => {
     if (!activeSourceAtlasEntry || selectedBook) {
       return [];
+    }
+
+    if (activeSourceAtlasEntry.relatedBookSlugs?.length) {
+      return filteredBooks
+        .filter((book) => activeSourceAtlasEntry.relatedBookSlugs?.includes(book.slug))
+        .map((book) => book.slug);
     }
 
     const focusCandidates = filteredBooks

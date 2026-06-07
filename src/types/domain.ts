@@ -174,6 +174,7 @@ export interface DatasetInsight {
     magnitude?: number;
     evidenceLabel?: string;
     evidenceNote?: string;
+    relatedBookSlugs?: string[];
     sampleTitles?: string[];
     sampleRecords?: Array<{
       title: string;
