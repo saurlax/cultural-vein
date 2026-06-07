@@ -2261,7 +2261,6 @@ function RiverWorld({
 
 export function RiverScene(props: RiverSceneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [eventSource, setEventSource] = useState<HTMLElement | null>(null);
   const [cruiseProgress, setCruiseProgress] = useState(0.1);
   const [autoCruise, setAutoCruise] = useState(true);
   const [isInteracting, setIsInteracting] = useState(false);
@@ -2373,10 +2372,6 @@ export function RiverScene(props: RiverSceneProps) {
               : "拖动长河巡看文脉起伏，点中节点便可入卷。";
 
   useEffect(() => {
-    setEventSource(containerRef.current);
-  }, []);
-
-  useEffect(() => {
     if (!showMobileTouchHint) {
       return;
     }
@@ -2440,9 +2435,6 @@ export function RiverScene(props: RiverSceneProps) {
                   : `${props.activeEra} 水位`}
         </span>
       </div>
-      <div className="pointer-events-none absolute right-4 top-16 z-10 hidden max-w-52 rounded-[20px] border border-[#e7c97b]/16 bg-[rgba(83,54,16,0.26)] px-4 py-3 text-[10px] leading-5 text-[#f0e0b8] backdrop-blur-md 2xl:block">
-        {sceneHint}
-      </div>
       <div
         className={`pointer-events-none absolute left-1/2 top-5 z-10 -translate-x-1/2 transition-all duration-500 md:hidden ${
           showMobileTouchHint || isInteracting ? "opacity-100" : "opacity-0"
@@ -2454,14 +2446,14 @@ export function RiverScene(props: RiverSceneProps) {
       </div>
       {canCruise ? (
         <div
-          className={`absolute bottom-5 right-5 z-20 hidden w-[min(208px,calc(100vw-2.5rem))] transition-opacity duration-300 lg:block ${
+          className={`absolute bottom-5 left-5 z-20 hidden w-[min(220px,calc(100vw-2.5rem))] transition-opacity duration-300 xl:block ${
             mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
           }`}
         >
-          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/20 bg-[linear-gradient(180deg,rgba(118,84,30,0.76),rgba(72,46,14,0.76))] px-3 py-3 text-[#f1e2bb] shadow-xl shadow-black/15 backdrop-blur-md">
+          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/20 bg-[linear-gradient(180deg,rgba(136,98,37,0.78),rgba(82,53,17,0.78))] px-3 py-3 text-[#f1e2bb] shadow-xl shadow-black/15 backdrop-blur-md">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <div className="text-[10px] tracking-[0.24em] text-[#e5d1a1]">巡河卷签</div>
+                <div className="text-[10px] tracking-[0.24em] text-[#e5d1a1]">河势卷签</div>
                 <div className="mt-1 truncate text-xs text-[#fbf3da] sm:text-sm">
                   {activeCruiseMoment ? activeCruiseMoment.label : "上游入画"}
                 </div>
@@ -2512,21 +2504,13 @@ export function RiverScene(props: RiverSceneProps) {
                 {activeCruiseStory.trunk}
               </div>
             ) : null}
-            <div className="mt-3 hidden text-[10px] leading-5 text-[#e8d6aa] sm:block">
-              顺流巡看时先让长河自己展开；需要检索、换时代或看来源时，再从右上角卷签入手。
-            </div>
+            <div className="mt-3 text-[10px] leading-5 text-[#e8d6aa]">{sceneHint}</div>
           </div>
         </div>
       ) : null}
       <Canvas
         dpr={[1, 1.8]}
-        eventSource={eventSource ?? undefined}
-        eventPrefix="client"
         onPointerDown={() => {
-          setAutoCruise(false);
-          setIsInteracting(true);
-        }}
-        onPointerMissed={() => {
           setAutoCruise(false);
           setIsInteracting(true);
         }}
