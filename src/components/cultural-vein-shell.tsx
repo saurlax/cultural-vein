@@ -1161,6 +1161,8 @@ export function CulturalVeinShell() {
       : defaultConceptSuggestions;
   const panelBaseClass =
     "rounded-[28px] border border-[#c89b43]/30 bg-[linear-gradient(180deg,rgba(245,232,189,0.96),rgba(225,191,112,0.92))] shadow-[0_18px_56px_rgba(92,58,16,0.16)] backdrop-blur-xl";
+  const mobileSheetClass =
+    "rounded-[24px] border border-[#c89b43]/24 bg-[linear-gradient(180deg,rgba(247,237,206,0.96),rgba(226,192,115,0.92))] shadow-[0_16px_36px_rgba(92,58,16,0.12)] backdrop-blur-xl";
   const showMobileSheet = showMobileControls || showMobileDossier;
   const desktopPanels: Array<{
     id: "search" | "era" | "category" | "branch";
@@ -2235,12 +2237,12 @@ export function CulturalVeinShell() {
         {showMobileSheet ? (
           <div className="absolute inset-x-0 bottom-[4.5rem] z-40 px-3 md:hidden">
             <div
-              className={`pointer-events-auto mx-auto max-h-[min(15rem,32vh)] w-[min(30rem,calc(100vw-1.5rem))] overflow-auto rounded-[22px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.14)] ${panelBaseClass}`}
+              className={`pointer-events-auto mx-auto max-h-[min(13.5rem,29vh)] w-[min(26rem,calc(100vw-1.5rem))] overflow-auto px-3 py-3 shadow-[0_16px_34px_rgba(52,28,6,0.12)] ${mobileSheetClass}`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#8d6a2c]">卷边题签</div>
-                  <div className="mt-1 text-sm font-medium text-[#5b3a11]">
+                  <div className="mt-1 text-[13px] font-medium text-[#5b3a11]">
                     {showMobileDossier && selectedBook ? `《${selectedBook.shortTitle}》卷内` : activeDesktopPanelConfig.label}
                   </div>
                 </div>
@@ -2256,17 +2258,18 @@ export function CulturalVeinShell() {
                 </button>
               </div>
               {selectedBook ? (
-                <div className="mt-3 flex gap-2">
+                <div className="mt-3 rounded-full border border-[#d5b16a]/18 bg-[rgba(255,248,220,0.18)] p-1">
+                  <div className="flex gap-1.5">
                   <button
                     type="button"
                     onClick={() => {
                       setShowMobileControls(true);
                       setShowMobileDossier(false);
                     }}
-                    className={`flex-1 rounded-full px-3 py-2 text-xs transition ${
+                    className={`flex-1 rounded-full px-3 py-1.5 text-[11px] transition ${
                       showMobileControls
                         ? "bg-[#f3dfab] text-[#42290a]"
-                        : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#6f4b18]"
+                        : "text-[#6f4b18]"
                     }`}
                   >
                     河册
@@ -2277,14 +2280,15 @@ export function CulturalVeinShell() {
                       setShowMobileControls(false);
                       setShowMobileDossier(true);
                     }}
-                    className={`flex-1 rounded-full px-3 py-2 text-xs transition ${
+                    className={`flex-1 rounded-full px-3 py-1.5 text-[11px] transition ${
                       showMobileDossier
                         ? "bg-[#f3dfab] text-[#42290a]"
-                        : "border border-[#ead8a6]/18 bg-[rgba(255,248,220,0.05)] text-[#6f4b18]"
+                        : "text-[#6f4b18]"
                     }`}
                   >
                     卷内
                   </button>
+                </div>
                 </div>
               ) : null}
               {showMobileDossier && selectedBook && selectedDetail ? (
