@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { searchConcepts } from "@/lib/concept-search";
+import { getSearchPayload } from "@/server/payloads";
 
 export function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get("q") ?? "";
-  const result = searchConcepts(query);
+  const result = getSearchPayload(query);
 
   return NextResponse.json(result);
 }

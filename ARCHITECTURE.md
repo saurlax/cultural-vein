@@ -26,7 +26,9 @@
 │  /api/books/[slug]         单书详情                         │
 │  /api/insights             真实数据覆盖与统计               │
 │  /api/search               概念搜索与命中排序               │
+│  backend/server.ts         独立后端骨架（可单独启动）       │
 │                                                             │
+│  src/server/payloads.ts    API 共享 payload 装配            │
 │  src/data/river-dataset.ts 运行时图谱合并与增强             │
 │  src/data/generated/real-supplements.json                   │
 │                           由脚本生成的真实资料数据          │
@@ -79,9 +81,11 @@
 - 以 `scripts/export_real_dataset.py` 做离线抽取
 - 以 `src/data/generated/real-supplements.json` 作为稳定中间产物
 - 以 `src/data/river-dataset.ts` 做运行时增强和前端消费整合
-- 以 Next.js Route Handlers 模拟本地 API 访问结构
+- 以 `src/server/payloads.ts` 统一装配 API payload
+- 以 Next.js Route Handlers 提供站内 API
+- 以 `backend/server.ts` 提供可独立启动的轻量 Node 后端骨架
 
-这意味着当前仓库虽然还不是正式 Neo4j + MeiliSearch 架构，但已经把“数据装配”和“前端消费”的边界划清，后续可平滑迁移。
+这意味着当前仓库虽然还不是正式 Neo4j + MeiliSearch 架构，但已经把“数据装配”“接口边界”和“前端消费”三者拆开，后续可平滑迁移。
 
 ## 3. 当前数据流
 
@@ -96,8 +100,9 @@
    - 关系层级与证据文本
 5. src/lib/concept-search.ts 对典籍题名、概念、学派与摘要做概念搜索排序
 6. src/lib/source-evidence.ts 将单书中的人物、场馆、事件、机构资料归并为来源证据总表
-7. /api/* 路由返回图谱、单书、搜索和统计信息
-8. React 组件消费这些数据，驱动：
+7. `src/server/payloads.ts` 输出共享接口结果
+8. `/api/*` 路由与独立后端骨架共同消费这些结果
+9. React 组件消费这些数据，驱动：
    - 河流总览
    - 典籍钻入
    - 文本溯源
@@ -118,6 +123,9 @@
   - 数据覆盖与统计接口
 - `src/app/api/search/route.ts`
   - 概念搜索接口
+- `backend/server.ts`
+  - 轻量独立后端骨架
+  - 当前可直接提供 `/health`、`/graph`、`/books/:slug`、`/insights`、`/search`
 
 ### 交互组件
 
@@ -138,6 +146,8 @@
 - `src/data/river-dataset.ts`
   - 合并当前典籍数据与真实资料
   - 输出 `riverDataset`
+- `src/server/payloads.ts`
+  - 为 Next Route Handlers 与独立后端共用的 payload 装配层
 - `src/data/generated/real-supplements.json`
   - 由脚本生成的真实数据中间层
 - `src/lib/concept-search.ts`
@@ -171,7 +181,7 @@
 虽然现在不是完整图数据库部署，但已经保留了明确升级路径：
 
 ```text
-离线脚本 -> 生成 JSON -> 本地 API -> 前端消费
+离线脚本 -> 生成 JSON -> 共享 payload -> 本地 API / 独立后端 -> 前端消费
                 │
                 └── 后续可替换为：
                     Neo4j / MeiliSearch / 外部服务 API
@@ -203,4 +213,4 @@
 
 如果需要在作品文档或 PPT 中用一句话说明当前架构，可以直接使用：
 
-“当前版本采用‘离线抽取 + 统一图谱装配 + 本地 API + 三层交互前端’的轻量架构，先保证典籍传承网络的可视化表达、真实数据接入与现场展示效果，同时保留后续平滑升级到图数据库与检索服务的工程空间。”
+“当前版本采用‘离线抽取 + 统一图谱装配 + 共享 payload + 本地 API / 独立后端骨架 + 三层交互前端’的轻量架构，先保证典籍传承网络的可视化表达、真实数据接入与现场展示效果，同时保留后续平滑升级到图数据库与检索服务的工程空间。”

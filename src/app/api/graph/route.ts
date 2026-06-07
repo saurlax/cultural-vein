@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { riverDataset } from "@/data/river-dataset";
+import { getGraphPayload } from "@/server/payloads";
 
 export function GET() {
-  return NextResponse.json({
-    books: riverDataset.books,
-    citations: riverDataset.citations,
-  });
+  return NextResponse.json(getGraphPayload());
 }
