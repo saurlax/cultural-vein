@@ -1298,9 +1298,9 @@ export function CulturalVeinShell() {
 
       <div className="relative z-10 min-h-screen">
         {showDesktopControls ? (
-          <div className="absolute left-4 top-4 z-20 hidden w-[min(15.5rem,calc(100vw-35rem))] md:block lg:left-6 lg:top-6 lg:w-[16rem]">
+          <div className="absolute left-4 top-4 z-20 hidden w-[min(14rem,calc(100vw-37rem))] md:block lg:left-6 lg:top-6 lg:w-[14.5rem]">
             <aside className="pointer-events-auto xl:pt-2">
-              <div className={`relative max-h-[min(72vh,44rem)] overflow-hidden p-3 ${panelBaseClass}`}>
+              <div className={`relative max-h-[min(68vh,40rem)] overflow-hidden p-3 ${panelBaseClass}`}>
               <div className="pointer-events-none absolute inset-y-5 left-2 w-px bg-[linear-gradient(180deg,transparent,rgba(244,220,156,0.42),transparent)]" />
               <div className="pointer-events-none absolute inset-y-5 right-2 w-px bg-[linear-gradient(180deg,transparent,rgba(213,167,70,0.34),transparent)]" />
               <div className="flex items-center justify-between gap-3">
@@ -1325,10 +1325,10 @@ export function CulturalVeinShell() {
 
               <div className="mt-3 rounded-[20px] border border-[#d9b86b]/16 bg-[rgba(255,252,240,0.24)] px-3 py-3 text-[#6f4b18]">
                 <div className="text-[12px] leading-6">{openingLead}</div>
-                <div className="mt-2 line-clamp-3 text-[11px] leading-5 text-[#8d6a2c]">{openingPreviewLead}</div>
+                <div className="mt-2 line-clamp-2 text-[11px] leading-5 text-[#8d6a2c]">{openingPreviewLead}</div>
                 {openingSourcePreviewBooks.length ? (
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {openingSourcePreviewBooks.map((book) => (
+                    {openingSourcePreviewBooks.slice(0, 1).map((book) => (
                       <button
                         key={`opening-source-preview-${book.slug}`}
                         type="button"
@@ -1365,7 +1365,7 @@ export function CulturalVeinShell() {
                 ))}
               </div>
 
-              <section className={`mt-3 max-h-[min(48vh,28rem)] overflow-auto rounded-[20px] border border-[#ead8a6]/12 bg-[rgba(93,62,18,0.16)] px-3 py-3 pr-2 transition-all duration-500 ease-out ${showDesktopControls ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}>
+              <section className={`mt-3 max-h-[min(42vh,24rem)] overflow-auto rounded-[20px] border border-[#ead8a6]/12 bg-[rgba(93,62,18,0.16)] px-3 py-3 pr-2 transition-all duration-500 ease-out ${showDesktopControls ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-[10px] tracking-[0.22em] text-[#d8c9a3]">
@@ -2176,9 +2176,9 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileSheet ? (
-          <div className="absolute inset-x-0 bottom-[4.25rem] z-40 px-3 md:hidden">
+          <div className="absolute inset-x-0 bottom-[4.5rem] z-40 px-3 md:hidden">
             <div
-              className={`pointer-events-auto max-h-[min(22rem,46vh)] overflow-auto rounded-[22px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.14)] ${panelBaseClass}`}
+              className={`pointer-events-auto mx-auto max-h-[min(15rem,32vh)] w-[min(30rem,calc(100vw-1.5rem))] overflow-auto rounded-[22px] p-3 shadow-[0_18px_42px_rgba(52,28,6,0.14)] ${panelBaseClass}`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -2257,7 +2257,7 @@ export function CulturalVeinShell() {
                       {selectedBook.dynasty} 的这部典籍此刻正以 {focusModeLabel} 停驻卷心，卷内已牵出 {selectedBookCitations.length} 条关联
                       {selectedSources.length ? ` 与 ${selectedSources.length} 类实证回声。` : "。"}
                     </div>
-                    <div className="max-h-[min(22rem,34vh)] overflow-auto pr-1">
+                    <div className="max-h-[min(14rem,24vh)] overflow-auto pr-1">
                       <BookExplorer
                         key={`mobile-explorer-${selectedBook.slug}-${entryExplorerTab ?? "spread"}`}
                         book={selectedBook}
@@ -2304,13 +2304,13 @@ export function CulturalVeinShell() {
                 </div>
               ) : null}
               {activeDesktopPanel === "branch" && sourceAtlasEntries.length ? (
-                <div className="mt-3 rounded-[20px] border border-[#ead8a6]/14 bg-[rgba(93,62,18,0.2)] px-3 py-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-[11px] tracking-[0.22em] text-[#d8c9a3]">来源河册</div>
-                    <div className="text-[10px] text-[#f2dfab]">
-                      {activeSourceAtlasEntry?.stat ?? sourceAtlasMass.toLocaleString()}
+                  <div className="mt-3 rounded-[20px] border border-[#ead8a6]/14 bg-[rgba(93,62,18,0.2)] px-3 py-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-[11px] tracking-[0.22em] text-[#d8c9a3]">来源河册</div>
+                      <div className="text-[10px] text-[#f2dfab]">
+                        {activeSourceAtlasEntry?.stat ?? sourceAtlasMass.toLocaleString()}
+                      </div>
                     </div>
-                  </div>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <span className="rounded-full border border-[#ead8a6]/16 bg-[rgba(255,248,220,0.05)] px-2.5 py-1 text-[10px] text-[#f3e3bb]">
                       当前可见 {prioritizedSourceAtlasEntries.length} 股
@@ -2352,7 +2352,7 @@ export function CulturalVeinShell() {
                   <div className="mt-3">
                     <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">按主题看</div>
                     <div className="mt-2 flex flex-wrap gap-2">
-                      {sourceAtlasThemeOptions.slice(0, 6).map((theme) => (
+                      {sourceAtlasThemeOptions.slice(0, 4).map((theme) => (
                         <button
                           key={`mobile-source-theme-${theme}`}
                           type="button"
@@ -2371,7 +2371,7 @@ export function CulturalVeinShell() {
                   <div className="mt-3">
                     <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">按时代看</div>
                     <div className="mt-2 flex flex-wrap gap-2">
-                      {sourceAtlasEraOptions.map((era) => (
+                      {sourceAtlasEraOptions.slice(0, 4).map((era) => (
                         <button
                           key={`mobile-source-era-${era}`}
                           type="button"
@@ -2388,7 +2388,7 @@ export function CulturalVeinShell() {
                     </div>
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {prioritizedSourceAtlasEntries.slice(0, 3).map((entry) => {
+                    {prioritizedSourceAtlasEntries.slice(0, 2).map((entry) => {
                       const isActive = activeSourceAtlasEntry?.id === entry.id;
 
                       return (
@@ -2673,6 +2673,19 @@ export function CulturalVeinShell() {
               >
                 {selectedBook ? `卷内《${selectedBook.shortTitle}》` : "控卷"}
               </button>
+              {!selectedBook ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowMobileDossier(false);
+                    setShowMobileControls(true);
+                    setActiveDesktopPanel("era");
+                  }}
+                  className="rounded-full border border-[#e7c97b]/22 bg-[linear-gradient(180deg,rgba(182,134,53,0.78),rgba(109,73,24,0.74))] px-4 py-2 text-[10px] text-[#fff0c7] shadow-[0_10px_22px_rgba(52,28,6,0.16)] backdrop-blur-xl"
+                >
+                  时代水位
+                </button>
+              ) : null}
             </div>
           </div>
         </div>
