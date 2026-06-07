@@ -658,9 +658,6 @@ export function CulturalVeinShell() {
     transitionState === "returning";
   const sourceAtlasEntries = useMemo(() => insights?.sourceAtlas ?? [], [insights?.sourceAtlas]);
   const atlasMeta = insights?.atlasMeta ?? null;
-  const atlasCoverageHighlights = useMemo(() => {
-    return (atlasMeta?.coverageLayers ?? []).slice(0, 3).map((layer) => layer.label);
-  }, [atlasMeta?.coverageLayers]);
   const inferSourceAtlasEra = useCallback(
     (entry: NonNullable<typeof sourceAtlasEntries>[number]) => {
       const inferredEra =
@@ -1155,12 +1152,6 @@ export function CulturalVeinShell() {
   const landingNarrative = activeSourceAtlasEntry
     ? `先让 ${activeSourceAtlasEntry.name} 这股来源支流映入河面，再顺着河册与时代水位择书入卷。`
     : "眼前先以主线典籍托住河身，再顺着来源河册、时代水位与卷内细读逐段入画。";
-  const sourceAtlasNeighborEntries =
-    activeSourceAtlasIndex >= 0
-      ? [1]
-          .map((offset) => prioritizedSourceAtlasEntries[activeSourceAtlasIndex + offset])
-          .filter((entry): entry is NonNullable<typeof sourceAtlasEntries>[number] => Boolean(entry))
-      : prioritizedSourceAtlasEntries.slice(1, 2);
   const visibleSourceAtlasDetail =
     activeSourceAtlasDetail?.entry.id === activeSourceAtlasEntry?.id ? activeSourceAtlasDetail : null;
   const activeSourceRelatedBooks = useMemo(
@@ -1236,6 +1227,9 @@ export function CulturalVeinShell() {
     activeSourceAtlasEntry?.stat ?? null,
     atlasMeta ? `主线 ${atlasMeta.demoBookCount} 部` : null,
   ].filter((item): item is string => Boolean(item));
+  const compactSourceThemeOptions = sourceAtlasThemeOptions.slice(0, 4);
+  const compactSourceEraOptions = sourceAtlasEraOptions.slice(0, 4);
+  const compactSourceRouteEntries = prioritizedSourceAtlasEntries.slice(0, 2);
   const compactBranchLead = activeBranchAnnotation
     ? activeBranchSummary
       ? `${relationLayerMeta[activeBranchSummary.layer].label}当前显出 ${activeBranchSummary.count} 股。`
@@ -1658,9 +1652,18 @@ export function CulturalVeinShell() {
                       )}
                     </div>
                     {sourceAtlasEntries.length ? (
-                    <div className="mt-3 rounded-[18px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(127,87,27,0.28),rgba(58,36,10,0.18))] px-3 py-3">
+                    <div className="mt-3 rounded-[18px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(127,87,27,0.24),rgba(58,36,10,0.16))] px-3 py-3">
                       <div className="flex items-center justify-between gap-3">
-                        <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">来源河册</div>
+                        <div>
+                          <div className="text-[11px] tracking-[0.24em] text-[#d8c9a3]">支流巡签</div>
+                          <div className="mt-1 text-[10px] text-[#cdb98d]">
+                            当前第{" "}
+                            {activeSourceAtlasIndex >= 0
+                              ? activeSourceAtlasIndex + 1
+                              : Math.min(prioritizedSourceAtlasEntries.length, 1)}
+                            /{prioritizedSourceAtlasEntries.length || 1} 股
+                          </div>
+                        </div>
                         <div className="text-[10px] text-[#f2dfab]">{sourceAtlasMass.toLocaleString()}</div>
                         </div>
                         <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -1690,27 +1693,11 @@ export function CulturalVeinShell() {
                           )}
                         </div>
                         {atlasMeta ? (
-                          <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-3">
+                          <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(255,248,220,0.05)] px-3 py-2.5">
                             <div className="text-[11px] leading-5 text-[#f2e4bb]">
-                              眼前先以 {atlasMeta.demoBookCount} 部主线典籍串起完整长卷，已连入{" "}
-                              {atlasMeta.activeSources} 股真实来源与{" "}
+                              长卷已串起 {atlasMeta.demoBookCount} 部主线典籍、{atlasMeta.activeSources} 股真实来源与{" "}
                               {cbdbPersonCount?.toLocaleString() ?? "--"} 位纪传人物。
                             </div>
-                            <div className="mt-2 text-[10px] leading-5 text-[#dccb9c]">
-                              更大版图仍可沿同一装配链继续生长至 {atlasMeta.totalBookCount.toLocaleString()} 种古籍。
-                            </div>
-                            {atlasCoverageHighlights.length ? (
-                              <div className="mt-3 flex flex-wrap gap-2">
-                                {atlasCoverageHighlights.map((label) => (
-                                  <span
-                                    key={`atlas-highlight-${label}`}
-                                    className="rounded-full border border-[#ead8a6]/14 bg-[rgba(89,58,17,0.22)] px-2.5 py-1 text-[10px] text-[#eadfbc]"
-                                  >
-                                    {label}
-                                  </span>
-                                ))}
-                              </div>
-                            ) : null}
                           </div>
                         ) : null}
                         <div className="mt-3 rounded-[16px] border border-[#ead8a6]/12 bg-[rgba(35,22,7,0.26)] px-3 py-3">
@@ -1725,7 +1712,7 @@ export function CulturalVeinShell() {
                           <div className="mt-3">
                             <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">按主题看</div>
                             <div className="mt-2 flex flex-wrap gap-2">
-                              {sourceAtlasThemeOptions.map((theme) => (
+                              {compactSourceThemeOptions.map((theme) => (
                                 <button
                                   key={`source-theme-${theme}`}
                                   type="button"
@@ -1744,7 +1731,7 @@ export function CulturalVeinShell() {
                           <div className="mt-3">
                             <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">按时代看</div>
                             <div className="mt-2 flex flex-wrap gap-2">
-                              {sourceAtlasEraOptions.map((era) => (
+                              {compactSourceEraOptions.map((era) => (
                                 <button
                                   key={`source-era-${era}`}
                                   type="button"
@@ -1797,31 +1784,18 @@ export function CulturalVeinShell() {
                               <div className="mt-2 inline-flex rounded-full border border-amber-200/22 bg-[rgba(255,244,214,0.08)] px-2.5 py-1 text-[10px] text-[#fff0c2]">
                                 {getSourceThemeLabel(activeSourceAtlasEntry.name)}
                               </div>
-                              <div className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#e6d7ae]">
+                              <div className="mt-2 line-clamp-2 text-[10px] leading-5 text-[#e6d7ae]">
                                 {activeSourceAtlasEntry.summary ?? "这股来源正在河面留下对应线索与落点。"}
                               </div>
-                              {activeSourceAtlasEntry.evidenceLabel ? (
-                                <div className="mt-2 rounded-[12px] border border-[#ead8a6]/10 bg-[rgba(35,22,7,0.18)] px-2.5 py-2">
-                                  <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">原始凭据</div>
-                                  <div className="mt-1 text-[10px] text-[#fbf3da]">
-                                    {activeSourceAtlasEntry.evidenceLabel}
-                                  </div>
-                                  {activeSourceAtlasEntry.evidenceNote ? (
-                                    <div className="mt-1 line-clamp-3 text-[10px] leading-5 text-[#dccb9c]">
-                                      {activeSourceAtlasEntry.evidenceNote}
-                                    </div>
-                                  ) : null}
-                                </div>
-                              ) : null}
                             </button>
                           ) : (
                             <div className="mt-3 rounded-[14px] border border-dashed border-[#ead8a6]/16 bg-[rgba(255,248,220,0.03)] px-3 py-3 text-[11px] leading-5 text-[#d8c9a3]">
                               当前筛选下还没有映上河面的来源支流，换个主题或时代再看。
                             </div>
                           )}
-                          {sourceAtlasNeighborEntries.length ? (
+                          {compactSourceRouteEntries.length ? (
                             <div className="mt-3 space-y-2">
-                              {sourceAtlasNeighborEntries.map((entry) => {
+                              {compactSourceRouteEntries.map((entry) => {
                                 const route = sourceAtlasRouteMap.get(entry.id);
 
                                 return (
@@ -1877,7 +1851,7 @@ export function CulturalVeinShell() {
                               >
                                 映到河面
                               </button>
-                              {activeSourceAtlasEntry.sampleRecords?.slice(0, 4).map((record, index) => {
+                              {activeSourceAtlasEntry.sampleRecords?.slice(0, 2).map((record, index) => {
                                 const dockId = getSourceAtlasDockId(index);
                                 const isDockActive = dockId !== null && activeSourceDock?.id === dockId;
 
@@ -1923,7 +1897,7 @@ export function CulturalVeinShell() {
                               <div className="mt-3 rounded-[14px] border border-[#ead8a6]/12 bg-[rgba(64,41,12,0.3)] px-3 py-3">
                                 <div className="text-[10px] tracking-[0.18em] text-[#d8c9a3]">顺流可入</div>
                                 <div className="mt-2 flex flex-wrap gap-2">
-                                  {activeSourceRelatedBooks.map((book) => (
+                                  {activeSourceRelatedBooks.slice(0, 2).map((book) => (
                                     <button
                                       key={`source-related-${activeSourceAtlasEntry.id}-${book.slug}`}
                                       type="button"
