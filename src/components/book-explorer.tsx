@@ -582,6 +582,21 @@ export function BookExplorer({
   const sourceBadges = detail.realWorldSignals?.sourceLabel
     ? detail.realWorldSignals.sourceLabel.split("+").map((item) => item.trim()).filter(Boolean)
     : [];
+  const sourceLabelDisplay = (() => {
+    if (!sourceBadges.length) {
+      return "";
+    }
+
+    if (sourceBadges.length === 1) {
+      return sourceBadges[0] ?? "";
+    }
+
+    if (sourceBadges.length === 2) {
+      return `${sourceBadges[0]}与${sourceBadges[1]}`;
+    }
+
+    return `${sourceBadges.slice(0, -1).join("、")}与${sourceBadges[sourceBadges.length - 1]}`;
+  })();
   const sourceEvidence = useMemo(() => buildSourceEvidence(detail), [detail]);
   const institutionRecords = useMemo(
     () => detail.realWorldSignals?.institutionSamples ?? [],
@@ -1112,7 +1127,7 @@ export function BookExplorer({
                 onClick={() => handleOpenSourceEvidence(activeSourceEvidence?.id ?? "institution-samples")}
                 className="mt-1 text-left text-sm font-medium text-amber-50 transition hover:text-[#fff2c7]"
               >
-                {detail.realWorldSignals.sourceLabel}
+                {sourceLabelDisplay}
               </button>
             </div>
             <button
