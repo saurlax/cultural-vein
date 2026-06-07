@@ -4523,6 +4523,300 @@ if (renjianciHuaDetail) {
   };
 }
 
+const shangshuZhengyiDetail = details["shangshu-zhengyi"];
+if (shangshuZhengyiDetail) {
+  shangshuZhengyiDetail.heroMetric = {
+    directCitations: Math.max(shangshuZhengyiDetail.heroMetric.directCitations, 76),
+    downstreamInfluence: Math.max(shangshuZhengyiDetail.heroMetric.downstreamInfluence, 218),
+    coveredRegions: Math.max(shangshuZhengyiDetail.heroMetric.coveredRegions, 6),
+  };
+  shangshuZhengyiDetail.places = mergeById(shangshuZhengyiDetail.places, [
+    {
+      id: "place-hangzhou-sszy",
+      name: "杭州",
+      lat: 30.2741,
+      lng: 120.1551,
+      note: "南宋以后经义讲习与选本整理继续把《尚书正义》带入更广的阅读网络。",
+    },
+  ]);
+  shangshuZhengyiDetail.spread = mergeById(shangshuZhengyiDetail.spread, [
+    {
+      id: "spread-sszy-3",
+      fromPlaceId: "place-kaifeng-sszy",
+      toPlaceId: "place-hangzhou-sszy",
+      startYear: 1100,
+      endYear: 1250,
+      volume: 76,
+    },
+  ]);
+  shangshuZhengyiDetail.people = mergeById(shangshuZhengyiDetail.people, [
+    {
+      id: "person-cai-shen-sszy",
+      name: "蔡沈",
+      role: "承继者",
+      birthYear: 1167,
+      deathYear: 1230,
+      era: "宋元",
+      bio: "《书集传》代表宋代理学重释《尚书》的路径，使唐代正义系统之后又多出一层义理解读中继。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+    {
+      id: "person-yan-shigu-sszy",
+      name: "颜师古",
+      role: "校订者",
+      birthYear: 581,
+      deathYear: 645,
+      era: "隋唐",
+      bio: "唐代注释与校勘传统中的代表人物，其时代语境说明《五经正义》并非孤立编成，而是依托更大的官学整理工程。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "校",
+    },
+  ]);
+  shangshuZhengyiDetail.versions = mergeById(shangshuZhengyiDetail.versions, [
+    {
+      id: "version-sszy-3",
+      label: "南宋书院讲本《尚书正义》",
+      year: 1180,
+      place: "杭州",
+      library: "书院系统",
+      status: "存世",
+      parentId: "version-sszy-2",
+      editionType: "重刊本",
+      note: "《尚书正义》不只停留在官学底本，也进入南宋经义与书院讲习环境。",
+    },
+  ]);
+  shangshuZhengyiDetail.timeline = mergeById(shangshuZhengyiDetail.timeline, [
+    {
+      id: "tl-sszy-3",
+      year: 1180,
+      title: "南宋经义讲习继续回读《尚书正义》",
+      detail: "唐代正义系统在宋代并未失效，而是与新的义理解释共同构成《尚书》阅读的双重底座。",
+    },
+    {
+      id: "tl-sszy-4",
+      year: 1230,
+      title: "宋代理学重释补出第二层中继",
+      detail: "《书集传》等路径让《尚书》在官学义疏之外，继续进入理学化与书院化的解释链路。",
+    },
+  ]);
+  shangshuZhengyiDetail.passages = mergeById(shangshuZhengyiDetail.passages, [
+    {
+      id: "passage-sszy-2",
+      section: "经疏之用",
+      original: "正义并非终点，它把原典、官学训释与后世治道阅读之间搭起一层可反复进出的中继桥。 ",
+      links: [
+        {
+          id: "passage-sszy-2-link-1",
+          quote: "官学义疏之后仍有理学重释",
+          sourceBookId: "book-shangshu",
+          sourceTitle: "尚书",
+          layer: "explicit",
+          confidenceLabel: "高",
+          evidence: "《尚书正义》直接以《尚书》为底本，并为后世不同解释路径提供了统一的阅读入口。",
+        },
+        {
+          id: "passage-sszy-2-link-2",
+          quote: "治道镜鉴向通史回流",
+          sourceBookId: "book-zi-zhi-tong-jian",
+          sourceTitle: "资治通鉴",
+          layer: "influence",
+          confidenceLabel: "中",
+          evidence: "官学政教解释传统会回流到后世史学的制度判断中，使《尚书正义》与《通鉴》在治道问题上形成间接共振。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-sszy-3",
+          title: "尚书",
+          relation: "原典",
+          note: "上古政教与典章语言提供全部问题意识。",
+        },
+        {
+          id: "trace-sszy-4",
+          title: "尚书正义",
+          relation: "官学经疏",
+          note: "将原典压缩进稳定可授的义疏层。",
+        },
+        {
+          id: "trace-sszy-5",
+          title: "资治通鉴",
+          relation: "治道回流",
+          note: "经疏里的政教解释会继续回到历史判断与制度镜鉴中。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-sszy-2",
+          targetTitle: "资治通鉴",
+          relation: "治道参照",
+          note: "《通鉴》式史学判断吸收了经疏传统中稳定的政教解释资源。",
+          confidenceLabel: "中",
+        },
+      ],
+    },
+  ]);
+  shangshuZhengyiDetail.realWorldSignals = {
+    ...shangshuZhengyiDetail.realWorldSignals,
+    sourceLabel: appendSourceLabel(shangshuZhengyiDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    venueSummary: appendVenueSummary(
+      shangshuZhengyiDetail.realWorldSignals?.venueSummary,
+      "补厚《尚书正义》后，《尚书》主河道终于能看见“原典—官学经疏—治道回流”的完整中段，不再只是一条细支流。",
+    ),
+  };
+}
+
+const shuowenDetail = details.shuowen;
+if (shuowenDetail) {
+  shuowenDetail.heroMetric = {
+    directCitations: Math.max(shuowenDetail.heroMetric.directCitations, 78),
+    downstreamInfluence: Math.max(shuowenDetail.heroMetric.downstreamInfluence, 228),
+    coveredRegions: Math.max(shuowenDetail.heroMetric.coveredRegions, 6),
+  };
+  shuowenDetail.places = mergeById(shuowenDetail.places, [
+    {
+      id: "place-beijing-sw",
+      name: "北京",
+      lat: 39.9042,
+      lng: 116.4074,
+      note: "清代考据、目录与经学整理继续放大《说文》的学术核心地位。",
+    },
+  ]);
+  shuowenDetail.spread = mergeById(shuowenDetail.spread, [
+    {
+      id: "spread-sw-3",
+      fromPlaceId: "place-suzhou-sw",
+      toPlaceId: "place-beijing-sw",
+      startYear: 1815,
+      endYear: 1900,
+      volume: 74,
+    },
+  ]);
+  shuowenDetail.people = mergeById(shuowenDetail.people, [
+    {
+      id: "person-duan-yucai-sw",
+      name: "段玉裁",
+      role: "注者",
+      birthYear: 1735,
+      deathYear: 1815,
+      era: "明清",
+      bio: "《说文解字注》使《说文》重新回到清代经学、校勘与训诂主线，是文字学回流经义的重要枢纽。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 1,
+      relationType: "注",
+    },
+    {
+      id: "person-zhu-junsheng-sw",
+      name: "朱骏声",
+      role: "承继者",
+      birthYear: 1788,
+      deathYear: 1858,
+      era: "明清",
+      bio: "小学与声音训诂研究继续扩大《说文》在晚清学术中的解释能力。",
+      source: "curated",
+      sourceStatus: "curated",
+      relationTier: 2,
+      relationType: "承",
+    } as PersonNode,
+  ]);
+  shuowenDetail.versions = mergeById(shuowenDetail.versions, [
+    {
+      id: "version-sw-3",
+      label: "《说文解字注》晚清整理本",
+      year: 1850,
+      place: "北京",
+      library: "经学整理系统",
+      status: "存世",
+      parentId: "version-sw-2",
+      editionType: "整理本",
+      note: "晚清整理继续把《说文》推向经义、声音与目录学交叉地带。",
+    },
+  ]);
+  shuowenDetail.timeline = mergeById(shuowenDetail.timeline, [
+    {
+      id: "tl-sw-3",
+      year: 1850,
+      title: "晚清小学整理继续扩张《说文》影响",
+      detail: "《说文》不再只是古书，而成为经学、音韵、目录与制度考证反复调用的基础工具。",
+    },
+    {
+      id: "tl-sw-4",
+      year: 1900,
+      title: "文字学底座继续进入现代学术转写",
+      detail: "近现代古籍整理与语言研究仍不断回到《说文》建立的文字解释框架。",
+    },
+  ]);
+  shuowenDetail.passages = mergeById(shuowenDetail.passages, [
+    {
+      id: "passage-sw-2",
+      section: "训诂回流",
+      original: "文字学之功，不止辨字形、明字义，更在为经义、制度与校勘提供可追溯、可证实的底座。",
+      links: [
+        {
+          id: "passage-sw-2-link-1",
+          quote: "经义需要稳定的文字学底盘",
+          sourceBookId: "book-shangshu-zhengyi",
+          sourceTitle: "尚书正义",
+          layer: "semantic",
+          confidenceLabel: "中",
+          evidence: "像《尚书正义》这样的经疏系统，需要更稳定的疑难字解释与训诂资源，而《说文》正是长期底座之一。",
+        },
+        {
+          id: "passage-sw-2-link-2",
+          quote: "考据经世会把小学重新拉回现实问题",
+          sourceBookId: "book-ri-zhi-lu",
+          sourceTitle: "日知录",
+          layer: "influence",
+          confidenceLabel: "中",
+          evidence: "清代经世考据把训诂、小学和制度讨论重新拉到同一条河道上，《说文》因此再次成为案头工具书。",
+        },
+      ],
+      tracePath: [
+        {
+          id: "trace-sw-4",
+          title: "尚书正义",
+          relation: "释经需求",
+          note: "经疏系统不断提出对字义、古文与训诂的稳定需求。",
+        },
+        {
+          id: "trace-sw-5",
+          title: "说文解字",
+          relation: "文字底座",
+          note: "通过六书与字义组织方式建立较稳定的释字框架。",
+        },
+        {
+          id: "trace-sw-6",
+          title: "日知录",
+          relation: "考据回流",
+          note: "清代经世考据把文字学重新拉回制度与现实问题场。",
+        },
+      ],
+      downstreamInfluence: [
+        {
+          id: "down-sw-2",
+          targetTitle: "日知录",
+          relation: "经世工具",
+          note: "《说文》使《日知录》式考据工作拥有更强的文字与训诂支撑。",
+          confidenceLabel: "中",
+        },
+      ],
+    },
+  ]);
+  shuowenDetail.realWorldSignals = {
+    ...shuowenDetail.realWorldSignals,
+    sourceLabel: appendSourceLabel(shuowenDetail.realWorldSignals?.sourceLabel, "CBDB 人物"),
+    venueSummary: appendVenueSummary(
+      shuowenDetail.realWorldSignals?.venueSummary,
+      "补厚《说文》后，训诂与考据支流终于不再只是一块工具性标签，而能继续点到释经、考据和经世回流三层内容。",
+    ),
+  };
+}
+
 const cbdbPeople = (supplementPayload.cbdbPeople ?? []) as RealSupplementPerson[];
 const cbdbSummary = (supplementPayload.cbdbSummary ?? {}) as RealSupplementCbdbSummary;
 const shanghaiLibraryActivity = (supplementPayload.shanghaiLibraryActivity ??
