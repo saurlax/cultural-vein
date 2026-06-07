@@ -547,6 +547,14 @@ export function CulturalVeinShell() {
     }
 
     if (
+      entry.name.includes("南湖") ||
+      entry.name.includes("韬奋") ||
+      entry.name.includes("宋庆龄")
+    ) {
+      return "近现代" as const;
+    }
+
+    if (
       entry.name.includes("报刊") ||
       entry.name.includes("专题片") ||
       entry.name.includes("图书馆") ||
@@ -616,7 +624,6 @@ export function CulturalVeinShell() {
       return [];
     }
 
-    const accentPalette = ["#fbbf24", "#fb923c", "#f59e0b", "#fde68a", "#facc15", "#fdba74"];
     const anchorPool =
       filteredBooks.length > 0
         ? filteredBooks
@@ -656,10 +663,22 @@ export function CulturalVeinShell() {
           return null;
         }
 
+        const routeColor = entry.name.includes("南湖")
+          ? "#ef4444"
+          : entry.name.includes("韬奋") || entry.name.includes("宋庆龄")
+            ? "#fb7185"
+            : entry.name.includes("报刊")
+              ? "#f97316"
+              : entry.name.includes("搜韵")
+                ? "#fbbf24"
+                : ["#fbbf24", "#fb923c", "#f59e0b", "#fde68a", "#facc15", "#fdba74"][
+                    entryIndex % 6
+                  ]!;
+
         return {
           id: entry.id,
           label: entry.name,
-          color: accentPalette[entryIndex % accentPalette.length]!,
+          color: routeColor,
           points: routePoints,
         };
       })
@@ -718,6 +737,14 @@ export function CulturalVeinShell() {
 
         if (activeSourceAtlasEntry.name.includes("专题片")) {
           return book.dynasty === "近现代" || book.dynasty === "明清";
+        }
+
+        if (
+          activeSourceAtlasEntry.name.includes("南湖") ||
+          activeSourceAtlasEntry.name.includes("韬奋") ||
+          activeSourceAtlasEntry.name.includes("宋庆龄")
+        ) {
+          return book.dynasty === "近现代";
         }
 
         if (activeSourceAtlasEntry.name.includes("CBDB")) {
@@ -1517,6 +1544,13 @@ export function CulturalVeinShell() {
                               <div className="mt-2 text-[10px] text-[#f2dfab]">
                                 {activeSourceAtlasEntry.stat ?? "来源线索"}
                               </div>
+                              {(activeSourceAtlasEntry.name.includes("南湖") ||
+                                activeSourceAtlasEntry.name.includes("韬奋") ||
+                                activeSourceAtlasEntry.name.includes("宋庆龄")) ? (
+                                <div className="mt-2 inline-flex rounded-full border border-rose-300/24 bg-rose-300/10 px-2.5 py-1 text-[10px] text-rose-100">
+                                  近现代支流
+                                </div>
+                              ) : null}
                               <div className="mt-2 line-clamp-3 text-[10px] leading-5 text-[#e6d7ae]">
                                 {activeSourceAtlasEntry.summary ?? "这股来源正在河面留下对应线索与落点。"}
                               </div>
@@ -1560,7 +1594,13 @@ export function CulturalVeinShell() {
                                       {entry.stat ?? "来源线索"}
                                     </div>
                                   </div>
-                                  <div className="shrink-0 text-[10px] text-[#d8c9a3]">待映照</div>
+                                  <div className="shrink-0 text-[10px] text-[#d8c9a3]">
+                                    {entry.name.includes("南湖") ||
+                                    entry.name.includes("韬奋") ||
+                                    entry.name.includes("宋庆龄")
+                                      ? "近现代支流"
+                                      : "待映照"}
+                                  </div>
                                 </button>
                               );
                             })}
