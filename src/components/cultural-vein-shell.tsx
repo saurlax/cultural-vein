@@ -933,8 +933,27 @@ export function CulturalVeinShell() {
 
     return focusCandidates;
   })();
+  const openingSourceSpotlightSlugs = useMemo(() => {
+    if (selectedBook) {
+      return [];
+    }
+
+    const openingEntries = prioritizedSourceAtlasEntries.slice(0, 3);
+    const preferredBooks = openingEntries.flatMap((entry) =>
+      getEntryAnchorBooks(entry)
+        .sort((left, right) => right.influence - left.influence)
+        .slice(0, 2)
+        .map((book) => book.slug),
+    );
+
+    return Array.from(new Set(preferredBooks)).slice(0, 4);
+  }, [getEntryAnchorBooks, prioritizedSourceAtlasEntries, selectedBook]);
   const mergedHighlightedBookSlugs = Array.from(
-    new Set([...searchHighlightedSlugs, ...sourceAtlasHighlightedBookSlugs]),
+    new Set([
+      ...searchHighlightedSlugs,
+      ...sourceAtlasHighlightedBookSlugs,
+      ...openingSourceSpotlightSlugs,
+    ]),
   );
   const sourceAtlasMass = prioritizedSourceAtlasEntries.reduce(
     (sum, entry) => sum + (entry.magnitude ?? entry.sampleRecords?.length ?? 0),
@@ -1136,6 +1155,10 @@ export function CulturalVeinShell() {
       : activeEra === "宋元"
         ? "此处正是支流奔涌最盛的一段河身。"
         : "顺着黄河长卷巡看主河、支流与时代起伏。";
+  const openingSourceLead =
+    activeSourceAtlasEntry?.name
+      ? `当前高光正牵向 ${activeSourceAtlasEntry.name} 这股真实来源支流。`
+      : "首屏高光节点已优先牵到真实来源可落点的河段。";
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#e2c372] text-stone-100">
@@ -1197,6 +1220,7 @@ export function CulturalVeinShell() {
             <div className="h-6 w-px bg-[#c99d4f]/28" />
             <div className="min-w-0">
               <div className="text-[10px] leading-5 text-[#fff0c7] line-clamp-1">{openingLead}</div>
+              <div className="text-[9px] leading-4 text-[#f4d892]/86 line-clamp-1">{openingSourceLead}</div>
               <div className="text-[9px] leading-4 text-[#f6e8bd]/80 line-clamp-1">{landingNarrative}</div>
             </div>
           </div>
