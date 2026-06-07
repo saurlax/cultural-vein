@@ -996,8 +996,8 @@ export function BookExplorer({
   const activeInstitutionPreviewText = activeInstitutionRecord
     ? activeInstitutionRecord.sourceText ??
       (activeInstitutionRecord.imageRef
-        ? `当前影像号 ${activeInstitutionRecord.imageRef} 已挂接到 ${activeInstitutionRecord.institution} 的馆藏线索，可作为这一版的卷面落点。`
-        : "当前馆藏条目已落到版本资源层，可作为卷面浏览入口。")
+        ? `影像号 ${activeInstitutionRecord.imageRef} 已与 ${activeInstitutionRecord.institution} 的馆藏线索相互扣合。`
+        : "馆藏条目已经落到版本资源层，卷面与版本位置彼此对应。")
     : null;
   const activeInstitutionPreviewWindow = activeInstitutionRecord
     ? institutionRecords
@@ -1077,14 +1077,14 @@ export function BookExplorer({
                 onClick={() => setTab("spread")}
                 className="rounded-full border border-[#caa45b]/24 bg-white/35 px-3 py-1.5 text-xs text-[#6b4b1d] transition hover:bg-white/50"
               >
-                顺着长河看传播
+                传播河段
               </button>
               <button
                 type="button"
                 onClick={() => setTab("passages")}
                 className="rounded-full border border-[#caa45b]/24 bg-white/35 px-3 py-1.5 text-xs text-[#6b4b1d] transition hover:bg-white/50"
               >
-                直接入文本溯源
+                文本溯源
               </button>
             </div>
           </div>
@@ -2308,21 +2308,21 @@ export function BookExplorer({
             </>
           )}
           <div className="grid gap-3 md:grid-cols-2">
-            <button
-              type="button"
-              onClick={() => {
-                if (activeSpread?.id) {
-                  setSelectedSpreadId(activeSpread.id);
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (activeSpread?.id) {
+                          setSelectedSpreadId(activeSpread.id);
                 }
-              }}
-              className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
-            >
-              <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">航段入口</div>
+                    }}
+                    className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
+                  >
+              <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">传播河段</div>
               <div className="mt-2 text-sm font-medium text-[#fbf3da]">
                 {activeSpreadPlaces?.from?.name ?? "起点"} → {activeSpreadPlaces?.to?.name ?? "终点"}
               </div>
               <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
-                回到正在查看的传播航段，顺着城市与年份继续追看知识南迁、北上与分流路径。
+                城市、年份与方向正在共同显出这段知识流动的路径。
               </div>
             </button>
             <button
@@ -2337,14 +2337,14 @@ export function BookExplorer({
               }}
               className="rounded-[24px] border border-amber-300/14 bg-[linear-gradient(180deg,rgba(191,140,40,0.16),rgba(56,35,11,0.24))] px-4 py-4 text-left transition hover:bg-[linear-gradient(180deg,rgba(191,140,40,0.22),rgba(56,35,11,0.3))]"
             >
-              <div className="text-xs tracking-[0.2em] text-amber-100/75">场馆入口</div>
+              <div className="text-xs tracking-[0.2em] text-amber-100/75">场馆样本</div>
               <div className="mt-2 text-sm font-medium text-amber-50">
-                {detail.realWorldSignals?.venueSamples?.length ? "上图场馆样本" : "转看时间回声"}
+                {detail.realWorldSignals?.venueSamples?.length ? "上图场馆样本" : "时间回声"}
               </div>
               <div className="mt-2 text-sm leading-7 text-amber-50/90">
                 {detail.realWorldSignals?.venueSamples?.length
-                  ? "沿着上图场馆与活动信号继续回查传播落点，让结构航段和真实样本在同一层合流。"
-                  : "这一层暂时没有场馆样本时，直接转看时间回声继续顺着传播事件走。"}
+                  ? "场馆与活动信号已经把传播河段压到现实空间的具体落点上。"
+                  : "这段传播尚未落到场馆样本，年代回声仍保留它的事件踪迹。"}
               </div>
             </button>
           </div>
@@ -2388,7 +2388,7 @@ export function BookExplorer({
                         }}
                         className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-300 transition hover:bg-white/10"
                       >
-                        对应当前航段
+                        对应河段
                       </button>
                       <button
                         type="button"
@@ -2410,7 +2410,7 @@ export function BookExplorer({
                         }}
                         className="rounded-full border border-amber-300/25 bg-amber-300/12 px-3 py-1.5 text-xs text-amber-100 transition hover:bg-amber-300/18"
                       >
-                        回查活动事件
+                        活动回声
                       </button>
                       <button
                         type="button"
@@ -2419,12 +2419,12 @@ export function BookExplorer({
                         }}
                         className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
                       >
-                        打开场馆证据
+                        场馆证据
                       </button>
                     </div>
                     {linkedVenueEventMap.get(venue.name)?.length ? (
                       <div className="mt-3 text-xs leading-6 text-stone-400">
-                        已挂接 {linkedVenueEventMap.get(venue.name)!.length} 条活动事件，可继续回查时间线。
+                        已挂接 {linkedVenueEventMap.get(venue.name)!.length} 条活动事件，传播路径与现实时间已经彼此扣合。
                       </div>
                     ) : null}
                   </button>
@@ -2443,21 +2443,21 @@ export function BookExplorer({
           </div>
           {visiblePeople.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6">
-              <div className="text-sm text-stone-200">这一时代河段暂时没有展开关联人物时，先回查纪传证据或转看传播航段，把人物线索从别的层重新带回当前典籍。</div>
+              <div className="text-sm text-stone-200">这一时代河段里，人物关系尚未显影到卷面中心。</div>
               <div className="mt-3 flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => handleOpenSourceEvidence("cbdb-people")}
                   className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                 >
-                  打开人物证据
+                  人物证据
                 </button>
                 <button
                   type="button"
                   onClick={() => setTab("spread")}
                   className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                 >
-                  转看传播航段
+                  传播河段
                 </button>
               </div>
             </div>
@@ -2472,7 +2472,7 @@ export function BookExplorer({
                           人物关系场
                         </div>
                         <div className="mt-1 text-sm text-[#eadfbc]">
-                          默认先显现核心人物，按需展开二级支流，避免关系场一次性过载。
+                          核心人物与外扩支流分层浮现，关系场会保持清晰的主次秩序。
                         </div>
                       </div>
                       <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-stone-300">
@@ -2531,28 +2531,28 @@ export function BookExplorer({
                               }}
                               className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-[11px] text-amber-100 transition hover:bg-amber-300/15"
                             >
-                              {secondaryPeopleExpanded ? "收起支流人物" : "展开支流人物"}
+                              {secondaryPeopleExpanded ? "收束支流人物" : "显出支流人物"}
                             </button>
                           ) : null}
                         </div>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {secondaryPeople.length === 0 ? (
                             <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-3">
-                              <div className="text-sm text-stone-200">当前人物关系先停在核心人物层。</div>
+                              <div className="text-sm text-stone-200">此刻卷面仍停留在核心人物层。</div>
                               <div className="mt-3 flex flex-wrap gap-2">
                                 <button
                                   type="button"
                                   onClick={() => handleFocusCbdbEvidence(activePerson?.id)}
                                   className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                                 >
-                                  打开人物证据
+                                  人物证据
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => setTab("spread")}
                                   className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                                 >
-                                  转看传播航段
+                                  传播河段
                                 </button>
                               </div>
                             </div>
@@ -2577,7 +2577,7 @@ export function BookExplorer({
                               onClick={() => setShowSecondaryPeople(true)}
                               className="rounded-2xl border border-dashed border-white/10 px-3 py-3 text-left text-sm leading-6 text-stone-400 transition hover:bg-white/5"
                             >
-                              先查看作者、注者、编者等核心人物，再按需展开引用者、评论者、校勘者等支流角色。
+                              作者、注者与编者稳住主干之后，引用者、评论者与校勘者会继续从支流浮现。
                             </button>
                           )}
                         </div>
@@ -2725,7 +2725,7 @@ export function BookExplorer({
                         ) : null}
                         <div className="mt-4 rounded-2xl border border-amber-300/12 bg-amber-300/6 px-4 py-4">
                           <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                            人物回查入口
+                            人物回查
                           </div>
                           <div className="mt-3 flex flex-wrap gap-2">
                             <button
@@ -2735,7 +2735,7 @@ export function BookExplorer({
                               }}
                               className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                             >
-                              打开证据总表
+                              证据总表
                             </button>
                             {activePerson.activityPlaces?.[0] ? (
                               <button
@@ -2743,7 +2743,7 @@ export function BookExplorer({
                                 onClick={() => setTab("spread")}
                                 className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-200 transition hover:bg-white/10"
                               >
-                                转看人物传播
+                                人物传播
                               </button>
                             ) : null}
                           </div>
@@ -2766,12 +2766,12 @@ export function BookExplorer({
                   }}
                   className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
                 >
-                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">核心人物入口</div>
+                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">核心人物</div>
                   <div className="mt-2 text-sm font-medium text-[#fbf3da]">
                     {primaryPeople[0]?.name ?? visiblePeople[0]?.name ?? "当前核心人物"}
                   </div>
                   <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
-                    直接回到作者、注者、编纂者等核心人物节点，顺着人物主线讲清典籍中心关系。
+                    作者、注者与编纂者共同托住这部典籍的人物主干。
                   </div>
                 </button>
                 <button
@@ -2787,14 +2787,14 @@ export function BookExplorer({
                   }}
                   className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
                 >
-                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">支流人物入口</div>
+                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">支流人物</div>
                   <div className="mt-2 text-sm font-medium text-[#fbf3da]">
                     {secondaryPeople[0]?.name ?? "当前转看传播航段"}
                   </div>
                   <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
                     {secondaryPeople.length
-                      ? "展开引用者、评论者、校勘者等支流人物，继续把典籍的外扩关系往下讲。"
-                      : "这一层暂时没有支流人物时，直接转看传播航段继续顺着外扩路径走。"}
+                      ? "引用者、评论者与校勘者会把典籍的外扩关系继续向外推开。"
+                      : "这部典籍的外扩人物支流尚未在这一河段显影。"}
                   </div>
                 </button>
                 <button
@@ -2802,12 +2802,12 @@ export function BookExplorer({
                   onClick={() => handleOpenSourceEvidence("cbdb-people")}
                   className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
                 >
-                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">纪传入口</div>
+                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">纪传对照</div>
                   <div className="mt-2 text-sm font-medium text-[#fbf3da]">
-                    {visiblePeople.find((person) => person.source === "cbdb")?.name ?? "打开人物证据总表"}
+                    {visiblePeople.find((person) => person.source === "cbdb")?.name ?? "人物证据总表"}
                   </div>
                   <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
-                    直接回到纪传对照证据，核对已匹配人物与馆内整理人物，再折返到当前网络继续讲。
+                    纪传材料与卷内人物网络会在这里相互校照。
                   </div>
                 </button>
               </div>
@@ -3404,12 +3404,12 @@ export function BookExplorer({
                   }}
                   className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
                 >
-                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">祖本入口</div>
+                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">祖本源头</div>
                   <div className="mt-2 text-sm font-medium text-[#fbf3da]">
                     {activeVersionTrail[0]?.label ?? "祖本卷首"}
                   </div>
                   <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
-                    直接回到版本链起点，看这部典籍最早显现的版本源头。
+                    版本源头会把这部典籍最早显现的形态重新托出来。
                   </div>
                 </button>
                 <button
@@ -3423,14 +3423,14 @@ export function BookExplorer({
                   }}
                   className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
                 >
-                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">馆藏入口</div>
+                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">馆藏落点</div>
                   <div className="mt-2 text-sm font-medium text-[#fbf3da]">
                     {versionEvidenceSamples[0]?.title ?? institutionPreview[0]?.title ?? "就近馆藏线索"}
                   </div>
                   <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
                     {versionEvidenceSamples.length || institutionPreview.length
-                      ? "直接打开当前版本最贴近的一条馆藏或影像资源，顺手讲清资料落点。"
-                      : "这层暂时没有更细样本时，先回机构总表继续顺着馆藏线索走。"}
+                      ? "这一版的馆藏与影像落点已经在卷面旁侧显出。"
+                      : "这层版本尚未落到更细的馆藏或影像样本。"}
                   </div>
                 </button>
                 <button
@@ -3444,14 +3444,14 @@ export function BookExplorer({
                   }}
                   className="rounded-[24px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.06)] px-4 py-4 text-left transition hover:bg-[rgba(255,248,220,0.1)]"
                 >
-                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">下游入口</div>
+                  <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">下游分化</div>
                   <div className="mt-2 text-sm font-medium text-[#fbf3da]">
                     {activeVersionChildren[0]?.label ?? "这一时代未再分化更晚版本"}
                   </div>
                   <div className="mt-2 text-sm leading-7 text-[#eadfbc]">
                     {activeVersionChildren.length
-                      ? "顺着当前版本继续进入下一层分化版本，直接演示版本流变向后推进。"
-                      : "这一时代河段里还没有更晚分化版本，可停留在此处讲清版本位置。"}
+                      ? "这一版之后的分化层已经沿时间继续展开。"
+                      : "这一时代河段里，更晚的分化层尚未继续浮出。"}
                   </div>
                 </button>
               </div>
