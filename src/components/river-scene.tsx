@@ -255,23 +255,27 @@ function RiverBed({
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.4, depth - 0.12, 0]}>
         <circleGeometry args={[span, 80]} />
-        <meshBasicMaterial color="#040908" transparent opacity={0.96} />
+        <meshBasicMaterial color="#2f1d09" transparent opacity={0.94} />
       </mesh>
       <mesh ref={bedRef} rotation={[-Math.PI / 2, 0, 0]} position={[3.4, depth, 0]}>
         <planeGeometry args={[span * 1.6, span * 1.2, 48, 48]} />
         <meshStandardMaterial
-          color="#6b4315"
-          emissive={new THREE.Color("#9a6623")}
-          emissiveIntensity={0.28}
+          color="#87511c"
+          emissive={new THREE.Color("#c07b2c")}
+          emissiveIntensity={0.34}
           metalness={0.08}
-          roughness={0.68}
+          roughness={0.74}
           transparent
-          opacity={0.96}
+          opacity={0.98}
         />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.4, depth + 0.01, 0]}>
         <planeGeometry args={[span * 1.55, span * 1.16, 1, 1]} />
-        <meshBasicMaterial color="#f6c453" transparent opacity={0.1} />
+        <meshBasicMaterial color="#f6c453" transparent opacity={0.14} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.5, depth + 0.03, 0]}>
+        <planeGeometry args={[span * 1.28, span * 0.94, 1, 1]} />
+        <meshBasicMaterial color="#fde7b0" transparent opacity={0.05} />
       </mesh>
     </group>
   );
@@ -361,6 +365,101 @@ function RiverBanks() {
       <mesh rotation={[-Math.PI / 2, 0, -0.05]} position={[3.72, -0.9, -5.24]}>
         <planeGeometry args={[18.2, 0.44, 1, 1]} />
         <meshBasicMaterial color="#f1d187" transparent opacity={0.16} />
+      </mesh>
+    </group>
+  );
+}
+
+function DryRiverGhosts() {
+  const ghostRef = useRef<THREE.Group>(null);
+  const ghostPaths = useMemo(
+    () => [
+      [
+        new THREE.Vector3(-4.9, -0.82, 2.2),
+        new THREE.Vector3(-1.6, -0.8, 2.6),
+        new THREE.Vector3(2.1, -0.78, 2.34),
+        new THREE.Vector3(5.8, -0.76, 1.82),
+        new THREE.Vector3(9.8, -0.74, 1.5),
+      ],
+      [
+        new THREE.Vector3(-4.2, -0.84, -1.8),
+        new THREE.Vector3(-0.8, -0.82, -2.24),
+        new THREE.Vector3(3, -0.8, -2.02),
+        new THREE.Vector3(6.7, -0.78, -2.6),
+        new THREE.Vector3(10.8, -0.76, -2.18),
+      ],
+      [
+        new THREE.Vector3(-2.5, -0.85, 0.42),
+        new THREE.Vector3(0.8, -0.83, 0.68),
+        new THREE.Vector3(4.2, -0.81, 0.44),
+        new THREE.Vector3(7.9, -0.79, -0.12),
+      ],
+    ],
+    [],
+  );
+
+  useFrame((state) => {
+    if (!ghostRef.current) {
+      return;
+    }
+
+    ghostRef.current.children.forEach((child, index) => {
+      const material = (child as THREE.Line).material;
+      if (material instanceof THREE.LineBasicMaterial) {
+        material.opacity = 0.08 + Math.max(0, Math.sin(state.clock.elapsedTime * 0.22 + index * 0.5)) * 0.05;
+      }
+    });
+  });
+
+  return (
+    <group ref={ghostRef}>
+      {ghostPaths.map((points, index) => (
+        <Line
+          key={`dry-river-${index}`}
+          points={points}
+          color={index === 1 ? "#9a6a2c" : "#b68741"}
+          transparent
+          opacity={0.1}
+          lineWidth={index === 2 ? 1.4 : 1.8}
+        />
+      ))}
+    </group>
+  );
+}
+
+function RiverSandbars() {
+  const sandbarRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    if (!sandbarRef.current) {
+      return;
+    }
+
+    sandbarRef.current.children.forEach((child, index) => {
+      const mesh = child as THREE.Mesh;
+      mesh.rotation.z = (index % 2 === 0 ? 1 : -1) * Math.sin(state.clock.elapsedTime * 0.12 + index * 0.44) * 0.04;
+      mesh.position.y =
+        (-0.79 + index * 0.012) + Math.sin(state.clock.elapsedTime * 0.28 + index * 0.62) * 0.012;
+    });
+  });
+
+  return (
+    <group ref={sandbarRef}>
+      <mesh rotation={[-Math.PI / 2, 0, 0.12]} position={[-2.8, -0.79, 1.5]}>
+        <planeGeometry args={[2.6, 0.62, 1, 1]} />
+        <meshBasicMaterial color="#e8c774" transparent opacity={0.16} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, -0.08]} position={[1.4, -0.78, -1.08]}>
+        <planeGeometry args={[2.1, 0.56, 1, 1]} />
+        <meshBasicMaterial color="#f1d58e" transparent opacity={0.14} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0.05]} position={[7.1, -0.77, 0.92]}>
+        <planeGeometry args={[2.9, 0.72, 1, 1]} />
+        <meshBasicMaterial color="#d8ab56" transparent opacity={0.13} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, -0.11]} position={[10.2, -0.76, -1.62]}>
+        <planeGeometry args={[1.9, 0.46, 1, 1]} />
+        <meshBasicMaterial color="#f5dfab" transparent opacity={0.12} />
       </mesh>
     </group>
   );
@@ -2073,6 +2172,8 @@ function RiverWorld({
       <ScrollMistBands />
       <RiverBed />
       <RiverBanks />
+      <RiverSandbars />
+      <DryRiverGhosts />
       <ScrollContourLines />
       <EraRiverZones books={books} />
 
