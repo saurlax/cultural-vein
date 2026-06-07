@@ -1162,8 +1162,11 @@ export function CulturalVeinShell() {
   const panelBaseClass =
     "rounded-[28px] border border-[#c89b43]/30 bg-[linear-gradient(180deg,rgba(245,232,189,0.96),rgba(225,191,112,0.92))] shadow-[0_18px_56px_rgba(92,58,16,0.16)] backdrop-blur-xl";
   const mobileSheetClass =
-    "rounded-[24px] border border-[#c89b43]/24 bg-[linear-gradient(180deg,rgba(247,237,206,0.96),rgba(226,192,115,0.92))] shadow-[0_16px_36px_rgba(92,58,16,0.12)] backdrop-blur-xl";
+    "rounded-[24px] border border-[#c89b43]/24 bg-[linear-gradient(180deg,rgba(250,242,216,0.97),rgba(229,197,118,0.94))] shadow-[0_18px_38px_rgba(92,58,16,0.12)] backdrop-blur-xl";
   const showMobileSheet = showMobileControls || showMobileDossier;
+  const mobileSheetFrameClass = showMobileDossier
+    ? "max-h-[min(27rem,64vh)]"
+    : "max-h-[min(10.5rem,24vh)]";
   const desktopPanels: Array<{
     id: "search" | "era" | "category" | "branch";
     label: string;
@@ -2221,9 +2224,9 @@ export function CulturalVeinShell() {
         </main>
 
         {showMobileSheet ? (
-          <div className="absolute inset-x-0 bottom-[4.5rem] z-40 px-3 md:hidden">
+          <div className="absolute inset-x-0 bottom-[4.75rem] z-40 px-3 md:hidden">
             <div
-              className={`pointer-events-auto mx-auto max-h-[min(13.5rem,29vh)] w-[min(26rem,calc(100vw-1.5rem))] overflow-auto px-3 py-3 shadow-[0_16px_34px_rgba(52,28,6,0.12)] ${mobileSheetClass}`}
+              className={`pointer-events-auto mx-auto w-[min(24rem,calc(100vw-1.5rem))] overflow-auto px-3 py-3 shadow-[0_16px_34px_rgba(52,28,6,0.12)] ${mobileSheetFrameClass} ${mobileSheetClass}`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -2691,9 +2694,9 @@ export function CulturalVeinShell() {
             </div>
           </div>
         ) : null}
-        <div className="pointer-events-none absolute bottom-3 inset-x-0 z-30 md:hidden">
+        <div className="pointer-events-none absolute bottom-3 right-3 z-30 md:hidden">
           <div className="pointer-events-auto">
-            <div className="flex justify-center">
+            <div className="flex justify-end">
               <button
                 type="button"
                 onClick={() => {
@@ -2706,7 +2709,7 @@ export function CulturalVeinShell() {
                   setShowMobileDossier(false);
                   setShowMobileControls((current) => !current);
                 }}
-                className={`min-w-[4.75rem] rounded-[999px] border px-4 py-2 text-center shadow-[0_10px_22px_rgba(52,28,6,0.16)] backdrop-blur-xl transition ${
+                className={`min-w-[4.25rem] rounded-[999px] border px-3.5 py-2 text-center shadow-[0_10px_22px_rgba(52,28,6,0.16)] backdrop-blur-xl transition ${
                   showMobileSheet
                     ? "border-[#f0cf75]/30 bg-[linear-gradient(180deg,rgba(244,223,166,0.96),rgba(207,162,70,0.92))] text-[#42290a]"
                     : "border-[#e7c97b]/18 bg-[linear-gradient(180deg,rgba(174,126,46,0.82),rgba(112,75,24,0.78))] text-[#fff0c7]"
@@ -2715,7 +2718,7 @@ export function CulturalVeinShell() {
                 <div className="text-[9px] tracking-[0.24em]">
                   {selectedBook ? "卷心印" : "河印"}
                 </div>
-                <div className="mt-0.5 text-[12px] font-medium">
+                <div className="mt-0.5 text-[11px] font-medium">
                   {selectedBook ? selectedBook.shortTitle : "开卷"}
                 </div>
               </button>

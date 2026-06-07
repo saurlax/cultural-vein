@@ -3391,7 +3391,7 @@ export function RiverScene(props: RiverSceneProps) {
         />
       </Canvas>
       <div
-        className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center px-3 pb-3 transition-all duration-500 sm:px-4 sm:pb-4 ${
+        className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 hidden justify-center px-3 pb-3 transition-all duration-500 sm:flex sm:px-4 sm:pb-4 ${
           props.mobilePanelOpen ? "translate-y-6 opacity-0" : "translate-y-0 opacity-100"
         }`}
       >
