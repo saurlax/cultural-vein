@@ -953,9 +953,14 @@ function ScrollRiverBackdrop({
 
 function EraRiverZones({
   books,
+  activeEra,
+  eraTransitionProgress = 1,
 }: {
   books: BookNode[];
+  activeEra: RiverEra;
+  eraTransitionProgress?: number;
 }) {
+  const activeIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
   const zoneRef = useRef<THREE.Group>(null);
   const zones = useMemo(
     () =>
@@ -1004,28 +1009,72 @@ function EraRiverZones({
 
     zoneRef.current.children.forEach((child, index) => {
       const mesh = child as THREE.Mesh;
-      const pulse = 1 + Math.sin(state.clock.elapsedTime * 0.42 + index * 0.38) * 0.035;
+      const zone = zones[index];
+      const isActive = zone?.index === activeIndex;
+      const isPast = (zone?.index ?? 0) < activeIndex;
+      const basePulse = isActive ? 0.06 : isPast ? 0.03 : 0.018;
+      const pulse = 1 + Math.sin(state.clock.elapsedTime * (isActive ? 0.7 : 0.42) + index * 0.38) * basePulse;
       mesh.scale.set(pulse, 1, pulse);
       const material = mesh.material;
       if (material instanceof THREE.MeshBasicMaterial) {
-        material.opacity = 0.05 + Math.max(0, Math.sin(state.clock.elapsedTime * 0.55 + index * 0.45)) * 0.035;
+        material.opacity = isActive
+          ? 0.14 + eraTransitionProgress * 0.08 + Math.max(0, Math.sin(state.clock.elapsedTime * 0.95 + index * 0.55)) * 0.07
+          : isPast
+            ? 0.06 + Math.max(0, Math.sin(state.clock.elapsedTime * 0.48 + index * 0.4)) * 0.03
+            : 0.022 + Math.max(0, Math.sin(state.clock.elapsedTime * 0.36 + index * 0.32)) * 0.018;
       }
     });
   });
 
   return (
     <group ref={zoneRef}>
-      {zones.map((zone) => (
-        <mesh
-          key={`era-zone-${zone.era}`}
-          rotation={[-Math.PI / 2, 0, 0]}
-          position={zone.position}
-          scale={zone.scale}
-        >
-          <planeGeometry args={[1, 1, 1, 1]} />
-          <meshBasicMaterial color={zone.color} transparent opacity={0.06} />
-        </mesh>
-      ))}
+      {zones.map((zone) => {
+        const isActive = zone.index === activeIndex;
+        const isPast = zone.index < activeIndex;
+
+        return (
+          <group
+            key={`era-zone-${zone.era}`}
+            position={zone.position}
+          >
+            <mesh
+              rotation={[-Math.PI / 2, 0, 0]}
+              scale={zone.scale}
+            >
+              <planeGeometry args={[1, 1, 1, 1]} />
+              <meshBasicMaterial
+                color={isActive ? "#f6cf71" : zone.color}
+                transparent
+                opacity={isActive ? 0.18 + eraTransitionProgress * 0.06 : isPast ? 0.07 : 0.028}
+              />
+            </mesh>
+            <mesh
+              rotation={[-Math.PI / 2, 0, 0]}
+              position={[0, 0.012, 0]}
+              scale={[zone.scale[0] * 0.72, 1, zone.scale[2] * 0.58]}
+            >
+              <planeGeometry args={[1, 1, 1, 1]} />
+              <meshBasicMaterial
+                color={isActive ? "#fff0bf" : "#f5d486"}
+                transparent
+                opacity={isActive ? 0.08 + eraTransitionProgress * 0.06 : isPast ? 0.03 : 0.012}
+              />
+            </mesh>
+            <mesh
+              rotation={[-Math.PI / 2, 0, 0]}
+              position={[0, 0.02, 0]}
+              scale={[zone.scale[0] * 0.84, 1, Math.max(0.2, zone.scale[2] * 0.08)]}
+            >
+              <planeGeometry args={[1, 1, 1, 1]} />
+              <meshBasicMaterial
+                color={isActive ? "#fff3c7" : "#e8c774"}
+                transparent
+                opacity={isActive ? 0.16 + eraTransitionProgress * 0.05 : isPast ? 0.05 : 0.016}
+              />
+            </mesh>
+          </group>
+        );
+      })}
     </group>
   );
 }
@@ -3198,7 +3247,11 @@ function RiverWorld({
       <RiverSandbars dryness={eraRiverMood.dryness} />
       <DryRiverGhosts dryness={eraRiverMood.dryness} />
       <ScrollContourLines />
-      <EraRiverZones books={books} />
+      <EraRiverZones
+        books={books}
+        activeEra={activeEra}
+        eraTransitionProgress={eraTransitionProgress}
+      />
       <BackgroundBranchField
         books={books}
         activeEra={activeEra}
