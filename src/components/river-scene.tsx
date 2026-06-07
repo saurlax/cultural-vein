@@ -3395,7 +3395,7 @@ export function RiverScene(props: RiverSceneProps) {
           props.mobilePanelOpen ? "translate-y-6 opacity-0" : "translate-y-0 opacity-100"
         }`}
       >
-        <div className="pointer-events-auto w-full max-w-[min(52rem,calc(100vw-1.5rem))] rounded-[20px] border border-[#e6c77f]/18 bg-[linear-gradient(180deg,rgba(78,50,16,0.72),rgba(46,29,8,0.8))] px-4 py-2.5 shadow-[0_14px_32px_rgba(53,31,7,0.18)] backdrop-blur-md sm:px-5">
+        <div className="pointer-events-auto w-full max-w-[min(42rem,calc(100vw-2rem))] rounded-[18px] border border-[#e6c77f]/16 bg-[linear-gradient(180deg,rgba(78,50,16,0.62),rgba(46,29,8,0.72))] px-3.5 py-2 shadow-[0_12px_26px_rgba(53,31,7,0.14)] backdrop-blur-md sm:px-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
@@ -3415,8 +3415,8 @@ export function RiverScene(props: RiverSceneProps) {
                   </span>
                 ) : null}
               </div>
-              <div className="mt-1.5 text-[13px] font-medium text-[#fbf3da]">{stageLead}</div>
-              <div className="mt-1 line-clamp-1 text-[11px] leading-5 text-[#e8d7a9]">{stageDetail}</div>
+              <div className="mt-1 text-[12px] font-medium text-[#fbf3da]">{stageLead}</div>
+              <div className="mt-0.5 line-clamp-1 text-[10px] leading-5 text-[#e8d7a9]">{stageDetail}</div>
             </div>
             <div className="flex shrink-0 flex-wrap items-center gap-1.5">
               {!props.selectedBookSlug && canCruise ? (
@@ -3424,23 +3424,23 @@ export function RiverScene(props: RiverSceneProps) {
                   <button
                     type="button"
                     onClick={() => handleCruiseJump(-1)}
-                    className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.06)] px-2.5 py-1.5 text-[11px] text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
+                    className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.06)] px-2.5 py-1 text-[10px] text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                   >
-                    上一锚点
+                    上一段
                   </button>
                   <button
                     type="button"
                     onClick={handleCruiseToggle}
-                    className="rounded-full border border-amber-300/18 bg-amber-300/10 px-2.5 py-1.5 text-[11px] text-amber-50 transition hover:bg-amber-300/16"
+                    className="rounded-full border border-amber-300/18 bg-amber-300/10 px-2.5 py-1 text-[10px] text-amber-50 transition hover:bg-amber-300/16"
                   >
                     {cruiseRunning ? "停舟" : "续航"}
                   </button>
                   <button
                     type="button"
                     onClick={() => handleCruiseJump(1)}
-                    className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.06)] px-2.5 py-1.5 text-[11px] text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
+                    className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.06)] px-2.5 py-1 text-[10px] text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                   >
-                    下一锚点
+                    下一段
                   </button>
                 </>
               ) : null}
@@ -3448,25 +3448,25 @@ export function RiverScene(props: RiverSceneProps) {
                 <button
                   type="button"
                   onClick={props.onOpenEraPanel}
-                  className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.06)] px-2.5 py-1.5 text-[11px] text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
+                  className="rounded-full border border-[#e6c77f]/14 bg-[rgba(255,244,214,0.06)] px-2.5 py-1 text-[10px] text-[#fbf3da] transition hover:bg-[rgba(255,244,214,0.12)]"
                 >
-                  时代河段
+                  时代
                 </button>
               ) : null}
               {props.onOpenControlPanel ? (
                 <button
                   type="button"
                   onClick={props.onOpenControlPanel}
-                  className="rounded-full border border-amber-300/18 bg-amber-300/10 px-2.5 py-1.5 text-[11px] text-amber-50 transition hover:bg-amber-300/16"
+                  className="rounded-full border border-amber-300/18 bg-amber-300/10 px-2.5 py-1 text-[10px] text-amber-50 transition hover:bg-amber-300/16"
                 >
-                  {props.selectedBookSlug ? "河册题签" : "来源河册"}
+                  {props.selectedBookSlug ? "河册" : "来源"}
                 </button>
               ) : null}
               {props.selectedBookSlug && props.onReturnToRiver ? (
                 <button
                   type="button"
                   onClick={props.onReturnToRiver}
-                  className="rounded-full border border-emerald-300/14 bg-emerald-300/8 px-2.5 py-1.5 text-[11px] text-emerald-100 transition hover:bg-emerald-300/14"
+                  className="rounded-full border border-emerald-300/14 bg-emerald-300/8 px-2.5 py-1 text-[10px] text-emerald-100 transition hover:bg-emerald-300/14"
                 >
                   归河巡看
                 </button>
