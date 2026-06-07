@@ -1026,7 +1026,7 @@ export function CulturalVeinShell() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] tracking-[0.28em] text-[#d8c9a3]">河图</div>
-                  <div className="mt-1 text-base font-medium text-[#fbf3da]">长河卷签</div>
+                  <div className="mt-1 text-base font-medium text-[#fbf3da]">河上题签</div>
                 </div>
                 {viewMode === "book" ? (
                   <button
@@ -1066,7 +1066,7 @@ export function CulturalVeinShell() {
                       {activeDesktopPanelConfig.summary}
                     </div>
                   </div>
-                  <div className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">黄卷</div>
+                  <div className="rounded-full border border-[#ead8a6]/18 px-2 py-1 text-[10px] text-[#f2dfab]">卷心</div>
                 </div>
                 <div className="mt-3 rounded-2xl border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.05)] px-3 py-3 text-[12px] leading-6 text-[#e8d8af]">
                   {activePanelNarrative}

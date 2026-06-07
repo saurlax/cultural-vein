@@ -497,7 +497,7 @@ export function BookExplorer({
         mode: "spread",
         currentTitle: book.title,
         contextLabel: `传播联动：${activeSpreadPlaces.from.name} 至 ${activeSpreadPlaces.to.name}`,
-        detail: `${activeSpread.startYear} 至 ${activeSpread.endYear} 的传播河段已回灌主河焦点。`,
+        detail: `${activeSpread.startYear} 至 ${activeSpread.endYear} 的传播河段已回灌主河主脉。`,
       };
     }
 
@@ -1080,7 +1080,7 @@ export function BookExplorer({
         </div>
         <div className="mt-3 rounded-2xl border border-[#ead8a6]/12 bg-[rgba(54,33,10,0.28)] px-3 py-3 text-sm leading-7 text-[#f6e8bd]">
           这一时代已显出 {eraLinkedSummary.spread} 段传播、{eraLinkedSummary.people} 位人物、{eraLinkedSummary.versions} 个版本节点与 {eraLinkedSummary.passages} 个文本片段，
-          当前卷面落在 {activeTabMeta.label}。
+          此刻卷心落在 {activeTabMeta.label}。
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
           {tabs.map((item) => (
@@ -1105,7 +1105,7 @@ export function BookExplorer({
           <div className="flex items-center justify-between gap-3">
             <div>
               <div className="text-xs tracking-[0.2em] text-amber-100/80">
-                真实来源信号
+                真实来源
               </div>
               <button
                 type="button"
@@ -1332,7 +1332,7 @@ export function BookExplorer({
                         onClick={() => setSelectedSourceEvidenceId("institution-samples")}
                         className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                       >
-                        来源总录
+                        来源归录
                       </button>
                     </div>
                   </div>
@@ -1345,7 +1345,7 @@ export function BookExplorer({
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                    资源细览
+                    资源近览
                   </div>
                   <div className="mt-2 text-base font-semibold text-stone-50">
                     {activeInstitutionRecord.title}
@@ -1519,7 +1519,7 @@ export function BookExplorer({
                       .join(" · ")}
                   </div>
                   <div className="mt-3 text-xs text-amber-100/80">
-                    机构卷录会继续把馆藏与版本资源线并列展开。
+                    机构归录会继续把馆藏与版本资源线并列展开。
                   </div>
                 </button>
                 <button
@@ -1545,7 +1545,7 @@ export function BookExplorer({
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                    来源卷录
+                    来源归录
                   </div>
                   <div className="mt-1 text-sm text-stone-300">
                     将真实来源按人物、场馆、事件与机构资源归并成可核验的证据条目。
@@ -1642,7 +1642,7 @@ export function BookExplorer({
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <div className="text-xs tracking-[0.2em] text-amber-100/75">
-                          证据细览
+                          证据近览
                         </div>
                         <div className="mt-2 text-base font-semibold text-stone-50">
                           {activeSourceEvidence.source}
@@ -1870,7 +1870,7 @@ export function BookExplorer({
                         }}
                         className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                       >
-                        回到机构总表
+                        回到机构归录
                       </button>
                       <button
                         type="button"
@@ -1896,7 +1896,7 @@ export function BookExplorer({
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">地理传播图</h3>
-            <span className="text-xs text-[#d8c9a3]">中观视图</span>
+            <span className="text-xs text-[#d8c9a3]">河段显影</span>
           </div>
           {visibleSpread.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6">
@@ -2345,7 +2345,7 @@ export function BookExplorer({
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">人物关系网</h3>
-            <span className="text-xs text-[#d8c9a3]">中观视图</span>
+            <span className="text-xs text-[#d8c9a3]">人物显影</span>
           </div>
           {visiblePeople.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6">
@@ -2497,7 +2497,7 @@ export function BookExplorer({
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div>
                             <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
-                              人物焦点
+                              人物显影
                             </div>
                             <div className="mt-2 text-2xl font-semibold text-[#fbf3da]">
                               {activePerson.name}
@@ -2641,7 +2641,7 @@ export function BookExplorer({
                               }}
                               className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                             >
-                              证据总览
+                              证据归拢
                             </button>
                             {activePerson.activityPlaces?.[0] ? (
                               <button
@@ -2678,7 +2678,7 @@ export function BookExplorer({
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">版本流变树</h3>
-            <span className="text-xs text-[#d8c9a3]">中观视图</span>
+            <span className="text-xs text-[#d8c9a3]">版本显影</span>
           </div>
           {visibleVersions.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 px-4 py-6">
@@ -2689,7 +2689,7 @@ export function BookExplorer({
                   onClick={() => handleOpenSourceEvidence("institution-samples")}
                   className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                 >
-                  机构总表
+                  机构归录
                 </button>
                 <button
                   type="button"
@@ -2716,7 +2716,7 @@ export function BookExplorer({
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <div>
                               <div className="text-xs tracking-[0.2em] text-[#d8c9a3]">
-                              版本焦点卷
+                              版本显影
                               </div>
                             <div className="mt-2 text-xl font-semibold text-[#fbf3da]">
                               {activeVersion.label}
@@ -2840,7 +2840,7 @@ export function BookExplorer({
                           <div className="mt-4 rounded-2xl border border-slate-300/10 bg-slate-300/5 px-4 py-4">
                             <div className="flex flex-wrap items-center gap-2">
                               <span className="text-xs tracking-[0.2em] text-slate-200/80">
-                                存佚入口
+                                存佚线索
                               </span>
                               <span
                                 className={`rounded-full border px-3 py-1 text-xs ${activeVersionStatusMeta.badgeClass}`}
@@ -2893,7 +2893,7 @@ export function BookExplorer({
                                 onClick={() => handleOpenSourceEvidence("institution-samples")}
                                 className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                               >
-                                打开机构总表
+                                打开机构归录
                               </button>
                               <button
                                 type="button"
@@ -2922,7 +2922,7 @@ export function BookExplorer({
                               藏馆 / 系统：{activeVersion.library}
                             </div>
                             <div className="mt-3 text-xs text-amber-100/80">
-                              打开机构总表，把这一版的位置重新挂回馆藏与影像线索。
+                              打开机构归录，把这一版的位置重新挂回馆藏与影像线索。
                             </div>
                           </button>
                           <button
@@ -3135,7 +3135,7 @@ export function BookExplorer({
                                       onClick={() => handleOpenSourceEvidence("institution-samples")}
                                       className="rounded-full border border-amber-300/25 bg-amber-300/15 px-3 py-1.5 text-xs text-amber-50 transition hover:bg-amber-300/20"
                                     >
-                                      机构总表
+                                      机构归录
                                     </button>
                                     <button
                                       type="button"
@@ -3161,7 +3161,7 @@ export function BookExplorer({
                         <div className="mt-4 rounded-2xl border border-white/10 bg-black/15 px-4 py-4">
                           <div className="flex items-center justify-between gap-3">
                             <div className="text-xs uppercase tracking-[0.2em] text-stone-400">
-                              版本证据卡
+                              版本凭据
                             </div>
                             <div className="rounded-full bg-white/10 px-3 py-1 text-[10px] text-stone-300">
                               {activeVersion.editionType ?? "版本节点"}
@@ -3187,7 +3187,7 @@ export function BookExplorer({
                               <div className="mt-2 text-sm leading-6 text-stone-300">
                                 {versionEvidenceSamples.length || institutionPreview.length
                                   ? "这一层版本最贴近的馆藏样本或影像线索会在这里显影。"
-                                  : "这一层尚未挂到更细样本，机构总表里仍保留馆藏线索。"}
+                                  : "这一层尚未挂到更细样本，机构归录里仍保留馆藏线索。"}
                               </div>
                             </button>
                             <button
@@ -3268,7 +3268,7 @@ export function BookExplorer({
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">关联时间线</h3>
-            <span className="text-xs text-[#d8c9a3]">中观视图</span>
+            <span className="text-xs text-[#d8c9a3]">时间显影</span>
           </div>
           {visibleTimeline.length > 0 ? (
             <div className="rounded-[28px] border border-[#ead8a6]/14 bg-[linear-gradient(180deg,rgba(79,53,18,0.82),rgba(33,21,8,0.92))] p-4">
@@ -3844,7 +3844,7 @@ export function BookExplorer({
                   onClick={() => handleOpenSourceEvidence("institution-samples")}
                   className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs text-emerald-100 transition hover:bg-emerald-300/15"
                 >
-                  机构总表
+                  机构归录
                 </button>
               </div>
             </div>
@@ -3906,7 +3906,7 @@ export function BookExplorer({
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
                         <div className="text-[11px] tracking-[0.22em] text-[#d8c9a3]">
-                          文本卷轴
+                          文本长卷
                         </div>
                         <div className="mt-1 text-sm text-[#eadfbc]">
                           第 {Math.max(activePassageSequenceIndex + 1, 1)} / {Math.max(visiblePassages.length, 1)} 段
