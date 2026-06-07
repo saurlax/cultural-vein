@@ -1718,6 +1718,117 @@ function RiverbankLandmarks({
   );
 }
 
+function RiverbankLanterns({
+  books,
+  activeEra,
+  selectedBookSlug,
+  highlightedBookSlugs = [],
+}: {
+  books: BookNode[];
+  activeEra: RiverEra;
+  selectedBookSlug: string;
+  highlightedBookSlugs?: string[];
+}) {
+  const activeIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
+  const lanternRef = useRef<THREE.Group>(null);
+  const highlightedSet = useMemo(() => new Set(highlightedBookSlugs), [highlightedBookSlugs]);
+  const lanterns = useMemo(() => {
+    return books
+      .filter((book) => RIVER_ERA_ORDER.indexOf(book.dynasty) <= activeIndex)
+      .sort((left, right) => left.year - right.year)
+      .filter((_, index) => index % 2 === 0)
+      .slice(0, 14)
+      .map((book, index) => {
+        const northBank = book.coordinates[2] >= 0;
+        const offset = northBank ? 2.08 + (index % 3) * 0.18 : -2.08 - (index % 3) * 0.18;
+        const emphasized =
+          book.slug === selectedBookSlug || highlightedSet.has(book.slug) || index % 5 === 0;
+
+        return {
+          id: `lantern-${book.slug}`,
+          emphasized,
+          position: [
+            book.coordinates[0] + (index % 2 === 0 ? -0.12 : 0.14),
+            book.coordinates[1] + 0.06,
+            book.coordinates[2] + offset,
+          ] as [number, number, number],
+        };
+      });
+  }, [activeIndex, books, highlightedSet, selectedBookSlug]);
+
+  useFrame((state) => {
+    if (!lanternRef.current) {
+      return;
+    }
+
+    lanternRef.current.children.forEach((child, index) => {
+      const group = child as THREE.Group;
+      const lightPulse = Math.sin(state.clock.elapsedTime * 1.15 + index * 0.55);
+      group.position.y = (lanterns[index]?.position[1] ?? 0) + lightPulse * 0.018;
+
+      group.children.forEach((nestedChild, nestedIndex) => {
+        const mesh = nestedChild as THREE.Mesh;
+        const material = mesh.material;
+
+        if (material instanceof THREE.MeshBasicMaterial) {
+          material.opacity =
+            (nestedIndex === 0 ? 0.08 : nestedIndex === 1 ? 0.16 : 0.34) +
+            Math.max(0, lightPulse) * (nestedIndex === 2 ? 0.18 : 0.08);
+        }
+
+        if (material instanceof THREE.MeshStandardMaterial) {
+          material.emissiveIntensity =
+            (lanterns[index]?.emphasized ? 1.2 : 0.72) +
+            Math.max(0, lightPulse) * 0.42;
+        }
+      });
+    });
+  });
+
+  if (!lanterns.length) {
+    return null;
+  }
+
+  return (
+    <group ref={lanternRef}>
+      {lanterns.map((lantern) => (
+        <group key={lantern.id} position={lantern.position}>
+          <mesh position={[0, 0.02, 0]}>
+            <sphereGeometry args={[lantern.emphasized ? 0.24 : 0.18, 18, 18]} />
+            <meshBasicMaterial color="#f5c96c" transparent opacity={0.08} />
+          </mesh>
+          <mesh position={[0, 0.09, 0]}>
+            <sphereGeometry args={[lantern.emphasized ? 0.11 : 0.09, 16, 16]} />
+            <meshBasicMaterial color="#fff2c7" transparent opacity={0.16} />
+          </mesh>
+          <mesh position={[0, 0.06, 0]}>
+            <sphereGeometry args={[lantern.emphasized ? 0.052 : 0.044, 14, 14]} />
+            <meshStandardMaterial
+              color="#fff3cf"
+              emissive={new THREE.Color(lantern.emphasized ? "#fbbf24" : "#f6c453")}
+              emissiveIntensity={lantern.emphasized ? 1.2 : 0.72}
+              roughness={0.34}
+              metalness={0.04}
+              transparent
+              opacity={0.96}
+            />
+          </mesh>
+          <mesh position={[0, -0.04, 0]}>
+            <cylinderGeometry args={[0.012, 0.012, 0.16, 10]} />
+            <meshStandardMaterial
+              color="#8a5e21"
+              emissive={new THREE.Color("#d6a34d")}
+              emissiveIntensity={0.18}
+              roughness={0.88}
+              metalness={0.02}
+            />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+}
+
 function BookMarkers({
   books,
   selectedBookSlug,
@@ -3259,6 +3370,12 @@ function RiverWorld({
         dryness={eraRiverMood.dryness}
       />
       <RiverbankLandmarks
+        books={books}
+        activeEra={activeEra}
+        selectedBookSlug={selectedBookSlug}
+        highlightedBookSlugs={highlightedBookSlugs}
+      />
+      <RiverbankLanterns
         books={books}
         activeEra={activeEra}
         selectedBookSlug={selectedBookSlug}
