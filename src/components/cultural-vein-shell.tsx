@@ -413,6 +413,14 @@ export function CulturalVeinShell() {
     setSearchPending(value.trim().length > 0);
     setSearchTerm(value);
   };
+  const handleSearchShortcut = (value: string) => {
+    handleSearchTermChange(value);
+    setShowDesktopDossier(false);
+    setShowMobileDossier(false);
+    setActiveDesktopPanel("search");
+    setShowDesktopControls(true);
+    setShowMobileControls(false);
+  };
 
   const filteredBooks = useMemo(() => {
     return riverDataset.books.filter((book) => {
@@ -1245,6 +1253,39 @@ export function CulturalVeinShell() {
     : activeSourceAtlasEntry
       ? `${getSourceThemeLabel(activeSourceAtlasEntry.name)} · ${activeEra}`
       : `${activeEra} · 河岸巡看`;
+  const homepageShortcuts = [
+    searchSuggestionChips[0]
+      ? {
+          id: `search-${searchSuggestionChips[0]}`,
+          label: `寻章 ${searchSuggestionChips[0]}`,
+          note: "从概念切入主河",
+          onClick: () => handleSearchShortcut(searchSuggestionChips[0]!),
+        }
+      : null,
+    {
+      id: `era-${activeEra}`,
+      label: `${activeEra}河段`,
+      note: "直接切到当前时代水位",
+      onClick: () => handleOpenDesktopPanel("era"),
+    },
+    activeSourceAtlasEntry
+      ? {
+          id: `branch-${activeSourceAtlasEntry.id}`,
+          label: activeSourceAtlasEntry.name,
+          note: "顺着这股真实来源入画",
+          onClick: () => handleSourceAtlasSelect(activeSourceAtlasEntry.id),
+        }
+      : null,
+  ].filter(
+    (
+      item,
+    ): item is {
+      id: string;
+      label: string;
+      note: string;
+      onClick: () => void;
+    } => Boolean(item),
+  );
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#e7c978] text-stone-100">
@@ -1343,6 +1384,28 @@ export function CulturalVeinShell() {
                         {book.title}
                       </button>
                     ))}
+                  </div>
+                ) : null}
+                {homepageShortcuts.length ? (
+                  <div className="mt-3 rounded-[16px] border border-[#d9b86b]/14 bg-[rgba(255,248,223,0.28)] px-3 py-3">
+                    <div className="text-[10px] tracking-[0.22em] text-[#8d6a2c]">入画捷径</div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {homepageShortcuts.map((shortcut) => (
+                        <button
+                          key={shortcut.id}
+                          type="button"
+                          onClick={shortcut.onClick}
+                          className="rounded-full border border-[#d9b86b]/22 bg-[rgba(255,255,255,0.16)] px-3 py-1.5 text-[10px] text-[#6f4b18] transition hover:bg-[rgba(255,255,255,0.24)]"
+                        >
+                          {shortcut.label}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="mt-2 line-clamp-2 text-[10px] leading-5 text-[#8d6a2c]">
+                      {homepageShortcuts[0]?.note}
+                      {homepageShortcuts.length > 1 ? `；${homepageShortcuts[1]?.note}` : ""}
+                      {homepageShortcuts.length > 2 ? `；${homepageShortcuts[2]?.note}` : ""}
+                    </div>
                   </div>
                 ) : null}
               </div>
