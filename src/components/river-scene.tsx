@@ -1072,6 +1072,106 @@ function EraMilestones({
   );
 }
 
+function BackgroundBranchField({
+  books,
+  activeEra,
+  vitality = 1,
+  dryness = 0.1,
+}: {
+  books: BookNode[];
+  activeEra: RiverEra;
+  vitality?: number;
+  dryness?: number;
+}) {
+  const activeIndex = Math.max(0, RIVER_ERA_ORDER.indexOf(activeEra));
+  const fieldRef = useRef<THREE.Group>(null);
+  const fieldStreams = useMemo(() => {
+    const candidates = books
+      .filter((book) => {
+        const eraIndex = RIVER_ERA_ORDER.indexOf(book.dynasty);
+        return eraIndex <= activeIndex && (book.branchLevel >= 1 || book.influence < 65);
+      })
+      .sort((left, right) => left.year - right.year);
+
+    const upperBank = candidates
+      .filter((_, index) => index % 3 === 0)
+      .slice(0, 10)
+      .map(
+        (book, index) =>
+          new THREE.Vector3(
+            book.coordinates[0] - 0.35 + index * 0.06,
+            book.coordinates[1] - 0.08,
+            book.coordinates[2] + 2.2 + (index % 2) * 0.42,
+          ),
+      );
+    const lowerBank = candidates
+      .filter((_, index) => index % 3 === 1)
+      .slice(0, 10)
+      .map(
+        (book, index) =>
+          new THREE.Vector3(
+            book.coordinates[0] - 0.18 + index * 0.04,
+            book.coordinates[1] - 0.1,
+            book.coordinates[2] - 2.25 - (index % 2) * 0.38,
+          ),
+      );
+    const midField = candidates
+      .filter((_, index) => index % 4 === 0)
+      .slice(0, 8)
+      .map(
+        (book, index) =>
+          new THREE.Vector3(
+            book.coordinates[0] + 0.12,
+            book.coordinates[1] - 0.12,
+            book.coordinates[2] + (index % 2 === 0 ? 1.3 : -1.34),
+          ),
+      );
+
+    return [upperBank, lowerBank, midField].filter((stream) => stream.length >= 2);
+  }, [activeIndex, books]);
+
+  const opacity = Math.max(0.04, 0.12 * vitality - dryness * 0.04);
+  const glowOpacity = Math.max(0.015, 0.05 * vitality - dryness * 0.012);
+  const particleDensity = Math.max(18, Math.round(44 * vitality));
+  const particleSpread = 0.08 + dryness * 0.06;
+
+  useFrame((state) => {
+    if (!fieldRef.current) {
+      return;
+    }
+
+    fieldRef.current.children.forEach((child, index) => {
+      child.position.y = Math.sin(state.clock.elapsedTime * 0.16 + index * 0.7) * 0.018;
+      child.position.z = Math.sin(state.clock.elapsedTime * 0.12 + index * 0.45) * 0.05;
+    });
+  });
+
+  return (
+    <group ref={fieldRef}>
+      {fieldStreams.map((stream, index) => (
+        <group key={`background-field-${index}`}>
+          <RiverRibbon
+            points={stream}
+            width={0.038 + vitality * 0.018 - index * 0.003}
+            color={index === 2 ? "#8b5a21" : "#a66a24"}
+            glow={index === 1 ? "#f5d486" : "#eac268"}
+            opacity={opacity}
+            glowOpacity={glowOpacity}
+            emissiveIntensity={0.04 + vitality * 0.12}
+          />
+          <RiverParticleStream
+            points={stream}
+            color={index === 1 ? "#f8e3af" : "#f1cf84"}
+            density={particleDensity - index * 6}
+            flowSpeed={0.022 + vitality * 0.03 + index * 0.004}
+            spread={particleSpread}
+          />
+        </group>
+      ))}
+    </group>
+  );
+}
+
 function BookMarkers({
   books,
   selectedBookSlug,
@@ -2268,6 +2368,12 @@ function RiverWorld({
       <DryRiverGhosts dryness={eraRiverMood.dryness} />
       <ScrollContourLines />
       <EraRiverZones books={books} />
+      <BackgroundBranchField
+        books={books}
+        activeEra={activeEra}
+        vitality={eraRiverMood.branchVisibility}
+        dryness={eraRiverMood.dryness}
+      />
 
       {mainStream.length >= 2 ? (
         <>
