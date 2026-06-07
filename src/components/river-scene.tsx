@@ -2520,19 +2520,19 @@ export function RiverScene(props: RiverSceneProps) {
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-36 bg-[linear-gradient(180deg,rgba(255,243,202,0.5),rgba(211,154,58,0))]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-44 bg-[linear-gradient(0deg,rgba(157,104,29,0.44),rgba(157,104,29,0))]" />
       <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_46%,rgba(254,233,166,0.2),transparent_42%),linear-gradient(90deg,rgba(250,228,160,0.08),transparent_18%,transparent_82%,rgba(250,228,160,0.08))]" />
-      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#efd38f]/34 bg-[rgba(150,104,31,0.28)] px-4 py-2 text-[10px] text-[#fff3d0] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
+      <div className="pointer-events-none absolute left-4 top-4 z-10 hidden max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-[#efd38f]/28 bg-[rgba(150,104,31,0.22)] px-3 py-1.5 text-[10px] text-[#fff3d0] md:left-5 md:top-5 md:flex md:max-w-none md:text-[11px]">
         <span className="tracking-[0.28em] text-[#fff0c2]">黄河文脉长卷</span>
         <span className="hidden h-3 w-px bg-[#ead8a6]/24 sm:block" />
-        <span className="truncate text-[#f1e3bd]">
+        <span className="truncate text-[#f1e3bd]/86">
           {props.traceFocus?.active
-            ? `溯源联动 ${props.traceFocus.progress}/${props.traceFocus.total}`
+            ? `溯源 ${props.traceFocus.progress}/${props.traceFocus.total}`
             : props.sceneFocus?.active
               ? props.sceneFocus.contextLabel
               : props.cinematicState === "diving"
-                ? "镜头俯冲中"
+                ? "入卷中"
                 : props.cinematicState === "returning"
-                  ? "镜头拉回中"
-                  : `${props.activeEra} 水位`}
+                  ? "归河中"
+                  : props.activeEra}
         </span>
       </div>
       <div
@@ -2550,20 +2550,10 @@ export function RiverScene(props: RiverSceneProps) {
           mobilePanelOpen ? "pointer-events-none opacity-0 sm:pointer-events-auto sm:opacity-100" : ""
         }`}
       >
-          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/16 bg-[linear-gradient(180deg,rgba(187,142,59,0.56),rgba(124,84,28,0.5))] px-3 py-3 text-[#f1e2bb] shadow-xl shadow-black/10 backdrop-blur-md">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="text-[10px] tracking-[0.24em] text-[#e5d1a1]">河势卷签</div>
-                <div className="mt-1 truncate text-xs text-[#fbf3da] sm:text-sm">
-                  {activeCruiseMoment ? activeCruiseMoment.label : "上游入画"}
-                </div>
-                <div className="mt-1 text-[10px] text-[#e8d6aa]">
-                  {activeCruiseMoment?.kind === "era"
-                    ? `时代段落 · ${activeCruiseMoment.era}`
-                    : cruiseRunning
-                      ? "长河顺流铺展中"
-                      : "手动巡看中"}
-                </div>
+          <div className="pointer-events-auto rounded-[24px] border border-[#e7c97b]/14 bg-[linear-gradient(180deg,rgba(187,142,59,0.48),rgba(124,84,28,0.42))] px-3 py-3 text-[#f1e2bb] shadow-xl shadow-black/10 backdrop-blur-md">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0 truncate text-[11px] text-[#fbf3da]">
+                {activeCruiseMoment ? activeCruiseMoment.label : "上游入画"}
               </div>
               <button
                 type="button"
@@ -2599,12 +2589,9 @@ export function RiverScene(props: RiverSceneProps) {
                 下游
               </button>
             </div>
-            {activeCruiseStory ? (
-              <div className="mt-3 line-clamp-2 text-[10px] leading-5 text-[#e8d6aa]">
-                {activeCruiseStory.trunk}
-              </div>
-            ) : null}
-            <div className="mt-3 text-[10px] leading-5 text-[#e8d6aa]">{sceneHint}</div>
+            <div className="mt-3 text-[10px] leading-5 text-[#e8d6aa]">
+              {activeCruiseStory?.trunk ?? sceneHint}
+            </div>
           </div>
         </div>
       ) : null}
