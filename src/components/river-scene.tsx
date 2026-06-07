@@ -898,6 +898,7 @@ function BookMarkers({
   highlightedBookSlugs = [],
   hoveredBookSlug,
   onHoverBook,
+  opacityFactor = 1,
 }: {
   books: BookNode[];
   selectedBookSlug: string;
@@ -911,6 +912,7 @@ function BookMarkers({
   highlightedBookSlugs?: string[];
   hoveredBookSlug?: string | null;
   onHoverBook?: (slug: string | null) => void;
+  opacityFactor?: number;
 }) {
   const activeIndex = RIVER_ERA_ORDER.indexOf(activeEra);
   const traceTitleSet = useMemo(
@@ -1037,7 +1039,7 @@ function BookMarkers({
                 color={markerColor}
                 transparent
                 opacity={
-                  shouldDim
+                  (shouldDim
                     ? 0.14
                     : isHovered || isSearchHighlighted || isSelected || isTraceLinked || isSceneFocused
                       ? 1
@@ -1047,7 +1049,7 @@ function BookMarkers({
                         ? 0.16 + revealBlend * 0.2
                         : isNewestVisible
                           ? 0.34
-                          : 0.16
+                          : 0.16) * opacityFactor
                 }
                 emissive={new THREE.Color(emissive)}
                 emissiveIntensity={
@@ -1087,7 +1089,7 @@ function BookMarkers({
                             : "#f59e0b"
                   }
                   transparent
-                  opacity={isTraceCurrent ? 0.65 : isHovered ? 0.52 : isSearchHighlighted ? 0.4 : isCruiseStrong ? 0.24 + revealBlend * 0.22 : 0.28}
+                  opacity={(isTraceCurrent ? 0.65 : isHovered ? 0.52 : isSearchHighlighted ? 0.4 : isCruiseStrong ? 0.24 + revealBlend * 0.22 : 0.28) * opacityFactor}
                 />
               </mesh>
             ) : null}
@@ -1110,7 +1112,7 @@ function BookMarkers({
                         : "#e7e5e4"
               }
               fillOpacity={
-                isTraceCurrent || isHovered || isSelected || isSearchHighlighted || isTraceLinked || isSceneFocused
+                (isTraceCurrent || isHovered || isSelected || isSearchHighlighted || isTraceLinked || isSceneFocused
                   ? 1
                   : isCruiseStrong
                     ? 0.44 + revealBlend * 0.46
@@ -1118,7 +1120,7 @@ function BookMarkers({
                     ? 0.12 + revealBlend * 0.16
                     : isNewestVisible
                       ? 0.28
-                      : 0.1
+                      : 0.1) * opacityFactor
               }
               anchorX="center"
               anchorY="middle"
@@ -1663,10 +1665,12 @@ function RiverWorld({
   sourceAtlasLabel,
   sourceAtlasPathPoints = [],
   sourceAtlasRoutes = [],
+  eraTransitionProgress = 1,
   onInteractionStart,
   onInteractionEnd,
 }: RiverSceneProps & {
   cruiseProgress: number;
+  eraTransitionProgress?: number;
   onInteractionStart?: () => void;
   onInteractionEnd?: () => void;
 }) {
@@ -1885,10 +1889,12 @@ function RiverWorld({
   );
   const eraRiverMood = useMemo(() => {
     const fullness = 0.58 + eraWarmth * 0.5;
-    const mainOpacity = 0.5 + eraWarmth * 0.3;
-    const branchOpacity = 0.22 + eraWarmth * 0.46;
-    const branchVisibility = 0.38 + eraWarmth * 0.84;
+    const revealFactor = 0.3 + eraTransitionProgress * 0.7;
+    const mainOpacity = (0.5 + eraWarmth * 0.3) * revealFactor;
+    const branchOpacity = (0.22 + eraWarmth * 0.46) * revealFactor;
+    const branchVisibility = (0.38 + eraWarmth * 0.84) * revealFactor;
     const glowStrength = 0.18 + eraWarmth * 0.42 + scenePulse * 0.08;
+    const nodeOpacityFactor = 0.42 + eraTransitionProgress * 0.58;
 
     return {
       fullness,
@@ -1896,8 +1902,9 @@ function RiverWorld({
       branchOpacity,
       branchVisibility,
       glowStrength,
+      nodeOpacityFactor,
     };
-  }, [eraWarmth, scenePulse]);
+  }, [eraTransitionProgress, eraWarmth, scenePulse]);
   useEffect(() => {
     const focusPoint = traceFocus?.active || sceneFocus?.active
       ? cameraTarget.clone()
@@ -2320,6 +2327,7 @@ function RiverWorld({
         highlightedBookSlugs={highlightedBookSlugs}
         hoveredBookSlug={hoveredBookSlug}
         onHoverBook={onHoverBook}
+        opacityFactor={eraRiverMood.nodeOpacityFactor}
       />
       <ForegroundScrollVeil activeEra={activeEra} traceFocus={traceFocus} sceneFocus={sceneFocus} />
       <OrbitControls
@@ -2360,6 +2368,8 @@ export function RiverScene(props: RiverSceneProps) {
   const [autoCruise, setAutoCruise] = useState(true);
   const [isInteracting, setIsInteracting] = useState(false);
   const [showMobileTouchHint, setShowMobileTouchHint] = useState(true);
+  const [eraTransitionProgress, setEraTransitionProgress] = useState(1);
+  const previousEraRef = useRef<RiverEra>(props.activeEra);
   const canCruise =
     props.viewMode === "river" &&
     !props.traceFocus?.active &&
@@ -2465,6 +2475,34 @@ export function RiverScene(props: RiverSceneProps) {
             : cruiseRunning
               ? "长河正自上游缓缓展开，先看支流落点，再顺势入卷。"
               : "拖动长河巡看文脉起伏，顺着来源支流择书入卷。";
+
+  useEffect(() => {
+    if (previousEraRef.current === props.activeEra) {
+      return;
+    }
+
+    previousEraRef.current = props.activeEra;
+    setEraTransitionProgress(0);
+
+    const start = performance.now();
+    let frame = 0;
+    const duration = 720;
+
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setEraTransitionProgress(eased);
+
+      if (progress < 1) {
+        frame = window.requestAnimationFrame(tick);
+      }
+    };
+
+    frame = window.requestAnimationFrame(tick);
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [props.activeEra]);
 
   useEffect(() => {
     if (!showMobileTouchHint) {
@@ -2581,6 +2619,7 @@ export function RiverScene(props: RiverSceneProps) {
         <RiverWorld
           {...props}
           cruiseProgress={cruiseProgress}
+          eraTransitionProgress={eraTransitionProgress}
           onInteractionStart={() => {
             setAutoCruise(false);
             setIsInteracting(true);
