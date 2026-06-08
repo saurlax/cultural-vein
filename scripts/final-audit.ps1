@@ -24,6 +24,17 @@ function Assert-TextContains {
   }
 }
 
+function Assert-Condition {
+  param(
+    [bool]$Condition,
+    [string]$Message
+  )
+
+  if (-not $Condition) {
+    throw $Message
+  }
+}
+
 Write-Host "[1/4] Run preflight"
 pnpm preflight
 
@@ -79,6 +90,17 @@ try {
     throw "Source atlas returned too few entries."
   }
 
+  $themeOptions = @($atlas.atlasMeta.filterOptions.themes)
+  $eraOptions = @($atlas.atlasMeta.filterOptions.eras)
+  Assert-Condition ($themeOptions.Count -ge 5) "Source atlas filter options should expose multiple themes."
+  Assert-Condition ($eraOptions.Count -ge 2) "Source atlas filter options should expose multiple eras."
+
+  $themeLabels = $themeOptions | ForEach-Object { $_.label }
+  $eraLabels = $eraOptions | ForEach-Object { $_.label }
+  Assert-Condition ($themeLabels -contains [string]([char]0x4EBA + [char]0x7269 + [char]0x652F + [char]0x6D41)) "Source atlas filter options missing 人物支流."
+  Assert-Condition ($themeLabels -contains [string]([char]0x7EA2 + [char]0x8272 + [char]0x652F + [char]0x6D41)) "Source atlas filter options missing 红色支流."
+  Assert-Condition ($eraLabels -contains [string]([char]0x8FD1 + [char]0x73B0 + [char]0x4EE3)) "Source atlas filter options missing 近现代."
+
   $requiredNames = @(
     [string]([char]0x5BB6 + [char]0x8C31 + [char]0x6587 + [char]0x732E),
     [string]([char]0x7EA2 + [char]0x8272 + [char]0x6587 + [char]0x732E),
@@ -90,6 +112,11 @@ try {
     if (-not $match) {
       throw ("Missing source atlas entry: " + $name)
     }
+
+    Assert-Condition (-not [string]::IsNullOrWhiteSpace($match[0].theme)) ("Source atlas entry missing theme: " + $name)
+    if ($name -ne [string]([char]0x5BB6 + [char]0x8C31 + [char]0x6587 + [char]0x732E)) {
+      Assert-Condition (-not [string]::IsNullOrWhiteSpace($match[0].era)) ("Source atlas entry missing era: " + $name)
+    }
   }
 } finally {
   Stop-Job $job -ErrorAction SilentlyContinue | Out-Null
@@ -97,4 +124,5 @@ try {
 }
 
 Write-Host ("Source entries: " + ($requiredNames -join ", "))
+Write-Host ("Source filters: " + ($themeLabels -join ", ") + " | " + ($eraLabels -join ", "))
 Write-Host "Final audit complete."
