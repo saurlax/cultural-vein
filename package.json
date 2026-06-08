@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "preflight": "powershell -ExecutionPolicy Bypass -File ./scripts/preflight-check.ps1",
+    "ui:audit": "tsx ./scripts/ui-surface-audit.ts",
     "final:audit": "powershell -ExecutionPolicy Bypass -File ./scripts/final-audit.ps1"
   },
   "dependencies": {

@@ -27,7 +27,7 @@ function Assert-TextContains {
 Write-Host "[1/4] Run preflight"
 pnpm preflight
 
-Write-Host "[2/4] Verify documentation artifacts"
+Write-Host "[2/5] Verify documentation artifacts"
 $requiredDocs = @(
   "README.md",
   "DELIVERY.md",
@@ -42,7 +42,7 @@ foreach ($doc in $requiredDocs) {
 
 Write-Host ("Docs: " + ($requiredDocs -join ", "))
 
-Write-Host "[3/4] Verify requirements evidence anchors"
+Write-Host "[3/5] Verify requirements evidence anchors"
 $matrix = Get-Content -LiteralPath "REQUIREMENTS_MATRIX.md" -Raw -Encoding utf8
 $requiredAnchors = @(
   [string]([char]0x8BBA + [char]0x8BED),
@@ -59,7 +59,10 @@ foreach ($anchor in $requiredAnchors) {
 
 Write-Host ("Evidence anchors: " + ($requiredAnchors -join ", "))
 
-Write-Host "[4/4] Verify source atlas themes"
+Write-Host "[4/5] Verify UI surface accessibility"
+pnpm ui:audit
+
+Write-Host "[5/5] Verify source atlas themes"
 $env:CULTURAL_VEIN_BACKEND_PORT = "4321"
 $job = Start-Job -ScriptBlock {
   $env:CULTURAL_VEIN_BACKEND_PORT = "4321"
