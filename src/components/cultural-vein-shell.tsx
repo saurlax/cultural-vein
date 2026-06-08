@@ -1321,7 +1321,7 @@ export function CulturalVeinShell() {
 
     return previewBooks.slice(0, 2);
   }, [activeSourceAtlasEntry, activeSourceRelatedBooks, getEntryAnchorBooks, selectedBook]);
-  const compactRelationSummary = relationSummary.filter(({ count }) => count > 0).slice(0, 3);
+  const compactRelationSummary = relationSummary.filter(({ count }) => count > 0);
   const compactSourceThemeOptions = sourceAtlasThemeOptions;
   const compactSourceEraOptions = sourceAtlasEraOptions;
   const compactBranchLead = activeBranchAnnotation
@@ -2373,7 +2373,7 @@ export function CulturalVeinShell() {
                   <div className="mt-3 rounded-[22px] border border-[#ead8a6]/14 bg-[rgba(255,248,220,0.08)] px-3 py-3">
                     <div className="text-[11px] tracking-[0.24em] text-[#8d6a2c]">关系层级</div>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {relationSummary.filter(({ count }) => count > 0).slice(0, 3).map(({ layer, count }) => (
+                      {relationSummary.filter(({ count }) => count > 0).map(({ layer, count }) => (
                         <button
                           key={`mobile-layer-${layer}`}
                           type="button"
