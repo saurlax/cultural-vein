@@ -1459,7 +1459,7 @@ export function CulturalVeinShell() {
                   <span className="rounded-full border border-[#d9b86b]/20 bg-[rgba(255,255,255,0.16)] px-2.5 py-1 text-[9px] text-[#7a571d]">
                     {focusModeLabel}
                   </span>
-                  {openingSourcePreviewBooks.slice(0, 1).map((book) => (
+                  {openingSourcePreviewBooks.slice(0, 2).map((book) => (
                     <button
                       key={`opening-source-preview-${book.slug}`}
                       type="button"
@@ -1782,7 +1782,7 @@ export function CulturalVeinShell() {
                               >
                                 后一股
                               </button>
-                              {activeSourceRelatedBooks.slice(0, 1).map((book) => (
+                              {activeSourceRelatedBooks.slice(0, 2).map((book) => (
                                 <button
                                   key={`source-related-compact-${activeSourceAtlasEntry.id}-${book.slug}`}
                                   type="button"
