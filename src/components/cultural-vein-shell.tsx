@@ -2315,7 +2315,7 @@ export function CulturalVeinShell() {
                     className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-amber-300"
                   />
                     <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] text-[#c9b68a]">
-                    {eras.slice(0, 6).map((era) => (
+                    {eras.map((era) => (
                       <button
                         key={era}
                         type="button"
