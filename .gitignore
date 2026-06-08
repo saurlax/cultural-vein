@@ -44,4 +44,9 @@ next-env.d.ts
 /data
 /tmp_cbdb
 /tmp_generated
+tmp_dev_*.log
+tmp_start_*.log
+tmp_start_*.err.log
+tmp_start_*.out.log
+/tmp_screens
 __pycache__/
