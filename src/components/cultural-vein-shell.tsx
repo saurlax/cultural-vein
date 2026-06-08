@@ -720,8 +720,16 @@ export function CulturalVeinShell() {
     transitionState === "settling" ||
     transitionState === "returning";
   const sourceAtlasEntries = useMemo(() => insights?.sourceAtlas ?? [], [insights?.sourceAtlas]);
+  const sourceAtlasThemeLookup = useCallback(
+    (entry: NonNullable<typeof sourceAtlasEntries>[number]) => entry.theme ?? getSourceThemeLabel(entry.name),
+    [],
+  );
   const inferSourceAtlasEra = useCallback(
     (entry: NonNullable<typeof sourceAtlasEntries>[number]) => {
+      if (entry.era) {
+        return entry.era;
+      }
+
       const inferredEra =
         entry.sampleRecords
           ?.map((record) => inferEraFromYearText(record.year))
@@ -754,9 +762,21 @@ export function CulturalVeinShell() {
     [],
   );
   const sourceAtlasThemeOptions = useMemo(() => {
-    return ["全部", ...Array.from(new Set(sourceAtlasEntries.map((entry) => getSourceThemeLabel(entry.name))))];
-  }, [sourceAtlasEntries]);
+    const structuredThemes = insights?.atlasMeta?.filterOptions?.themes?.map((item) => item.label) ?? [];
+
+    if (structuredThemes.length) {
+      return ["全部", ...structuredThemes];
+    }
+
+    return ["全部", ...Array.from(new Set(sourceAtlasEntries.map((entry) => sourceAtlasThemeLookup(entry))))];
+  }, [insights?.atlasMeta?.filterOptions?.themes, sourceAtlasEntries, sourceAtlasThemeLookup]);
   const sourceAtlasEraOptions = useMemo(() => {
+    const structuredEras = insights?.atlasMeta?.filterOptions?.eras?.map((item) => item.label) ?? [];
+
+    if (structuredEras.length) {
+      return ["全部", ...structuredEras];
+    }
+
     return [
       "全部",
       ...Array.from(
@@ -767,18 +787,24 @@ export function CulturalVeinShell() {
         ),
       ),
     ];
-  }, [inferSourceAtlasEra, sourceAtlasEntries]);
+  }, [inferSourceAtlasEra, insights?.atlasMeta?.filterOptions?.eras, sourceAtlasEntries]);
   const filteredSourceAtlasEntries = useMemo(() => {
     return sourceAtlasEntries.filter((entry) => {
       const matchesTheme =
         sourceAtlasThemeFilter === "全部" ||
-        getSourceThemeLabel(entry.name) === sourceAtlasThemeFilter;
+        sourceAtlasThemeLookup(entry) === sourceAtlasThemeFilter;
       const matchesEra =
         sourceAtlasEraFilter === "全部" || inferSourceAtlasEra(entry) === sourceAtlasEraFilter;
 
       return matchesTheme && matchesEra;
     });
-  }, [inferSourceAtlasEra, sourceAtlasEntries, sourceAtlasEraFilter, sourceAtlasThemeFilter]);
+  }, [
+    inferSourceAtlasEra,
+    sourceAtlasEntries,
+    sourceAtlasEraFilter,
+    sourceAtlasThemeFilter,
+    sourceAtlasThemeLookup,
+  ]);
   const sourceAtlasFilterActive =
     sourceAtlasThemeFilter !== "全部" || sourceAtlasEraFilter !== "全部";
   const sourceAtlasFilterSummary = [
@@ -1344,7 +1370,7 @@ export function CulturalVeinShell() {
   const collapsedDesktopNote = selectedBook
     ? `卷内细看 ${focusModeLabel}`
     : activeSourceAtlasEntry
-      ? `${getSourceThemeLabel(activeSourceAtlasEntry.name)} · ${activeEra}`
+      ? `${sourceAtlasThemeLookup(activeSourceAtlasEntry)} · ${activeEra}`
       : `${activeEra} · 河岸巡看`;
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#e7c978] text-stone-100">
@@ -1754,7 +1780,7 @@ export function CulturalVeinShell() {
                               </div>
                               <div className="mt-1.5 flex flex-wrap gap-2">
                                 <span className="rounded-full border border-amber-200/22 bg-[rgba(255,244,214,0.08)] px-2.5 py-1 text-[10px] text-[#fff0c2]">
-                                  {getSourceThemeLabel(activeSourceAtlasEntry.name)}
+                                  {sourceAtlasThemeLookup(activeSourceAtlasEntry)}
                                   {sourceAtlasSuggestedEra ? ` · ${sourceAtlasSuggestedEra}` : ""}
                                 </span>
                                 {activeSourceRoute ? (

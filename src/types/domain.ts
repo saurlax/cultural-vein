@@ -180,6 +180,8 @@ export interface DatasetInsight {
   sourceAtlas?: Array<{
     id: string;
     name: string;
+    theme?: string;
+    era?: RiverEra | null;
     summary?: string;
     stat?: string;
     magnitude?: number;
@@ -199,6 +201,16 @@ export interface DatasetInsight {
     totalBookCount: number;
     totalCitationCount: number;
     activeSources: number;
+    filterOptions?: {
+      themes: Array<{
+        label: string;
+        count: number;
+      }>;
+      eras: Array<{
+        label: RiverEra;
+        count: number;
+      }>;
+    };
     plannedLayers: string[];
     expansionNote: string;
     coverageLayers?: Array<{

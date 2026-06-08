@@ -144,8 +144,8 @@ function getSourceThemeLabel(name: string) {
 function enrichSourceAtlasEntry(entry: SourceAtlasEntry) {
   return {
     ...entry,
-    era: inferSourceAtlasEra(entry),
-    theme: getSourceThemeLabel(entry.name),
+    era: entry.era ?? inferSourceAtlasEra(entry),
+    theme: entry.theme ?? getSourceThemeLabel(entry.name),
   };
 }
 
@@ -243,7 +243,7 @@ export function getInsightsPayload(): DatasetInsight {
       );
     })
     .slice(0, 3);
-  const sourceAtlas = [
+  const rawSourceAtlas = [
     realSupplements.cbdbSummary?.available
       ? {
           id: "cbdb",
@@ -615,6 +615,24 @@ export function getInsightsPayload(): DatasetInsight {
         }
       : null,
   ].filter((item): item is NonNullable<typeof item> => Boolean(item));
+  const sourceAtlas = rawSourceAtlas.map((entry) => enrichSourceAtlasEntry(entry));
+  const themeCounts = Array.from(
+    sourceAtlas.reduce((map, entry) => {
+      const key = entry.theme ?? "来源支流";
+      map.set(key, (map.get(key) ?? 0) + 1);
+      return map;
+    }, new Map<string, number>()),
+  ).map(([label, count]) => ({ label, count }));
+  const eraCounts = Array.from(
+    sourceAtlas.reduce((map, entry) => {
+      if (!entry.era) {
+        return map;
+      }
+
+      map.set(entry.era, (map.get(entry.era) ?? 0) + 1);
+      return map;
+    }, new Map<NonNullable<SourceAtlasEntry["era"]>, number>()),
+  ).map(([label, count]) => ({ label, count }));
 
   return {
     sourceAtlas,
@@ -623,6 +641,10 @@ export function getInsightsPayload(): DatasetInsight {
       totalBookCount: 1300000,
       totalCitationCount: riverDataset.citations.length,
       activeSources: sourceAtlas.length,
+      filterOptions: {
+        themes: themeCounts,
+        eras: eraCounts,
+      },
       plannedLayers: [
         "古籍循证",
         "人名规范",
