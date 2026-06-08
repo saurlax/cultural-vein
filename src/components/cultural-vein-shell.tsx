@@ -1322,8 +1322,8 @@ export function CulturalVeinShell() {
     return previewBooks.slice(0, 2);
   }, [activeSourceAtlasEntry, activeSourceRelatedBooks, getEntryAnchorBooks, selectedBook]);
   const compactRelationSummary = relationSummary.filter(({ count }) => count > 0).slice(0, 3);
-  const compactSourceThemeOptions = sourceAtlasThemeOptions.slice(0, 4);
-  const compactSourceEraOptions = sourceAtlasEraOptions.slice(0, 4);
+  const compactSourceThemeOptions = sourceAtlasThemeOptions;
+  const compactSourceEraOptions = sourceAtlasEraOptions;
   const compactBranchLead = activeBranchAnnotation
     ? activeBranchSummary
       ? `${relationLayerMeta[activeBranchSummary.layer].label}当前显出 ${activeBranchSummary.count} 股。`
@@ -1794,7 +1794,7 @@ export function CulturalVeinShell() {
                               ))}
                             </div>
                             <div className="mt-2 flex flex-wrap gap-2">
-                              {compactSourceThemeOptions.slice(0, 2).map((theme) => (
+                              {compactSourceThemeOptions.map((theme) => (
                                 <button
                                   key={`source-theme-${theme}`}
                                   type="button"
@@ -1808,7 +1808,7 @@ export function CulturalVeinShell() {
                                   {theme}
                                 </button>
                               ))}
-                              {compactSourceEraOptions.slice(0, 2).map((era) => (
+                              {compactSourceEraOptions.map((era) => (
                                 <button
                                   key={`source-era-${era}`}
                                   type="button"
