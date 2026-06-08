@@ -1630,7 +1630,7 @@ export function CulturalVeinShell() {
                       ))}
                     </div>
                     <div className="mt-2 flex flex-wrap gap-2">
-                      {schools.slice(0, 6).map((school) => (
+                      {schools.map((school) => (
                         <button
                           key={school}
                           type="button"
@@ -2351,7 +2351,7 @@ export function CulturalVeinShell() {
                     ))}
                   </div>
                   <div className="mt-2 flex flex-wrap gap-2">
-                      {schools.slice(0, 4).map((school) => (
+                      {schools.map((school) => (
                         <button
                           key={`mobile-school-${school}`}
                           type="button"
