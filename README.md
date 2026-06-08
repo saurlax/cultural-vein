@@ -87,6 +87,12 @@ pnpm lint
 pnpm build
 ```
 
+终稿核验：
+
+```bash
+pnpm final:audit
+```
+
 ## 数据管线
 
 项目当前采用“离线导出 + 前端消费”的轻量数据管线：
