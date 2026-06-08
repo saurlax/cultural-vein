@@ -86,6 +86,7 @@
 - 以 `src/server/payloads.ts` 统一装配 API payload
 - 以 Next.js Route Handlers 提供站内 API
 - 以 `backend/server.ts` 提供可独立启动的轻量 Node 后端骨架
+- 来源河册当前也已由 payload 层直接补出 `theme / era / filterOptions` 等结构化筛选元信息，前端不再主要依赖名称推断
 
 这意味着当前仓库虽然还不是正式 Neo4j + MeiliSearch 架构，但已经把“数据装配”“接口边界”和“前端消费”三者拆开，后续可平滑迁移。
 
@@ -125,6 +126,7 @@
   - 数据覆盖与统计接口
 - `src/app/api/source-atlas/route.ts`
   - 来源河册与覆盖层集合查询接口
+  - 当前会直接返回结构化 `theme / era / filterOptions`
 - `src/app/api/source-atlas/[id]/route.ts`
   - 单条来源明细接口
 - `src/app/api/search/route.ts`
@@ -154,6 +156,7 @@
   - 输出 `riverDataset`
 - `src/server/payloads.ts`
   - 为 Next Route Handlers 与独立后端共用的 payload 装配层
+  - 当前已把来源河册的主题、时代和筛选统计提升为共享结构化字段
 - `src/data/generated/real-supplements.json`
   - 由脚本生成的真实数据中间层
 - `src/lib/concept-search.ts`
@@ -186,6 +189,7 @@
 - 诗学支流已经不止停留在《诗经》《楚辞章句》《文心雕龙》《昭明文选》的首尾串联，当前又补出《诗品》这一品第批评中继层
 - 来源河册与河面高亮的对应关系，当前也已由数据层显式给出关联典籍列表，而不是主要依赖前端启发式猜测
 - 来源河册面板已可直接列出这股来源牵出的典籍，并从来源说明一键入卷到对应书段
+- 界面层当前也已补入 `ui:audit` 自动核验，用来防止时代、学派、来源主题、关系层级和搜索入口在收尾时被意外裁掉
 
 ### 同时保留后续扩展空间
 

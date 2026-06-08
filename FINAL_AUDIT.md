@@ -325,6 +325,7 @@
   - 已抽出 `src/server/payloads.ts` 作为共享接口装配层
   - 已新增 `backend/server.ts` 轻量独立后端骨架
   - 已可单独启动并返回 `/health`、`/graph`、`/books/:slug`、`/insights`、`/source-atlas`、`/source-atlas/:id`、`/search`
+  - 来源河册当前已由 payload 层直接补出结构化 `theme / era / filterOptions`，前端筛选不再主要依赖名称推断
 - 直接证据：
   - `package.json` 中的 `backend:dev`
   - `backend/server.ts`
@@ -334,6 +335,7 @@
   - `2026-06-07` 在临时端口 `4321` 上请求 `http://127.0.0.1:4321/source-atlas?theme=人物支流&limit=1` 可按主题和数量返回过滤后的来源集合，并包含查询回显
   - `2026-06-07` 来源河册条目已内置 `relatedBookSlugs`，河面高亮与来源码头优先使用显式关联典籍，而不是主要依赖前端按来源名做启发式判断
   - `2026-06-07` 来源河册面板已可直接列出单条来源牵出的关联典籍，并从来源说明顺流入卷
+  - `2026-06-08` 本地执行 `pnpm final:audit` 通过，其中 `pnpm ui:audit` 会自动核验时代按钮、学派筛选、来源主题/时代筛选、关系层级与搜索结果入口的完整可达性
 - 缺口：
   - 未真正接入 Neo4j
   - 未真正接入 MeiliSearch
