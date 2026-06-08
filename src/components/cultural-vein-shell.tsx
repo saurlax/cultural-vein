@@ -175,50 +175,6 @@ const eraNarratives: Record<
   },
 };
 
-function getSourceThemeLabel(name: string) {
-  if (name.includes("红色") || name.includes("南湖")) {
-    return "红色支流";
-  }
-
-  if (name.includes("搜韵")) {
-    return "诗学支流";
-  }
-
-  if (name.includes("纪传")) {
-    return "人物支流";
-  }
-
-  if (name.includes("借阅")) {
-    return "公共流通";
-  }
-
-  if (name.includes("活动")) {
-    return "城市现场";
-  }
-
-  if (name.includes("专题片")) {
-    return "城市影像";
-  }
-
-  if (name.includes("Artlib") || name.includes("艺术")) {
-    return "艺术图像";
-  }
-
-  if (name.includes("报刊")) {
-    return "近现代文献";
-  }
-
-  if (name.includes("图书馆") || name.includes("馆藏") || name.includes("纪念馆")) {
-    return "馆藏支流";
-  }
-
-  if (name.includes("宋庆龄") || name.includes("韬奋")) {
-    return "近现代支流";
-  }
-
-  return "来源支流";
-}
-
 function deriveBranchAnnotations(
   activeEraIndex: number,
   allowedSlugs: Set<string>,
@@ -721,7 +677,7 @@ export function CulturalVeinShell() {
     transitionState === "returning";
   const sourceAtlasEntries = useMemo(() => insights?.sourceAtlas ?? [], [insights?.sourceAtlas]);
   const sourceAtlasThemeLookup = useCallback(
-    (entry: NonNullable<typeof sourceAtlasEntries>[number]) => entry.theme ?? getSourceThemeLabel(entry.name),
+    (entry: NonNullable<typeof sourceAtlasEntries>[number]) => entry.theme ?? "来源支流",
     [],
   );
   const inferSourceAtlasEra = useCallback(
@@ -737,24 +693,6 @@ export function CulturalVeinShell() {
 
       if (inferredEra) {
         return inferredEra;
-      }
-
-      if (
-        entry.name.includes("南湖") ||
-        entry.name.includes("红色") ||
-        entry.name.includes("韬奋") ||
-        entry.name.includes("宋庆龄")
-      ) {
-        return "近现代" as const;
-      }
-
-      if (
-        entry.name.includes("报刊") ||
-        entry.name.includes("专题片") ||
-        entry.name.includes("图书馆") ||
-        entry.name.includes("纪念馆")
-      ) {
-        return "近现代" as const;
       }
 
       return null;
