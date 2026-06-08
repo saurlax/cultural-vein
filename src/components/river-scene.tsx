@@ -888,6 +888,17 @@ function ScrollRiverBackdrop({
         aria-hidden="true"
       >
         <defs>
+          <linearGradient id="scroll-river-top-mask" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="black" stopOpacity="0" />
+            <stop offset="9%" stopColor="black" stopOpacity="0" />
+            <stop offset="18%" stopColor="black" stopOpacity="0.42" />
+            <stop offset="28%" stopColor="black" stopOpacity="0.88" />
+            <stop offset="36%" stopColor="black" stopOpacity="1" />
+            <stop offset="100%" stopColor="black" stopOpacity="1" />
+          </linearGradient>
+          <mask id="scroll-river-visibility-mask">
+            <rect x="0" y="0" width="1000" height="1600" fill="url(#scroll-river-top-mask)" />
+          </mask>
           <linearGradient id="scroll-river-fill" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="rgba(255,251,237,0.98)" />
             <stop offset="22%" stopColor="rgba(252,228,166,0.95)" />
@@ -917,110 +928,112 @@ function ScrollRiverBackdrop({
           </filter>
         </defs>
 
-        <path
-          d="M150 120
-             C300 90, 365 70, 470 118
-             C555 156, 548 245, 448 274
-             C334 308, 204 270, 122 330
-             C48 384, 74 488, 196 506
-             C365 531, 521 444, 656 485
-             C754 514, 790 610, 716 676
-             C633 750, 468 713, 316 748
-             C183 779, 123 874, 174 947
-             C232 1031, 386 1008, 539 1051
-             C687 1092, 724 1221, 633 1286
-             C547 1347, 382 1311, 238 1348
-             C112 1381, 84 1486, 168 1532
-             C242 1571, 410 1542, 528 1510"
-          fill="none"
-          stroke="url(#scroll-river-fill)"
-          strokeWidth="110"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity={channelOpacity}
-          filter="url(#scroll-river-glow)"
-        />
-        <path
-          d="M150 120
-             C300 90, 365 70, 470 118
-             C555 156, 548 245, 448 274
-             C334 308, 204 270, 122 330
-             C48 384, 74 488, 196 506
-             C365 531, 521 444, 656 485
-             C754 514, 790 610, 716 676
-             C633 750, 468 713, 316 748
-             C183 779, 123 874, 174 947
-             C232 1031, 386 1008, 539 1051
-             C687 1092, 724 1221, 633 1286
-             C547 1347, 382 1311, 238 1348
-             C112 1381, 84 1486, 168 1532
-             C242 1571, 410 1542, 528 1510"
-          fill="none"
-          stroke="url(#scroll-river-fill)"
-          strokeWidth="84"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity={Math.min(0.96, channelOpacity + 0.18)}
-        />
-        <path
-          d="M152 136
-             C286 109, 355 94, 449 131
-             C515 158, 503 225, 419 246
-             C319 271, 207 243, 145 289
-             C90 331, 112 404, 217 420
-             C366 443, 514 372, 625 406
-             C698 429, 725 500, 668 549
-             C601 607, 457 580, 333 607
-             C225 631, 182 712, 228 772
-             C277 836, 409 815, 527 847
-             C646 879, 681 981, 607 1034
-             C534 1086, 393 1058, 275 1084
-             C173 1108, 136 1188, 185 1239
-             C241 1299, 390 1277, 488 1248"
-          fill="none"
-          stroke="url(#scroll-river-core)"
-          strokeWidth="38"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity={0.82 + warmth * 0.08}
-        />
+        <g mask="url(#scroll-river-visibility-mask)">
+          <path
+            d="M150 120
+               C300 90, 365 70, 470 118
+               C555 156, 548 245, 448 274
+               C334 308, 204 270, 122 330
+               C48 384, 74 488, 196 506
+               C365 531, 521 444, 656 485
+               C754 514, 790 610, 716 676
+               C633 750, 468 713, 316 748
+               C183 779, 123 874, 174 947
+               C232 1031, 386 1008, 539 1051
+               C687 1092, 724 1221, 633 1286
+               C547 1347, 382 1311, 238 1348
+               C112 1381, 84 1486, 168 1532
+               C242 1571, 410 1542, 528 1510"
+            fill="none"
+            stroke="url(#scroll-river-fill)"
+            strokeWidth="110"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity={channelOpacity}
+            filter="url(#scroll-river-glow)"
+          />
+          <path
+            d="M150 120
+               C300 90, 365 70, 470 118
+               C555 156, 548 245, 448 274
+               C334 308, 204 270, 122 330
+               C48 384, 74 488, 196 506
+               C365 531, 521 444, 656 485
+               C754 514, 790 610, 716 676
+               C633 750, 468 713, 316 748
+               C183 779, 123 874, 174 947
+               C232 1031, 386 1008, 539 1051
+               C687 1092, 724 1221, 633 1286
+               C547 1347, 382 1311, 238 1348
+               C112 1381, 84 1486, 168 1532
+               C242 1571, 410 1542, 528 1510"
+            fill="none"
+            stroke="url(#scroll-river-fill)"
+            strokeWidth="84"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity={Math.min(0.96, channelOpacity + 0.18)}
+          />
+          <path
+            d="M152 136
+               C286 109, 355 94, 449 131
+               C515 158, 503 225, 419 246
+               C319 271, 207 243, 145 289
+               C90 331, 112 404, 217 420
+               C366 443, 514 372, 625 406
+               C698 429, 725 500, 668 549
+               C601 607, 457 580, 333 607
+               C225 631, 182 712, 228 772
+               C277 836, 409 815, 527 847
+               C646 879, 681 981, 607 1034
+               C534 1086, 393 1058, 275 1084
+               C173 1108, 136 1188, 185 1239
+               C241 1299, 390 1277, 488 1248"
+            fill="none"
+            stroke="url(#scroll-river-core)"
+            strokeWidth="38"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity={0.82 + warmth * 0.08}
+          />
 
-        <path
-          d="M472 292 C548 236, 612 202, 692 218"
-          fill="none"
-          stroke="url(#scroll-river-branch)"
-          strokeWidth="34"
-          strokeLinecap="round"
-          opacity={branchOpacity}
-          filter="url(#scroll-river-soft)"
-        />
-        <path
-          d="M587 665 C701 645, 790 678, 844 745"
-          fill="none"
-          stroke="url(#scroll-river-branch)"
-          strokeWidth="30"
-          strokeLinecap="round"
-          opacity={branchOpacity + 0.04}
-          filter="url(#scroll-river-soft)"
-        />
-        <path
-          d="M224 845 C147 835, 102 877, 86 949"
-          fill="none"
-          stroke="url(#scroll-river-branch)"
-          strokeWidth="28"
-          strokeLinecap="round"
-          opacity={branchOpacity - 0.03}
-          filter="url(#scroll-river-soft)"
-        />
-        <path
-          d="M518 1198 C634 1230, 706 1284, 759 1372"
-          fill="none"
-          stroke="url(#scroll-river-branch)"
-          strokeWidth="32"
-          strokeLinecap="round"
-          opacity={branchOpacity}
-          filter="url(#scroll-river-soft)"
-        />
+          <path
+            d="M472 292 C548 236, 612 202, 692 218"
+            fill="none"
+            stroke="url(#scroll-river-branch)"
+            strokeWidth="34"
+            strokeLinecap="round"
+            opacity={branchOpacity}
+            filter="url(#scroll-river-soft)"
+          />
+          <path
+            d="M587 665 C701 645, 790 678, 844 745"
+            fill="none"
+            stroke="url(#scroll-river-branch)"
+            strokeWidth="30"
+            strokeLinecap="round"
+            opacity={branchOpacity + 0.04}
+            filter="url(#scroll-river-soft)"
+          />
+          <path
+            d="M224 845 C147 835, 102 877, 86 949"
+            fill="none"
+            stroke="url(#scroll-river-branch)"
+            strokeWidth="28"
+            strokeLinecap="round"
+            opacity={branchOpacity - 0.03}
+            filter="url(#scroll-river-soft)"
+          />
+          <path
+            d="M518 1198 C634 1230, 706 1284, 759 1372"
+            fill="none"
+            stroke="url(#scroll-river-branch)"
+            strokeWidth="32"
+            strokeLinecap="round"
+            opacity={branchOpacity}
+            filter="url(#scroll-river-soft)"
+          />
+        </g>
       </svg>
       {confluences.map((pool, index) => (
         <div
