@@ -817,6 +817,8 @@ export function CulturalVeinShell() {
     return [...filteredSourceAtlasEntries].sort((left, right) => {
       const leftEra = inferSourceAtlasEra(left);
       const rightEra = inferSourceAtlasEra(right);
+      const leftTheme = sourceAtlasThemeLookup(left);
+      const rightTheme = sourceAtlasThemeLookup(right);
       const leftMatchesEra = leftEra === activeEra ? 1 : 0;
       const rightMatchesEra = rightEra === activeEra ? 1 : 0;
 
@@ -826,20 +828,16 @@ export function CulturalVeinShell() {
 
       const leftModernBoost =
         activeEra === "近现代" &&
-        (left.name.includes("红色") ||
-          left.name.includes("南湖") ||
-          left.name.includes("韬奋") ||
-          left.name.includes("宋庆龄") ||
-          left.name.includes("报刊"))
+        (leftTheme === "红色支流" ||
+          leftTheme === "近现代支流" ||
+          leftTheme === "近现代文献")
           ? 1
           : 0;
       const rightModernBoost =
         activeEra === "近现代" &&
-        (right.name.includes("红色") ||
-          right.name.includes("南湖") ||
-          right.name.includes("韬奋") ||
-          right.name.includes("宋庆龄") ||
-          right.name.includes("报刊"))
+        (rightTheme === "红色支流" ||
+          rightTheme === "近现代支流" ||
+          rightTheme === "近现代文献")
           ? 1
           : 0;
 
@@ -849,7 +847,7 @@ export function CulturalVeinShell() {
 
       return (right.magnitude ?? 0) - (left.magnitude ?? 0);
     });
-  }, [activeEra, filteredSourceAtlasEntries, inferSourceAtlasEra]);
+  }, [activeEra, filteredSourceAtlasEntries, inferSourceAtlasEra, sourceAtlasThemeLookup]);
   const activeSourceAtlasEntry =
     prioritizedSourceAtlasEntries.find((entry) => entry.id === activeSourceAtlasId) ??
     prioritizedSourceAtlasEntries[0] ??
@@ -955,15 +953,16 @@ export function CulturalVeinShell() {
           return null;
         }
 
-        const routeColor = entry.name.includes("红色")
+        const routeTheme = sourceAtlasThemeLookup(entry);
+        const routeColor = routeTheme === "红色支流"
           ? "#dc2626"
-          : entry.name.includes("南湖")
+          : entry.id === "nanhu-archive"
           ? "#ef4444"
-          : entry.name.includes("韬奋") || entry.name.includes("宋庆龄")
+          : routeTheme === "近现代支流"
             ? "#fb7185"
-            : entry.name.includes("报刊")
+            : routeTheme === "近现代文献"
               ? "#f97316"
-              : entry.name.includes("搜韵")
+              : routeTheme === "诗学支流"
                 ? "#fbbf24"
                 : ["#fbbf24", "#fb923c", "#f59e0b", "#fde68a", "#facc15", "#fdba74"][
                     entryIndex % 6
@@ -1025,31 +1024,25 @@ export function CulturalVeinShell() {
           return false;
         }
 
-        if (activeSourceAtlasEntry.name.includes("搜韵")) {
+        const activeSourceTheme = sourceAtlasThemeLookup(activeSourceAtlasEntry);
+
+        if (activeSourceTheme === "诗学支流") {
           return book.category === "集" || book.school.includes("诗");
         }
 
-        if (activeSourceAtlasEntry.name.includes("报刊")) {
+        if (activeSourceTheme === "近现代文献") {
           return book.dynasty === "近现代";
         }
 
-        if (activeSourceAtlasEntry.name.includes("专题片")) {
+        if (activeSourceTheme === "城市影像") {
           return book.dynasty === "近现代" || book.dynasty === "明清";
         }
 
-        if (
-          activeSourceAtlasEntry.name.includes("南湖") ||
-          activeSourceAtlasEntry.name.includes("红色") ||
-          activeSourceAtlasEntry.name.includes("韬奋") ||
-          activeSourceAtlasEntry.name.includes("宋庆龄")
-        ) {
+        if (activeSourceTheme === "红色支流" || activeSourceTheme === "近现代支流") {
           return book.dynasty === "近现代";
         }
 
-        if (
-          activeSourceAtlasEntry.name.includes("CBDB") ||
-          activeSourceAtlasEntry.name.includes("纪传")
-        ) {
+        if (activeSourceTheme === "人物支流") {
           return book.category === "史" || book.category === "经";
         }
 
