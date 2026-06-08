@@ -1541,7 +1541,7 @@ export function CulturalVeinShell() {
                     </div>
                     {resolvedSearchResult?.hits.length ? (
                       <div className="mt-3">
-                        {resolvedSearchResult.hits.slice(0, 1).map((hit) => (
+                        {resolvedSearchResult.hits.slice(0, 3).map((hit) => (
                           <button
                             key={hit.slug}
                             type="button"
@@ -2277,7 +2277,7 @@ export function CulturalVeinShell() {
                   </div>
                   {resolvedSearchResult?.hits.length ? (
                     <div className="mt-3">
-                      {resolvedSearchResult.hits.slice(0, 1).map((hit) => (
+                      {resolvedSearchResult.hits.slice(0, 3).map((hit) => (
                         <button
                           key={`mobile-search-hit-${hit.slug}`}
                           type="button"
