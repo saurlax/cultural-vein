@@ -3037,8 +3037,11 @@ function RiverWorld({
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
   const controlsRef = useRef<OrbitControlsInstance>(null);
   const userInteractingRef = useRef(false);
+  // 用户手动操作相机后永久禁用自动巡航，直到触发影视级镜头切换
+  const cameraUserControlled = useRef(false);
+  // 跟踪上一次的影视焦点状态，只在状态变化时重置用户控制
+  const prevCinematicActive = useRef(false);
   const resumeAutoFrameRef = useRef<number | null>(null);
-  const [allowOrbitRotate, setAllowOrbitRotate] = useState(false);
   const desiredCameraPosition = useRef(new THREE.Vector3(2.3, 5.6, 13.8));
   const desiredCameraTarget = useRef(new THREE.Vector3(3.8, 0.3, 0.9));
   const initialControlsTarget = useMemo(() => new THREE.Vector3(3.8, 0.3, 0.9), []);
@@ -3231,19 +3234,6 @@ function RiverWorld({
         ? "#fde68a"
         : "#fcd34d";
 
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const media = window.matchMedia("(min-width: 768px)");
-    const syncViewportMode = () => setAllowOrbitRotate(media.matches);
-
-    syncViewportMode();
-    media.addEventListener("change", syncViewportMode);
-
-    return () => media.removeEventListener("change", syncViewportMode);
-  }, []);
   const sourceAtlasFlowPoints = useMemo(
     () => sourceAtlasPathPoints.map((point) => new THREE.Vector3(...point)),
     [sourceAtlasPathPoints],
@@ -3393,7 +3383,7 @@ function RiverWorld({
     } else if (cinematicState === "returning") {
       nextTarget = new THREE.Vector3(3.5, 0.15, 0);
       nextPosition = new THREE.Vector3(4.5, 5.3, 13.4);
-    } else if (viewMode === "river" && cruiseSnapshot) {
+    } else if (viewMode === "river" && cruiseSnapshot && !userInteractingRef.current) {
       const up = new THREE.Vector3(0, 1, 0);
       const side = new THREE.Vector3()
         .crossVectors(up, cruiseSnapshot.tangent)
@@ -3408,6 +3398,13 @@ function RiverWorld({
         .add(new THREE.Vector3(0, 0.22, 0));
       nextPosition = cruiseSnapshot.point.clone().add(side).add(back).add(lift);
     }
+
+    // 只在影视级镜头从非活跃变为活跃时才重置用户控制
+    const cinematicActive = !!(traceFocus?.active || sceneFocus?.active || cinematicState === "diving" || cinematicState === "settling" || cinematicState === "returning" || selectedBookPosition || searchFocusPosition);
+    if (cinematicActive && !prevCinematicActive.current) {
+      cameraUserControlled.current = false;
+    }
+    prevCinematicActive.current = cinematicActive;
 
     desiredCameraPosition.current.copy(nextPosition);
     desiredCameraTarget.current.copy(nextTarget);
@@ -3427,7 +3424,12 @@ function RiverWorld({
       return;
     }
 
-    const positionEase =
+    // 用户已手动操作相机，停止所有自动镜头控制
+    if (cameraUserControlled.current) {
+      return;
+    }
+
+    const basePositionEase =
       traceFocus?.active
         ? 5.6
         : sceneFocus?.active
@@ -3437,7 +3439,7 @@ function RiverWorld({
             : cinematicState === "returning"
               ? 4.8
               : 3.8;
-    const targetEase =
+    const baseTargetEase =
       traceFocus?.active
         ? 6.2
         : sceneFocus?.active
@@ -3447,6 +3449,9 @@ function RiverWorld({
             : cinematicState === "returning"
               ? 5
               : 4.2;
+    const reorientDamping = userInteractingRef.current ? 0 : 1;
+    const positionEase = basePositionEase * reorientDamping;
+    const targetEase = baseTargetEase * reorientDamping;
     const positionAlpha = 1 - Math.exp(-positionEase * delta);
     const targetAlpha = 1 - Math.exp(-targetEase * delta);
 
@@ -3463,34 +3468,8 @@ function RiverWorld({
   });
 
   useEffect(() => {
-    const controls = controlsRef.current;
-
-    if (!controls) {
-      return;
-    }
-
-    const pauseAuto = () => {
-      userInteractingRef.current = true;
-      if (resumeAutoFrameRef.current !== null) {
-        window.clearTimeout(resumeAutoFrameRef.current);
-      }
-    };
-
-    const resumeAuto = () => {
-      if (resumeAutoFrameRef.current !== null) {
-        window.clearTimeout(resumeAutoFrameRef.current);
-      }
-      resumeAutoFrameRef.current = window.setTimeout(() => {
-        userInteractingRef.current = false;
-      }, 900);
-    };
-
-    controls.addEventListener("start", pauseAuto);
-    controls.addEventListener("end", resumeAuto);
-
+    // OrbitControls 交互通过 onStart prop 处理，这里只做清理
     return () => {
-      controls.removeEventListener("start", pauseAuto);
-      controls.removeEventListener("end", resumeAuto);
       if (resumeAutoFrameRef.current !== null) {
         window.clearTimeout(resumeAutoFrameRef.current);
       }
@@ -3878,31 +3857,35 @@ function RiverWorld({
       <OrbitControls
         ref={controlsRef}
         makeDefault
-        onStart={onInteractionStart}
+        onStart={() => {
+          userInteractingRef.current = true;
+          cameraUserControlled.current = true;
+          if (resumeAutoFrameRef.current !== null) {
+            window.clearTimeout(resumeAutoFrameRef.current);
+            resumeAutoFrameRef.current = null;
+          }
+          onInteractionStart?.();
+        }}
         onEnd={onInteractionEnd}
         enablePan
         screenSpacePanning
         enableDamping
         dampingFactor={0.08}
-        panSpeed={allowOrbitRotate ? 0.94 : 1.32}
+        panSpeed={1.1}
         rotateSpeed={0.34}
         zoomSpeed={0.82}
-        maxDistance={15}
-        minDistance={6.4}
-        minAzimuthAngle={allowOrbitRotate ? -0.62 : -0.18}
-        maxAzimuthAngle={allowOrbitRotate ? 0.62 : 0.18}
-        minPolarAngle={allowOrbitRotate ? Math.PI / 2.95 : Math.PI / 2.55}
-        maxPolarAngle={allowOrbitRotate ? Math.PI / 2.02 : Math.PI / 2.18}
-        enableRotate={allowOrbitRotate}
+        maxDistance={20}
+        minDistance={2}
+        enableRotate
         enableZoom
         target={initialControlsTarget}
         mouseButtons={{
-          LEFT: allowOrbitRotate ? THREE.MOUSE.ROTATE : THREE.MOUSE.PAN,
+          LEFT: THREE.MOUSE.ROTATE,
           MIDDLE: THREE.MOUSE.DOLLY,
           RIGHT: THREE.MOUSE.PAN,
         }}
         touches={{
-          ONE: allowOrbitRotate ? THREE.TOUCH.ROTATE : THREE.TOUCH.PAN,
+          ONE: THREE.TOUCH.ROTATE,
           TWO: THREE.TOUCH.DOLLY_PAN,
         }}
       />

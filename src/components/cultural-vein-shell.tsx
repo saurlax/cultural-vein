@@ -1106,33 +1106,8 @@ export function CulturalVeinShell() {
     }
   };
   useEffect(() => {
-    if (
-      !sourceAtlasCruiseActive ||
-      prioritizedSourceAtlasEntries.length <= 1 ||
-      selectedBook ||
-      showDesktopControls ||
-      showDesktopDossier ||
-      showMobileControls ||
-      showMobileDossier ||
-      sourceAtlasFilterActive ||
-      searchTerm.trim().length > 0
-    ) {
-      return;
-    }
-
-    const timer = window.setInterval(() => {
-      const nextIndex =
-        activeSourceAtlasIndex >= 0
-          ? (activeSourceAtlasIndex + 1) % prioritizedSourceAtlasEntries.length
-          : 0;
-      const nextEntry = prioritizedSourceAtlasEntries[nextIndex];
-
-      if (nextEntry) {
-        activateSourceAtlasEntry(nextEntry, { openPanel: false });
-      }
-    }, 5200);
-
-    return () => window.clearInterval(timer);
+    // 来源轮巡自动切换已禁用——只有用户主动点击才会切换
+    return () => {};
   }, [
     activateSourceAtlasEntry,
     activeSourceAtlasIndex,
@@ -1941,7 +1916,7 @@ export function CulturalVeinShell() {
               </div>
             </aside>
           </div>
-        ) : !showDesktopDossier ? (
+        ) : !showDesktopDossier && !showDesktopControls ? (
           <div className="absolute left-4 top-4 z-20 hidden md:block lg:left-6 lg:top-6">
             <aside className="pointer-events-auto">
               <div className="group relative w-[7.25rem] overflow-hidden rounded-[18px] border border-[#c89b43]/18 bg-[linear-gradient(180deg,rgba(250,241,210,0.82),rgba(228,191,108,0.6))] px-2 py-2 shadow-[0_10px_24px_rgba(92,58,16,0.08)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(92,58,16,0.14)]">
